@@ -1,0 +1,41 @@
+
+@prefix sd:    <http://www.w3.org/ns/sparql-service-description#> .
+@prefix void:  <http://rdfs.org/ns/void#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix local:   <http://localhost:8890/> .
+@prefix dbpv:   <http://dbpedia.org/void/> .
+@prefix formats:   <http://www.w3.org/ns/formats/> .
+
+dbpv:Dataset  a                 void:Dataset ;
+    rdfs:seeAlso           <http://dbpedia.org> ;
+    void:classes           483621 ;
+    void:distinctObjects   231116566 ;
+    void:distinctSubjects  43070161 ;
+    void:entities          30127028 ;
+    void:properties        54155 ;
+    void:sparqlEndpoint    local:sparql ;
+    void:triples           859801816 .
+
+local:sparql  a                 sd:Service ;
+    sd:endpoint           local:sparql ;
+    sd:feature            sd:UnionDefaultGraph , sd:DereferencesURIs ;
+    sd:resultFormat       formats:N-Triples , formats:RDF_XML , 
+        formats:Turtle , formats:N3 , formats:RDFa , 
+        formats:SPARQL_Results_JSON , formats:SPARQL_Results_CSV , 
+        formats:SPARQL_Results_XML ;
+    sd:supportedLanguage  sd:SPARQL10Query ;
+    sd:url                local:sparql .
+
+dbpv:seeAlsoLinks  a         void:Linkset ;
+    void:inDataset      dbpv:Dataset ;
+    void:linkPredicate  rdfs:seeAlso ;
+    void:triples        254347 .
+
+dbpv:sameAsLinks  a          void:Linkset ;
+    void:inDataset      dbpv:Dataset ;
+    void:linkPredicate  owl:sameAs ;
+    void:triples        49127463 .
