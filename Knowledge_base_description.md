@@ -53,19 +53,22 @@ The description of the SPARQL endpoint should be linked to the central resource 
 
 A central resource for the descrition of a KB should be retrievable by the query:
 ```
+PREFIX void: <http://rdfs.org/ns/void#>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
 SELECT ?central WHERE {
   {
-    ?central a void:dataset .
+    ?central a void:Dataset .
   }
   UNION {
     ?central a dcat:Dataset .
   }
 }
 ```
-The endpoint descrition should be retrievable by the query:
+The endpoint description should be retrievable by the query:
 ```
+PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
 SELECT ?endpoint WHERE {
-  ?central sd:endpoint ?endpoint.
+  ?endpoint sd:endpoint ?endpointUrl.
 }
 ```
 
@@ -82,9 +85,11 @@ As an example:
 Other elements of description, such as the themes or keywords may be used.
 ```
 :exampleDataset dcterms:subject :metadata, :example, "vocabulary", "SPARQL" ;
-  schema:keywords :metadata, :example, "vocabulary", "SPARQL" ;
+  schema:keywords :metadata, :example, "vocabulary", "SPARQL" .
+
 :metadata a skos:Concept ;
   rdfs:label "Metadata" .
+
 :example a skos:Concept ;
   rdfs:label "Example" .
 ```
@@ -92,7 +97,6 @@ Other elements of description, such as the themes or keywords may be used.
 The properties given here are not an exhaustive list of possible labelling properties. There are other properties defined in domain-specific vocabularies.
 
 ##### Provenance
-<!--- Author, publisher, licence, date of publication, last date of modification  --->
 The provenance of the data of a KB must be given to ensure its reusability. The vocabulary used to describe provenance is most often Dublin Core. The [PROV ontology](http://www.w3.org/TR/prov-o/) gives properties an classes to create detailed descriptions of the provenance. There are mapping between the elements of the Dublin Core and PROV ontology.
 
 As presented in the PROV ontology recommandation, the provenance can be reduced to the answers to three questions: Who ? What ? How ?
@@ -117,11 +121,51 @@ THe following tables present a non-exhaustive list of the properties to be used 
 | `dcterms:source`     |
 | `dcterms:format`     |
 
+As an example:
+```
+:exampleDataset dcterms:creator <https://dblp.org/pid/143/6275> ;
+  dcterms:license <https://cecill.info/licences/Licence_CeCILL_V2.1-fr> ;
+  dcterms:created "08-02-2021"^^xsd:date ;
+  dcterms:modified "09-02-2021"^^xsd:date .
+
+<https://dblp.org/pid/143/6275> a foaf:Person ;
+  rdfs:label "Pierre Maillot"@en .
+
+<https://cecill.info/licences/Licence_CeCILL_V2.1-fr> a dcterms:LicenseDocument ;
+  rdfs:label "License CeCILL"@fr .
+  rdfs:label "French CeCILL Licence"@en .
+```
+
 ##### SPARQL endpoint
-The description of the endpoint has to contain the elements related to the accessibility of the endpoint.
+The description of the endpoint has to contain the elements related to the accessibility of the endpoint. The metadata must give the particularities of the SPARQL engine and of the graphs of the KB.
+
+The endpoint metadata should at least give its URL, which version of SPARQL it accepts, the results formats it can return, the non-standard functions it offers, and the named graphs of the KB.
+
+As an example, the endpoint of our example KB supports SPARQL1.1 Query and Update. It can return XML, JSON, Turtle, N3, and CSV.
+```
+:exampleSparqlService a sd:Service ;
+  sd:endpoint <http://www.example.com/sparql> ;
+  sd:supportedLanguage sd:SPARQL10Query, sd:SPARQL10Update ;
+  sd:resultFormat formats:N3 , formats:RDF_XML , formats:SPARQL_Results_CSV , formats:SPARQL_Results_JSON , formats:SPARQL_Results_XML , formats:Turtle .
+```
+The example KB has one default graphs and one named graph, named `:ng1`. The default graph contains 1234 triples and the named graph contains 98 triples.
+```
+:exampleSparqlService sd:defaultDataset [
+a sd:Dataset ;
+   sd:defaultGraph [
+    a sd:Graph ;
+    void:triples 1234 .
+   ] ;
+   sd:namedGraph [
+    a sd:NamedGraph ;
+      sd:name :ng1 ;
+      void:triples 98 .
+   ]
+  ]
+```
 
 ##### Namespaces
-`void:uriSpace`
+<!--- void:uriSpace` --->
 
 ##### Links to other resources
 
@@ -134,3 +178,28 @@ The description of the endpoint has to contain the elements related to the acces
 ### Examples of descriptions
 
 #### DBPedia
+
+#### Wasabi
+
+#### ORKG
+retrieved_orkg.ttl
+Only query with answers:
+```
+PREFIX void: <http://rdfs.org/ns/void#>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+
+DESCRIBE ?endpoint WHERE {
+  ?endpoint sd:endpoint ?endpointUrl.
+}
+```
+
+#### BNF
+retrieved_bnf.ttl
+Only query with answers:
+```
+PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+DESCRIBE ?endpoint WHERE {
+  ?endpoint sd:endpoint ?endpointUrl.
+}
+```
