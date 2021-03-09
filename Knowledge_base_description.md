@@ -139,7 +139,7 @@ As an example:
 ##### SPARQL endpoint
 The description of the endpoint has to contain the elements related to the accessibility of the endpoint. The metadata must give the particularities of the SPARQL engine and of the graphs of the KB.
 
-The endpoint metadata should at least give its URL, which version of SPARQL it accepts, the results formats it can return, the non-standard functions it offers, and the named graphs of the KB.
+The endpoint metadata should at least give its URL, which version of SPARQL it accepts, the results formats it can return, and the named graphs of the KB.
 
 As an example, the endpoint of our example KB supports SPARQL1.1 Query and Update. It can return XML, JSON, Turtle, N3, and CSV.
 ```
@@ -148,7 +148,9 @@ As an example, the endpoint of our example KB supports SPARQL1.1 Query and Updat
   sd:supportedLanguage sd:SPARQL10Query, sd:SPARQL10Update ;
   sd:resultFormat formats:N3 , formats:RDF_XML , formats:SPARQL_Results_CSV , formats:SPARQL_Results_JSON , formats:SPARQL_Results_XML , formats:Turtle .
 ```
+
 The example KB has one default graphs and one named graph, named `:ng1`. The default graph contains 1234 triples and the named graph contains 98 triples.
+
 ```
 :exampleSparqlService sd:defaultDataset [
 a sd:Dataset ;
@@ -163,6 +165,8 @@ a sd:Dataset ;
    ]
   ]
 ```
+Other features of the endpoint can be added to the description such as the non-standard function proposed or the default treatment of the namedGraph data. The functions offered by the endpoint are given by the property `sd:extensionFunction`, with the function as subject, same for the aggregates with `sd:extensionAggregate`.
+Other features are given by the property `sd:features`. The SPARQL-SD standard defines five features: `sd:DereferencesURIs`, `sd:UnionDefaultGraph`, `sd:RequiresDataset`, `sd:EmptyGraphs`, and `sd:BasicFederatedQuery`.
 
 ##### Namespaces
 <!--- void:uriSpace` --->
@@ -174,6 +178,10 @@ a sd:Dataset ;
 ##### Data dump
 
 ##### Ontology descriptions
+
+##### Others
+
+<!--- Qu'est ce qui a été oublié ? --->
 
 ### Examples of descriptions
 
