@@ -136,7 +136,7 @@ As an example:
   rdfs:label "French CeCILL Licence"@en .
 ```
 
-##### SPARQL endpoint
+##### SPARQL endpoint
 The description of the endpoint has to contain the elements related to the accessibility of the endpoint. The metadata must give the particularities of the SPARQL engine and of the graphs of the KB.
 
 The endpoint metadata should at least give its URL, which version of SPARQL it accepts, the results formats it can return, the non-standard functions it offers, and the named graphs of the KB.
@@ -164,14 +164,14 @@ a sd:Dataset ;
   ]
 ```
 
-##### Namespaces
+##### Namespaces
 <!--- void:uriSpace` --->
 
-##### Links to other resources
+##### Links to other resources
 
-##### Population count
+##### Population count
 
-##### Data dump
+##### Data dump
 
 ##### Ontology descriptions
 
