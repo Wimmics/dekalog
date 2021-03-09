@@ -33,6 +33,7 @@ To cover as many features of a KB as possible, a KB description should describe 
 | xsd:     | http://www.w3.org/2001/XMLSchema#                |
 | dcterms: | http://purl.org/dc/terms/                        |
 | foaf:    | http://xmlns.com/foaf/0.1/                       |
+| skos:    | http://www.w3.org/2004/02/skos/core#	            |
 | prov:    | http://www.w3.org/ns/prov#                       |
 | formats: | http://www.w3.org/ns/formats/                    |
 | schema:  | http://schema.org/                               |
@@ -50,30 +51,77 @@ As an example:
 ```
 The description of the SPARQL endpoint should be linked to the central resource with the property `sd:endpoint`.
 
+A central resource for the descrition of a KB should be retrievable by the query:
+```
+SELECT ?central WHERE {
+  {
+    ?central a void:dataset .
+  }
+  UNION {
+    ?central a dcat:Dataset .
+  }
+}
+```
+The endpoint descrition should be retrievable by the query:
+```
+SELECT ?endpoint WHERE {
+  ?central sd:endpoint ?endpoint.
+}
+```
+
 ##### Label and description
 The description of a KB should the best practices for data publication and offer labels and descriptions.
 
-The central resource for the KB should have at least a name linked to it by the property `rdfs:label`. Other properties such as `dcterms:title` `foaf:name` may be used. Properties such as `dcterms:description` or `rdfs:comment` may be used to give a more detailed human-readable description of the KB.
+The central resource for the KB should have at least a name linked to it by the property `rdfs:label`. Other properties such as `dcterms:title`, `foaf:name`, `skos:prefLabel` may be used. Properties such as `dcterms:description` or `rdfs:comment` may be used to give a more detailed human-readable description of the KB. Each resource of the description of a KB should have a label if possible.
 
 As an example:
 ```
 :exampleDataset rdfs:label "Example Dataset"@en ;
-  rdfs:comment "This is a fictional dataset used in the examples of this document"@en ;
+  rdfs:comment "This is a fictional dataset used in the examples of this document"@en .
 ```
 Other elements of description, such as the themes or keywords may be used.
 ```
-:exampleDataset dcterms:subject "metadata", "example", "vocabulary", "SPARQL" ;
-  schema:keywords "metadata", "example", "vocabulary", "SPARQL" ;
+:exampleDataset dcterms:subject :metadata, :example, "vocabulary", "SPARQL" ;
+  schema:keywords :metadata, :example, "vocabulary", "SPARQL" ;
+:metadata a skos:Concept ;
+  rdfs:label "Metadata" .
+:example a skos:Concept ;
+  rdfs:label "Example" .
 ```
 
-##### Provenance
+The properties given here are not an exhaustive list of possible labelling properties. There are other properties defined in domain-specific vocabularies.
 
-Author, publisher, licence, date of publication, last date of modification
+##### Provenance
+<!--- Author, publisher, licence, date of publication, last date of modification  --->
+The provenance of the data of a KB must be given to ensure its reusability. The vocabulary used to describe provenance is most often Dublin Core. The [PROV ontology](http://www.w3.org/TR/prov-o/) gives properties an classes to create detailed descriptions of the provenance. There are mapping between the elements of the Dublin Core and PROV ontology.
+
+As presented in the PROV ontology recommandation, the provenance can be reduced to the answers to three questions: Who ? What ? How ?
+THe following tables present a non-exhaustive list of the properties to be used to describe a KB. Those that should be used for a minimal description are shown in italics.
+
+| Who ?                   |
+|-------------------------|
+| _`dcterms:creator`_     |
+| `dcterms:contributor`   |
+| `dcterms:publisher`     |
+
+| What ?                 |
+|---------               |
+| _`dcterms:license`_    |
+| `dcterms:conformsTo`   |
+
+| How ?                |
+|----------------------|
+| _`dcterms:created`_  |
+| _`dcterms:modified`_ |
+| `dcterms:issued`     |
+| `dcterms:source`     |
+| `dcterms:format`     |
+
+##### SPARQL endpoint
+The description of the endpoint has to contain the elements related to the accessibility of the endpoint.
 
 ##### Namespaces
 `void:uriSpace`
-
-##### SPARQL endpoint
 
 ##### Links to other resources
 
@@ -82,3 +130,7 @@ Author, publisher, licence, date of publication, last date of modification
 ##### Data dump
 
 ##### Ontology descriptions
+
+### Examples of descriptions
+
+#### DBPedia
