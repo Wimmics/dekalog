@@ -2,7 +2,7 @@
 
 <!--- NOTE: Le document est rédigé en Markdown pour rapidité d'écriture, trivialité de la conversion vers LateX et compatibilité avec Github --->
 
-The goal of this document is to present the desired features in a dataset description. To do this, we will present the different vocabularies to use to describe each feature and we give examples.
+The goal of this document is to present the desired features in a dataset description. To do this, we will present the different vocabularies to use to describe each feature. We will give examples of the extraction and re-generation of descriptions as desired.
 
 ### Vocabularies
 
