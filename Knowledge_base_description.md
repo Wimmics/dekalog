@@ -181,14 +181,16 @@ Other features are given by the property `sd:features`. The SPARQL-SD standard d
 
 ### Examples of descriptions
 
-In this section we try to extract the descriptions of three KB, detailing each step. The goal of this section is to identify the eventual limitations and problems coming from our previous statements when confronted with real-life examples.
+In this section, we try first to extract the descriptions of three KB, detailing each step. We then try to generate a description corresponding to the standards we have defined in the previous sections. The goal of this section is to identify the eventual limitations and problems coming from our previous statements when confronted with real-life examples.
 
+---
 **EDIT:**
-The document will be edited to reflect what we learned here:
+This document will be edited to reflect what we learned here:
 
 1. The notion of ONE central resource does not hold in practice.
 2. Better to treat separately void/dcat and sparql-sd descriptions.
 3. Better to start with the endpoint description.
+---
 
 #### [DBPedia](http://dbpedia.org/sparql)
 We check the availability of the endpoint using `SELECT * WHERE { ?s ?p ?o } LIMIT 1` sent to http://dbpedia.org/sparql, which returns a result. The endpoint is reachable.
