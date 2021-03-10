@@ -55,19 +55,18 @@ A central resource for the descrition of a KB should be retrievable by the query
 ```
 PREFIX void: <http://rdfs.org/ns/void#>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
-SELECT ?central WHERE {
+SELECT DISTINCT ?central WHERE {
   {
     ?central a void:Dataset .
-  }
-  UNION {
+  } UNION {
     ?central a dcat:Dataset .
   }
 }
 ```
-The endpoint description should be retrievable by the query:
+The endpoint description resource should be retrievable by the query:
 ```
 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-SELECT ?endpoint WHERE {
+SELECT DISTINCT ?endpoint WHERE {
   ?endpoint sd:endpoint ?endpointUrl.
 }
 ```
@@ -100,7 +99,7 @@ The properties given here are not an exhaustive list of possible labelling prope
 The provenance of the data of a KB must be given to ensure its reusability. The vocabulary used to describe provenance is most often Dublin Core. The [PROV ontology](http://www.w3.org/TR/prov-o/) gives properties an classes to create detailed descriptions of the provenance. There are mapping between the elements of the Dublin Core and PROV ontology.
 
 As presented in the PROV ontology recommandation, the provenance can be reduced to the answers to three questions: Who ? What ? How ?
-THe following tables present a non-exhaustive list of the properties to be used to describe a KB. Those that should be used for a minimal description are shown in italics.
+THe following tables present a non-exhaustive list of the properties to be used to describe a KB. Those that should be used for a description that gives the minimal provenance information are shown in italics.
 
 | Who ?                   |
 |-------------------------|
@@ -166,16 +165,13 @@ a sd:Dataset ;
   ]
 ```
 Other features of the endpoint can be added to the description such as the non-standard function proposed or the default treatment of the namedGraph data. The functions offered by the endpoint are given by the property `sd:extensionFunction`, with the function as subject, same for the aggregates with `sd:extensionAggregate`.
-Other features are given by the property `sd:features`. The SPARQL-SD standard defines five features: `sd:DereferencesURIs`, `sd:UnionDefaultGraph`, `sd:RequiresDataset`, `sd:EmptyGraphs`, and `sd:BasicFederatedQuery`.
+Other features are given by the property `sd:features`. The SPARQL-SD standard defines five features: `sd:DereferencesURIs`, `sd:UnionDefaultGraph`, `sd:RequiresDataset`, `sd:EmptyGraphs`, and `sd:BasicFederatedQuery`. `sd:DereferencesURIs`
 
 ##### Namespaces
-<!--- void:uriSpace` --->
 
 ##### Links to other resources
 
 ##### Population count
-
-##### Data dump
 
 ##### Ontology descriptions
 
@@ -185,12 +181,107 @@ Other features are given by the property `sd:features`. The SPARQL-SD standard d
 
 ### Examples of descriptions
 
-#### DBPedia
+In this section we try to extract the descriptions of three KB, detailing each step. The goal of this section is to identify the eventual limitations and problems coming from our previous statements when confronted with real-life examples.
+
+**EDIT:**
+The document will be edited to reflect what we learned here:
+
+1. The notion of ONE central resource does not hold in practice.
+2. Better to treat separately void/dcat and sparql-sd descriptions.
+3. Better to start with the endpoint description.
+
+#### [DBPedia](http://dbpedia.org/sparql)
+Availability check using `SELECT * WHERE { ?s ?p ?o } LIMIT 1` sent to http://dbpedia.org/sparql, returned results. The endpoint is reachable.
+
+##### Extraction of the SPARQL endpoint description
+
+```
+SELECT DISTINCT ?endpoint WHERE {
+  ?endpoint sd:endpoint ?endpointUrl.
+}
+```
+
+| endpoint                     |
+|------------------------------|
+| http://localhost:8890/sparql |
+| nodeID://b10251              |
+| nodeID://b50122              |
+| http://dbpedia.org/sparql-sd |
+
+```
+CONSTRUCT {
+   ?endpoint ?p ?o .
+} WHERE {
+    ?endpoint sd:endpoint ?endpointUrl .
+    ?endpoint ?p ?o .
+}
+```
+[retrieved_endpoint_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_dbpedia.ttl)
+
+##### Extraction of the void/dcat description
+
+Check of the existence of at least one central resource:
+```
+PREFIX void: <http://rdfs.org/ns/void#>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+SELECT ?central WHERE {
+    {
+      ?central a void:Dataset .
+    } UNION {
+      ?central a dcat:Dataset .
+    }
+}
+```
+Results:
+
+| central                         |
+|---------------------------------|
+| http://dbpedia.org/void/Dataset |
+| nodeID://b10252                 |
+| nodeID://b50123                 |
+
+Retrieval of data about the resource `http://dbpedia.org/void/Dataset` using 2 queries:
+
+Outgoing properties:
+```
+CONSTRUCT {
+  ?central ?p ?o
+} WHERE {
+  {
+    ?central a void:Dataset .
+  } UNION {
+    ?central a dcat:Dataset .
+  }
+  ?central ?p ?o
+}
+```
+Ingoing properties:
+```
+CONSTRUCT {
+  ?s ?p ?central
+} WHERE {
+  {
+    ?central a void:Dataset .
+  } UNION {
+    ?central a dcat:Dataset .
+  }
+  ?s ?p ?central
+}
+```
+The results are presented if the [retrieved_dataset_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_dbpedia.ttl) first 91 lines.
+
+<!--- NOTE: 3 datasets à décrire --->
+
+##### Remarks on the existing descriptions and corrections
 
 #### Wasabi
+**PLACEHOLDER**
 
 #### ORKG
-retrieved_orkg.ttl
+**Candidate**
+
+[fichier](https://github.com/Wimmics/dekalog/blob/master/retrieved_orkg.ttl)
+
 Only query with answers:
 ```
 PREFIX void: <http://rdfs.org/ns/void#>
@@ -203,7 +294,10 @@ DESCRIBE ?endpoint WHERE {
 ```
 
 #### BNF
-retrieved_bnf.ttl
+**Candidate**
+
+[fichier](https://github.com/Wimmics/dekalog/blob/master/retrieved_bnf.ttl)
+
 Only query with answers:
 ```
 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
