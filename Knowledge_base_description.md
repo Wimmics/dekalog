@@ -191,15 +191,16 @@ The document will be edited to reflect what we learned here:
 3. Better to start with the endpoint description.
 
 #### [DBPedia](http://dbpedia.org/sparql)
-Availability check using `SELECT * WHERE { ?s ?p ?o } LIMIT 1` sent to http://dbpedia.org/sparql, returned results. The endpoint is reachable.
+We check the availability of the endpoint using `SELECT * WHERE { ?s ?p ?o } LIMIT 1` sent to http://dbpedia.org/sparql, which returns a result. The endpoint is reachable.
 
 ##### Extraction of the SPARQL endpoint description
-
+First, we retrieve the list of SPARQL-SD description in the KB, if there are any, using the query:
 ```
 SELECT DISTINCT ?endpoint WHERE {
   ?endpoint sd:endpoint ?endpointUrl.
 }
 ```
+This query returns 4 resources.
 
 | endpoint                     |
 |------------------------------|
@@ -208,6 +209,7 @@ SELECT DISTINCT ?endpoint WHERE {
 | nodeID://b50122              |
 | http://dbpedia.org/sparql-sd |
 
+We retrieve the descriptions of each of these resources, using the query:
 ```
 CONSTRUCT {
    ?endpoint ?p ?o .
@@ -216,7 +218,19 @@ CONSTRUCT {
     ?endpoint ?p ?o .
 }
 ```
-[retrieved_endpoint_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_dbpedia.ttl)
+The results are presented in the file [retrieved_endpoint_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_dbpedia.ttl).
+
+Of the three descriptions, only the resource `dbp:sparql-sd`, line 15 to 74, describe an endpoint with the same URL we used to query the base. The other endpoints will be analyzed separately, we focus on the description of the endpoint we have interrogated, `dbp:sparql-sd`.
+
+The description linked to `dbp:sparql-sd` contains a good description of the particularities of the SPARQL engine of the endpoint. It describes its two URLs, the result formats it returns, its supported versions of SPARQL and other information. It does not describe the named graphs contained in the KB.
+We can retrieve the named graphs present in the KB by using the query:
+```
+SELECT DISTINCT ?g WHERE {
+ GRAPH ?g { ?s ?p ?o }
+}
+ORDER BY ?g
+```
+This query returns 32 named graphs, including 5 different spelling of the resource `dbp:sparql-sd`.
 
 ##### Extraction of the void/dcat description
 
@@ -268,16 +282,16 @@ CONSTRUCT {
   ?s ?p ?central
 }
 ```
-The results are presented if the [retrieved_dataset_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_dbpedia.ttl) first 91 lines.
+The results are presented if the [retrieved_dataset_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_dbpedia.ttl), line 19 to 91 lines.
 
 <!--- NOTE: 3 datasets à décrire --->
 
 ##### Remarks on the existing descriptions and corrections
 
 #### Wasabi
-**PLACEHOLDER**
+PLACEHOLDER
 
-#### ORKG
+<!--- #### ORKG
 **Candidate**
 
 [fichier](https://github.com/Wimmics/dekalog/blob/master/retrieved_orkg.ttl)
@@ -305,3 +319,4 @@ DESCRIBE ?endpoint WHERE {
   ?endpoint sd:endpoint ?endpointUrl.
 }
 ```
+--->
