@@ -1,0 +1,91 @@
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dbv:	<http://dbpedia.org/void/> .
+@prefix void:	<http://rdfs.org/ns/void#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix local:	<http://localhost:8890/> .
+@prefix sd:	<http://www.w3.org/ns/sparql-service-description#> .
+@prefix xsd:	<http://www.w3.org/2001/XMLSchema#> .
+@prefix dct:	<http://purl.org/dc/terms/> .
+@prefix ns8:	<http://www.w3.org/ns/lemon/> .
+@prefix ns9:	<http://www.w3.org/ns/> .
+@prefix ns10:	<http://www.w3.org/2004/02/skos/> .
+@prefix ns11:	<http://creativecommons.org/> .
+@prefix ns12:	<http://wikiba.se/> .
+@prefix ns13:	<http://www.w3.org/2000/01/> .
+@prefix ns14:	<http://www.w3.org/2002/07/> .
+@prefix ns15:	<http://query.wikidata.org/bigdata/namespace/wdq/sparql/wdq/> .
+@prefix ns16:	<http://www.bigdata.com/rdf#/features/KB/> .
+
+dbv:Dataset	rdf:type	void:Dataset ;
+		rdfs:seeAlso	<http://dbpedia.org> ;
+		void:classes	483621 ;
+		void:distinctObjects	231116566 ;
+		void:distinctSubjects	43070161 ;
+		void:entities	30127028 ;
+		void:properties	54155 ;
+		void:sparqlEndpoint	local:sparql ;
+		void:triples	859801816 .
+dbv:sameAsLinks	void:inDataset	dbv:Dataset .
+dbv:seeAlsoLinks	void:inDataset	dbv:Dataset .
+
+_:vb10252	rdf:type	sd:Dataset ,
+		void:Dataset ;
+		dct:title	"wdq"^^xsd:string ;
+		void:vocabulary	<http://www.wikidata.org/prop/direct/> ,
+		<http://www.wikidata.org/prop/reference/> ,
+		<http://www.wikidata.org/prop/> ,
+		ns8:ontolex ,
+		<http://www.wikidata.org/prop/qualifier/value/> ,
+		ns9:prov ,
+		<http://schema.org/> ,
+		<http://www.w3.org/1999/02/22-rdf-syntax-ns> ,
+		ns10:core ,
+		ns11:ns ,
+		<http://www.wikidata.org/prop/statement/> ,
+		<http://www.wikidata.org/prop/statement/value-normalized/> ,
+		ns12:ontology ,
+		<http://www.wikidata.org/prop/direct-normalized/> ,
+		ns13:rdf-schema ,
+		<http://www.wikidata.org/prop/qualifier/> ,
+		dct: ,
+		<http://www.wikidata.org/prop/reference/value/> ,
+		ns14:owl ,
+		<http://www.wikidata.org/prop/reference/value-normalized/> ,
+		<http://www.wikidata.org/prop/statement/value/> ,
+		<http://www.wikidata.org/prop/qualifier/value-normalized/> ;
+		void:sparqlEndpoint	ns15:sparql ;
+    ns16:Namespace	"wdq"^^xsd:string ;
+		sd:defaultGraph	_:vb10253 ;
+		void:uriRegexPattern	"^.*"^^xsd:string .
+_:vb10251	sd:defaultDataset	_:vb10252 .
+
+_:vb50123	rdf:type	void:Dataset ,
+		sd:Dataset ;
+		dct:title	"wdq"^^xsd:string ;
+		void:vocabulary	<http://www.wikidata.org/prop/> ,
+		ns13:rdf-schema ,
+		<http://www.wikidata.org/prop/qualifier/> ,
+		<http://www.wikidata.org/prop/qualifier/value/> ,
+		<http://www.wikidata.org/prop/direct/> ,
+		<http://www.wikidata.org/prop/reference/> ,
+		<http://www.wikidata.org/prop/reference/value-normalized/> ,
+		dct: ,
+		<http://www.wikidata.org/prop/reference/value/> ,
+		<http://www.wikidata.org/prop/statement/value/> ,
+		<http://www.wikidata.org/prop/qualifier/value-normalized/> ,
+		<http://www.wikidata.org/prop/statement/value-normalized/> ,
+		ns11:ns ,
+		<http://www.w3.org/1999/02/22-rdf-syntax-ns> ,
+		ns10:core ,
+		<http://www.wikidata.org/prop/statement/> ,
+		ns8:ontolex ,
+		ns9:prov ,
+		<http://schema.org/> ,
+		<http://www.wikidata.org/prop/direct-normalized/> ,
+		ns12:ontology ,
+		ns14:owl ;
+		void:sparqlEndpoint	ns15:sparql ;
+		ns16:Namespace	"wdq"^^xsd:string ;
+		sd:defaultGraph	_:vb50124 ;
+		void:uriRegexPattern	"^.*"^^xsd:string .
+_:vb50122	sd:defaultDataset	_:vb50123 .

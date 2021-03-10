@@ -1,0 +1,131 @@
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ns1:	<http://localhost:8890/> .
+@prefix sd:	<http://www.w3.org/ns/sparql-service-description#> .
+@prefix ns3:	<http://www.w3.org/ns/formats/> .
+@prefix ns4:	<http://dbpedia.org/> .
+@prefix virtrdf:	<http://www.openlinksw.com/schemas/virtrdf#> .
+@prefix sql:	<sql:> .
+@prefix bif:	<bif:> .
+@prefix ns8:	<https://sparql.uniprot.org/> .
+@prefix ns9:	<https://sparql.uniprot.org/#> .
+@prefix ns10:	<http://query.wikidata.org/bigdata/namespace/wdq/> .
+@prefix ns11:	<http://www.bigdata.com/rdf#/features/KB/Mode/> .
+@prefix ns12:	<http://sw.deri.org/2008/07/n-quads/#> .
+
+ns1:sparql	rdf:type	sd:Service ;
+	sd:endpoint	ns1:sparql ;
+	sd:feature	sd:DereferencesURIs ,
+		sd:UnionDefaultGraph ;
+	sd:resultFormat	ns3:Turtle ,
+		ns3:RDF_XML ,
+		ns3:SPARQL_Results_CSV ,
+		ns3:SPARQL_Results_JSON ,
+		ns3:SPARQL_Results_XML ,
+		ns3:RDFa ,
+		ns3:N-Triples ,
+		ns3:N3 ;
+	sd:supportedLanguage	sd:SPARQL10Query ;
+	sd:url	ns1:sparql .
+
+ns4:sparql-sd	rdf:type	sd:Service ;
+	sd:endpoint	ns4:sparql ,
+		ns4:sparql-auth ;
+	sd:feature	sd:RequiresDataset ,
+		sd:BasicFederatedQuery ,
+		sd:EmptyGraphs ,
+		sd:UnionDefaultGraph ;
+	sd:resultFormat	ns3:N-triples ,
+		virtrdf:FileFormat_Triples_HTML_Microdata ,
+		virtrdf:FileFormat_Triples_HTML_list ,
+		virtrdf:FileFormat_Triples_HTML_table ,
+		virtrdf:FileFormat_Triples_Microdata_JSON ,
+		virtrdf:FileFormat_Triples_ODATA_JSON ,
+		virtrdf:FileFormat_Triples_RDF_JSON ,
+		virtrdf:FileFormat_Triples_XHTML_RDFa ,
+		virtrdf:FileFormat_SPARQL_Results_CXML_QR ,
+		virtrdf:FileFormat_SPARQL_Results_HTML ,
+		virtrdf:FileFormat_SPARQL_Results_Javascript ,
+		virtrdf:FileFormat_SPARQL_Results_Spreadsheet ,
+		virtrdf:FileFormat_Triples_ATOM_XML ,
+		virtrdf:FileFormat_Triples_CSV ,
+		virtrdf:FileFormat_Triples_CXML ,
+		virtrdf:FileFormat_Triples_CXML_QR ,
+		virtrdf:FileFormat_Quads_TriG ,
+		virtrdf:FileFormat_SPARQL_Results_CXML ,
+		ns3:Turtle ,
+		ns3:RDFa ,
+		ns3:N3 ,
+		ns3:RDF_XML ,
+		ns3:SPARQL_Results_CSV ,
+		ns3:SPARQL_Results_JSON ,
+		ns3:SPARQL_Results_XML ;
+	sd:supportedLanguage	sd:SPARQL11Update ,
+		sd:SPARQL11Query ,
+		sd:SPARQL10Query ;
+	sd:extensionAggregate	sql:STDDEV ;
+	sd:extensionFunction	bif:abs ;
+	sd:inputFormat	ns3:N3 ,
+		ns3:RDFa ,
+		ns3:RDF_XML ,
+		virtrdf:FileFormat_Quads_TriG ,
+		virtrdf:FileFormat_Triples_CXML ,
+		virtrdf:FileFormat_Triples_CXML_QR ,
+		virtrdf:FileFormat_Triples_CSV ,
+		virtrdf:FileFormat_Triples_XHTML_RDFa ,
+		ns3:N-triples ;
+	sd:languageExtension	virtrdf:SSG_SD_BI ,
+		virtrdf:SSG_SD_TRANSIT ,
+		virtrdf:SSG_SD_VIRTSPECIFIC ,
+		virtrdf:SSG_SD_QUAD_MAP ,
+		virtrdf:SSG_SD_SERVICE ,
+		virtrdf:SSG_SD_SPARQL11_DRAFT ,
+		virtrdf:SSG_SD_SPARQL11_MORE ,
+		virtrdf:SSG_SD_GLOBALS ,
+		virtrdf:SSG_SD_IN ,
+		virtrdf:SSG_SD_LIKE ,
+		virtrdf:SSG_SD_OPTION ;
+	sd:propertyFeature	bif:contains ;
+	virtrdf:graph-crud-endpoint	ns4:sparql-graph-crud ,
+		ns4:sparql-graph-crud-auth .
+
+ns8:sparql	rdf:type	sd:Service ;
+	sd:endpoint	ns8:sparql ;
+	sd:feature	sd:UnionDefaultGraph ,
+		sd:BasicFederatedQuery ;
+	sd:resultFormat	ns3:Turtle ,
+		ns3:N-Triples ,
+		ns3:RDF_XML ,
+		ns3:SPARQL_Results_CSV ,
+		ns3:SPARQL_Results_JSON ,
+		ns3:SPARQL_Results_XML ,
+		ns3:SPARQL_Results_TSV ;
+	sd:supportedLanguage	sd:SPARQL11Query .
+	sd:defaultDataset	ns9:_1 .
+
+_:vb10191	rdf:type	sd:Service .
+	sd:endpoint	ns10:sparql .
+	sd:feature	ns11:Triples ,
+		sd:BasicFederatedQuery ;
+	sd:resultFormat	ns3:SPARQL_Results_TSV ,
+		ns3:Turtle ,
+		ns3:N-Triples ,
+		ns3:N3 ,
+		ns3:RDF_XML ,
+		ns3:SPARQL_Results_CSV ,
+		ns3:SPARQL_Results_JSON ,
+		ns3:SPARQL_Results_XML ,
+		<http://www.wiwiss.fu-berlin.de/suhl/bizer/TriG/Spec/> ;
+	sd:supportedLanguage	sd:SPARQL11Query ,
+		sd:SPARQL11Update ,
+		sd:SPARQL10Query ;
+	sd:defaultDataset	_:vb10192 ;
+	sd:inputFormat	ns3:N-Triples ,
+		ns3:N3 ,
+		ns3:SPARQL_Results_JSON ,
+		ns3:SPARQL_Results_XML ,
+		ns3:RDF_XML ,
+		ns3:SPARQL_Results_CSV ,
+		ns3:Turtle ,
+		<http://www.wiwiss.fu-berlin.de/suhl/bizer/TriG/Spec/> ,
+		ns12:n-quads ,
+		ns3:SPARQL_Results_TSV .
