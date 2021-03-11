@@ -148,50 +148,75 @@ As an example, the endpoint of our example KB supports SPARQL1.1 Query and Updat
   sd:resultFormat formats:N3 , formats:RDF_XML , formats:SPARQL_Results_CSV , formats:SPARQL_Results_JSON , formats:SPARQL_Results_XML , formats:Turtle .
 ```
 
-The example KB has one default graphs and one named graph, named `:ng1`. The default graph contains 1234 triples and the named graph contains 98 triples.
+The example KB has one default graphs and one named graph, named `:ng1`.
 
 ```
 :exampleSparqlService sd:defaultDataset [
 a sd:Dataset ;
    sd:defaultGraph [
-    a sd:Graph ;
-    void:triples 1234 .
+    a sd:Graph .
    ] ;
    sd:namedGraph [
     a sd:NamedGraph ;
-      sd:name :ng1 ;
-      void:triples 98 .
+      sd:name :ng1 .
    ]
   ]
 ```
 Other features of the endpoint can be added to the description such as the non-standard function proposed or the default treatment of the namedGraph data. The functions offered by the endpoint are given by the property `sd:extensionFunction`, with the function as subject, same for the aggregates with `sd:extensionAggregate`.
 Other features are given by the property `sd:features`. The SPARQL-SD standard defines five features: `sd:DereferencesURIs`, `sd:UnionDefaultGraph`, `sd:RequiresDataset`, `sd:EmptyGraphs`, and `sd:BasicFederatedQuery`. `sd:DereferencesURIs`
 
-The link between a `sd:Graph` and a `dcat:Dataset` should be represented by the relation `dcat:servesDataset`. In our example, the example dataset is contained in the `:ng1` graph. The final minimal SPARQL-SD description should be:
+The link between a `sd:Graph` and a `dcat:Dataset` should be represented by the relation `dcat:servesDataset`. In our example, the example dataset is contained in the `:ng1` graph. The final minimal SPARQL-SD description of our example should be:
 
 ```
-:exampleSparqlService sd:defaultDataset [
-a sd:Dataset ;
-   sd:defaultGraph [
-    a sd:Graph ;
-    void:triples 1234 .
-   ] ;
+:exampleSparqlService sd:endpoint <http://www.example.com/sparql> ;
+  sd:supportedLanguage sd:SPARQL10Query, sd:SPARQL10Update ;
+  sd:resultFormat formats:N3 , formats:RDF_XML , formats:SPARQL_Results_CSV , formats:SPARQL_Results_JSON , formats:SPARQL_Results_XML , formats:Turtle ;
+  sd:defaultDataset [
+    a sd:Dataset ;
+    sd:defaultGraph [
+      a sd:Graph ;
+     ] ;
    sd:namedGraph [
     a sd:NamedGraph ;
       sd:name :ng1 ;
-      void:triples 98 ;
       dcat:servesDataset :exampleDataset .
-   ]
-  ]
+    ]
+  ] .
 ```
 
-##### Namespaces
+##### Ontology descriptions
 
-##### Links to other resources
 
 ##### Population count
-<!---
-Class count:
+Each graph should indicates its number of triples. If possible, simple population counts should also be given such as the number of classes, properties and instances.
+The number of triples must appear in the SPARQL-SD metadata, as part of the graph description, and in the VoID/DCAT metadata. Both cases use the property `void:triples`.
+
+The number of triples can be retrieved by the query:
+```
+SELECT count(*) WHERE {
+  ?s ?p ?o
+}
+```
+In our example, the default graph contains 987 triples and the graph `:ng1`, also described by `:exampleDataset`, contains 1234 triples. The count of triples should be used as such:
+```
+:exampleSparqlService sd:defaultDataset [
+  a sd:Dataset ;
+  sd:defaultGraph [
+    a sd:Graph ;
+    void:triples 987 .
+  ] ;
+  sd:namedGraph [
+    a sd:NamedGraph ;
+    sd:name :ng1 ;
+    dcat:servesDataset :exampleDataset ;
+    void:triples 1234 .
+  ]
+] .
+:exampleDataset void:triples 1234 .
+```
+The VoID/DCAT metadata can contain other population counts, such as the classes, the properties, the sujects of objets.
+
+The number of classes can be retrieved by the query:
 ```
 SELECT DISTINCT (count(?s) AS ?c)
 FROM <http://dbpedia.org> WHERE {
@@ -202,9 +227,62 @@ FROM <http://dbpedia.org> WHERE {
   }
 }
 ```
---->
+The number of classes must be linked to the VoID/DCAT description by the property `void:classes`.
 
-##### Ontology descriptions
+The number of properties can be retrieved by the query:
+```
+SELECT DISTINCT (count(?p) AS ?c)
+WHERE {
+    SELECT DISTINCT ?p WHERE  {
+    ?s ?p ?o
+  }
+}
+```
+The number of properties must be linked to the VoID/DCAT description by the property `void:properties`.
+
+The number of distinct subjects can be retrieved by the query:
+```
+SELECT DISTINCT (count(?p) AS ?c)
+WHERE {
+  SELECT DISTINCT ?s WHERE  {
+    ?s ?p ?o
+  }
+}
+```
+The number of distinct subjects must be linked to the VoID/DCAT description by the property `void:distinctSubjects`.
+
+The number of distinct objects can be retrieved by the query:
+```
+SELECT DISTINCT (count(?o) AS ?c)
+WHERE {
+  SELECT DISTINCT ?o WHERE  {
+    ?s ?p ?o
+  }
+}
+```
+The number of distinct objects must be linked to the VoID/DCAT description by the property `void:distinctObjects`.
+
+In our example, with arbitrary populations, the description would be:
+```
+:exampleDataset void:triples 1234 ;
+  void:classes 8 ;
+  void:properties 11 ;
+  void:distinctSubjects 96 ;
+  void:distinctObjects 458 ;
+```
+
+##### Namespaces
+
+<!--- Trop de namespaces dans DBpediaà cause d'URI mal formée, ERROR dans WASABI --->
+<!--- NOTE Parler du fait que la presence de void:uriPattern défini ce qui est accepté en tant que sujet/objet dans les comptes de population --->
+```
+SELECT DISTINCT ?ns WHERE {
+  ?s ?p ?o .
+  BIND( REPLACE( str(?p), "(#|/)[^#/]*$", "$1" ) AS ?ns )
+}
+```
+
+##### Links to other resources
 
 ##### Others
 
@@ -367,6 +445,9 @@ But, we note that the relation `rdfs:seeAlso` links the dataset `dbv:Dataset`  t
 From the existing metadata about DBpedia, we can gather a partial endpoint description. The link between the `dbv:Dataset` description and the graph `<http://dbpedia.org>` can link the endpoint metadata and the content metadata. We could not get provenance information about `<http://dbpedia.org>`. The SPARQL-SD description of the DBPedia endpoint can be reused as it is, with the addition of the only graph description we could retrieve.
 
 A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl)
+
+<!---  Extraction de RDFS depuis DBpedia.org ne donne pas de donées RDF viables --->
+<!--- TODO: Vérification des données + génération des données manquantes sur possible --->
 
 #### Wasabi
 PLACEHOLDER
