@@ -63,6 +63,7 @@ SELECT DISTINCT ?central WHERE {
   }
 }
 ```
+The endpoint description should be linked as subject to its endpoint URL, as an URI, by the property `sd:endpoint`.
 The endpoint description resource should be retrievable by the query:
 ```
 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
@@ -70,6 +71,7 @@ SELECT DISTINCT ?endpoint WHERE {
   ?endpoint sd:endpoint ?endpointUrl.
 }
 ```
+The descriptions present in the dataset should be present around the resources retrieved by the two previous queries.
 
 ##### Label and description
 The description of a KB should the best practices for data publication and offer labels and descriptions.
@@ -273,7 +275,7 @@ In our example, with arbitrary populations, the description would be:
 
 ##### Namespaces
 
-<!--- Trop de namespaces dans DBpediaà cause d'URI mal formée, ERROR dans WASABI --->
+<!--- Trop de namespaces dans DBpedia à cause d'URI mal formée, ERROR dans WASABI --->
 <!--- NOTE Parler du fait que la presence de void:uriPattern défini ce qui est accepté en tant que sujet/objet dans les comptes de population --->
 ```
 SELECT DISTINCT ?ns WHERE {
@@ -298,8 +300,9 @@ This document will be edited to reflect what we learned here:
 
 1. The notion of ONE central resource does not hold in practice.
 2. Better to treat separately void/dcat and sparql-sd descriptions.
-3. Better to start with the endpoint description.
-4. Look for connexions between description and graph URIs, using `rdfs:seeAlso` for example.
+3. Better to start with retrieval of the endpoint description.
+4. Look for connexions between descriptions and known enddpoint or graph URIs, using `rdfs:seeAlso` for example.
+5. If the feature `sd:requiresDataset` is defined on the endpoint, datasets should be defined too.
 ---
 
 #### [DBPedia](http://dbpedia.org/sparql)
@@ -392,7 +395,7 @@ We first check if their are at least one resource representing a DCAT or VoID de
 ```
 PREFIX void: <http://rdfs.org/ns/void#>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
-SELECT ?central WHERE {
+SELECT DISTINCT ?central WHERE {
     {
       ?central a void:Dataset .
     } UNION {
@@ -442,15 +445,58 @@ But, we note that the relation `rdfs:seeAlso` links the dataset `dbv:Dataset`  t
 
 
 ##### Generation of metadata
-From the existing metadata about DBpedia, we can gather a partial endpoint description. The link between the `dbv:Dataset` description and the graph `<http://dbpedia.org>` can link the endpoint metadata and the content metadata. We could not get provenance information about `<http://dbpedia.org>`. The SPARQL-SD description of the DBPedia endpoint can be reused as it is, with the addition of the only graph description we could retrieve.
+From the existing metadata about DBpedia, we can gather a partial endpoint description. The link between the `dbv:Dataset` description and the graph `<http://dbpedia.org>` can link the endpoint metadata and the content metadata. We could not get provenance information about `<http://dbpedia.org>`. The SPARQL-SD description of the DBPedia endpoint can be reused as it is, with the addition of the only graph description we could retrieve. AS we know the name of the endpoint we have been querying, we can add a label to the VoID/DCAT description resource.
 
 A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl)
 
-<!---  Extraction de RDFS depuis DBpedia.org ne donne pas de donées RDF viables --->
+*WIP*
+<!---  Extraction de RDFa depuis DBpedia.org ne donne pas de donées RDF viables --->
 <!--- TODO: Vérification des données + génération des données manquantes sur possible --->
 
-#### Wasabi
-PLACEHOLDER
+#### [Wasabi](http://wasabi.inria.fr/sparql)
+We suppose that we only know the name "Wasabi" and its endpoint's URL `http://wasabi.inria.fr/sparql`.
+
+The retrieval of the SPARQL-SD description resource returns only one resource named `http://localhost:8890/sparql`.
+The description of the resource is given in the file [retrieved_endpoint_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_wasabi.ttl). This is a short description of an endpoint, but no connection to the known URL of the WASABI SPARQL endpoint is found.
+From this retrieved data alone, we cannot generate a description of the WASABI base.
+
+The retrieval of VoID/DCAT description resources returns 7 different results.
+
+| VoID/DCAT description resource               |
+|----------------------------------------------|
+| http://ns.inria.fr/covid19/DBpedia           |
+| http://ns.inria.fr/covid19/Wikidata          |
+| http://ns.inria.fr/covid19/UMLS              |
+| http://ns.inria.fr/covid19/covidontheweb-1-2 |
+| http://ns.inria.fr/wasabi/Wikidata           |
+| http://ns.inria.fr/wasabi/wasabi-1-0         |
+| http://ns.inria.fr/covid19/cord19v47         |
+
+The file [retrieved_dataset_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_wasabi.ttl) gives the descriptions of each resource. Two of the resources are at the center of exhaustive descriptions of datasets. Only one of the resources is linked to the known URL of WASABI's endpoint by the property `void:sparqlEndpoint`. From this fact, we can assume that the triples between line 116 to 192, centered around the resource `<http://ns.inria.fr/wasabi/wasabi-1-0>` are the description of the WASABI dataset.
+
+##### Generation of metadata
+
+The VoID/DCAT description centered around `<http://ns.inria.fr/wasabi/wasabi-1-0>` contains almost all the information it should contains. It is well typed, labelled and described, although not by `rdfs:label`, and contains provenance information. It also contains a count of its triples.
+
+A SPARQL-SD description is missing, as no element allows us to connect this description to the only SPARQL-SD description available.
+
+*WIP*
+
+<!--- 74 graphes dans le endpoint
+``` SELECT DISTINCT ?g WHERE {
+  <http://ns.inria.fr/wasabi/wasabi-1-0> ?p2 ?g .
+ GRAPH ?g { ?s ?p ?o }
+}
+ORDER BY ?g
+```
+
+| g |
+|---|
+| http://purl.org/dc/terms/ |
+| http://purl.org/ontology/chord/ |
+| http://purl.org/ontology/mo/ |
+| http://xmlns.com/foaf/0.1/ |
+ --->
 
 <!--- #### ORKG
 **Candidate**
@@ -480,4 +526,6 @@ DESCRIBE ?endpoint WHERE {
   ?endpoint sd:endpoint ?endpointUrl.
 }
 ```
+
+#### Bioportal (?)
 --->

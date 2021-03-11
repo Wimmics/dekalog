@@ -76,6 +76,7 @@ dbp:sparql-sd	rdf:type	sd:Service ;
     ]
 
 dbv:Dataset	rdf:type	void:Dataset ;
+		rdfs:label "DBPedia"@en ;
 		rdfs:seeAlso	<http://dbpedia.org> ;
 		void:classes	483621 ;
 		void:distinctObjects	231116566 ;
