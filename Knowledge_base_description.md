@@ -167,11 +167,42 @@ a sd:Dataset ;
 Other features of the endpoint can be added to the description such as the non-standard function proposed or the default treatment of the namedGraph data. The functions offered by the endpoint are given by the property `sd:extensionFunction`, with the function as subject, same for the aggregates with `sd:extensionAggregate`.
 Other features are given by the property `sd:features`. The SPARQL-SD standard defines five features: `sd:DereferencesURIs`, `sd:UnionDefaultGraph`, `sd:RequiresDataset`, `sd:EmptyGraphs`, and `sd:BasicFederatedQuery`. `sd:DereferencesURIs`
 
+The link between a `sd:Graph` and a `dcat:Dataset` should be represented by the relation `dcat:servesDataset`. In our example, the example dataset is contained in the `:ng1` graph. The final minimal SPARQL-SD description should be:
+
+```
+:exampleSparqlService sd:defaultDataset [
+a sd:Dataset ;
+   sd:defaultGraph [
+    a sd:Graph ;
+    void:triples 1234 .
+   ] ;
+   sd:namedGraph [
+    a sd:NamedGraph ;
+      sd:name :ng1 ;
+      void:triples 98 ;
+      dcat:servesDataset :exampleDataset .
+   ]
+  ]
+```
+
 ##### Namespaces
 
 ##### Links to other resources
 
 ##### Population count
+<!---
+Class count:
+```
+SELECT DISTINCT (count(?s) AS ?c)
+FROM <http://dbpedia.org> WHERE {
+  SELECT DISTINCT ?s WHERE {
+    { ?s a owl:Class }
+    UNION { ?s a rdfs:Class }
+    UNION { ?whatever a ?s }
+  }
+}
+```
+--->
 
 ##### Ontology descriptions
 
@@ -190,9 +221,12 @@ This document will be edited to reflect what we learned here:
 1. The notion of ONE central resource does not hold in practice.
 2. Better to treat separately void/dcat and sparql-sd descriptions.
 3. Better to start with the endpoint description.
+4. Look for connexions between description and graph URIs, using `rdfs:seeAlso` for example.
 ---
 
 #### [DBPedia](http://dbpedia.org/sparql)
+We suppose that we only know the name of the base "DBpedia" and its endpoint URL.
+
 We check the availability of the endpoint using `SELECT * WHERE { ?s ?p ?o } LIMIT 1` sent to http://dbpedia.org/sparql, which returns a result. The endpoint is reachable.
 
 ##### Extraction of the SPARQL endpoint description
@@ -222,9 +256,9 @@ CONSTRUCT {
 ```
 The results are presented in the file [retrieved_endpoint_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_dbpedia.ttl).
 
-Of the three descriptions, only the resource `dbp:sparql-sd`, line 15 to 74, describe an endpoint with the same URL we used to query the base. The other endpoints will be analyzed separately, we focus on the description of the endpoint we have interrogated, `dbp:sparql-sd`.
+Of the three descriptions, only the resource `dbp:sparql-sd`, line 15 to 74, describes an endpoint with the same URL we used to query the base. The other endpoints will be analyzed separately, we focus on the description of the endpoint we have interrogated, `dbp:sparql-sd`.
 
-The description linked to `dbp:sparql-sd` contains a good description of the particularities of the SPARQL engine of the endpoint. It describes its two URLs, the result formats it returns, its supported versions of SPARQL and other information. It does not describe the named graphs contained in the KB.
+The description linked to `dbp:sparql-sd` contains a good description of the particularities of the SPARQL engine of the endpoint. It describes its two URLs, the result formats it returns, its supported versions of SPARQL, and other information. It does not describe the named graphs contained in the KB.
 We can retrieve the named graphs present in the KB by using the query:
 ```
 SELECT DISTINCT ?g WHERE {
@@ -232,11 +266,51 @@ SELECT DISTINCT ?g WHERE {
 }
 ORDER BY ?g
 ```
-This query returns 32 named graphs, including 5 different spelling of the resource `dbp:sparql-sd`.
+This query returns 32 named graphs, including 5 different spellings of the URI `dbp:sparql-sd` with different capitalizations and HTTP protocols.
+
+
+| g                                           |
+|---------------------------------------------|
+| b3sifp                                      |
+| b3sonto                                     |
+| dbprdf-label                                |
+| facets                                      |
+| http://DBPedia.org/sparql-sd                |
+| http://DBpedia.org/sparql-sd                |
+| http://dbpedia.org                          |
+| http://dbpedia.org/resource/classes#        |
+| http://dbpedia.org/schema/property_rules#   |
+| http://dbpedia.org/sparql-sd                |
+| http://dbpedia.org/void/                    |
+| http://localhost:8890/DAV/                  |
+| http://localhost:8890/sparql                |
+| http://pivot_test_data/campsites            |
+| http://pivot_test_data/ski_resorts          |
+| http://query.wikidata.org/sparql            |
+| http://www.openlinksw.com/schemas/oplweb#   |
+| http://www.openlinksw.com/schemas/virtcxml# |
+| http://www.openlinksw.com/schemas/virtpivot |
+| http://www.openlinksw.com/schemas/virtrdf#  |
+| http://www.openlinksw.com/virtpivot/icons   |
+| http://www.w3.org/2002/07/owl#              |
+| http://www.w3.org/ns/ldp#                   |
+| https://DBpedia.org/sparql-sd               |
+| https://dbpedia.org/sparql-sd               |
+| https://query.wikidata.org/sparql           |
+| urn:activitystreams-owl:map                 |
+| urn:rules.skos                              |
+| urn:virtuoso:val:acl:schema                 |
+| virtpivot-icon-test                         |
+| virtpivot-rules                             |
+| virtrdf-label                               |
+
+
+The feature `sd:RequiresDataset`, given line 18 of [retrieved_endpoint_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_dbpedia.ttl), indicates that the SPARQL service requires an explicit dataset declaration. Each of those named graphs should be detailed in the endpoint description.
+
+<!-- NOTE  -->
 
 ##### Extraction of the void/dcat description
-
-Check of the existence of at least one central resource:
+We first check if their are at least one resource representing a DCAT or VoID description, using the query:
 ```
 PREFIX void: <http://rdfs.org/ns/void#>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
@@ -256,7 +330,7 @@ Results:
 | nodeID://b10252                 |
 | nodeID://b50123                 |
 
-Retrieval of data about the resource `http://dbpedia.org/void/Dataset` using 2 queries:
+Retrieval of data about each DCAT/VoID description resource using 2 queries:
 
 Outgoing properties:
 ```
@@ -284,11 +358,15 @@ CONSTRUCT {
   ?s ?p ?central
 }
 ```
-The results are presented if the [retrieved_dataset_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_dbpedia.ttl), line 19 to 91 lines.
+The results are presented in the file [retrieved_dataset_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_dbpedia.ttl), line 19 to 91. There are 3 datasets described, none of which are linked to the endpoint URL. Only 2 contain labels and none contain provenance information.
 
-<!--- NOTE: 3 datasets à décrire --->
+But, we note that the relation `rdfs:seeAlso` links the dataset `dbv:Dataset`  to the graph `<http://dbpedia.org>`. The relation `rdfs:seeAlso` indicates that the object resource can give further information about the subject resource. So, we can infer that the `dbv:Dataset` describes the `<http://dbpedia.org>` graph.
 
-##### Remarks on the existing descriptions and corrections
+
+##### Generation of metadata
+From the existing metadata about DBpedia, we can gather a partial endpoint description. The link between the `dbv:Dataset` description and the graph `<http://dbpedia.org>` can link the endpoint metadata and the content metadata. We could not get provenance information about `<http://dbpedia.org>`. The SPARQL-SD description of the DBPedia endpoint can be reused as it is, with the addition of the only graph description we could retrieve.
+
+A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl)
 
 #### Wasabi
 PLACEHOLDER

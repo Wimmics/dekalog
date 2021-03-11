@@ -1,0 +1,88 @@
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sd:	<http://www.w3.org/ns/sparql-service-description#> .
+@prefix formats:	<http://www.w3.org/ns/formats/> .
+@prefix dbp:	<http://dbpedia.org/> .
+@prefix virtrdf:	<http://www.openlinksw.com/schemas/virtrdf#> .
+@prefix sql:	<sql:> .
+@prefix bif:	<bif:> .
+@prefix dbv:	<http://dbpedia.org/void/> .
+@prefix local:	<http://localhost:8890/> .
+
+dbp:sparql-sd	rdf:type	sd:Service ;
+	sd:endpoint	dbp:sparql ,
+		dbp:sparql-auth ;
+	sd:feature	sd:RequiresDataset ,
+		sd:BasicFederatedQuery ,
+		sd:EmptyGraphs ,
+		sd:UnionDefaultGraph ;
+	sd:resultFormat	formats:N-triples ,
+		virtrdf:FileFormat_Triples_HTML_Microdata ,
+		virtrdf:FileFormat_Triples_HTML_list ,
+		virtrdf:FileFormat_Triples_HTML_table ,
+		virtrdf:FileFormat_Triples_Microdata_JSON ,
+		virtrdf:FileFormat_Triples_ODATA_JSON ,
+		virtrdf:FileFormat_Triples_RDF_JSON ,
+		virtrdf:FileFormat_Triples_XHTML_RDFa ,
+		virtrdf:FileFormat_SPARQL_Results_CXML_QR ,
+		virtrdf:FileFormat_SPARQL_Results_HTML ,
+		virtrdf:FileFormat_SPARQL_Results_Javascript ,
+		virtrdf:FileFormat_SPARQL_Results_Spreadsheet ,
+		virtrdf:FileFormat_Triples_ATOM_XML ,
+		virtrdf:FileFormat_Triples_CSV ,
+		virtrdf:FileFormat_Triples_CXML ,
+		virtrdf:FileFormat_Triples_CXML_QR ,
+		virtrdf:FileFormat_Quads_TriG ,
+		virtrdf:FileFormat_SPARQL_Results_CXML ,
+		formats:Turtle ,
+		formats:RDFa ,
+		formats:N3 ,
+		formats:RDF_XML ,
+		formats:SPARQL_Results_CSV ,
+		formats:SPARQL_Results_JSON ,
+		formats:SPARQL_Results_XML ;
+	sd:supportedLanguage	sd:SPARQL11Update ,
+		sd:SPARQL11Query ,
+		sd:SPARQL10Query ;
+	sd:extensionAggregate	sql:STDDEV ;
+	sd:extensionFunction	bif:abs ;
+	sd:inputFormat	formats:N3 ,
+		formats:RDFa ,
+		formats:RDF_XML ,
+		virtrdf:FileFormat_Quads_TriG ,
+		virtrdf:FileFormat_Triples_CXML ,
+		virtrdf:FileFormat_Triples_CXML_QR ,
+		virtrdf:FileFormat_Triples_CSV ,
+		virtrdf:FileFormat_Triples_XHTML_RDFa ,
+		formats:N-triples ;
+	sd:languageExtension	virtrdf:SSG_SD_BI ,
+		virtrdf:SSG_SD_TRANSIT ,
+		virtrdf:SSG_SD_VIRTSPECIFIC ,
+		virtrdf:SSG_SD_QUAD_MAP ,
+		virtrdf:SSG_SD_SERVICE ,
+		virtrdf:SSG_SD_SPARQL11_DRAFT ,
+		virtrdf:SSG_SD_SPARQL11_MORE ,
+		virtrdf:SSG_SD_GLOBALS ,
+		virtrdf:SSG_SD_IN ,
+		virtrdf:SSG_SD_LIKE ,
+		virtrdf:SSG_SD_OPTION ;
+	sd:propertyFeature	bif:contains ;
+	virtrdf:graph-crud-endpoint	dbp:sparql-graph-crud ,
+		dbp:sparql-graph-crud-auth ;
+  sd:namedGraph [
+    a sd:NamedGraph ;
+      sd:name <http://dbpedia.org> ;
+      void:triples 859801816 ;
+      dcat:servesDataset dbv:Dataset .
+    ]
+
+dbv:Dataset	rdf:type	void:Dataset ;
+		rdfs:seeAlso	<http://dbpedia.org> ;
+		void:classes	483621 ;
+		void:distinctObjects	231116566 ;
+		void:distinctSubjects	43070161 ;
+		void:entities	30127028 ;
+		void:properties	54155 ;
+		void:sparqlEndpoint	local:sparql ;
+		void:triples	859801816 .
+dbv:sameAsLinks	void:inDataset	dbv:Dataset .
+dbv:seeAlsoLinks	void:inDataset	dbv:Dataset .
