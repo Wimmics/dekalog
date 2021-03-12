@@ -303,6 +303,8 @@ This document will be edited to reflect what we learned here:
 3. Better to start with retrieval of the endpoint description.
 4. Look for connexions between descriptions and known enddpoint or graph URIs, using `rdfs:seeAlso` for example.
 5. If the feature `sd:requiresDataset` is defined on the endpoint, datasets should be defined too.
+6. If `void:uriSpace` is given, look for Datasets/Vocabularies/Graphs within the namespace.
+7. Endpoint description will have to be rebuilt from scratch (including result format, etc.)
 ---
 
 #### [DBPedia](http://dbpedia.org/sparql)
@@ -387,8 +389,6 @@ This query returns 32 named graphs, including 5 different spellings of the URI `
 
 
 The feature `sd:RequiresDataset`, given line 18 of [retrieved_endpoint_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_dbpedia.ttl), indicates that the SPARQL service requires an explicit dataset declaration. Each of those named graphs should be detailed in the endpoint description.
-
-<!-- NOTE  -->
 
 ##### Extraction of the void/dcat description
 We first check if their are at least one resource representing a DCAT or VoID description, using the query:
@@ -478,12 +478,13 @@ The file [retrieved_dataset_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/
 
 The VoID/DCAT description centered around `<http://ns.inria.fr/wasabi/wasabi-1-0>` contains almost all the information it should contains. It is well typed, labelled and described, although not by `rdfs:label`, and contains provenance information. It also contains a count of its triples.
 
-A SPARQL-SD description is missing, as no element allows us to connect this description to the only SPARQL-SD description available.
+A SPARQL-SD description of the endpoint we used is missing, as no element allows us to connect this description to the only SPARQL-SD description available.
 
-*WIP*
+Extracting the list of named graphs returns 74 results. Of those 74, only 4 a connected to the VoID/DCAT description resource by the property `void:vocabulary`. So, they are not graphs of data that we aim to describe in priority.
 
 <!--- 74 graphes dans le endpoint
-``` SELECT DISTINCT ?g WHERE {
+```
+SELECT DISTINCT ?g WHERE {
   <http://ns.inria.fr/wasabi/wasabi-1-0> ?p2 ?g .
  GRAPH ?g { ?s ?p ?o }
 }
@@ -497,6 +498,21 @@ ORDER BY ?g
 | http://purl.org/ontology/mo/ |
 | http://xmlns.com/foaf/0.1/ |
  --->
+
+Yet, the VoID/DCAT description contains the value `"http://ns.inria.fr/wasabi/"` for the property `void:uriSpace` which gives the namespace of the resources of the WASABI base. We can identify 8 graphs within this namespaces, given in the following table:
+
+| Graphs URIs within the WASABI namespace                  |
+|---------------------------------------------------------|
+| http://ns.inria.fr/wasabi/graph/albums                  |
+| http://ns.inria.fr/wasabi/graph/artists                 |
+| http://ns.inria.fr/wasabi/graph/metadata                |
+| http://ns.inria.fr/wasabi/graph/songs                   |
+| http://ns.inria.fr/wasabi/ontology/                     |
+| http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c |
+| http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b |
+| http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8 |
+
+ *WIP*
 
 <!--- #### ORKG
 **Candidate**
