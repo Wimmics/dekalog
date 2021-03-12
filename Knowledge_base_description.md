@@ -146,7 +146,7 @@ As an example, the endpoint of our example KB supports SPARQL1.1 Query and Updat
 ```
 :exampleSparqlService a sd:Service ;
   sd:endpoint <http://www.example.com/sparql> ;
-  sd:supportedLanguage sd:SPARQL10Query, sd:SPARQL10Update ;
+  sd:supportedLanguage sd:SPARQL10Query, sd:SPARQL11Update ;
   sd:resultFormat formats:N3 , formats:RDF_XML , formats:SPARQL_Results_CSV , formats:SPARQL_Results_JSON , formats:SPARQL_Results_XML , formats:Turtle .
 ```
 
@@ -305,6 +305,12 @@ This document will be edited to reflect what we learned here:
 5. If the feature `sd:requiresDataset` is defined on the endpoint, datasets should be defined too.
 6. If `void:uriSpace` is given, look for Datasets/Vocabularies/Graphs within the namespace.
 7. Endpoint description will have to be rebuilt from scratch (including result format, etc.)
+
+For now, the method is planned as follows:
+1. Extract the existing descriptions
+2. Try to reconnect the existing descriptions with the know SPARQL endpoint URL and between themselves and with the existing Graphs
+3. Check the veracity of existing data
+4. Generate missing data
 ---
 
 #### [DBPedia](http://dbpedia.org/sparql)
