@@ -49,7 +49,7 @@ As an example:
 ```
 :exampleDataset a void:Dataset, dcat:Dataset.
 ```
-The description of the SPARQL endpoint should be linked to the central resource with the property `sd:endpoint`.
+The URL of the SPARQL endpoint should be linked to the central resource with the property `void:endpointUrl` as an URI.
 
 A central resource for the descrition of a KB should be retrievable by the query:
 ```
