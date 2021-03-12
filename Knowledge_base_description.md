@@ -40,8 +40,13 @@ To cover as many features of a KB as possible, a KB description should describe 
 
 All the following examples are redacted in [turtle](https://www.w3.org/TR/turtle/) format.
 
-##### knowledge graph resources
-Each description is centered around one resource, typed by the class representing a dataset from the different vocabularies.
+#### Terminology for this document
+Dataset
+Knowledge graph resource
+
+
+##### Knowledge graph resources
+Each dataset description is centered around one resource, typed by the class representing a dataset from the different vocabularies.
 For VoID, the class is `void:Dataset`, for DCAT, it is `dcat:Dataset`.
 Hence, a description of a KB should begin with the definition of a resource typed by those two classes.
 
@@ -51,7 +56,7 @@ As an example:
 ```
 The URL of the SPARQL endpoint should be linked to the knowledge graph resource with the property `void:endpointUrl` as an URI.
 
-A knowledge graph resource for the descrition of a KB should be retrievable by the query:
+A knowledge graph resource for the description of a KB should be retrievable by the query:
 ```
 PREFIX void: <http://rdfs.org/ns/void#>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
@@ -99,7 +104,7 @@ Other elements of description, such as the themes or keywords may be used.
 The properties given here are not an exhaustive list of possible labelling properties. There are other properties defined in domain-specific vocabularies.
 
 ##### Provenance
-The provenance of the data of a KB must be given to ensure its reusability. The vocabulary used to describe provenance is most often Dublin Core. The [PROV ontology](http://www.w3.org/TR/prov-o/) gives properties an classes to create detailed descriptions of the provenance. There are mapping between the elements of the Dublin Core and PROV ontology.
+The provenance of the data of a KB must be given to ensure its reusability. The vocabulary used to describe provenance is most often Dublin Core. The [PROV ontology](http://www.w3.org/TR/prov-o/) gives properties an classes to create detailed descriptions of the provenance. There are mapping between the elements of the Dublin Core and PROV ontology. In this ontology, the datasets are instances of the `prov:Entity` class.
 
 As presented in the PROV ontology recommandation, the provenance can be reduced to the answers to three questions: Who ? What ? How ?
 THe following tables present a non-exhaustive list of the properties to be used to describe a KB. Those that should be used for a description that gives the minimal provenance information are shown in italics.
@@ -109,25 +114,30 @@ THe following tables present a non-exhaustive list of the properties to be used 
 | _`dcterms:creator`_     |
 | `dcterms:contributor`   |
 | `dcterms:publisher`     |
+| `prov:wasAttributedTo`  |
 
 | What ?                 |
 |---------               |
 | _`dcterms:license`_    |
 | `dcterms:conformsTo`   |
 
-| How ?                |
-|----------------------|
-| _`dcterms:created`_  |
-| _`dcterms:modified`_ |
-| `dcterms:issued`     |
-| `dcterms:source`     |
-| `dcterms:format`     |
+| How ?                     |
+|---------------------------|
+| _`dcterms:created`_       |
+| _`dcterms:modified`_      |
+| `prov:wasGeneratedAtTime` |
+| `dcterms:issued`          |
+| `dcterms:source`          |
+| `prov:wasDerivedFrom`     |
+| `dcterms:format`          |
 
 As an example:
 ```
-:exampleDataset dcterms:creator <https://dblp.org/pid/143/6275> ;
+:exampleDataset a prov:entity ;
+  dcterms:creator <https://dblp.org/pid/143/6275> ;
   dcterms:license <https://cecill.info/licences/Licence_CeCILL_V2.1-fr> ;
   dcterms:created "08-02-2021"^^xsd:date ;
+	prov:wasGeneratedAtTime	"08-02-2021"^^xsd:date .
   dcterms:modified "09-02-2021"^^xsd:date .
 
 <https://dblp.org/pid/143/6275> a foaf:Person ;
@@ -301,11 +311,12 @@ This document will be edited to reflect what we learned here:
 
 1. The notion of ONE knowledge graph resource does not hold in practice.
 2. Better to treat separately void/dcat and sparql-sd descriptions.
-3. Better to start with retrieval of the endpoint description.
-4. Look for connexions between descriptions and known enddpoint or graph URIs, using `rdfs:seeAlso` for example.
+3. Better to start with the retrieval of the endpoint description.
+4. Look for connexions between descriptions and known endpoint or graph URIs, using `rdfs:seeAlso` for example.
 5. If the feature `sd:requiresDataset` is defined on the endpoint, datasets should be defined too.
-6. If `void:uriSpace` is given, look for Datasets/Vocabularies/Graphs within the namespace.
-7. Endpoint description will have to be rebuilt from scratch (including result format, etc.)
+6. To identify description resources, look for resources linked to the endpoint URL.
+7. If `void:uriSpace` is given, look for Datasets/Vocabularies/Graphs within the namespace.
+8. Endpoint description will have to be rebuilt from scratch (including result format, etc.)
 
 For now, the method is planned as follows:
 1. Extract the existing descriptions
@@ -412,13 +423,13 @@ SELECT DISTINCT ?central WHERE {
 ```
 Results:
 
-| central                         |
+| Knowledge graph resources       |
 |---------------------------------|
 | http://dbpedia.org/void/Dataset |
 | nodeID://b10252                 |
 | nodeID://b50123                 |
 
-Retrieval of data about each DCAT/VoID description resource using 2 queries:
+Retrieval of data about each knowledge graph resources using 2 queries:
 
 Outgoing properties:
 ```
@@ -518,6 +529,8 @@ Yet, the VoID/DCAT description contains the value `"http://ns.inria.fr/wasabi/"`
 | http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c |
 | http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b |
 | http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8 |
+
+From this, we can consider that WASABI is a datasets composed of several graphs.
 
  *WIP*
 
