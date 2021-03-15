@@ -41,13 +41,15 @@ To cover as many features of a KB as possible, a KB description should describe 
 All the following examples are redacted in [turtle](https://www.w3.org/TR/turtle/) format.
 
 ##### Terminology for this document
-In this document, we name as *knowledge base* a collection of triples published, maintained, and aggregated by a single provider. For practical reasons, a knowledge base is associated with a SPARQL endpoint. A knowledge graph, also called a *dataset* in the different vocabularies, can also contain graphs, viewed as compartments of triples. A knowledge base can be a set of graphs associated with an endpoint.
+In this document, we name as *knowledge base* (KB) a collection of triples published, maintained, and aggregated by a single provider. For practical reasons, a knowledge base is associated with a SPARQL endpoint. A knowledge graph, also called a *dataset* in the different vocabularies, can also contain graphs, viewed as compartments of triples. A knowledge base can be a set of graphs associated with an endpoint.
 
 We name the *description* of a resource as in-going and out-going triple containing the resource.
 
 
 ##### Knowledge base resources
-Each knowledge base description is centered around two resources. The first resource is the description of the SPARQL endpoint. The second resource represent a dataset. The description of the resources typed with classes from the VoID/DCAT vocabularies is called the knowledge base description. The description of the resources typed with classes from the SPARQL-SD vocabulary is called the endpoint description.
+Each knowledge base description is centered around two resources. The first resource is the description of the SPARQL endpoint. The second resource represent a dataset. The description of the resources typed with classes from the VoID/DCAT vocabularies is called the knowledge base description. The description of the resources identified with the SPARQL-SD vocabulary is called the endpoint description.
+
+During the extraction of descriptions, we may not find either the endpoint description or the knowledge base description. If there is an endpoint description but no knowledge base description, by default that the knowledge base consists of all the triples and graphs accessible through the endpoint. If there is a knowledge base description but no endpoint description, the knowledge base is associated with the endpoint that allowed to query the knowledge base description. In both cases, the missing descriptions have to be generated.
 
 ###### VoID/DCAT
 In the VoID vocabulary, the class `void:Dataset` represents a knowledge base, as defined in the precedent section. In the DCAT vocabulary, the class `dcat:Dataset` represents any collection of data, not limited to RDF, published or curated by a single agent, and available for access or download in one or more representations.
@@ -328,13 +330,14 @@ For now, the method is planned as follows:
 1. Extract the existing descriptions.
   1. Search for resources linked to the endpoint URL by the property `sd:endpoint`. Extract their descriptions.
   2. Search for resources typed by `void:Dataset` or `dcat:Dataset` that are linked to the endpoint URL.
-    1. If there is none, extract the descriptions of all resources typed by `void:Dataset` or `dcat:Dataset`.
+    * If there is none, extract the descriptions of all resources typed by `void:Dataset` or `dcat:Dataset`.
 2. Try to reconnect the existing descriptions with the known SPARQL endpoint URL and between themselves and with the existing graphs.
-  1. If an endpoint description and at least a VoID/DCAT description are connected to the endpoint URL, then the descriptions are connected.
-  2. If only an endpoint description is connected to the endpoint URL and there is no graph described, extract the graphs present in the dataset.
-    1. If one of the graphs URIs is connected to a VoID/DCAT descriptions, then add a graph description to the VoID description to connect them.
-  3. If there is no endpoint description connected to the endpoint URL, extract the descriptions of all resources subject of a triple with the property `sd:endpoint`.
-    1. If one of the existing description is connected to the URI of a VoID/DCAT description of the dataset, then the endpoint description should be considered as the potential endpoint description of the dataset.
+  * If an endpoint description and at least a VoID/DCAT description are connected to the endpoint URL, then the descriptions are connected and nothing has to be done.
+  * If only an endpoint description is connected to the endpoint URL and there is no graph described, extract the graphs present in the dataset.
+    * If one of the graphs URIs is connected to a VoID/DCAT description, then add a graph description to the VoID description to connect them.
+  * If there is no endpoint description connected to the endpoint URL, extract the descriptions of all resources subject of a triple with the property `sd:endpoint`.
+    * If one of the existing description is connected to the URI of a VoID/DCAT description of the dataset, then the endpoint description should be considered as the potential endpoint description of the dataset.
+  * If there is a knowledge base description but no endpoint description and the knowledge base description give a value to the property `void:uriSpace` and there are named graphs in this URI space, then the endpoint description should be generated and include those graphs.
 3. Check the veracity of existing data.
 4. Generate missing data.
 ---
