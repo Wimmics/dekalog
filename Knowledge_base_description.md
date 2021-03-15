@@ -40,23 +40,26 @@ To cover as many features of a KB as possible, a KB description should describe 
 
 All the following examples are redacted in [turtle](https://www.w3.org/TR/turtle/) format.
 
-#### Terminology for this document
-Dataset
-Knowledge graph resource
+##### Terminology for this document
+In this document, we name as *knowledge base* a collection of triples published, maintained, and aggregated by a single provider. For practical reasons, a knowledge base is associated with a SPARQL endpoint. A knowledge graph, also called a *dataset* in the different vocabularies, can also contain graphs, viewed as compartments of triples. A knowledge base can be a set of graphs associated with an endpoint.
+
+We name the *description* of a resource as in-going and out-going triple containing the resource.
 
 
-##### Knowledge graph resources
-Each dataset description is centered around one resource, typed by the class representing a dataset from the different vocabularies.
-For VoID, the class is `void:Dataset`, for DCAT, it is `dcat:Dataset`.
+##### Knowledge base resources
+Each knowledge base description is centered around two resources. The first resource is the description of the SPARQL endpoint. The second resource represent a dataset. The description of the resources typed with classes from the VoID/DCAT vocabularies is called the knowledge base description. The description of the resources typed with classes from the SPARQL-SD vocabulary is called the endpoint description.
+
+###### VoID/DCAT
+In the VoID vocabulary, the class `void:Dataset` represents a knowledge base, as defined in the precedent section. In the DCAT vocabulary, the class `dcat:Dataset` represents any collection of data, not limited to RDF, published or curated by a single agent, and available for access or download in one or more representations.
 Hence, a description of a KB should begin with the definition of a resource typed by those two classes.
 
 As an example:
 ```
 :exampleDataset a void:Dataset, dcat:Dataset.
 ```
-The URL of the SPARQL endpoint should be linked to the knowledge graph resource with the property `void:endpointUrl` as an URI.
+The URL of the SPARQL endpoint should be linked to the knowledge base resource with the property `void:endpointUrl` as an URI.
 
-A knowledge graph resource for the description of a KB should be retrievable by the query:
+A knowledge base resource for the description of a KB should be retrievable by the query:
 ```
 PREFIX void: <http://rdfs.org/ns/void#>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
@@ -68,7 +71,10 @@ SELECT DISTINCT ?central WHERE {
   }
 }
 ```
-The endpoint description should be linked as subject to its endpoint URL, as an URI, by the property `sd:endpoint`.
+
+###### SPARQL-SD
+Contrary to VoID and DCAT, the resource at the center of the description of the endpoint is not identified by its class.
+The endpoint description should be linked as subject to its endpoint URL, as a URI, by the property `sd:endpoint`.
 The endpoint description resource should be retrievable by the query:
 ```
 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
@@ -81,7 +87,7 @@ The descriptions present in the dataset should be present around the resources r
 ##### Label and description
 The description of a KB should the best practices for data publication and offer labels and descriptions.
 
-The knowledge graph resource should have at least a name linked to it by the property `rdfs:label`. Other properties such as `dcterms:title`, `foaf:name`, `skos:prefLabel` may be used. Properties such as `dcterms:description` or `rdfs:comment` may be used to give a more detailed human-readable description of the KB. Each resource of the description of a KB should have a label if possible.
+The knowledge base resource should have at least a name linked to it by the property `rdfs:label`. Other properties such as `dcterms:title`, `foaf:name`, `skos:prefLabel` may be used. Properties such as `dcterms:description` or `rdfs:comment` may be used to give a more detailed human-readable description of the KB. Each resource of the description of a KB should have a label if possible.
 
 As an example:
 ```
@@ -240,7 +246,7 @@ FROM <http://dbpedia.org> WHERE {
   }
 }
 ```
-The number of classes must be linked to the knowledge graph resource by the property `void:classes`.
+The number of classes must be linked to the knowledge base resource by the property `void:classes`.
 
 The number of properties can be retrieved by the query:
 ```
@@ -251,7 +257,7 @@ WHERE {
   }
 }
 ```
-The number of properties must be linked to the knowledge graph resource by the property `void:properties`.
+The number of properties must be linked to the knowledge base resource by the property `void:properties`.
 
 The number of distinct subjects can be retrieved by the query:
 ```
@@ -262,7 +268,7 @@ WHERE {
   }
 }
 ```
-The number of distinct subjects must be linked to the knowledge graph resource by the property `void:distinctSubjects`.
+The number of distinct subjects must be linked to the knowledge base resource by the property `void:distinctSubjects`.
 
 The number of distinct objects can be retrieved by the query:
 ```
@@ -273,7 +279,7 @@ WHERE {
   }
 }
 ```
-The number of distinct objects must be linked to the knowledge graph resource by the property `void:distinctObjects`.
+The number of distinct objects must be linked to the knowledge base resource by the property `void:distinctObjects`.
 
 In our example, with arbitrary populations, the description would be:
 ```
@@ -309,7 +315,7 @@ In this section, we try first to extract the descriptions of three KB, detailing
 **EDIT:**
 This document will be edited to reflect what we learned here:
 
-1. The notion of ONE knowledge graph resource does not hold in practice.
+1. The notion of ONE knowledge base resource does not hold in practice.
 2. Better to treat separately void/dcat and sparql-sd descriptions.
 3. Better to start with the retrieval of the endpoint description.
 4. Look for connexions between descriptions and known endpoint or graph URIs, using `rdfs:seeAlso` for example.
@@ -319,10 +325,18 @@ This document will be edited to reflect what we learned here:
 8. Endpoint description will have to be rebuilt from scratch (including result format, etc.)
 
 For now, the method is planned as follows:
-1. Extract the existing descriptions
-2. Try to reconnect the existing descriptions with the known SPARQL endpoint URL and between themselves and with the existing Graphs
-3. Check the veracity of existing data
-4. Generate missing data
+1. Extract the existing descriptions.
+  1. Search for resources linked to the endpoint URL by the property `sd:endpoint`. Extract their descriptions.
+  2. Search for resources typed by `void:Dataset` or `dcat:Dataset` that are linked to the endpoint URL.
+    1. If there is none, extract the descriptions of all resources typed by `void:Dataset` or `dcat:Dataset`.
+2. Try to reconnect the existing descriptions with the known SPARQL endpoint URL and between themselves and with the existing graphs.
+  1. If an endpoint description and at least a VoID/DCAT description are connected to the endpoint URL, then the descriptions are connected.
+  2. If only an endpoint description is connected to the endpoint URL and there is no graph described, extract the graphs present in the dataset.
+    1. If one of the graphs URIs is connected to a VoID/DCAT descriptions, then add a graph description to the VoID description to connect them.
+  3. If there is no endpoint description connected to the endpoint URL, extract the descriptions of all resources subject of a triple with the property `sd:endpoint`.
+    1. If one of the existing description is connected to the URI of a VoID/DCAT description of the dataset, then the endpoint description should be considered as the potential endpoint description of the dataset.
+3. Check the veracity of existing data.
+4. Generate missing data.
 ---
 
 #### [DBPedia](http://dbpedia.org/sparql)
@@ -334,7 +348,7 @@ We check the availability of the endpoint using `SELECT * WHERE { ?s ?p ?o } LIM
 First, we retrieve the list of SPARQL-SD description in the KB, if there are any, using the query:
 ```
 SELECT DISTINCT ?endpoint WHERE {
-  ?endpoint sd:endpoint ?endpointUrl.
+  ?endpoint sd:endpoint <http://dbpedia.org/sparql>.
 }
 ```
 This query returns 4 resources.
@@ -423,13 +437,13 @@ SELECT DISTINCT ?central WHERE {
 ```
 Results:
 
-| Knowledge graph resources       |
+| Knowledge base resources       |
 |---------------------------------|
 | http://dbpedia.org/void/Dataset |
 | nodeID://b10252                 |
 | nodeID://b50123                 |
 
-Retrieval of data about each knowledge graph resources using 2 queries:
+Retrieval of data about each knowledge base resources using 2 queries:
 
 Outgoing properties:
 ```
@@ -463,13 +477,13 @@ But, we note that the relation `rdfs:seeAlso` links the dataset `dbv:Dataset`  t
 
 
 ##### Generation of metadata
-From the existing metadata about DBpedia, we can gather a partial endpoint description. The link between the `dbv:Dataset` description and the graph `<http://dbpedia.org>` can link the endpoint metadata and the content metadata. We could not get provenance information about `<http://dbpedia.org>`. The SPARQL-SD description of the DBPedia endpoint can be reused as it is, with the addition of the only graph description we could retrieve. AS we know the name of the endpoint we have been querying, we can add a label to the knowledge graph resource.
+From the existing metadata about DBpedia, we can gather a partial endpoint description. The link between the `dbv:Dataset` description and the graph `<http://dbpedia.org>` can link the endpoint metadata and the content metadata. We could not get provenance information about `<http://dbpedia.org>`. The SPARQL-SD description of the DBPedia endpoint can be reused as it is, with the addition of the only graph description we could retrieve. As we know the name of the endpoint we have been querying, we can add a label to the knowledge base resource.
 
 A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl)
 
 *WIP*
 <!---  Extraction de RDFa depuis DBpedia.org ne donne pas de donées RDF viables --->
-<!--- TODO: Vérification des données + génération des données manquantes sur possible --->
+<!--- TODO: Vérification des données + génération des données manquantes si possible --->
 
 #### [Wasabi](http://wasabi.inria.fr/sparql)
 We suppose that we only know the name "Wasabi" and its endpoint's URL `http://wasabi.inria.fr/sparql`.
@@ -478,9 +492,9 @@ The retrieval of the SPARQL-SD description resource returns only one resource na
 The description of the resource is given in the file [retrieved_endpoint_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_wasabi.ttl). This is a short description of an endpoint, but no connection to the known URL of the WASABI SPARQL endpoint is found.
 From this retrieved data alone, we cannot generate a description of the WASABI base.
 
-The retrieval of knowledge graph resource returns 7 different results.
+The retrieval of knowledge base resource returns 7 different results.
 
-| Knowledge graph resource               |
+| Knowledge base resource               |
 |----------------------------------------------|
 | http://ns.inria.fr/covid19/DBpedia           |
 | http://ns.inria.fr/covid19/Wikidata          |
@@ -498,7 +512,7 @@ The VoID/DCAT description centered around `<http://ns.inria.fr/wasabi/wasabi-1-0
 
 A SPARQL-SD description of the endpoint we used is missing, as no element allows us to connect this description to the only SPARQL-SD description available.
 
-Extracting the list of named graphs returns 74 results. Of those 74, only 4 a connected to the knowledge graph knowledge graph resource by the property `void:vocabulary`. So, they are not graphs of data that we aim to describe in priority.
+Extracting the list of named graphs returns 74 results. Of those 74, only 4 a connected to the knowledge base resource by the property `void:vocabulary`. So, they are not graphs of data that we aim to describe in priority.
 
 <!--- 74 graphes dans le endpoint
 ```
