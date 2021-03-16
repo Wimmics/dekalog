@@ -328,16 +328,16 @@ This document will be edited to reflect what we learned here:
 
 For now, the method is planned as follows:
 1. Extract the existing descriptions.
-  1. Search for resources linked to the endpoint URL by the property `sd:endpoint`. Extract their descriptions.
-  2. Search for resources typed by `void:Dataset` or `dcat:Dataset` that are linked to the endpoint URL.
+   1. Search for resources linked to the endpoint URL by the property `sd:endpoint`. Extract their descriptions.
+   2. Search for resources typed by `void:Dataset` or `dcat:Dataset` that are linked to the endpoint URL.
     * If there is none, extract the descriptions of all resources typed by `void:Dataset` or `dcat:Dataset`.
 2. Try to reconnect the existing descriptions with the known SPARQL endpoint URL and between themselves and with the existing graphs.
-  * If an endpoint description and at least a VoID/DCAT description are connected to the endpoint URL, then the descriptions are connected and nothing has to be done.
-  * If only an endpoint description is connected to the endpoint URL and there is no graph described, extract the graphs present in the dataset.
-    * If one of the graphs URIs is connected to a VoID/DCAT description, then add a graph description to the VoID description to connect them.
-  * If there is no endpoint description connected to the endpoint URL, extract the descriptions of all resources subject of a triple with the property `sd:endpoint`.
-    * If one of the existing description is connected to the URI of a VoID/DCAT description of the dataset, then the endpoint description should be considered as the potential endpoint description of the dataset.
-  * If there is a knowledge base description but no endpoint description and the knowledge base description give a value to the property `void:uriSpace` and there are named graphs in this URI space, then the endpoint description should be generated and include those graphs.
+   * If an endpoint description and at least a VoID/DCAT description are connected to the endpoint URL, then the descriptions are connected and nothing has to be done.
+   * If only an endpoint description is connected to the endpoint URL and there is no graph described, extract the graphs present in the dataset.
+      * If one of the graphs URIs is connected to a VoID/DCAT description, then add a graph description to the VoID description to connect them.
+   * If there is no endpoint description connected to the endpoint URL, extract the descriptions of all resources subject of a triple with the property `sd:endpoint`.
+      * If one of the existing description is connected to the URI of a VoID/DCAT description of the dataset, then the endpoint description should be considered as the potential endpoint description of the dataset.
+   * If there is a knowledge base description but no endpoint description and the knowledge base description give a value to the property `void:uriSpace` and there are named graphs in this URI space, then the endpoint description should be generated and include those graphs.
 3. Check the veracity of existing data.
 4. Generate missing data.
 ---
