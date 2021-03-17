@@ -330,7 +330,7 @@ For now, the method is planned as follows:
 1. Extract the existing descriptions.
    1. Search for resources linked to the endpoint URL by the property `sd:endpoint`. Extract their descriptions.
    2. Search for resources typed by `void:Dataset` or `dcat:Dataset` that are linked to the endpoint URL.
-    * If there is none, extract the descriptions of all resources typed by `void:Dataset` or `dcat:Dataset`.
+    * If there is none, extract the descriptions of all resources typed by `void:Dataset` or `dcat:Dataset` for later reconnection.
 2. Try to reconnect the existing descriptions with the known SPARQL endpoint URL and between themselves and with the existing graphs.
    * If an endpoint description and at least a VoID/DCAT description are connected to the endpoint URL, then the descriptions are connected and nothing has to be done.
    * If only an endpoint description is connected to the endpoint URL and there is no graph described, extract the graphs present in the dataset.
@@ -351,7 +351,7 @@ We check the availability of the endpoint using `SELECT * WHERE { ?s ?p ?o } LIM
 First, we retrieve the list of SPARQL-SD description in the KB, if there are any, using the query:
 ```
 SELECT DISTINCT ?endpoint WHERE {
-  ?endpoint sd:endpoint <http://dbpedia.org/sparql>.
+  ?endpoint sd:endpoint ?endpointUrl.
 }
 ```
 This query returns 4 resources.
