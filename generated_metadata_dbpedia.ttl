@@ -8,7 +8,7 @@
 @prefix dbv:	<http://dbpedia.org/void/> .
 @prefix local:	<http://localhost:8890/> .
 
-dbv:Dataset	rdf:type	void:Dataset, dcat:Dataset ;
+dbv:Dataset	rdf:type	void:Dataset, dcat:Dataset, prov:Entity ;
 		rdfs:seeAlso	<http://dbpedia.org> ;
 		void:classes	483621 ;
 		void:distinctObjects	231116566 ;
