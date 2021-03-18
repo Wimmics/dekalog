@@ -1,0 +1,106 @@
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix void:	<http://rdfs.org/ns/void#> .
+@prefix foaf:	<http://xmlns.com/foaf/0.1/> .
+@prefix dct:	<http://purl.org/dc/terms/> .
+@prefix prov:	<http://www.w3.org/ns/prov#> .
+@prefix schema:	<http://schema.org/> .
+@prefix dcat:	<http://www.w3.org/ns/dcat#> .
+@prefix owl:	<http://www.w3.org/2002/07/owl#> .
+@prefix dce:	<http://purl.org/dc/elements/1.1/> .
+@prefix xsd:	<http://www.w3.org/2001/XMLSchema#> .
+@prefix wasabins:	<http://ns.inria.fr/wasabi/> .
+@prefix wasabi:	<http://wasabi.inria.fr/> .
+@prefix owl:	<http://www.w3.org/2002/07/owl#> .
+@prefix dkg: <https://dekalog.univ-nantes.fr/> .
+
+wasabins:wasabi-1-0	rdf:type	void:Dataset ,
+		schema:Dataset ,
+		dcat:Dataset ,
+		prov:Entity ;
+	owl:versionInfo	"1.0" ;
+	dct:title	"The WASABI RDF Knowledge Graph" ;
+	void:vocabulary	<http://purl.org/ontology/af/> ,
+		prov: ,
+		<http://dbpedia.org/ontology/> ,
+		void: ,
+		schema: ,
+		dcat: ,
+		<http://purl.org/vocab/frbr/core#> ,
+		<http://www.wikidata.org/entity/> ,
+		dct: ,
+		foaf: ,
+		<http://purl.org/ontology/chord/> ,
+		<http://purl.org/ontology/mo/> ;
+	dct:description	"The WASABI Dataset is a large corpus of songs enriched with metadata extracted from music databases on the Web, and resulting from the processing of song lyrics and from audio analysis. This dataset is the RDF representation of the original WASABI dataset." ;
+	schema:name	"The WASABI RDF Knowledge Graph" ;
+	dct:creator	"Michel Buffa" ,
+		"Guillaume Pellerin" ,
+		"Elmahdi Korfed" ,
+		"Fabrice Jauvat" ,
+		<https://team.inria.fr/wimmics/> ,
+		<https://orcid.org/0000-0003-1007-0101> ,
+		<https://orcid.org/0000-0002-0756-6934> ,
+		<https://orcid.org/0000-0003-0543-1232> ,
+		"Michael Fell" ,
+		<https://orcid.org/0000-0001-8158-5562> ,
+		<https://orcid.org/0000-0001-9064-0463> ,
+		"Elena Cabrio" ,
+		"Johan Pauwels" ,
+		"Maroua Tikat" ;
+	dce:publisher	<http://univ-cotedazur.fr> ,
+		<https://www.cnrs.fr> ,
+		<https://www.inria.fr> ;
+	dct:subject	"audio analysis" ,
+		"music" ,
+		"song" ,
+		"lyrics" ,
+		"metadata" ,
+		"chord" ;
+	dct:issued	"2020-12-09"^^xsd:date ;
+	void:dataDump	<https://doi.org/10.5281/zenodo.4312641> .
+  void:sparqlEndpoint	wasabi:sparql ;
+	void:triples	55542555 ;
+	void:uriSpace	"http://ns.inria.fr/wasabi/" ;
+	prov:wasGeneratedBy	wasabins:RdfGeneration ;
+	schema:author	"Michael Fell" ,
+		"Elmahdi Korfed" ,
+		"Michel Buffa" ,
+		"Guillaume Pellerin" ,
+		<https://orcid.org/0000-0003-1007-0101> ,
+		<https://orcid.org/0000-0001-8158-5562> ,
+		<https://orcid.org/0000-0001-9064-0463> ,
+		<https://orcid.org/0000-0002-0756-6934> ,
+		<https://orcid.org/0000-0003-0543-1232> ,
+		"Fabrice Jauvat" ,
+		<https://team.inria.fr/wimmics/> ,
+		"Elena Cabrio" ,
+		"Johan Pauwels" ,
+		"Maroua Tikat" ;
+	schema:datePublished	"2020-12-09"^^xsd:date ;
+	dct:licence	<https://creativecommons.org/licenses/by-nc/4.0/> ;
+	schema:keywords	"music" ,
+		"lyrics" ,
+		"audio analysis" ,
+		"chord" ,
+		"metadata" ,
+		"song" ;
+	schema:licence	<https://creativecommons.org/licenses/by-nc/4.0/> ;
+	schema:publisher	<https://www.cnrs.fr> ,
+		<https://www.inria.fr> ,
+		<http://univ-cotedazur.fr> ;
+	schema:subjectOf	wasabins:fell2019love ;
+	prov:wasGeneratedAtTime	"2020-12-09"^^xsd:date .
+
+dkg:wasabiService rdf:type sd:Service, dcat:DataService ;
+  sd:endpoint dkg:sparql ;
+  sd:availableGraphs [
+		a sd:GraphCollection ;
+    sd:namedGraph wasabins:graph/albums ,
+      wasabins:graph/artists ,
+      wasabins:graph/metadata ,
+      wasabins:graph/songs ,
+      wasabins:ontology/ ,
+      wasabins:song/5714dec325ac0d8aee38392c ,
+      wasabins:song/5714dec325ac0d8aee38393b ,
+      wasabins:song/5714dec325ac0d8aee386ee8 ,
+  ]
