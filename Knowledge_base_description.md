@@ -187,10 +187,11 @@ The example KB has one default graphs and one named graph, named `:ng1`.
 Other features of the endpoint can be added to the description such as the non-standard function proposed or the default treatment of the namedGraph data. The functions offered by the endpoint are given by the property `sd:extensionFunction`, with the function as subject, same for the aggregates with `sd:extensionAggregate`.
 Other features are given by the property `sd:features`. The SPARQL-SD standard defines five features: `sd:DereferencesURIs`, `sd:UnionDefaultGraph`, `sd:RequiresDataset`, `sd:EmptyGraphs`, and `sd:BasicFederatedQuery`. `sd:DereferencesURIs`
 
-The link between a `sd:Graph` and a `dcat:Dataset` should be represented by the relation `dcat:servesDataset`. In our example, the example dataset is contained in the `:ng1` graph. The final minimal SPARQL-SD description of our example should be:
+The link between a `sd:DataService` and a `dcat:Dataset` should be represented by the relation `dcat:servesDataset`. In our example, the example dataset is contained in the `:ng1` graph. The final minimal SPARQL-SD description of our example should be:
 
 ```
 :exampleSparqlService sd:endpoint <http://www.example.com/sparql> ;
+  a sd:Service, dcat:DataService ;
   sd:supportedLanguage sd:SPARQL10Query, sd:SPARQL10Update ;
   sd:resultFormat formats:N3 , formats:RDF_XML , formats:SPARQL_Results_CSV , formats:SPARQL_Results_JSON , formats:SPARQL_Results_XML , formats:Turtle ;
   sd:availableGraphs [
@@ -200,10 +201,10 @@ The link between a `sd:Graph` and a `dcat:Dataset` should be represented by the 
      ] ;
      sd:namedGraph [
       a sd:NamedGraph ;
-        sd:name :ng1 .
-        dcat:servesDataset :exampleDataset .
+      sd:name :ng1 .
      ]
-    ]
+  ] ;
+  dcat:servesDataset :exampleDataset .
 ```
 
 ##### Ontology descriptions
@@ -221,20 +222,20 @@ SELECT count(*) WHERE {
 ```
 In our example, the default graph contains 987 triples and the graph `:ng1`, also described by `:exampleDataset`, contains 1234 triples. The count of triples should be used as such:
 ```
-:exampleSparqlService sd:defaultDataset [
-  a sd:Dataset ;
-  sd:defaultGraph [
-    a sd:Graph ;
-    void:triples 987 .
-  ] ;
-  sd:namedGraph [
-    a sd:NamedGraph ;
-    sd:name :ng1 ;
-    dcat:servesDataset :exampleDataset ;
-    void:triples 1234 .
-  ]
-] .
-:exampleDataset void:triples 1234 .
+:exampleSparqlService
+  dcat:servesDataset :exampleDataset ;
+  sd:defaultDataset [
+    a sd:Dataset ;
+    sd:defaultGraph [
+      a sd:Graph ;
+      void:triples 987 .
+    ] ;
+    sd:namedGraph [
+      a sd:NamedGraph ;
+      sd:name :ng1 ;
+      void:triples 1234 .
+    ]
+  ] .
 ```
 The VoID/DCAT metadata can contain other population counts, such as the classes, the properties, the sujects of objets.
 
@@ -442,7 +443,7 @@ SELECT DISTINCT ?central WHERE {
 ```
 Results:
 
-| Knowledge base resources       |
+| Knowledge base resources        |
 |---------------------------------|
 | http://dbpedia.org/void/Dataset |
 | nodeID://b10252                 |
