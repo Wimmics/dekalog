@@ -107,6 +107,7 @@ Other elements of description, such as the themes or keywords may be used.
 
 :example a skos:Concept ;
   rdfs:label "Example" .
+  skos:prefLabel "Example" .
 ```
 
 The properties given here are not an exhaustive list of possible labelling properties. There are other properties defined in domain-specific vocabularies.
@@ -172,9 +173,9 @@ As an example, the endpoint of our example KB supports SPARQL1.1 Query and Updat
 The example KB has one default graphs and one named graph, named `:ng1`.
 
 ```
-:exampleSparqlService sd:defaultDataset [
-a sd:Dataset ;
-   sd:defaultGraph [
+:exampleSparqlService sd:availableGraphs [
+  a sd:Dataset ;
+  sd:defaultGraph [
     a sd:Graph .
    ] ;
    sd:namedGraph [
@@ -192,17 +193,17 @@ The link between a `sd:Graph` and a `dcat:Dataset` should be represented by the 
 :exampleSparqlService sd:endpoint <http://www.example.com/sparql> ;
   sd:supportedLanguage sd:SPARQL10Query, sd:SPARQL10Update ;
   sd:resultFormat formats:N3 , formats:RDF_XML , formats:SPARQL_Results_CSV , formats:SPARQL_Results_JSON , formats:SPARQL_Results_XML , formats:Turtle ;
-  sd:defaultDataset [
+  sd:availableGraphs [
     a sd:Dataset ;
     sd:defaultGraph [
-      a sd:Graph ;
+      a sd:Graph .
      ] ;
-   sd:namedGraph [
-    a sd:NamedGraph ;
-      sd:name :ng1 ;
-      dcat:servesDataset :exampleDataset .
+     sd:namedGraph [
+      a sd:NamedGraph ;
+        sd:name :ng1 .
+        dcat:servesDataset :exampleDataset .
+     ]
     ]
-  ] .
 ```
 
 ##### Ontology descriptions
@@ -324,7 +325,8 @@ This document will be edited to reflect what we learned here:
 5. If the feature `sd:requiresDataset` is defined on the endpoint, datasets should be defined too.
 6. To identify description resources, look for resources linked to the endpoint URL.
 7. If `void:uriSpace` is given, look for Datasets/Vocabularies/Graphs within the namespace.
-8. Endpoint description will have to be rebuilt from scratch (including result format, etc.)
+8. Endpoint description will have to be rebuilt from scratch (including result format, etc.).
+9. Endpoint URIs should be searched both with HTTP and HTTPS.
 
 For now, the method is planned as follows:
 1. Extract the existing descriptions.
@@ -332,7 +334,7 @@ For now, the method is planned as follows:
    2. Search for resources typed by `void:Dataset` or `dcat:Dataset` that are linked to the endpoint URL.
     * If there is none, extract the descriptions of all resources typed by `void:Dataset` or `dcat:Dataset` for later reconnection.
 2. Try to reconnect the existing descriptions with the known SPARQL endpoint URL and between themselves and with the existing graphs.
-   * If an endpoint description and at least a VoID/DCAT description are connected to the endpoint URL, then the descriptions are connected and nothing has to be done.
+   * If an endpoint description, and at least a VoID/DCAT description are connected to the endpoint URL, and the endpoint description indicate a graph connected to the VoID/DCAT description, then the descriptions are connected and nothing has to be done.
    * If only an endpoint description is connected to the endpoint URL and there is no graph described, extract the graphs present in the dataset.
       * If one of the graphs URIs is connected to a VoID/DCAT description, then add a graph description to the VoID description to connect them.
    * If there is no endpoint description connected to the endpoint URL, extract the descriptions of all resources subject of a triple with the property `sd:endpoint`.
@@ -548,8 +550,6 @@ Yet, the VoID/DCAT description contains the value `"http://ns.inria.fr/wasabi/"`
 | http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8 |
 
 From this, we can consider that WASABI is a datasets composed of several graphs.
-
- *WIP*
 
 <!--- #### ORKG
 **Candidate**
