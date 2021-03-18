@@ -8,7 +8,20 @@
 @prefix dbv:	<http://dbpedia.org/void/> .
 @prefix local:	<http://localhost:8890/> .
 
-dbp:sparql-sd	rdf:type	sd:Service ;
+dbv:Dataset	rdf:type	void:Dataset, dcat:Dataset ;
+		rdfs:seeAlso	<http://dbpedia.org> ;
+		void:classes	483621 ;
+		void:distinctObjects	231116566 ;
+		void:distinctSubjects	43070161 ;
+		void:entities	30127028 ;
+		void:properties	54155 ;
+		void:sparqlEndpoint	local:sparql ;
+		void:triples	859801816 .
+dbv:sameAsLinks	void:inDataset	dbv:Dataset .
+dbv:seeAlsoLinks	void:inDataset	dbv:Dataset .
+
+dbp:sparql-sd	rdf:type	sd:Service, dcat:DataService ;
+	dcat:servesDataset dbv:Dataset ;
 	sd:endpoint	dbp:sparql ,
 		dbp:sparql-auth ;
 	sd:feature	sd:RequiresDataset ,
@@ -68,22 +81,35 @@ dbp:sparql-sd	rdf:type	sd:Service ;
 	sd:propertyFeature	bif:contains ;
 	virtrdf:graph-crud-endpoint	dbp:sparql-graph-crud ,
 		dbp:sparql-graph-crud-auth ;
-  sd:namedGraph [
-    a sd:NamedGraph ;
-      sd:name <http://dbpedia.org> ;
-      void:triples 859801816 ;
-      dcat:servesDataset dbv:Dataset .
-    ]
-
-dbv:Dataset	rdf:type	void:Dataset ;
-		rdfs:label "DBPedia"@en ;
-		rdfs:seeAlso	<http://dbpedia.org> ;
-		void:classes	483621 ;
-		void:distinctObjects	231116566 ;
-		void:distinctSubjects	43070161 ;
-		void:entities	30127028 ;
-		void:properties	54155 ;
-		void:sparqlEndpoint	local:sparql ;
-		void:triples	859801816 .
-dbv:sameAsLinks	void:inDataset	dbv:Dataset .
-dbv:seeAlsoLinks	void:inDataset	dbv:Dataset .
+	sd:availableGraphs [
+		a sd:GraphCollection ;
+		sd:namedGraph <b3sifp> ,
+			<b3sonto> ,
+			<dbprdf-label> ,
+			<facets> ,
+			dbp:sparql-sd ,
+			<http://dbpedia.org> ,
+			<http://dbpedia.org/resource/classes#> ,
+			<http://dbpedia.org/schema/property_rules#> ,
+			dbv: ,
+			<http://localhost:8890/DAV/>
+			local:sparql ,
+			<http://pivot_test_data/campsites> ,
+			<http://pivot_test_data/ski_resorts> ,
+			<http://query.wikidata.org/sparql> ,
+			<http://www.openlinksw.com/schemas/oplweb#> ,
+			<http://www.openlinksw.com/schemas/virtcxml#> ,
+			<http://www.openlinksw.com/schemas/virtpivot> ,
+			<http://www.openlinksw.com/schemas/virtrdf#> ,
+			<http://www.openlinksw.com/virtpivot/icons> ,
+			owl: ,
+			<http://www.w3.org/ns/ldp#> ,
+			<https://query.wikidata.org/sparql> ,
+			<local:/virt_curi> ,
+			<urn:activitystreams-owl:map> ,
+			<urn:rules.skos> ,
+			<urn:virtuoso:val:acl:schema> ,
+			<virtpivot-icon-test> ,
+			<virtpivot-rules> ,
+			<virtrdf-label> .
+	] .
