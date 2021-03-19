@@ -1,121 +1,22 @@
 @prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix covid:	<http://ns.inria.fr/covid19/> .
 @prefix void:	<http://rdfs.org/ns/void#> .
 @prefix foaf:	<http://xmlns.com/foaf/0.1/> .
 @prefix dct:	<http://purl.org/dc/terms/> .
 @prefix prov:	<http://www.w3.org/ns/prov#> .
 @prefix schema:	<http://schema.org/> .
-@prefix ns7:	<http://www.w3.org/ns/dcat#> .
+@prefix dcat:	<http://www.w3.org/ns/dcat#> .
 @prefix owl:	<http://www.w3.org/2002/07/owl#> .
-@prefix ns9:	<http://purl.org/spar/> .
+@prefix orcid: <https://orcid.org/> .
+@prefix spar:	<http://purl.org/spar/> .
 @prefix dce:	<http://purl.org/dc/elements/1.1/> .
 @prefix xsd:	<http://www.w3.org/2001/XMLSchema#> .
-@prefix ns12:	<https://covidontheweb.inria.fr/> .
-@prefix ns13:	<http://ns.inria.fr/wasabi/> .
-@prefix ns14:	<http://wasabi.inria.fr/> .
+@prefix wasabi:	<http://ns.inria.fr/wasabi/> .
+@prefix wasabiweb:	<http://wasabi.inria.fr/> .
 @prefix owl:	<http://www.w3.org/2002/07/owl#> .
 
-covid:DBpedia	rdf:type	void:Dataset ;
-  foaf:homepage	<http://dbpedia.org> ;
-  dct:title	"DBpedia"@en .
-
-covid:Wikidata	rdf:type	void:Dataset ;
-	foaf:homepage	<https://wikidata.org> ;
-	dct:title	"Wikidata"@en .
-
-covid:UMLS	rdf:type	void:Dataset ;
-	foaf:homepage	<https://www.nlm.nih.gov/research/umls/> ;
-	dct:title	"UMLS"@en .
-
-covid:covidontheweb-1-2	rdf:type	prov:Entity , schema:Dataset , ns7:Dataset , void:Dataset .
-  owl:versionInfo	"1.2" ;
-	owl:sameAs	covid:dataset-1-2 ;
-	dct:title	"Covid-on-the-Web dataset" ;
-	void:vocabulary	<http://rdfs.org/sioc/argument#> ,
-		<http://www.arg.dundee.ac.uk/aif#> ,
-		ns7: ,
-		<http://purl.org/vocab/frbr/core#> ,
-		<http://www.wikidata.org/entity/> ,
-		void: ,
-		schema: ,
-		<http://purl.org/spar/fabio/> .
-    void:vocabulary	ns9:amo ,
-		<http://purl.org/dc/elements/1.1/> ,
-		<http://www.w3.org/ns/oa#> ,
-		foaf: ,
-		dct: ,
-		<http://purl.org/ontology/bibo/> ,
-		prov: ;
-	dct:description	"This RDF dataset provides two main knowledge graphs produced by processing the Covid-19 Open Research Dataset (CORD-19). The CORD-19 Named Entities Knowledge Graph provides named entities identified and disambiguated by NCBO BioPortal annotator, Entity-fishing and DBpedia Spotlight. The CORD-19 Argumentative Knowledge Graph provides argumentative components extracted from the articles by the Argumentative Clinical Trial Analysis platform (ACTA)." ;
-	schema:name	"Covid-on-the-Web dataset" ;
-	dct:creator	<https://team.inria.fr/wimmics/> .
-  dce:publisher	<http://univ-cotedazur.fr> ,
-		<https://www.cnrs.fr> ,
-		<https://www.inria.fr> ;
-	dct:subject	"argument mining" ,
-		"annotation" ,
-		"NER" ,
-		"covid19" ,
-		"cord19" ,
-		"coronavirus" ,
-		"named entity recognition" ,
-		"literature" ,
-		"named entity" ,
-		"argumentation theory" .
-  dct:issued	"2020-11-05"^^xsd:date ;
-	void:dataDump	<https://doi.org/10.5281/zenodo.4247134> .
-  void:sparqlEndpoint	ns12:sparql ;
-	void:triples	1372643149 ;
-	void:uriSpace	"http://ns.inria.fr/covid19/" ;
-	prov:wasGeneratedBy	covid:RdfGeneration ;
-	schema:author	<https://team.inria.fr/wimmics/> ;
-	schema:datePublished	"2020-11-05"^^xsd:date ;
-	dct:licence	<http://opendatacommons.org/licenses/by/1.0> ;
-	schema:keywords	"annotation" ,
-		"named entity" ,
-		"argumentation theory" ,
-		"literature" ,
-		"cord19" ,
-		"covid19" ,
-		"coronavirus" ,
-		"NER" ,
-		"named entity recognition" ,
-		"argument mining" ;
-	schema:licence	<http://opendatacommons.org/licenses/by/1.0> ;
-	schema:isBasedOn	covid:cord19v47 ;
-	schema:publisher	<https://www.cnrs.fr> ,
-		<https://www.inria.fr> ,
-		<http://univ-cotedazur.fr> ;
-	prov:wasGeneratedAtTime	"2020-11-05"^^xsd:date ;
-	prov:wasDerivedFrom	covid:cord19v47 .
-covid:cotw2dbpedia	void:objectsTarget	covid:DBpedia ;
-	void:subjectsTarget	covid:covidontheweb-1-2 .
-covid:cotw2umls	void:objectsTarget	covid:UMLS ;
-	void:subjectsTarget	covid:covidontheweb-1-2 .
-covid:cotw2wikidata	void:objectsTarget	covid:Wikidata ;
-	void:subjectsTarget	covid:covidontheweb-1-2 .
-covid:dataset-1-2	owl:sameAs	covid:covidontheweb-1-2 .
-
-covid:cord19v47	rdf:type	schema:Dataset ,
-		ns7:Dataset ;
-	owl:versionInfo	"47" ;
-	dct:title	"COVID-19 Open Research Dataset (CORD-19)" ;
-	schema:name	"COVID-19 Open Research Dataset (CORD-19)" ;
-	dct:issued	"2020-09-01"^^xsd:date ;
-	schema:datePublished	"2020-09-01"^^xsd:date ;
-	schema:url	<https://www.kaggle.com/dataset/08dd9ead3afd4f61ef246bfd6aee098765a19d9f6dbf514f0142965748be859b/version/47> .
-covid:ProvenanceDBpSpotlight	prov:used	covid:cord19v47 .
-covid:ProvenanceEF	prov:used	covid:cord19v47 .
-covid:ProvenanceNCBOAnnotator	prov:used	covid:cord19v47 .
-covid:ProvenanceActa	prov:used	covid:cord19v47 .
-
-ns13:Wikidata	rdf:type	void:Dataset ;
-	foaf:homepage	<https://wikidata.org> ;
-	dct:title	"Wikidata"@en .
-
-ns13:wasabi-1-0	rdf:type	void:Dataset ,
+wasabi:wasabi-1-0	rdf:type	void:Dataset ,
 		schema:Dataset ,
-		ns7:Dataset ,
+		dcat:Dataset ,
 		prov:Entity ;
 	owl:versionInfo	"1.0" ;
 	dct:title	"The WASABI RDF Knowledge Graph" ;
@@ -124,7 +25,7 @@ ns13:wasabi-1-0	rdf:type	void:Dataset ,
 		<http://dbpedia.org/ontology/> ,
 		void: ,
 		schema: ,
-		ns7: ,
+		dcat: ,
 		<http://purl.org/vocab/frbr/core#> ,
 		<http://www.wikidata.org/entity/> ,
 		dct: ,
@@ -138,12 +39,12 @@ ns13:wasabi-1-0	rdf:type	void:Dataset ,
 		"Elmahdi Korfed" ,
 		"Fabrice Jauvat" ,
 		<https://team.inria.fr/wimmics/> ,
-		<https://orcid.org/0000-0003-1007-0101> ,
-		<https://orcid.org/0000-0002-0756-6934> ,
-		<https://orcid.org/0000-0003-0543-1232> ,
+		orcid:0000-0003-1007-0101 ,
+		orcid:0000-0002-0756-6934 ,
+		orcid:0000-0003-0543-1232 ,
 		"Michael Fell" ,
-		<https://orcid.org/0000-0001-8158-5562> ,
-		<https://orcid.org/0000-0001-9064-0463> ,
+		orcid:0000-0001-8158-5562 ,
+		orcid:0000-0001-9064-0463 ,
 		"Elena Cabrio" ,
 		"Johan Pauwels" ,
 		"Maroua Tikat" ;
@@ -158,19 +59,19 @@ ns13:wasabi-1-0	rdf:type	void:Dataset ,
 		"chord" ;
 	dct:issued	"2020-12-09"^^xsd:date ;
 	void:dataDump	<https://doi.org/10.5281/zenodo.4312641> .
-  void:sparqlEndpoint	ns14:sparql ;
+  void:sparqlEndpoint	wasabiweb:sparql ;
 	void:triples	55542555 ;
 	void:uriSpace	"http://ns.inria.fr/wasabi/" ;
-	prov:wasGeneratedBy	ns13:RdfGeneration ;
+	prov:wasGeneratedBy	wasabi:RdfGeneration ;
 	schema:author	"Michael Fell" ,
 		"Elmahdi Korfed" ,
 		"Michel Buffa" ,
 		"Guillaume Pellerin" ,
-		<https://orcid.org/0000-0003-1007-0101> ,
-		<https://orcid.org/0000-0001-8158-5562> ,
-		<https://orcid.org/0000-0001-9064-0463> ,
-		<https://orcid.org/0000-0002-0756-6934> ,
-		<https://orcid.org/0000-0003-0543-1232> ,
+		orcid:0000-0003-1007-0101 ,
+		orcid:0000-0001-8158-5562 ,
+		orcid:0000-0001-9064-0463 ,
+		orcid:0000-0002-0756-6934 ,
+		orcid:0000-0003-0543-1232 ,
 		"Fabrice Jauvat" ,
 		<https://team.inria.fr/wimmics/> ,
 		"Elena Cabrio" ,
@@ -188,5 +89,5 @@ ns13:wasabi-1-0	rdf:type	void:Dataset ,
 	schema:publisher	<https://www.cnrs.fr> ,
 		<https://www.inria.fr> ,
 		<http://univ-cotedazur.fr> ;
-	schema:subjectOf	ns13:fell2019love ;
+	schema:subjectOf	wasabi:fell2019love ;
 	prov:wasGeneratedAtTime	"2020-12-09"^^xsd:date .

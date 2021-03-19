@@ -498,17 +498,7 @@ The retrieval of the SPARQL-SD description resource returns only one resource na
 The description of the resource is given in the file [retrieved_endpoint_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_wasabi.ttl). This is a short description of an endpoint, but no connection to the known URL of the WASABI SPARQL endpoint is found.
 From this retrieved data alone, we cannot generate a description of the WASABI base.
 
-The retrieval of knowledge base resource returns 7 different results.
-
-| Knowledge base resource               |
-|----------------------------------------------|
-| http://ns.inria.fr/covid19/DBpedia           |
-| http://ns.inria.fr/covid19/Wikidata          |
-| http://ns.inria.fr/covid19/UMLS              |
-| http://ns.inria.fr/covid19/covidontheweb-1-2 |
-| http://ns.inria.fr/wasabi/Wikidata           |
-| http://ns.inria.fr/wasabi/wasabi-1-0         |
-| http://ns.inria.fr/covid19/cord19v47         |
+The retrieval of knowledge base resource connected to the endpoint URI returns 1 result `http://ns.inria.fr/wasabi/wasabi-1-0`.
 
 The file [retrieved_dataset_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_wasabi.ttl) gives the descriptions of each resource. Two of the resources are at the center of exhaustive descriptions of datasets. Only one of the resources is linked to the known URL of WASABI's endpoint by the property `void:sparqlEndpoint`. From this fact, we can assume that the triples between line 116 to 192, centered around the resource `<http://ns.inria.fr/wasabi/wasabi-1-0>` are the description of the WASABI dataset.
 
@@ -552,32 +542,21 @@ Yet, the VoID/DCAT description contains the value `"http://ns.inria.fr/wasabi/"`
 
 From this, we can consider that WASABI is a datasets composed of several graphs.
 
-<!--- #### ORKG
-**Candidate**
+*WIP*
 
-[fichier](https://github.com/Wimmics/dekalog/blob/master/retrieved_orkg.ttl)
-
-Only query with answers:
+<!--- TODO: description du process pour générer ca  --->
 ```
-PREFIX void: <http://rdfs.org/ns/void#>
-PREFIX dcat: <http://www.w3.org/ns/dcat#>
-PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-
-DESCRIBE ?endpoint WHERE {
-  ?endpoint sd:endpoint ?endpointUrl.
-}
+dkg:wasabiService rdf:type sd:Service, dcat:DataService ;
+  sd:endpoint dkg:sparql ;
+  sd:availableGraphs [
+		a sd:GraphCollection ;
+    sd:namedGraph wasabins:graph/albums ,
+      wasabins:graph/artists ,
+      wasabins:graph/metadata ,
+      wasabins:graph/songs ,
+      wasabins:ontology/ ,
+      wasabins:song/5714dec325ac0d8aee38392c ,
+      wasabins:song/5714dec325ac0d8aee38393b ,
+      wasabins:song/5714dec325ac0d8aee386ee8 ;
+  ] .
 ```
-
-#### BNF
-**Candidate**
-
-[fichier](https://github.com/Wimmics/dekalog/blob/master/retrieved_bnf.ttl)
-
-Only query with answers:
-```
-PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-DESCRIBE ?endpoint WHERE {
-  ?endpoint sd:endpoint ?endpointUrl.
-}
-```
---->
