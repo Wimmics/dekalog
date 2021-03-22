@@ -32,6 +32,7 @@ To cover as many features of a KB as possible, a KB description should describe 
 | owl:     | http://www.w3.org/2002/07/owl#                   |
 | xsd:     | http://www.w3.org/2001/XMLSchema#                |
 | dcterms: | http://purl.org/dc/terms/                        |
+| dcelem   | http://purl.org/dc/elements/1.1/                 |
 | foaf:    | http://xmlns.com/foaf/0.1/                       |
 | skos:    | http://www.w3.org/2004/02/skos/core#	            |
 | prov:    | http://www.w3.org/ns/prov#                       |
@@ -241,8 +242,8 @@ The VoID/DCAT metadata can contain other population counts, such as the classes,
 
 The number of classes can be retrieved by the query:
 ```
-SELECT DISTINCT (count(?s) AS ?c)
-FROM <http://dbpedia.org> WHERE {
+SELECT (count(?s) AS ?c)
+WHERE {
   SELECT DISTINCT ?s WHERE {
     { ?s a owl:Class }
     UNION { ?s a rdfs:Class }
@@ -254,7 +255,7 @@ The number of classes must be linked to the knowledge base resource by the prope
 
 The number of properties can be retrieved by the query:
 ```
-SELECT DISTINCT (count(?p) AS ?c)
+SELECT (count(?p) AS ?c)
 WHERE {
     SELECT DISTINCT ?p WHERE  {
     ?s ?p ?o
@@ -265,7 +266,7 @@ The number of properties must be linked to the knowledge base resource by the pr
 
 The number of distinct subjects can be retrieved by the query:
 ```
-SELECT DISTINCT (count(?p) AS ?c)
+SELECT (count(?p) AS ?c)
 WHERE {
   SELECT DISTINCT ?s WHERE  {
     ?s ?p ?o
@@ -297,7 +298,7 @@ In our example, with arbitrary populations, the description would be:
 ##### Namespaces
 
 <!--- Trop de namespaces dans DBpedia à cause d'URI mal formée, ERROR dans WASABI --->
-<!--- NOTE Parler du fait que la presence de void:uriPattern défini ce qui est accepté en tant que sujet/objet dans les comptes de population --->
+<!--- TODO Parler du fait que la presence de void:uriPattern défini ce qui est accepté en tant que sujet/objet dans les comptes de population --->
 ```
 SELECT DISTINCT ?ns WHERE {
   ?s ?p ?o .
@@ -328,6 +329,8 @@ This document will be edited to reflect what we learned here:
 7. If `void:uriSpace` is given, look for Datasets/Vocabularies/Graphs within the namespace.
 8. Endpoint description will have to be rebuilt from scratch (including result format, etc.).
 9. Endpoint URIs should be searched both with HTTP and HTTPS.
+10. Retrieve the named graph of the metadata we extract: `SELECT ?g ?s ?p ?o WHERE { GRAPH ?g { ?s ?p ?o . ?s a void:Dataset  } }`
+11. Search for resources typed by DCAT/SPARQL-SD/VoID classes linked to the description resource.
 
 For now, the method is planned as follows:
 1. Extract the existing descriptions.
@@ -477,19 +480,96 @@ CONSTRUCT {
   ?s ?p ?central
 }
 ```
-The results are presented in the file [retrieved_dataset_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_dbpedia.ttl), line 19 to 91. There are 3 datasets described, none of which are linked to the endpoint URL. Only 2 contain labels and none contain provenance information.
 
-But, we note that the relation `rdfs:seeAlso` links the dataset `dbv:Dataset`  to the graph `<http://dbpedia.org>`. The relation `rdfs:seeAlso` indicates that the object resource can give further information about the subject resource. So, we can infer that the `dbv:Dataset` describes the `<http://dbpedia.org>` graph.
+The results of those queries are one resource `dbv:Dataset` and two blank nodes. We note that the relation `rdfs:seeAlso` links the dataset `dbv:Dataset`  to the graph `<http://dbpedia.org>`. The relation `rdfs:seeAlso` indicates that the object resource can give further information about the subject resource. So, we can infer that the `dbv:Dataset` resource describes the `<http://dbpedia.org>` graph.
 
+The results are presented in the file [retrieved_dataset_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_dbpedia.ttl), line 7 to 17.
+
+This dataset description contains several pieces of information that we must check. The object of the property `void:sparqlEndpoint` is not the endpoint URL that we used but a local address, unusable for us. We should replace the object with the URL we used to retrieve the data.
+
+The property `void:inDataset` has as object a resource that describes elements in a `void:Dataset`. Two resources are linked to the DBpedia dataset description. Those two resources are at the center of the description of linksets, typed by `void:Linkset`, for both `rdfs:seeAlso` and `owl:sameAs` properties. Those linksets are part of the dataset description and should also be included in it.
+
+There is a set of VoID properties describing population statistics. The values of each of those properties should be checked, and corrected, before being added to the generated metadata.
 
 ##### Generation of metadata
-From the existing metadata about DBpedia, we can gather a partial endpoint description. The link between the `dbv:Dataset` description and the graph `<http://dbpedia.org>` can link the endpoint metadata and the content metadata. We could not get provenance information about `<http://dbpedia.org>`. The SPARQL-SD description of the DBPedia endpoint can be reused as it is, with the addition of the only graph description we could retrieve. As we know the name of the endpoint we have been querying, we can add a label to the knowledge base resource.
+From the existing metadata about DBpedia, we can gather a partial endpoint description. The link between the `dbv:Dataset` description and the graph `<http://dbpedia.org>` can link the endpoint metadata and the content metadata. We could not get provenance information about `<http://dbpedia.org>`. The SPARQL-SD description of the DBPedia endpoint can be reused as it is, with the addition of the only graph description we could retrieve.
+
+We use two new description resources to regroup our generated metadata. In our generated metadata, the resource `dkg:DBPedia` is the center of the dataset description, and the resource `dkg:DBPedia-service` is the center of the endpoint description. We add to them the retrieved metadata after a check and correction if necessary.
+
+For the dataset description, as we know the name of the endpoint we have been querying, we can add a label to the knowledge base resource. Some of the population statistics properties, values can be checked using the queries given in previous sections. The generated values for triples, classes and properties are different but close to the retrieved ones, given in the following table. We add the generated values to the generated metadata.
+
+| Property          | Retrieved value | Generated value |
+|-------------------|----------------:|----------------:|
+| `void:triples`    | 859 801 816     | 859 801 816     |
+| `void:classes`    | 483 621         | 483 912         |
+| `void:properties` | 54 155          | 54 364          |
+
+The generated values of the other properties give values very different from the retrieved ones. The properties `void:distinctSubjects` and `void:distinctObjects` describe the number of distinct URI of blank node subject of a triple and the number of distinct URI, blank node, or literal object of a triple, respectively.
+The number of distinct subjects is retrived with the following query:
+```
+SELECT (count(?s) AS ?c)
+  WHERE {
+    SELECT DISTINCT ?s
+    WHERE {
+      ?s ?p ?o
+    }
+}
+```
+The number of distinct objects is obtained by a trivial modification of this query.
+The property `void:entities` described the number of distinct URIs or blank nodes present in the base. It can be extracted with the following query:
+```
+SELECT (count(?u) AS ?c)
+  WHERE {
+    SELECT DISTINCT ?u
+    WHERE {
+      { ?u ?p ?o }
+      UNION { ?s ?p ?u }
+      FILTER( isIRI(?u) || isBlank(?u) )
+    }
+}
+```
+The values retrieved from the metadata and from the endpoint for those three properties are given in the following table.
+
+| Property                | Retrieved value | Generated value |
+|-------------------------|----------------:|----------------:|
+| `void:distinctObjects`  | 231 116 566     | 82 137 793      |
+| `void:distinctSubjects` | 43 070 161      | 10 741 240      |
+| `void:entities`         | 30 127 028      | 7 835 229       |
+
+The difference of value between our data and the retrieved metadata can be explained either by a limitation of the endpoint capacity to give a full count or by outdated metadata. In this example, we choose to keep the retrieved metadata values over our generated ones, in the hypothesis that the provider of those values had fewer limitations during their generation.
+<!--- NOTE Lequel choisir ? celui donné ou celui re-calculé --->
+
+In a similar fashion to the population statistics, we can check the count given in the two linksets description retrieved. The count of the sameAs relations in the dataset is retrived by the following query:
+```
+SELECT (count(*) AS ?c)
+WHERE {
+  ?s owl:sameAs ?o
+}
+```
+
+| Property     | Retrieved value | Generated value |
+|--------------|----------------:|----------------:|
+| owl:sameAs   | 49 127 463      | 49 127 465      |
+| rdfs:seeAlso | 254 347         | 254 354         |
+
+The generated values are very close to the ones retrieved from the metadata, we can use them in our generated metadata.
+
+The retrieved endpoint description elements cannot be checked using SPARQL queries and will be checked using other methods at a later date. As written in previous sections, we add to the endpoint description the list of all graphs we could extract. We also add the link between the endpoint description and the dataset description with the property `dcat:servesDataset`.
+
+<!--- TODO endpoint description generation --->
+
+Finally, we add some provenance information to describe our generated data. We had a few lines of provenance information describing the sources and time of generation of the generated metadata.
+```
+dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
+	prov:wasAttributedTo "Pierre Maillot"@en ;
+	prov:generatedAtTime "2021-03-22"^^xsd:date ;
+	prov:actedOnBehalfOf <http://www.inria.fr> .
+```
 
 A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl)
 
+
 *WIP*
-<!---  Extraction de RDFa depuis DBpedia.org ne donne pas de donées RDF viables --->
-<!--- TODO: Vérification des données + génération des données manquantes si possible --->
 
 #### [Wasabi](http://wasabi.inria.fr/sparql)
 We suppose that we only know the name "Wasabi" and its endpoint's URL `http://wasabi.inria.fr/sparql`.
@@ -501,6 +581,52 @@ From this retrieved data alone, we cannot generate a description of the WASABI b
 The retrieval of knowledge base resource connected to the endpoint URI returns 1 result `http://ns.inria.fr/wasabi/wasabi-1-0`.
 
 The file [retrieved_dataset_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_wasabi.ttl) gives the descriptions of each resource. Two of the resources are at the center of exhaustive descriptions of datasets. Only one of the resources is linked to the known URL of WASABI's endpoint by the property `void:sparqlEndpoint`. From this fact, we can assume that the triples between line 116 to 192, centered around the resource `<http://ns.inria.fr/wasabi/wasabi-1-0>` are the description of the WASABI dataset.
+
+|  |
+|---|
+| `dcterms:title` |
+| `schema:name` |
+| `dcterms:description` |
+
+|  |
+|---|
+| `dcterms:creator` |
+| `void:uriSpace` |
+| `dcelem:publisher` |
+| `schema:author` |
+| `schema:publisher` |
+| `prov:wasGeneratedBy` |
+
+|  |
+|---|
+| `dcterms:licence` |
+| `schema:licence` |
+
+|  |
+|---|
+| `dcterms:issued` |
+| `schema:datePublished` |
+| `prov:wasGeneratedAtTime` |
+
+|  |
+|---|
+| `void:dataDump` |
+| `void:sparqlEndpoint` |
+
+|  |
+|---|
+| `schema:keywords` |
+| `schema:subjectOf` |
+| `dcterms:subject` |
+
+|  |
+|---|
+| `owl:versionInfo` |
+| `void:vocabulary` |
+
+|  |
+|---|
+| `void:triples` |
 
 ##### Generation of metadata
 
@@ -529,16 +655,16 @@ ORDER BY ?g
 
 Yet, the VoID/DCAT description contains the value `"http://ns.inria.fr/wasabi/"` for the property `void:uriSpace` which gives the namespace of the resources of the WASABI base. We can identify 8 graphs within this namespaces, given in the following table:
 
-| Graphs URIs within the WASABI namespace                  |
-|---------------------------------------------------------|
-| http://ns.inria.fr/wasabi/graph/albums                  |
-| http://ns.inria.fr/wasabi/graph/artists                 |
-| http://ns.inria.fr/wasabi/graph/metadata                |
-| http://ns.inria.fr/wasabi/graph/songs                   |
-| http://ns.inria.fr/wasabi/ontology/                     |
-| http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c |
-| http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b |
-| http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8 |
+| Graphs URIs within the WASABI namespace                   |
+|-----------------------------------------------------------|
+| `http://ns.inria.fr/wasabi/graph/albums`                  |
+| `http://ns.inria.fr/wasabi/graph/artists`                 |
+| `http://ns.inria.fr/wasabi/graph/metadata`                |
+| `http://ns.inria.fr/wasabi/graph/songs`                   |
+| `http://ns.inria.fr/wasabi/ontology/`                     |
+| `http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c` |
+| `http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b` |
+| `http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8` |
 
 From this, we can consider that WASABI is a datasets composed of several graphs.
 

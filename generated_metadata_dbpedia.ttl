@@ -9,30 +9,34 @@
 @prefix bif:	<bif:> .
 @prefix dbv:	<http://dbpedia.org/void/> .
 @prefix local:	<http://localhost:8890/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 
-dbv:Dataset	rdf:type	void:Dataset, dcat:Dataset, prov:Entity ;
-		rdfs:seeAlso	<http://dbpedia.org> ;
-		void:classes	483621 ;
-		void:distinctObjects	231116566 ;
-		void:distinctSubjects	43070161 ;
-		void:entities	30127028 ;
-		void:properties	54155 ;
-		void:sparqlEndpoint	<http://dbpedia.org/sparql> ;
-		void:triples	859801816 .
-dbv:sameAsLinks	void:inDataset	dbv:Dataset .
-dbv:seeAlsoLinks	void:inDataset	dbv:Dataset .
+dkg:DBpedia	rdf:type	void:Dataset, dcat:Dataset, prov:Entity ;
+	rdfs:label "DBpedia"@en ;
+	void:sparqlEndpoint	dbp:sparql ;
+	void:triples	859801816 .
+	void:classes	483912 ;
+	void:properties	54364 ;
+	void:distinctObjects	231116566 ;
+	void:distinctSubjects	43070161 ;
+	void:entities	30127028 ;
+	rdfs:seeAlso	<http://dbpedia.org> ;
+dbv:sameAsLinks	void:inDataset	dkg:DBpedia .
+dbv:seeAlsoLinks	void:inDataset	dkg:DBpedia .
 
 dbv:sameAsLinks	rdf:type	void:Linkset ;
-	void:inDataset	dbv:Dataset .
+	void:inDataset	dkg:DBpedia .
 	void:linkPredicate	owl:sameAs ;
-	void:triples	49127463 .
+	void:triples	49127465 .
 dbv:seeAlsoLinks	rdf:type	void:Linkset ;
-	void:inDataset	dbv:Dataset .
+	void:inDataset	dkg:DBpedia .
 	void:linkPredicate	rdfs:seeAlso ;
 	void:triples	254347 .
 
-dbp:sparql-sd	rdf:type	sd:Service, dcat:DataService ;
-	dcat:servesDataset dbv:Dataset ;
+
+
+dkg:DBpedia-service	rdf:type sd:Service, dcat:DataService, prov:Entity ;
+	dcat:servesDataset dkg:DBpedia ;
 	sd:endpoint	dbp:sparql ,
 		dbp:sparql-auth ;
 	sd:feature	sd:RequiresDataset ,
@@ -40,6 +44,13 @@ dbp:sparql-sd	rdf:type	sd:Service, dcat:DataService ;
 		sd:EmptyGraphs ,
 		sd:UnionDefaultGraph ;
 	sd:resultFormat	formats:N-triples ,
+		formats:Turtle ,
+		formats:RDFa ,
+		formats:N3 ,
+		formats:RDF_XML ,
+		formats:SPARQL_Results_CSV ,
+		formats:SPARQL_Results_JSON ,
+		formats:SPARQL_Results_XML ,
 		virtrdf:FileFormat_Triples_HTML_Microdata ,
 		virtrdf:FileFormat_Triples_HTML_list ,
 		virtrdf:FileFormat_Triples_HTML_table ,
@@ -56,14 +67,7 @@ dbp:sparql-sd	rdf:type	sd:Service, dcat:DataService ;
 		virtrdf:FileFormat_Triples_CXML ,
 		virtrdf:FileFormat_Triples_CXML_QR ,
 		virtrdf:FileFormat_Quads_TriG ,
-		virtrdf:FileFormat_SPARQL_Results_CXML ,
-		formats:Turtle ,
-		formats:RDFa ,
-		formats:N3 ,
-		formats:RDF_XML ,
-		formats:SPARQL_Results_CSV ,
-		formats:SPARQL_Results_JSON ,
-		formats:SPARQL_Results_XML ;
+		virtrdf:FileFormat_SPARQL_Results_CXML ;
 	sd:supportedLanguage	sd:SPARQL11Update ,
 		sd:SPARQL11Query ,
 		sd:SPARQL10Query ;
@@ -98,7 +102,7 @@ dbp:sparql-sd	rdf:type	sd:Service, dcat:DataService ;
 			<b3sonto> ,
 			<dbprdf-label> ,
 			<facets> ,
-			dbp:sparql-sd ,
+			dkg:DBpedia-service ,
 			<http://dbpedia.org> ,
 			<http://dbpedia.org/resource/classes#> ,
 			<http://dbpedia.org/schema/property_rules#> ,
@@ -124,3 +128,8 @@ dbp:sparql-sd	rdf:type	sd:Service, dcat:DataService ;
 			<virtpivot-rules> ,
 			<virtrdf-label> .
 	] .
+
+dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
+	prov:wasAttributedTo "Pierre Maillot"@en ;
+	prov:generatedAtTime "2021-03-22"^^xsd:date ;
+	prov:actedOnBehalfOf <http://www.inria.fr> .
