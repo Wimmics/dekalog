@@ -1,4 +1,6 @@
 @prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:	<http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sd:	<http://www.w3.org/ns/sparql-service-description#> .
 @prefix formats:	<http://www.w3.org/ns/formats/> .
 @prefix dbp:	<http://dbpedia.org/> .
@@ -15,10 +17,19 @@ dbv:Dataset	rdf:type	void:Dataset, dcat:Dataset, prov:Entity ;
 		void:distinctSubjects	43070161 ;
 		void:entities	30127028 ;
 		void:properties	54155 ;
-		void:sparqlEndpoint	local:sparql ;
+		void:sparqlEndpoint	<http://dbpedia.org/sparql> ;
 		void:triples	859801816 .
 dbv:sameAsLinks	void:inDataset	dbv:Dataset .
 dbv:seeAlsoLinks	void:inDataset	dbv:Dataset .
+
+dbv:sameAsLinks	rdf:type	void:Linkset ;
+	void:inDataset	dbv:Dataset .
+	void:linkPredicate	owl:sameAs ;
+	void:triples	49127463 .
+dbv:seeAlsoLinks	rdf:type	void:Linkset ;
+	void:inDataset	dbv:Dataset .
+	void:linkPredicate	rdfs:seeAlso ;
+	void:triples	254347 .
 
 dbp:sparql-sd	rdf:type	sd:Service, dcat:DataService ;
 	dcat:servesDataset dbv:Dataset ;
