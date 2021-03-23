@@ -59,7 +59,7 @@ dkg:Wasabi	rdf:type	void:Dataset ,
 		"lyrics" ,
 		"metadata" ,
 		"chord" ;
-	void:triples	55542555 ;
+	void:triples	55544689 ;
 	dct:licence	<https://creativecommons.org/licenses/by-nc/4.0/> ;
 	schema:licence	<https://creativecommons.org/licenses/by-nc/4.0/> ;
 	dct:issued	"2020-12-09"^^xsd:date ;

@@ -143,7 +143,7 @@ THe following tables present a non-exhaustive list of the properties to be used 
 
 As an example:
 ```
-:exampleDataset a prov:entity ;
+:exampleDataset a prov:Entity ;
   dcterms:creator <https://dblp.org/pid/143/6275> ;
   dcterms:license <https://cecill.info/licences/Licence_CeCILL_V2.1-fr> ;
   dcterms:created "08-02-2021"^^xsd:date ;
@@ -192,7 +192,7 @@ The link between a `sd:DataService` and a `dcat:Dataset` should be represented b
 
 ```
 :exampleSparqlService sd:endpoint <http://www.example.com/sparql> ;
-  a sd:Service, dcat:DataService ;
+  a sd:Service, dcat:DataService, prov:Entity ;
   sd:supportedLanguage sd:SPARQL10Query, sd:SPARQL10Update ;
   sd:resultFormat formats:N3 , formats:RDF_XML , formats:SPARQL_Results_CSV , formats:SPARQL_Results_JSON , formats:SPARQL_Results_XML , formats:Turtle ;
   sd:availableGraphs [
@@ -206,6 +206,12 @@ The link between a `sd:DataService` and a `dcat:Dataset` should be represented b
      ]
   ] ;
   dcat:servesDataset :exampleDataset .
+```
+
+The dataset description resource should also be linked to the endpoint descriptino resource by the property `dcat:accessService`. This property links instances of `dcat:Dataset` and `dcat:DataService`. As an example:
+```
+:exampleDataset a void:Dataset, dcat:Dataset, prov:Entity ;
+  dcat:accessService :exampleSparqlService .
 ```
 
 ##### Ontology descriptions
@@ -336,7 +342,7 @@ For now, the method is planned as follows:
 1. Extract the existing descriptions.
    1. Search for resources linked to the endpoint URL by the property `sd:endpoint`. Extract their descriptions.
    2. Search for resources typed by `void:Dataset` or `dcat:Dataset` that are linked to the endpoint URL.
-    * If there is none, extract the descriptions of all resources typed by `void:Dataset` or `dcat:Dataset` for later reconnection.
+     * If there is none, extract the descriptions of all resources typed by `void:Dataset` or `dcat:Dataset` for later reconnection.
 2. Try to reconnect the existing descriptions with the known SPARQL endpoint URL and between themselves and with the existing graphs.
    * If an endpoint description, and at least a VoID/DCAT description are connected to the endpoint URL, and the endpoint description indicate a graph connected to the VoID/DCAT description, then the descriptions are connected and nothing has to be done.
    * If only an endpoint description is connected to the endpoint URL and there is no graph described, extract the graphs present in the dataset.
@@ -345,6 +351,7 @@ For now, the method is planned as follows:
       * If one of the existing description is connected to the URI of a VoID/DCAT description of the dataset, then the endpoint description should be considered as the potential endpoint description of the dataset.
    * If there is a knowledge base description but no endpoint description and the knowledge base description give a value to the property `void:uriSpace` and there are named graphs in this URI space, then the endpoint description should be generated and include those graphs.
 3. Check the veracity of existing data.
+  * If their are population statistics values, re-calculate those values using SPARQL queries.
 4. Generate missing data.
 ---
 
@@ -570,6 +577,7 @@ A first version of the metadata about DBPedia would be as presented in file [gen
 
 
 *WIP*
+<!--- TODO Génération de metadata supplémentaire --->
 
 #### [Wasabi](http://wasabi.inria.fr/sparql)
 We suppose that we only know the name "Wasabi" and its endpoint's URL `http://wasabi.inria.fr/sparql`.
@@ -581,52 +589,6 @@ From this retrieved data alone, we cannot generate a description of the WASABI b
 The retrieval of knowledge base resource connected to the endpoint URI returns 1 result `http://ns.inria.fr/wasabi/wasabi-1-0`.
 
 The file [retrieved_dataset_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_wasabi.ttl) gives the descriptions of each resource. Two of the resources are at the center of exhaustive descriptions of datasets. Only one of the resources is linked to the known URL of WASABI's endpoint by the property `void:sparqlEndpoint`. From this fact, we can assume that the triples between line 116 to 192, centered around the resource `<http://ns.inria.fr/wasabi/wasabi-1-0>` are the description of the WASABI dataset.
-
-|  |
-|---|
-| `dcterms:title` |
-| `schema:name` |
-| `dcterms:description` |
-
-|  |
-|---|
-| `dcterms:creator` |
-| `void:uriSpace` |
-| `dcelem:publisher` |
-| `schema:author` |
-| `schema:publisher` |
-| `prov:wasGeneratedBy` |
-
-|  |
-|---|
-| `dcterms:licence` |
-| `schema:licence` |
-
-|  |
-|---|
-| `dcterms:issued` |
-| `schema:datePublished` |
-| `prov:wasGeneratedAtTime` |
-
-|  |
-|---|
-| `void:dataDump` |
-| `void:sparqlEndpoint` |
-
-|  |
-|---|
-| `schema:keywords` |
-| `schema:subjectOf` |
-| `dcterms:subject` |
-
-|  |
-|---|
-| `owl:versionInfo` |
-| `void:vocabulary` |
-
-|  |
-|---|
-| `void:triples` |
 
 ##### Generation of metadata
 
@@ -668,21 +630,87 @@ Yet, the VoID/DCAT description contains the value `"http://ns.inria.fr/wasabi/"`
 
 From this, we can consider that WASABI is a datasets composed of several graphs.
 
+There are several properties used in the dataset description. Among those properties, there are several that we cannot check. Those properties are given in the following tables, they concern the human-readable description of the dataset, its authorship, its license, and its provenance.
+
+| Labels                |
+|-----------------------|
+| `dcterms:title`       |
+| `schema:name`         |
+| `dcterms:description` |
+
+| Authorship         |
+|--------------------|
+| `dcterms:creator`  |
+| `dcelem:publisher` |
+| `schema:author`    |
+| `schema:publisher` |
+
+| Licence           |
+|-------------------|
+| `dcterms:licence` |
+| `schema:licence`  |
+
+| Content description |
+|---------------------|
+| `schema:keywords`   |
+| `schema:subjectOf`  |
+| `dcterms:subject`   |
+
+| Provenance                |
+|---------------------------|
+| `dcterms:issued`          |
+| `schema:datePublished`    |
+| `prov:wasGeneratedAtTime` |
+| `prov:wasGeneratedBy`     |
+| `owl:versionInfo`         |
+
+The following properties describe the access to the endpoint and can be checked by sending SPARQL queries or by accessing the file URL.
+
+| Access                |
+|-----------------------|
+| `void:dataDump`       |
+| `void:sparqlEndpoint` |
+
+The last properties describe the content of the dataset. As said before, the property `void:uriSpace` helped us identify the graphs relevant to the dataset. The presence of properties or classes in the namespace defined by each vocabulary by the following example.
+
+| Vocabulary description |
+|------------------------|
+| `void:vocabulary`      |
+| `void:uriSpace`        |
+
+As an example, for the `<http://purl.org/ontology/chord/>` ontology, we use the query:
+
+```
+ASK {
+  { ?s ?elem ?o  } UNION { ?s a ?elem }
+  FILTER( REGEX(?elem, "http://purl.org/ontology/chord/") )
+}
+```
+<!--- NOTE Impossible d'obtenir un résultat. --->
+
+As the dataset description gives its namespace, we could identify the graphs composing the dataset. We can extract the number of triples of the dataset by restricting the query to those graphs, in the following query:
+
+```
+SELECT (count(*) AS ?c)
+WHERE {
+  SELECT DISTINCT ?s ?p ?o
+  WHERE {
+    { GRAPH <http://ns.inria.fr/wasabi/ontology/> { ?s ?p ?o } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/albums> { ?s ?p ?o } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/artists> { ?s ?p ?o } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/metadata> { ?s ?p ?o } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/songs> { ?s ?p ?o } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/albums> { ?s ?p ?o } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c> { ?s ?p ?o } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b> { ?s ?p ?o } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8> { ?s ?p ?o } }
+  }
+}
+```
+As a result, we obtain 55 544 689 triples in the graphes combined, which is close to the 55 542 555 triples in the retrieved data with `void:triples`.
+
+<!--- NOTE: Requete general au graph par défaut retourne erreur 502 --->
+
 *WIP*
 
 <!--- TODO: description du process pour générer ca  --->
-```
-dkg:wasabiService rdf:type sd:Service, dcat:DataService ;
-  sd:endpoint dkg:sparql ;
-  sd:availableGraphs [
-		a sd:GraphCollection ;
-    sd:namedGraph wasabins:graph/albums ,
-      wasabins:graph/artists ,
-      wasabins:graph/metadata ,
-      wasabins:graph/songs ,
-      wasabins:ontology/ ,
-      wasabins:song/5714dec325ac0d8aee38392c ,
-      wasabins:song/5714dec325ac0d8aee38393b ,
-      wasabins:song/5714dec325ac0d8aee386ee8 ;
-  ] .
-```
