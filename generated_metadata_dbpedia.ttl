@@ -14,6 +14,7 @@
 dkg:DBpedia	rdf:type	void:Dataset, dcat:Dataset, prov:Entity ;
 	rdfs:label "DBpedia"@en ;
 	void:sparqlEndpoint	dbp:sparql ;
+	dcat:accessService dkg:DBpedia-service ;
 	void:triples	859801816 .
 	void:classes	483912 ;
 	void:properties	54364 ;
