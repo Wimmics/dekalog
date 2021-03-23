@@ -13,12 +13,17 @@
 @prefix owl:	<http://www.w3.org/2002/07/owl#> .
 @prefix dkg: <https://dekalog.univ-nantes.fr/> .
 
-wasabins:wasabi-1-0	rdf:type	void:Dataset ,
+dkg:Wasabi	rdf:type	void:Dataset ,
 		schema:Dataset ,
 		dcat:Dataset ,
 		prov:Entity ;
-	owl:versionInfo	"1.0" ;
 	dct:title	"The WASABI RDF Knowledge Graph" ;
+	schema:name	"The WASABI RDF Knowledge Graph" ;
+	dct:description	"The WASABI Dataset is a large corpus of songs enriched with metadata extracted from music databases on the Web, and resulting from the processing of song lyrics and from audio analysis. This dataset is the RDF representation of the original WASABI dataset." ;
+	dcat:accessService dkg:Wasabi-service ;
+	void:dataDump	<https://doi.org/10.5281/zenodo.4312641> .
+  void:sparqlEndpoint	wasabi:sparql ;
+	void:uriSpace	"http://ns.inria.fr/wasabi/" ;
 	void:vocabulary	<http://purl.org/ontology/af/> ,
 		prov: ,
 		<http://dbpedia.org/ontology/> ,
@@ -31,8 +36,6 @@ wasabins:wasabi-1-0	rdf:type	void:Dataset ,
 		foaf: ,
 		<http://purl.org/ontology/chord/> ,
 		<http://purl.org/ontology/mo/> ;
-	dct:description	"The WASABI Dataset is a large corpus of songs enriched with metadata extracted from music databases on the Web, and resulting from the processing of song lyrics and from audio analysis. This dataset is the RDF representation of the original WASABI dataset." ;
-	schema:name	"The WASABI RDF Knowledge Graph" ;
 	dct:creator	"Michel Buffa" ,
 		"Guillaume Pellerin" ,
 		"Elmahdi Korfed" ,
@@ -56,12 +59,10 @@ wasabins:wasabi-1-0	rdf:type	void:Dataset ,
 		"lyrics" ,
 		"metadata" ,
 		"chord" ;
-	dct:issued	"2020-12-09"^^xsd:date ;
-	void:dataDump	<https://doi.org/10.5281/zenodo.4312641> .
-  void:sparqlEndpoint	wasabi:sparql ;
 	void:triples	55542555 ;
-	void:uriSpace	"http://ns.inria.fr/wasabi/" ;
-	prov:wasGeneratedBy	wasabins:RdfGeneration ;
+	dct:licence	<https://creativecommons.org/licenses/by-nc/4.0/> ;
+	schema:licence	<https://creativecommons.org/licenses/by-nc/4.0/> ;
+	dct:issued	"2020-12-09"^^xsd:date ;
 	schema:author	"Michael Fell" ,
 		"Elmahdi Korfed" ,
 		"Michel Buffa" ,
@@ -76,23 +77,25 @@ wasabins:wasabi-1-0	rdf:type	void:Dataset ,
 		"Elena Cabrio" ,
 		"Johan Pauwels" ,
 		"Maroua Tikat" ;
-	schema:datePublished	"2020-12-09"^^xsd:date ;
-	dct:licence	<https://creativecommons.org/licenses/by-nc/4.0/> ;
 	schema:keywords	"music" ,
 		"lyrics" ,
 		"audio analysis" ,
 		"chord" ,
 		"metadata" ,
 		"song" ;
-	schema:licence	<https://creativecommons.org/licenses/by-nc/4.0/> ;
 	schema:publisher	<https://www.cnrs.fr> ,
 		<https://www.inria.fr> ,
 		<http://univ-cotedazur.fr> ;
 	schema:subjectOf	wasabins:fell2019love ;
+	prov:wasGeneratedBy	wasabins:RdfGeneration ;
+	owl:versionInfo	"1.0" ;
+	schema:datePublished	"2020-12-09"^^xsd:date ;
 	prov:wasGeneratedAtTime	"2020-12-09"^^xsd:date .
 
-dkg:wasabiService rdf:type sd:Service, dcat:DataService ;
-  sd:endpoint dkg:sparql ;
+
+dkg:Wasabi-service rdf:type sd:Service, dcat:DataService, prov:Entity ;
+  sd:endpoint wasabi:sparql ;
+	sd:servesDataset dkg:Wasabi ;
   sd:availableGraphs [
 		a sd:GraphCollection ;
     sd:namedGraph wasabins:graph/albums ,
@@ -102,5 +105,5 @@ dkg:wasabiService rdf:type sd:Service, dcat:DataService ;
       wasabins:ontology/ ,
       wasabins:song/5714dec325ac0d8aee38392c ,
       wasabins:song/5714dec325ac0d8aee38393b ,
-      wasabins:song/5714dec325ac0d8aee386ee8 ,
-  ]
+      wasabins:song/5714dec325ac0d8aee386ee8 .
+  ] .

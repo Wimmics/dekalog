@@ -1,18 +1,20 @@
 @prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix ns1:	<http://localhost:8890/> .
+@prefix local:	<http://localhost:8890/> .
 @prefix sd:	<http://www.w3.org/ns/sparql-service-description#> .
-ns1:sparql	rdf:type	sd:Service ;
-	sd:endpoint	ns1:sparql ;
+@prefix formats:	<http://www.w3.org/ns/formats/> .
+
+
+local:sparql	rdf:type	sd:Service ;
+	sd:endpoint	local:sparql ;
 	sd:feature	sd:UnionDefaultGraph ,
 		sd:DereferencesURIs .
-@prefix ns3:	<http://www.w3.org/ns/formats/> .
-ns1:sparql	sd:resultFormat	ns3:SPARQL_Results_JSON ,
-		ns3:SPARQL_Results_XML ,
-		ns3:Turtle ,
-		ns3:N-Triples ,
-		ns3:N3 ,
-		ns3:RDF_XML ,
-		ns3:SPARQL_Results_CSV ,
-		ns3:RDFa ;
+	sd:resultFormat	formats:SPARQL_Results_JSON ,
+		formats:SPARQL_Results_XML ,
+		formats:Turtle ,
+		formats:N-Triples ,
+		formats:N3 ,
+		formats:RDF_XML ,
+		formats:SPARQL_Results_CSV ,
+		formats:RDFa ;
 	sd:supportedLanguage	sd:SPARQL10Query ;
-	sd:url	ns1:sparql .
+	sd:url	local:sparql .
