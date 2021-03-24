@@ -17,10 +17,10 @@ dkg:Wasabi	rdf:type	void:Dataset ,
 		schema:Dataset ,
 		dcat:Dataset ,
 		prov:Entity ;
+	dcat:accessService dkg:Wasabi-service ;
 	dct:title	"The WASABI RDF Knowledge Graph" ;
 	schema:name	"The WASABI RDF Knowledge Graph" ;
 	dct:description	"The WASABI Dataset is a large corpus of songs enriched with metadata extracted from music databases on the Web, and resulting from the processing of song lyrics and from audio analysis. This dataset is the RDF representation of the original WASABI dataset." ;
-	dcat:accessService dkg:Wasabi-service ;
 	void:dataDump	<https://doi.org/10.5281/zenodo.4312641> .
   void:sparqlEndpoint	wasabi:sparql ;
 	void:uriSpace	"http://ns.inria.fr/wasabi/" ;
@@ -30,8 +30,6 @@ dkg:Wasabi	rdf:type	void:Dataset ,
 		void: ,
 		schema: ,
 		dcat: ,
-		<http://purl.org/vocab/frbr/core#> ,
-		<http://www.wikidata.org/entity/> ,
 		dct: ,
 		foaf: ,
 		<http://purl.org/ontology/chord/> ,
@@ -59,7 +57,6 @@ dkg:Wasabi	rdf:type	void:Dataset ,
 		"lyrics" ,
 		"metadata" ,
 		"chord" ;
-	void:triples	55544689 ;
 	dct:licence	<https://creativecommons.org/licenses/by-nc/4.0/> ;
 	schema:licence	<https://creativecommons.org/licenses/by-nc/4.0/> ;
 	dct:issued	"2020-12-09"^^xsd:date ;
@@ -87,13 +84,16 @@ dkg:Wasabi	rdf:type	void:Dataset ,
 		<https://www.inria.fr> ,
 		<http://univ-cotedazur.fr> ;
 	schema:subjectOf	wasabins:fell2019love ;
+	void:triples	55544689 ;
 	prov:wasGeneratedBy	wasabins:RdfGeneration ;
 	owl:versionInfo	"1.0" ;
 	schema:datePublished	"2020-12-09"^^xsd:date ;
 	prov:wasGeneratedAtTime	"2020-12-09"^^xsd:date .
 
 
-dkg:Wasabi-service rdf:type sd:Service, dcat:DataService, prov:Entity ;
+dkg:Wasabi-service rdf:type sd:Service,
+		dcat:DataService,
+		prov:Entity ;
   sd:endpoint wasabi:sparql ;
 	sd:servesDataset dkg:Wasabi ;
   sd:availableGraphs [

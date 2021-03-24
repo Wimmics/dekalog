@@ -573,8 +573,7 @@ dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
 	prov:actedOnBehalfOf <http://www.inria.fr> .
 ```
 
-A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl)
-
+A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl). Until line 136, the file contains metadata retrieved from the endpoint and checked when possible.
 
 *WIP*
 <!--- TODO Génération de metadata supplémentaire --->
@@ -613,6 +612,14 @@ ORDER BY ?g
 | http://purl.org/ontology/chord/ |
 | http://purl.org/ontology/mo/ |
 | http://xmlns.com/foaf/0.1/ |
+
+
+SELECT DISTINCT ?g WHERE {
+ GRAPH ?g { ?s ?p ?o }
+FILTER(REGEX(?g, "http://ns.inria.fr/wasabi/wasabi-1-0") )
+}
+ORDER BY ?g
+=====> TIMEOUT
  --->
 
 Yet, the VoID/DCAT description contains the value `"http://ns.inria.fr/wasabi/"` for the property `void:uriSpace` which gives the namespace of the resources of the WASABI base. We can identify 8 graphs within this namespaces, given in the following table:
@@ -678,15 +685,53 @@ The last properties describe the content of the dataset. As said before, the pro
 | `void:vocabulary`      |
 | `void:uriSpace`        |
 
-As an example, for the `<http://purl.org/ontology/chord/>` ontology, we use the query:
+As an example, for the `<http://purl.org/ontology/chord/>` ontology, we use the following query for each named graph of the dataset:
 
 ```
+
 ASK {
-  { ?s ?elem ?o  } UNION { ?s a ?elem }
+{ GRAPH <http://ns.inria.fr/wasabi/ontology/> {
+    { ?s ?elem ?o  } UNION { ?s a ?elem } } }
+  UNION {
+    GRAPH <http://ns.inria.fr/wasabi/graph/albums> {
+      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
+  UNION {
+    GRAPH <http://ns.inria.fr/wasabi/graph/artists> {
+      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
+  UNION {
+     GRAPH <http://ns.inria.fr/wasabi/graph/metadata> {
+       { ?s ?elem ?o  } UNION { ?s a ?elem } } }
+  UNION {
+    GRAPH <http://ns.inria.fr/wasabi/graph/songs> {
+      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
+  UNION {
+    GRAPH <http://ns.inria.fr/wasabi/graph/albums> {
+      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
+  UNION {
+    GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c> {
+      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
+  UNION {
+    GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b> {
+      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
+  UNION {
+    GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8> {
+      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
   FILTER( REGEX(?elem, "http://purl.org/ontology/chord/") )
 }
 ```
-<!--- NOTE Impossible d'obtenir un résultat. --->
+
+We do not have to check the properties and classes from vocabularies that are used in the description itself. The results of the checks of the other vocabularies are given in the following table:
+
+| Vocabulary                         | Result  |
+|------------------------------------|---------|
+| `http://dbpedia.org/ontology/`     | `true`  |
+| `http://purl.org/ontology/af/`     | `true`  |
+| `http://purl.org/ontology/chord/`  | `true`  |
+| `http://purl.org/ontology/mo/`     | `true`  |
+| `http://purl.org/vocab/frbr/core#` | `false` |
+| `http://www.wikidata.org/entity/`  | `false` |
+
+The results show that the dataset does not contain classes or properties from the vocabularies `http://purl.org/vocab/frbr/core#` and `http://www.wikidata.org/entity/`. We can remove those two values from the property `void:vocabulary`.
 
 As the dataset description gives its namespace, we could identify the graphs composing the dataset. We can extract the number of triples of the dataset by restricting the query to those graphs, in the following query:
 
@@ -709,8 +754,6 @@ WHERE {
 ```
 As a result, we obtain 55 544 689 triples in the graphes combined, which is close to the 55 542 555 triples in the retrieved data with `void:triples`.
 
-<!--- NOTE: Requete general au graph par défaut retourne erreur 502 --->
+<!--- NOTE: Requete generale au graph par défaut retourne erreur 502 --->
 
 *WIP*
-
-<!--- TODO: description du process pour générer ca  --->
