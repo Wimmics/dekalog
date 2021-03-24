@@ -112,3 +112,95 @@ dkg:Wasabi prov:wasDerivedFrom wasabi:sparql ;
 	prov:wasAttributedTo "Pierre Maillot"@en ;
 	prov:generatedAtTime "2021-03-23"^^xsd:date ;
 	prov:actedOnBehalfOf <http://www.inria.fr> .
+
+
+
+@prefix wsb:	<http://ns.inria.fr/wasabi/ontology/> .
+@prefix bibo:	<http://purl.org/ontology/bibo/> .
+@prefix mo:	<http://purl.org/ontology/mo/> .
+@prefix sioc:	<http://rdfs.org/sioc/ns#> .
+@prefix aodoctype:	<https://data.archives-ouvertes.fr/doctype/> .
+dkg:Wasabi void:classPartition [
+		void:class	wsb:Song ;
+		void:entities	2099287 ] ;
+	void:classPartition [
+		void:class	wsb:Artist_Group ;
+		void:entities	29806 ]
+	void:classPartition [
+		void:class	wsb:Artist_Person ;
+		void:entities	24264 ] ;
+	void:classPartition [
+		void:class	mo:MusicArtist ;
+		void:entities	23323 ] ;
+	void:classPartition [
+		void:class	wsb:Album ;
+		void:entities	208743 ] ;
+	void:classPartition [
+		void:class	wsb:Classic_Song ;
+		void:entities	10864 ] ;
+	void:classPartition [
+		void:class	wsb:Choir ;
+		void:entities	44 ] ;
+	void:classPartition [
+		void:class	wsb:Orchestra ;
+		void:entities	30 ] ;
+	void:classPartition [
+		void:class	owl:DatatypeProperty ;
+		void:entities	27 ] ;
+	void:classPartition [
+		void:class	owl:ObjectProperty ;
+		void:entities	23 ] ;
+	void:classPartition [
+		void:class	owl:Class ;
+		void:entities	8 ] ;
+	void:classPartition [
+		void:class	foaf:Person ;
+		void:entities	6 ] ;
+	void:classPartition [
+		void:class	sioc:Container ;
+		void:entities	3 ] ;
+	void:classPartition [
+		void:class	foaf:Organization ;
+		void:entities	3 ] ;
+	void:classPartition [
+		void:class	rdf:List ;
+		void:entities	3 ] ;
+	void:classPartition [
+		void:class	bibo:Document ;
+		void:entities	3 ] ;
+	void:classPartition [
+		void:class	bibo:AcademicArticle ;
+		void:entities	2 ] ;
+	void:classPartition [
+		void:class	void:Dataset ;
+		void:entities	2 ] ;
+	void:classPartition [
+		void:class	aodoctype:Article ;
+		void:entities	2 ] ;
+	void:classPartition [
+		void:class	schema:ScholarlyArticle ;
+		void:entities	2 ] ;
+	void:classPartition [
+		void:class	void:Linkset ;
+		void:entities	1 ] ;
+	void:classPartition [
+		void:class	schema:Dataset ;
+		void:entities	1 ] ;
+	void:classPartition [
+		void:class	prov:SoftwareAgent ;
+		void:entities	1 ] ;
+	void:classPartition [
+		void:class	owl:Restriction ;
+		void:entities	1 ] ;
+	void:classPartition [
+		void:class	prov:Entity ;
+		void:entities	1 ] ;
+	void:classPartition [
+		void:class	owl:Ontology ;
+		void:entities	1 ] ;
+	void:classPartition [
+		void:class	prov:Activity ;
+		void:entities	1 ] ;
+	void:classPartition [
+		void:class	dcat:Dataset ;
+		void:entities	1 ] .
