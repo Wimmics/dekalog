@@ -107,3 +107,8 @@ dkg:Wasabi-service rdf:type sd:Service,
       wasabins:song/5714dec325ac0d8aee38393b ,
       wasabins:song/5714dec325ac0d8aee386ee8 .
   ] .
+
+dkg:Wasabi prov:wasDerivedFrom wasabi:sparql ;
+	prov:wasAttributedTo "Pierre Maillot"@en ;
+	prov:generatedAtTime "2021-03-23"^^xsd:date ;
+	prov:actedOnBehalfOf <http://www.inria.fr> .

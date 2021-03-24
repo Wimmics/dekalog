@@ -685,37 +685,48 @@ The last properties describe the content of the dataset. As said before, the pro
 | `void:vocabulary`      |
 | `void:uriSpace`        |
 
-As an example, for the `<http://purl.org/ontology/chord/>` ontology, we use the following query for each named graph of the dataset:
+As the dataset description gives its namespace, we could identify the graphs composing the dataset. As an example, to check the presence of properties and classes from the `<http://purl.org/ontology/chord/>` ontology, we use the following query:
 
 ```
 
 ASK {
-{ GRAPH <http://ns.inria.fr/wasabi/ontology/> {
-    { ?s ?elem ?o  } UNION { ?s a ?elem } } }
-  UNION {
+  {
+    GRAPH <http://ns.inria.fr/wasabi/ontology/> {
+      { ?s ?elem ?o  } UNION { ?s a ?elem }
+    }
+  } UNION {
     GRAPH <http://ns.inria.fr/wasabi/graph/albums> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
-  UNION {
+      { ?s ?elem ?o  } UNION { ?s a ?elem }
+    }
+  } UNION {
     GRAPH <http://ns.inria.fr/wasabi/graph/artists> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
-  UNION {
+      { ?s ?elem ?o  } UNION { ?s a ?elem }
+    }
+  } UNION {
      GRAPH <http://ns.inria.fr/wasabi/graph/metadata> {
-       { ?s ?elem ?o  } UNION { ?s a ?elem } } }
-  UNION {
+       { ?s ?elem ?o  } UNION { ?s a ?elem }
+       }
+  } UNION {
     GRAPH <http://ns.inria.fr/wasabi/graph/songs> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
-  UNION {
+      { ?s ?elem ?o  } UNION { ?s a ?elem }
+    }
+  } UNION {
     GRAPH <http://ns.inria.fr/wasabi/graph/albums> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
-  UNION {
+      { ?s ?elem ?o  } UNION { ?s a ?elem }
+    }
+  } UNION {
     GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
-  UNION {
+      { ?s ?elem ?o  } UNION { ?s a ?elem }
+    }
+  } UNION {
     GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
-  UNION {
+      { ?s ?elem ?o  } UNION { ?s a ?elem }
+    }
+  } UNION {
     GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem } } }
+      { ?s ?elem ?o  } UNION { ?s a ?elem }
+    }
+  }
   FILTER( REGEX(?elem, "http://purl.org/ontology/chord/") )
 }
 ```
@@ -733,7 +744,7 @@ We do not have to check the properties and classes from vocabularies that are us
 
 The results show that the dataset does not contain classes or properties from the vocabularies `http://purl.org/vocab/frbr/core#` and `http://www.wikidata.org/entity/`. We can remove those two values from the property `void:vocabulary`.
 
-As the dataset description gives its namespace, we could identify the graphs composing the dataset. We can extract the number of triples of the dataset by restricting the query to those graphs, in the following query:
+We can extract the number of triples of the dataset by restricting the query to the dataset named graphs, in the following query:
 
 ```
 SELECT (count(*) AS ?c)
@@ -752,8 +763,8 @@ WHERE {
   }
 }
 ```
-As a result, we obtain 55 544 689 triples in the graphes combined, which is close to the 55 542 555 triples in the retrieved data with `void:triples`.
+As a result, we get 55 544 689 triples in the graphs combined, which is close to the 55 542 555 triples in the retrieved data with `void:triples`.
 
-<!--- NOTE: Requete generale au graph par défaut retourne erreur 502 --->
+
 
 *WIP*
