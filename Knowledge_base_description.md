@@ -599,6 +599,38 @@ dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
 
 A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl). Until line 136, the file contains metadata retrieved from the endpoint and checked when possible.
 
+We extract the population count for each class in the dataset. But, because of the size of the dataset and the number of classes used in it, we can only get partial results with the query written in the previous section. To get the full list of classes and their population counts, we use the limit and offset of the query to limit the charge on the SPARQL server.
+For example, at the fourth iteration, the query would be:
+```
+SELECT ?class (count(?instance) AS ?count) WHERE {
+  SELECT DISTINCT ?class ?instance
+  WHERE {
+    ?instance a ?class  
+  }
+}
+LIMIT 100
+OFFSET 300
+```
+For our example, we limited ourselves to the classes part of the `http://dbpedia.org/ontology` namespace. We constructed directly the metadata using the following query. The results of this query are shown in [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl) between line 140 and 1039.
+```
+CONSTRUCT {
+  <https://dekalog.univ-nantes.fr/DBpedia> void:classPartition [
+    void:class ?class ;
+    void:entities ?count
+  ]
+} WHERE {
+  SELECT DISTINCT ?class (count(?instance) AS ?count) WHERE {
+    SELECT DISTINCT ?class ?instance
+    WHERE {
+      ?instance a ?class
+      FILTER(REGEX(?class, "http://dbpedia.org/ontology") )
+    }
+  }
+  ORDER BY ?count
+}
+```
+
+
 *WIP*
 <!--- TODO Génération de metadata supplémentaire --->
 
@@ -816,9 +848,9 @@ The resulting metadata is shown in [generated_metadata_wasabi](https://github.co
 | Class             | Count   |
 |-------------------|--------:|
 | wsb:Song          | 2099287 |
+| wsb:Album         | 208743  |
 | wsb:Artist_Group  |	29806   |
 | wsb:Artist_Person |	24264   |
-| wsb:Album         | 208743  |
 | wsb:Classic_Song  | 10864   |
 | wsb:Choir         | 44      |
 | wsb:Orchestra     | 30      |
