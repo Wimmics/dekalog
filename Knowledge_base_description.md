@@ -329,12 +329,15 @@ The object of the property `void:classPartition` must be the subject of the prop
 
 <!--- Trop de namespaces dans DBpedia à cause d'URI mal formée, ERROR dans WASABI --->
 <!--- TODO Parler du fait que la presence de void:uriPattern défini ce qui est accepté en tant que sujet/objet dans les comptes de population --->
+Namespaces generally follow the same structure. The name of a resource appears after the final `/` of `#` of its URI. While this is not standard, most namespaces follow this convention. As such, we can extract the list of namespaces used in properties or classes using the following query:
+
 ```
 SELECT DISTINCT ?ns WHERE {
-  ?s ?p ?o .
+  { ?s ?elem ?o . } UNION { ?x a ?elem . }
   BIND( REPLACE( str(?p), "(#|/)[^#/]*$", "$1" ) AS ?ns )
 }
 ```
+This query has the disadvantage to be quite complex and uses advanced features of SPARQL1.1 that are not implemented in all SPARQL endpoints.
 
 ##### Links to other resources
 
