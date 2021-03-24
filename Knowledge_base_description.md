@@ -301,6 +301,30 @@ In our example, with arbitrary populations, the description would be:
   void:distinctObjects 458 ;
 ```
 
+##### Class population count
+To give an idea of the repartition of instances among classes to end-users, it is possible to give the population of each class in a dataset. The VoID vocabulary gives a property called `void:classPartition` which allows writing the properties of the instances of a class. The same mechanism is also available for properties using `void:propertyPartition`.
+
+The list of class population can be retrieved using the following query:
+```
+SELECT ?class (count(?instance) AS ?count) WHERE {
+  SELECT DISTINCT ?class ?instance
+  WHERE {
+    ?instance a ?class  
+  }
+}
+```
+The object of the property `void:classPartition` must be the subject of the property `void:class`. In our example with arbitrary population, the class population count appears as follows in the metadata:
+```
+:exampleDataset void:classPartition [
+    void:class :exampleClass1 ;
+    void:entities 789
+  ] ;
+  void:classPartition [
+    void:class :exampleClass2 ;
+    void:entities 456
+  ]
+```
+
 ##### Namespaces
 
 <!--- Trop de namespaces dans DBpedia à cause d'URI mal formée, ERROR dans WASABI --->
@@ -764,6 +788,40 @@ WHERE {
 }
 ```
 As a result, we get 55 544 689 triples in the graphs combined, which is close to the 55 542 555 triples in the retrieved data with `void:triples`.
+
+As for DBpedia, we add provenance information about the generation of this metadata. The file [generated_metadata_wasabi](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) contains the generated descriptions until the line 138.
+
+In the next paragraphs, we move on to the generation of new metadata.
+
+We extract the population count of each class using the following query:
+```
+SELECT DISTINCT ?class (count(?instance) AS ?count)
+WHERE {
+  SELECT DISTINCT ?class ?instance
+  WHERE {
+    { GRAPH <http://ns.inria.fr/wasabi/ontology/> { ?instance a ?class } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/albums> { ?instance a ?class } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/artists> { ?instance a ?class } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/metadata> { ?instance a ?class } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/songs> { ?instance a ?class } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/albums> { ?instance a ?class } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c> { ?instance a ?class } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b> { ?instance a ?class } }
+    UNION { GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8> { ?instance a ?class } }
+  }
+}
+```
+The resulting metadata is shown in [generated_metadata_wasabi](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) between line 118 and 206. We give here an excerpt of the data for the classes defined in the WASABI namespace:
+
+| Class             | Count   |
+|-------------------|--------:|
+| wsb:Song          | 2099287 |
+| wsb:Artist_Group  |	29806   |
+| wsb:Artist_Person |	24264   |
+| wsb:Album         | 208743  |
+| wsb:Classic_Song  | 10864   |
+| wsb:Choir         | 44      |
+| wsb:Orchestra     | 30      |
 
 
 
