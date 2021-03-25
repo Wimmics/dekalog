@@ -21,8 +21,8 @@ dkg:Wasabi	rdf:type	void:Dataset ,
 	dct:title	"The WASABI RDF Knowledge Graph" ;
 	schema:name	"The WASABI RDF Knowledge Graph" ;
 	dct:description	"The WASABI Dataset is a large corpus of songs enriched with metadata extracted from music databases on the Web, and resulting from the processing of song lyrics and from audio analysis. This dataset is the RDF representation of the original WASABI dataset." ;
-	void:dataDump	<https://doi.org/10.5281/zenodo.4312641> .
-  void:sparqlEndpoint	wasabi:sparql ;
+	void:dataDump	<https://doi.org/10.5281/zenodo.4312641> ;
+  	void:sparqlEndpoint	wasabi:sparql ;
 	void:uriSpace	"http://ns.inria.fr/wasabi/" ;
 	void:vocabulary	<http://purl.org/ontology/af/> ,
 		prov: ,
@@ -97,8 +97,8 @@ dkg:Wasabi-service rdf:type sd:Service,
   sd:endpoint wasabi:sparql ;
 	sd:servesDataset dkg:Wasabi ;
   sd:availableGraphs [
-		a sd:GraphCollection ;
-    sd:namedGraph wasabins:graph/albums ,
+      a sd:GraphCollection ;
+      sd:namedGraph wasabins:graph/albums ,
       wasabins:graph/artists ,
       wasabins:graph/metadata ,
       wasabins:graph/songs ,
