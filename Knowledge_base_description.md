@@ -326,14 +326,15 @@ The object of the property `void:classPartition` must be the subject of the prop
 ```
 
 ##### Namespaces
-
 <!--- Trop de namespaces dans DBpedia à cause d'URI mal formée, ERROR dans WASABI --->
 <!--- TODO Parler du fait que la presence de void:uriPattern défini ce qui est accepté en tant que sujet/objet dans les comptes de population --->
 Namespaces generally follow the same structure. The name of a resource appears after the final `/` of `#` of its URI. While this is not standard, most namespaces follow this convention. As such, we can extract the list of namespaces used in properties or classes using the following query:
 
 ```
-SELECT DISTINCT ?ns WHERE {
-  { ?s ?elem ?o . } UNION { ?x a ?elem . }
+SELECT DISTINCT ?ns
+WHERE {
+  { ?s ?elem ?o . }
+  UNION { ?x a ?elem . }
   BIND( REPLACE( str(?p), "(#|/)[^#/]*$", "$1" ) AS ?ns )
 }
 ```
@@ -530,6 +531,7 @@ From the existing metadata about DBpedia, we can gather a partial endpoint descr
 
 We use two new description resources to regroup our generated metadata. In our generated metadata, the resource `dkg:DBPedia` is the center of the dataset description, and the resource `dkg:DBPedia-service` is the center of the endpoint description. We add to them the retrieved metadata after a check and correction if necessary.
 
+###### Check and generation of population statistics
 For the dataset description, as we know the name of the endpoint we have been querying, we can add a label to the knowledge base resource. Some of the population statistics properties, values can be checked using the queries given in previous sections. The generated values for triples, classes and properties are different but close to the retrieved ones, given in the following table. We add the generated values to the generated metadata.
 
 | Property          | Retrieved value | Generated value |
@@ -573,6 +575,7 @@ The values retrieved from the metadata and from the endpoint for those three pro
 The difference of value between our data and the retrieved metadata can be explained either by a limitation of the endpoint capacity to give a full count or by outdated metadata. In this example, we choose to keep the retrieved metadata values over our generated ones, in the hypothesis that the provider of those values had fewer limitations during their generation.
 <!--- NOTE Lequel choisir ? celui donné ou celui re-calculé --->
 
+###### Check of the linkset statistics
 In a similar fashion to the population statistics, we can check the count given in the two linksets description retrieved. The count of the sameAs relations in the dataset is retrived by the following query:
 ```
 SELECT (count(*) AS ?c)
@@ -592,7 +595,8 @@ The retrieved endpoint description elements cannot be checked using SPARQL queri
 
 <!--- TODO endpoint description generation --->
 
-Finally, we add some provenance information to describe our generated data. We had a few lines of provenance information describing the sources and time of generation of the generated metadata.
+###### Addition of basic provenance metadata
+We add some provenance information to describe our generated data. We had a few lines of provenance information describing the sources and time of generation of the generated metadata.
 ```
 dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
 	prov:wasAttributedTo "Pierre Maillot"@en ;
@@ -602,6 +606,7 @@ dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
 
 A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl). Until line 136, the file contains metadata retrieved from the endpoint and checked when possible.
 
+###### Class population count
 We extract the population count for each class in the dataset. But, because of the size of the dataset and the number of classes used in it, we can only get partial results with the query written in the previous section. To get the full list of classes and their population counts, we use the limit and offset of the query to limit the charge on the SPARQL server.
 For example, at the fourth iteration, the query would be:
 ```
@@ -652,6 +657,7 @@ The file [retrieved_dataset_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/
 
 The VoID/DCAT description centered around `<http://ns.inria.fr/wasabi/wasabi-1-0>` contains almost all the information it should contains. It is well typed, labelled and described, although not by `rdfs:label`, and contains provenance information. It also contains a count of its triples.
 
+###### Generation of basic SPARQL-SD description
 A SPARQL-SD description of the endpoint we used is missing, as no element allows us to connect this description to the only SPARQL-SD description available.
 
 Extracting the list of named graphs returns 74 results. Of those 74, only 4 a connected to the knowledge base resource by the property `void:vocabulary`. So, they are not graphs of data that we aim to describe in priority.
@@ -696,6 +702,7 @@ Yet, the VoID/DCAT description contains the value `"http://ns.inria.fr/wasabi/"`
 
 From this, we can consider that WASABI is a datasets composed of several graphs.
 
+###### Check of the dataset description properties
 There are several properties used in the dataset description. Among those properties, there are several that we cannot check. Those properties are given in the following tables, they concern the human-readable description of the dataset, its authorship, its license, and its provenance.
 
 | Labels                |
@@ -803,6 +810,7 @@ We do not have to check the properties and classes from vocabularies that are us
 
 The results show that the dataset does not contain classes or properties from the vocabularies `http://purl.org/vocab/frbr/core#` and `http://www.wikidata.org/entity/`. We can remove those two values from the property `void:vocabulary`.
 
+###### Check of the population count
 We can extract the number of triples of the dataset by restricting the query to the dataset named graphs, in the following query:
 
 ```
@@ -824,10 +832,12 @@ WHERE {
 ```
 As a result, we get 55 544 689 triples in the graphs combined, which is close to the 55 542 555 triples in the retrieved data with `void:triples`.
 
+###### Generation of basic provenance metadata
 As for DBpedia, we add provenance information about the generation of this metadata. The file [generated_metadata_wasabi](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) contains the generated descriptions until the line 138.
 
 In the next paragraphs, we move on to the generation of new metadata.
 
+###### Generation of class population counts
 We extract the population count of each class using the following query:
 ```
 SELECT DISTINCT ?class (count(?instance) AS ?count)
