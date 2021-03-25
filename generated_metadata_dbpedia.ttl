@@ -16,13 +16,13 @@ dkg:DBpedia	rdf:type	void:Dataset, dcat:Dataset, prov:Entity ;
 	rdfs:label "DBpedia"@en ;
 	void:sparqlEndpoint	dbp:sparql ;
 	dcat:accessService dkg:DBpedia-service ;
-	void:triples	859801816 .
+	void:triples	859801816 ;
 	void:classes	483912 ;
 	void:properties	54364 ;
 	void:distinctObjects	231116566 ;
 	void:distinctSubjects	43070161 ;
 	void:entities	30127028 ;
-	rdfs:seeAlso	<http://dbpedia.org> ;
+	rdfs:seeAlso	<http://dbpedia.org> .
 dbv:sameAsLinks	void:inDataset	dkg:DBpedia .
 dbv:seeAlsoLinks	void:inDataset	dkg:DBpedia .
 
