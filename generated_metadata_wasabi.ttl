@@ -84,7 +84,7 @@ dkg:Wasabi	rdf:type	void:Dataset ,
 		<https://www.inria.fr> ,
 		<http://univ-cotedazur.fr> ;
 	schema:subjectOf	wasabins:fell2019love ;
-	void:triples	55544689 ;
+	void:triples	55544763 ;
 	prov:wasGeneratedBy	wasabins:RdfGeneration ;
 	owl:versionInfo	"1.0" ;
 	schema:datePublished	"2020-12-09"^^xsd:date ;

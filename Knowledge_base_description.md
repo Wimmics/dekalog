@@ -754,7 +754,6 @@ The last properties describe the content of the dataset. As said before, the pro
 As the dataset description gives its namespace, we could identify the graphs composing the dataset. As an example, to check the presence of properties and classes from the `<http://purl.org/ontology/chord/>` ontology, we use the following query:
 
 ```
-
 ASK {
   {
     GRAPH <http://ns.inria.fr/wasabi/ontology/> {
@@ -815,22 +814,20 @@ We can extract the number of triples of the dataset by restricting the query to 
 
 ```
 SELECT (count(*) AS ?c)
+    FROM <http://ns.inria.fr/wasabi/ontology/>
+    FROM <http://ns.inria.fr/wasabi/graph/albums>
+    FROM <http://ns.inria.fr/wasabi/graph/artists>
+    FROM <http://ns.inria.fr/wasabi/graph/metadata>
+    FROM <http://ns.inria.fr/wasabi/graph/songs>
+    FROM <http://ns.inria.fr/wasabi/graph/albums>
+    FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c>
+    FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b>
+    FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8>
 WHERE {
-  SELECT DISTINCT ?s ?p ?o
-  WHERE {
-    { GRAPH <http://ns.inria.fr/wasabi/ontology/> { ?s ?p ?o } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/albums> { ?s ?p ?o } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/artists> { ?s ?p ?o } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/metadata> { ?s ?p ?o } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/songs> { ?s ?p ?o } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/albums> { ?s ?p ?o } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c> { ?s ?p ?o } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b> { ?s ?p ?o } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8> { ?s ?p ?o } }
-  }
+      ?s ?p ?o
 }
 ```
-As a result, we get 55 544 689 triples in the graphs combined, which is close to the 55 542 555 triples in the retrieved data with `void:triples`.
+As a result, we get 55 544 763 triples in the graphs combined, which is close to the 55 542 555 triples in the retrieved data with `void:triples`.
 
 ###### Generation of basic provenance metadata
 As for DBpedia, we add provenance information about the generation of this metadata. The file [generated_metadata_wasabi](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) contains the generated descriptions until the line 138.
@@ -843,16 +840,17 @@ We extract the population count of each class using the following query:
 SELECT DISTINCT ?class (count(?instance) AS ?count)
 WHERE {
   SELECT DISTINCT ?class ?instance
+      FROM <http://ns.inria.fr/wasabi/ontology/>
+      FROM <http://ns.inria.fr/wasabi/graph/albums>
+      FROM <http://ns.inria.fr/wasabi/graph/artists>
+      FROM <http://ns.inria.fr/wasabi/graph/metadata>
+      FROM <http://ns.inria.fr/wasabi/graph/songs>
+      FROM <http://ns.inria.fr/wasabi/graph/albums>
+      FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c>
+      FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b>
+      FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8>
   WHERE {
-    { GRAPH <http://ns.inria.fr/wasabi/ontology/> { ?instance a ?class } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/albums> { ?instance a ?class } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/artists> { ?instance a ?class } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/metadata> { ?instance a ?class } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/songs> { ?instance a ?class } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/graph/albums> { ?instance a ?class } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c> { ?instance a ?class } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b> { ?instance a ?class } }
-    UNION { GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8> { ?instance a ?class } }
+      ?instance a ?class
   }
 }
 ```
@@ -862,8 +860,8 @@ The resulting metadata is shown in [generated_metadata_wasabi](https://github.co
 |-------------------|--------:|
 | wsb:Song          | 2099287 |
 | wsb:Album         | 208743  |
-| wsb:Artist_Group  |	29806   |
-| wsb:Artist_Person |	24264   |
+| wsb:Artist_Group  | 29806   |
+| wsb:Artist_Person | 24264   |
 | wsb:Classic_Song  | 10864   |
 | wsb:Choir         | 44      |
 | wsb:Orchestra     | 30      |
