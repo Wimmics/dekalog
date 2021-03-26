@@ -348,7 +348,7 @@ This query has the disadvantage to be quite complex and uses advanced features o
 
 ### Examples of descriptions
 
-In this section, we try first to extract the descriptions of three KB, detailing each step. We then try to generate a description corresponding to the standards we have defined in the previous sections. The goal of this section is to identify the eventual limitations and problems coming from our previous statements when confronted with real-life examples.
+In this section, we try first to extract the descriptions of three KB, detailing each step. We then try to generate a description corresponding to the standards we have defined in the previous sections. The goal of this section is to identify the eventual limitations and problems coming from our previous statements when confronted with real-life examples. In the generated data, we will use the `dkg:missingValue` resource to represent elements that should have appear in the examples but could not be retrieved at the moment of reading. This resource should not be used outside this documentation.
 
 ---
 **EDIT:**
@@ -366,7 +366,7 @@ This document will be edited to reflect what we learned here:
 10. Retrieve the named graph of the metadata we extract: `SELECT ?g ?s ?p ?o WHERE { GRAPH ?g { ?s ?p ?o . ?s a void:Dataset  } }`
 11. Search for resources typed by DCAT/SPARQL-SD/VoID classes linked to the description resource.
 
-For now, the method is planned as follows:
+For now, the method of extraction and generation is planned as follows:
 1. Extract the existing descriptions.
    1. Search for resources linked to the endpoint URL by the property `sd:endpoint`. Extract their descriptions.
    2. Search for resources typed by `void:Dataset` or `dcat:Dataset` that are linked to the endpoint URL.
@@ -604,7 +604,7 @@ dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
 	prov:actedOnBehalfOf <http://www.inria.fr> .
 ```
 
-A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl). Until line 136, the file contains metadata retrieved from the endpoint and checked when possible.
+A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl). Until line 143, the file contains metadata retrieved from the endpoint and checked when possible.
 
 ###### Class population count
 We extract the population count for each class in the dataset. But, because of the size of the dataset and the number of classes used in it, we can only get partial results with the query written in the previous section. To get the full list of classes and their population counts, we use the limit and offset of the query to limit the charge on the SPARQL server.
@@ -619,7 +619,7 @@ SELECT ?class (count(?instance) AS ?count) WHERE {
 LIMIT 100
 OFFSET 300
 ```
-For our example, we limited ourselves to the classes part of the `http://dbpedia.org/ontology` namespace. We constructed directly the metadata using the following query. The results of this query are shown in [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl) between line 140 and 1039.
+For our example, we limited ourselves to the classes part of the `http://dbpedia.org/ontology` namespace. We constructed directly the metadata using the following query. The results of this query are shown in [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl) between line 156 and 1055.
 ```
 CONSTRUCT {
   <https://dekalog.univ-nantes.fr/DBpedia> void:classPartition [
@@ -830,7 +830,7 @@ WHERE {
 As a result, we get 55 544 763 triples in the graphs combined, which is close to the 55 542 555 triples in the retrieved data with `void:triples`.
 
 ###### Generation of basic provenance metadata
-As for DBpedia, we add provenance information about the generation of this metadata. The file [generated_metadata_wasabi](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) contains the generated descriptions until the line 138.
+As for DBpedia, we add provenance information about the generation of this metadata. The file [generated_metadata_wasabi](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) contains the generated descriptions until the line 130.
 
 In the next paragraphs, we move on to the generation of new metadata.
 
@@ -854,7 +854,7 @@ WHERE {
   }
 }
 ```
-The resulting metadata is shown in [generated_metadata_wasabi](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) between line 118 and 206. We give here an excerpt of the data for the classes defined in the WASABI namespace:
+The resulting metadata is shown in [generated_metadata_wasabi](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) between line 132 and 222. We give here an excerpt of the data for the classes defined in the WASABI namespace:
 
 | Class             | Count   |
 |-------------------|--------:|

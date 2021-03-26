@@ -13,17 +13,18 @@
 @prefix owl:	<http://www.w3.org/2002/07/owl#> .
 @prefix dkg: <https://dekalog.univ-nantes.fr/> .
 
-dkg:Wasabi	rdf:type	void:Dataset ,
+# Dataset description
+dkg:Wasabi rdf:type void:Dataset ,
 		schema:Dataset ,
 		dcat:Dataset ,
 		prov:Entity ;
 	dcat:accessService dkg:Wasabi-service ;
-	dct:title	"The WASABI RDF Knowledge Graph" ;
+	dct:title "The WASABI RDF Knowledge Graph" ;
 	schema:name	"The WASABI RDF Knowledge Graph" ;
 	dct:description	"The WASABI Dataset is a large corpus of songs enriched with metadata extracted from music databases on the Web, and resulting from the processing of song lyrics and from audio analysis. This dataset is the RDF representation of the original WASABI dataset." ;
-	void:dataDump	<https://doi.org/10.5281/zenodo.4312641> ;
+	void:dataDump <https://doi.org/10.5281/zenodo.4312641> ;
   	void:sparqlEndpoint	wasabi:sparql ;
-	void:uriSpace	"http://ns.inria.fr/wasabi/" ;
+	void:uriSpace "http://ns.inria.fr/wasabi/" ;
 	void:vocabulary	<http://purl.org/ontology/af/> ,
 		prov: ,
 		<http://dbpedia.org/ontology/> ,
@@ -58,9 +59,9 @@ dkg:Wasabi	rdf:type	void:Dataset ,
 		"metadata" ,
 		"chord" ;
 	dct:licence	<https://creativecommons.org/licenses/by-nc/4.0/> ;
-	schema:licence	<https://creativecommons.org/licenses/by-nc/4.0/> ;
-	dct:issued	"2020-12-09"^^xsd:date ;
-	schema:author	"Michael Fell" ,
+	schema:licence <https://creativecommons.org/licenses/by-nc/4.0/> ;
+	dct:issued "2020-12-09"^^xsd:date ;
+	schema:author "Michael Fell" ,
 		"Elmahdi Korfed" ,
 		"Michel Buffa" ,
 		"Guillaume Pellerin" ,
@@ -80,46 +81,60 @@ dkg:Wasabi	rdf:type	void:Dataset ,
 		"chord" ,
 		"metadata" ,
 		"song" ;
-	schema:publisher	<https://www.cnrs.fr> ,
+	schema:publisher <https://www.cnrs.fr> ,
 		<https://www.inria.fr> ,
 		<http://univ-cotedazur.fr> ;
-	schema:subjectOf	wasabins:fell2019love ;
-	void:triples	55544763 ;
+	schema:subjectOf wasabins:fell2019love ;
+	void:triples 55544763 ;
 	prov:wasGeneratedBy	wasabins:RdfGeneration ;
 	owl:versionInfo	"1.0" ;
-	schema:datePublished	"2020-12-09"^^xsd:date ;
+	schema:datePublished "2020-12-09"^^xsd:date ;
 	prov:wasGeneratedAtTime	"2020-12-09"^^xsd:date .
 
 
+# Endpoint description
 dkg:Wasabi-service rdf:type sd:Service,
 		dcat:DataService,
 		prov:Entity ;
-  sd:endpoint wasabi:sparql ;
+	sd:endpoint wasabi:sparql ;
 	sd:servesDataset dkg:Wasabi ;
-  sd:availableGraphs [
-      a sd:GraphCollection ;
-      sd:namedGraph wasabins:graph/albums ,
-      wasabins:graph/artists ,
-      wasabins:graph/metadata ,
-      wasabins:graph/songs ,
-      wasabins:ontology/ ,
-      wasabins:song/5714dec325ac0d8aee38392c ,
-      wasabins:song/5714dec325ac0d8aee38393b ,
-      wasabins:song/5714dec325ac0d8aee386ee8 .
-  ] .
+	sd:availableGraphs [
+		a sd:GraphCollection ;
+      	sd:namedGraph wasabins:graph/albums ,
+      	wasabins:graph/artists ,
+      	wasabins:graph/metadata ,
+      	wasabins:graph/songs ,
+      	wasabins:ontology/ ,
+      	wasabins:song/5714dec325ac0d8aee38392c ,
+      	wasabins:song/5714dec325ac0d8aee38393b ,
+      	wasabins:song/5714dec325ac0d8aee386ee8 .
+	] ;
+# Missing values
+	sd:feature dkg:missingValue ;
+	sd:resultFormat dkg:missingValue ;
+	sd:supportedLanguage dkg:missingValue ;
+	sd:inputFormat dkg:missingValue ;
+	sd:languageExtension dkg:missingValue ;
+	sd:propertyFeature dkg:missingValue ;
+	sd:extensionFunctio dkg:missingValue ;
+	sd:extensionAggregate dkg:missingValue .
 
+# Provenance information for the two descriptions
 dkg:Wasabi prov:wasDerivedFrom wasabi:sparql ;
 	prov:wasAttributedTo "Pierre Maillot"@en ;
 	prov:generatedAtTime "2021-03-23"^^xsd:date ;
 	prov:actedOnBehalfOf <http://www.inria.fr> .
+dkg:Wasabi-service prov:wasDerivedFrom wasabi:sparql ;
+	prov:wasAttributedTo "Pierre Maillot"@en ;
+	prov:generatedAtTime "2021-03-23"^^xsd:date ;
+	prov:actedOnBehalfOf <http://www.inria.fr> .
 
-
-
-@prefix wsb:	<http://ns.inria.fr/wasabi/ontology/> .
-@prefix bibo:	<http://purl.org/ontology/bibo/> .
-@prefix mo:	<http://purl.org/ontology/mo/> .
-@prefix sioc:	<http://rdfs.org/sioc/ns#> .
-@prefix aodoctype:	<https://data.archives-ouvertes.fr/doctype/> .
+# Class population counts
+@prefix wsb: <http://ns.inria.fr/wasabi/ontology/> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix mo: <http://purl.org/ontology/mo/> .
+@prefix sioc: <http://rdfs.org/sioc/ns#> .
+@prefix aodoctype: <https://data.archives-ouvertes.fr/doctype/> .
 dkg:Wasabi void:classPartition [
 		void:class	wsb:Song ;
 		void:entities	2099287 ] ;

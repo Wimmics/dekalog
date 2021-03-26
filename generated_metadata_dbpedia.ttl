@@ -12,20 +12,31 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix dkg: <https://dekalog.univ-nantes.fr/> .
 
+# Dataset description
 dkg:DBpedia	rdf:type	void:Dataset, dcat:Dataset, prov:Entity ;
 	rdfs:label "DBpedia"@en ;
 	void:sparqlEndpoint	dbp:sparql ;
 	dcat:accessService dkg:DBpedia-service ;
+	rdfs:seeAlso	<http://dbpedia.org> ;
+# Basic population counts.
+# The counts have been re-computed from the endpoint. When a result was too different from what was given in the original metadata, the original value was kept.
 	void:triples	859801816 ;
 	void:classes	483912 ;
 	void:properties	54364 ;
 	void:distinctObjects	231116566 ;
 	void:distinctSubjects	43070161 ;
 	void:entities	30127028 ;
-	rdfs:seeAlso	<http://dbpedia.org> .
+# Missing values
+	void:vocabulary dkg:missingValue ;
+	dct:creator dkg:missingValue ;
+	dce:publisher dkg:missingValue ;
+	dct:licence dkg:missingValue ;
+	schema:licence dkg:missingValue ;
+	dct:issued dkg:missingValue .
+
+# Linksets of the dataset, the number of triples have been ckeched
 dbv:sameAsLinks	void:inDataset	dkg:DBpedia .
 dbv:seeAlsoLinks	void:inDataset	dkg:DBpedia .
-
 dbv:sameAsLinks	rdf:type	void:Linkset ;
 	void:inDataset	dkg:DBpedia .
 	void:linkPredicate	owl:sameAs ;
@@ -36,7 +47,7 @@ dbv:seeAlsoLinks	rdf:type	void:Linkset ;
 	void:triples	254347 .
 
 
-
+# Endpoint description
 dkg:DBpedia-service	rdf:type sd:Service, dcat:DataService, prov:Entity ;
 	dcat:servesDataset dkg:DBpedia ;
 	sd:endpoint	dbp:sparql ,
@@ -131,13 +142,18 @@ dkg:DBpedia-service	rdf:type sd:Service, dcat:DataService, prov:Entity ;
 			<virtrdf-label> .
 	] .
 
+# Provenance information for the dataset and endpoint description
 dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
+	prov:wasAttributedTo "Pierre Maillot"@en ;
+	prov:generatedAtTime "2021-03-22"^^xsd:date ;
+	prov:actedOnBehalfOf <http://www.inria.fr> .
+dkg:DBpedia-service prov:wasDerivedFrom dbp:sparql ;
 	prov:wasAttributedTo "Pierre Maillot"@en ;
 	prov:generatedAtTime "2021-03-22"^^xsd:date ;
 	prov:actedOnBehalfOf <http://www.inria.fr> .
 
 
-# Class population counts for dbpedia.org/ontology, for conciseness's sake
+# Class population counts, limited to the classes in the "dbpedia.org/ontology" namespace for conciseness's sake
 @prefix dbo:	<http://dbpedia.org/ontology/> .
 
 dkg:DBpedia
