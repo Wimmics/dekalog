@@ -95,7 +95,8 @@ dkg:Wasabi rdf:type void:Dataset ,
 # Endpoint description
 dkg:Wasabi-service rdf:type sd:Service,
 		dcat:DataService,
-		prov:Entity ;
+		prov:Entity ,
+		earl:TestSubject ;
 	sd:endpoint wasabi:sparql ;
 	sd:servesDataset dkg:Wasabi ;
 	sd:availableGraphs [
@@ -128,6 +129,22 @@ dkg:Wasabi-service prov:wasDerivedFrom wasabi:sparql ;
 	prov:wasAttributedTo "Pierre Maillot"@en ;
 	prov:generatedAtTime "2021-03-23"^^xsd:date ;
 	prov:actedOnBehalfOf <http://www.inria.fr> .
+:namespaceExtraction earl:subject dkg:Wasabi-service ;
+    earl:test """SELECT DISTINCT ?g WHERE {
+        GRAPH ?g {
+            ?s ?p ?o
+        }
+        FILTER(REGEX(?g, "http://ns.inria.fr/wasabi/wasabi-1-0") )
+    }
+    ORDER BY ?g""" ;
+    earl:result [
+        earl:outcome "proxy error" ;
+        earl:info """Proxy Error
+            The proxy server received an invalid response from an upstream server.
+            The proxy server could not handle the request
+
+            Reason: Error reading from remote server"""
+    ] .
 
 # Class population counts
 @prefix wsb: <http://ns.inria.fr/wasabi/ontology/> .

@@ -34,7 +34,7 @@ dkg:DBpedia	rdf:type	void:Dataset, dcat:Dataset, prov:Entity ;
 	schema:licence dkg:missingValue ;
 	dct:issued dkg:missingValue .
 
-# Linksets of the dataset, the number of triples have been ckeched
+# Linksets of the dataset
 dbv:sameAsLinks	void:inDataset	dkg:DBpedia .
 dbv:seeAlsoLinks	void:inDataset	dkg:DBpedia .
 dbv:sameAsLinks	rdf:type	void:Linkset ;

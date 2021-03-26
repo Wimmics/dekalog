@@ -34,10 +34,11 @@ To cover as many features of a KB as possible, a KB description should describe 
 | dcterms: | http://purl.org/dc/terms/                        |
 | dcelem   | http://purl.org/dc/elements/1.1/                 |
 | foaf:    | http://xmlns.com/foaf/0.1/                       |
-| skos:    | http://www.w3.org/2004/02/skos/core#	            |
+| skos:    | http://www.w3.org/2004/02/skos/core#	          |
 | prov:    | http://www.w3.org/ns/prov#                       |
 | formats: | http://www.w3.org/ns/formats/                    |
 | schema:  | http://schema.org/                               |
+| earl:    | http://www.w3.org/ns/earl#                       |
 
 All the following examples are redacted in [turtle](https://www.w3.org/TR/turtle/) format.
 
@@ -348,7 +349,30 @@ This query has the disadvantage to be quite complex and uses advanced features o
 
 ### Examples of descriptions
 
-In this section, we try first to extract the descriptions of three KB, detailing each step. We then try to generate a description corresponding to the standards we have defined in the previous sections. The goal of this section is to identify the eventual limitations and problems coming from our previous statements when confronted with real-life examples. In the generated data, we will use the `dkg:missingValue` resource to represent elements that should have appear in the examples but could not be retrieved at the moment of reading. This resource should not be used outside this documentation.
+In this section, we try first to extract the descriptions of three KB, detailing each step. We then try to generate a description corresponding to the standards we have defined in the previous sections. The goal of this section is to identify the eventual limitations and problems coming from our previous statements when confronted with real-life examples.
+
+In the generated data, we will use the `dkg:missingValue` resource to represent elements that should have to appear in the examples but could not be retrieved at the moment of reading. This resource should not be used outside this documentation.
+
+We also add provenance statements about our generated description. This provenance information concerns only the new description resources we have created. It also contains reports of the extraction and generation operation that could not do due to errors or limitations.
+
+#### Generation of error report
+SPARQL endpoints have limitations on the time allocated to the resolution of queries and on the keyword supported by the SPARQL engine. Those limitations make some operations of metadata extraction impossible. We keep a trace of the errors obtained during the process of extraction using the [EARL](https://www.w3.org/TR/EARL10-Schema/) vocabulary. This set of reports can be used to identify the limitations of the server that can not be described in RDF.
+
+As an example, if the extraction of the list of namespaces resulted in a timeout, the report would appear as such:
+```
+:exampleSparqlService a earl:TestSubject .
+:namespaceExtraction earl:subject :exampleSparqlService ;
+    earl:test """SELECT DISTINCT ?ns
+        WHERE {
+          { ?s ?elem ?o . }
+          UNION { ?x a ?elem . }
+          BIND( REPLACE( str(?p), "(#|/)[^#/]*$", "$1" ) AS ?ns )
+        }""" ;
+    earl:result [
+        earl:outcome "error 504" ;
+        earl:info "server returned timeout error"
+    ] .
+```
 
 ---
 **EDIT:**
@@ -602,6 +626,10 @@ dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
 	prov:wasAttributedTo "Pierre Maillot"@en ;
 	prov:generatedAtTime "2021-03-22"^^xsd:date ;
 	prov:actedOnBehalfOf <http://www.inria.fr> .
+dkg:DBpedia-service prov:wasDerivedFrom dbp:sparql ;
+	prov:wasAttributedTo "Pierre Maillot"@en ;
+	prov:generatedAtTime "2021-03-22"^^xsd:date ;
+	prov:actedOnBehalfOf <http://www.inria.fr> .
 ```
 
 A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl). Until line 143, the file contains metadata retrieved from the endpoint and checked when possible.
@@ -661,33 +689,28 @@ The VoID/DCAT description centered around `<http://ns.inria.fr/wasabi/wasabi-1-0
 A SPARQL-SD description of the endpoint we used is missing, as no element allows us to connect this description to the only SPARQL-SD description available.
 
 Extracting the list of named graphs returns 74 results. Of those 74, only 4 a connected to the knowledge base resource by the property `void:vocabulary`. So, they are not graphs of data that we aim to describe in priority.
+Yet, the VoID/DCAT description contains the value `"http://ns.inria.fr/wasabi/"` for the property `void:uriSpace` which gives the namespace of the resources of the WASABI base. The extraction of the graph in the WASABI namespace with a SPARQL query returns an error. We document the error by adding the following report in the description.
 
-<!--- 74 graphes dans le endpoint
-```
-SELECT DISTINCT ?g WHERE {
-  <http://ns.inria.fr/wasabi/wasabi-1-0> ?p2 ?g .
- GRAPH ?g { ?s ?p ?o }
-}
-ORDER BY ?g
-```
+ ```
+dkg:Wasabi-service a earl:TestSubject .
+:namespaceExtraction earl:subject dkg:Wasabi-service ;
+    earl:test """SELECT DISTINCT ?g WHERE {
+        GRAPH ?g {
+            ?s ?p ?o
+        }
+        FILTER(REGEX(?g, "http://ns.inria.fr/wasabi/wasabi-1-0") )
+    }
+    ORDER BY ?g""" ;
+    earl:result [
+        earl:outcome "proxy error" ;
+        earl:info """Proxy Error
+            The proxy server received an invalid response from an upstream server.
+            The proxy server could not handle the request
 
-| g |
-|---|
-| http://purl.org/dc/terms/ |
-| http://purl.org/ontology/chord/ |
-| http://purl.org/ontology/mo/ |
-| http://xmlns.com/foaf/0.1/ |
-
-
-SELECT DISTINCT ?g WHERE {
- GRAPH ?g { ?s ?p ?o }
-FILTER(REGEX(?g, "http://ns.inria.fr/wasabi/wasabi-1-0") )
-}
-ORDER BY ?g
-=====> TIMEOUT
- --->
-
-Yet, the VoID/DCAT description contains the value `"http://ns.inria.fr/wasabi/"` for the property `void:uriSpace` which gives the namespace of the resources of the WASABI base. We can identify 8 graphs within this namespaces, given in the following table:
+            Reason: Error reading from remote server"""
+    ] .
+ ```
+By checking amnually the urls of the graphs, we can identify 8 graphs within this namespaces, given in the following table:
 
 | Graphs URIs within the WASABI namespace                   |
 |-----------------------------------------------------------|
