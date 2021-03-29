@@ -905,3 +905,8 @@ The resulting metadata is shown in [generated_metadata_wasabi](https://github.co
 
 
 *WIP*
+
+##### [British National Library](http://bnb.data.bl.uk/sparql)
+We suppose that we know the name "British National Library" and the endpoint URL `http://bnb.data.bl.uk/sparql`.
+
+The extraction of endpoint description returns no results. The extraction of the dataset descriptions returns 3 results connected to the endpoint URL. The results are shown in the file [retrieved_dataset_bnb.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_bnb.ttl).
