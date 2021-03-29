@@ -327,8 +327,10 @@ The object of the property `void:classPartition` must be the subject of the prop
 ```
 
 ##### Namespaces
-<!--- Trop de namespaces dans DBpedia à cause d'URI mal formée, ERROR dans WASABI --->
-<!--- TODO Parler du fait que la presence de void:uriPattern défini ce qui est accepté en tant que sujet/objet dans les comptes de population --->
+The descriptions can contain two types of information about namespaces, the namespaces of the dataset and the namespaces from outside used in the dataset.
+
+We can use the dataset namespace to identify the resources and graphs of the dataset. They can be defined by two properties `void:uriSpace` and `void:uriPattern`. `void:uriSpace` gives the start of all the dataset resources URIs. `void:uriPattern` gives a regular expression matching all the datasets resources URIs. The dataset namespace should be described using one of those two properties, when possible.
+
 Namespaces generally follow the same structure. The name of a resource appears after the final `/` of `#` of its URI. While this is not standard, most namespaces follow this convention. As such, we can extract the list of namespaces used in properties or classes using the following query:
 
 ```
