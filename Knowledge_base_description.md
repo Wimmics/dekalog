@@ -327,11 +327,10 @@ The object of the property `void:classPartition` must be the subject of the prop
 ```
 
 ##### Namespaces
-The descriptions can contain two types of information about namespaces, the namespaces of the dataset and the namespaces from outside used in the dataset.
+The descriptions should contain the namespaces of the dataset.
+We can use the dataset namespaces to identify the resources and graphs of the dataset. They can be defined by two properties `void:uriSpace` and `void:uriPattern`. `void:uriSpace` gives the start of all the dataset resources URIs. `void:uriPattern` gives a regular expression matching all the datasets resources URIs. The dataset namespace should be described using one of those two properties, if possible.
 
-We can use the dataset namespace to identify the resources and graphs of the dataset. They can be defined by two properties `void:uriSpace` and `void:uriPattern`. `void:uriSpace` gives the start of all the dataset resources URIs. `void:uriPattern` gives a regular expression matching all the datasets resources URIs. The dataset namespace should be described using one of those two properties, when possible.
-
-Namespaces generally follow the same structure. The name of a resource appears after the final `/` of `#` of its URI. While this is not standard, most namespaces follow this convention. As such, we can extract the list of namespaces used in properties or classes using the following query:
+If they are not given, we can extract the namespaces used in the dataset. Namespaces generally follow the same structure. The name of a resource appears after the final `/` of `#` of its URI. While this is not standard, most namespaces follow this convention. As such, we can extract the list of namespaces used in properties or classes using the following query:
 
 ```
 SELECT DISTINCT ?ns
@@ -360,10 +359,21 @@ We also add provenance statements about our generated description. This provenan
 #### Generation of error report
 SPARQL endpoints have limitations on the time allocated to the resolution of queries and on the keyword supported by the SPARQL engine. Those limitations make some operations of metadata extraction impossible. We keep a trace of the errors obtained during the process of extraction using the [EARL](https://www.w3.org/TR/EARL10-Schema/) vocabulary. This set of reports can be used to identify the limitations of the server that can not be described in RDF.
 
+We add some properties to the EARL vocabulary to link the reports to descriptions features. We use the property `dkg:featureProperty` to state which property the results are the object of.
+
+For our need, each endpoint is an instance of `earl:TestSubject`, and each report is an instance of `earl:Assertion`. For each `earl:Assertion` we give:
+-  The description property that the results of the query should have filled, with `dkg:featureProperty`.
+-  The SPARQL query sent to the endpoint for the extraction of the element of description, object of the property `earl:test`.
+-  The results of the test are given by the property `earl:result` with an instance of `earl:TestResult`, generally a blank node, with the following properties:
+    -  `earl:outcome` gives the result of the test. The results can be instances of the `earl:OutcomeValue` with the following instance defined by the EARL vocabulary: `earl:passed`, `earl:failed`, `earl:cantTell`, `earl:inapplicable` and `earl:untested`.
+    -  `earl:info` gives comments on the comment if possible.
+
 As an example, if the extraction of the list of namespaces resulted in a timeout, the report would appear as such:
 ```
 :exampleSparqlService a earl:TestSubject .
-:namespaceExtraction earl:subject :exampleSparqlService ;
+:namespaceExtraction a earl:Assertion ;
+    earl:subject :exampleSparqlService ;
+    dkg:featureProperty void:uriSpace ;
     earl:test """SELECT DISTINCT ?ns
         WHERE {
           { ?s ?elem ?o . }
@@ -371,8 +381,9 @@ As an example, if the extraction of the list of namespaces resulted in a timeout
           BIND( REPLACE( str(?p), "(#|/)[^#/]*$", "$1" ) AS ?ns )
         }""" ;
     earl:result [
-        earl:outcome "error 504" ;
-        earl:info "server returned timeout error"
+        a earl:TestResult ;
+        earl:outcome earl:failed ;
+        earl:info "Error 504 - server returned timeout error"
     ] .
 ```
 
@@ -507,11 +518,11 @@ SELECT DISTINCT ?central WHERE {
 ```
 Results:
 
-| Knowledge base resources        |
-|---------------------------------|
-| http://dbpedia.org/void/Dataset |
-| nodeID://b10252                 |
-| nodeID://b50123                 |
+| Knowledge base resources          |
+|-----------------------------------|
+| `http://dbpedia.org/void/Dataset` |
+| `nodeID://b10252`                 |
+| `nodeID://b50123`                 |
 
 Retrieval of data about each knowledge base resources using 2 queries:
 
@@ -610,10 +621,10 @@ WHERE {
 }
 ```
 
-| Property     | Retrieved value | Generated value |
-|--------------|----------------:|----------------:|
-| owl:sameAs   | 49 127 463      | 49 127 465      |
-| rdfs:seeAlso | 254 347         | 254 354         |
+| Property       | Retrieved value | Generated value |
+|----------------|----------------:|----------------:|
+| `owl:sameAs`   | 49 127 463      | 49 127 465      |
+| `rdfs:seeAlso` | 254 347         | 254 354         |
 
 The generated values are very close to the ones retrieved from the metadata, we can use them in our generated metadata.
 
@@ -881,15 +892,15 @@ WHERE {
 ```
 The resulting metadata is shown in [generated_metadata_wasabi](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) between line 132 and 222. We give here an excerpt of the data for the classes defined in the WASABI namespace:
 
-| Class             | Count   |
-|-------------------|--------:|
-| wsb:Song          | 2099287 |
-| wsb:Album         | 208743  |
-| wsb:Artist_Group  | 29806   |
-| wsb:Artist_Person | 24264   |
-| wsb:Classic_Song  | 10864   |
-| wsb:Choir         | 44      |
-| wsb:Orchestra     | 30      |
+| Class               | Count   |
+|---------------------|--------:|
+| `wsb:Song`          | 2099287 |
+| `wsb:Album`         | 208743  |
+| `wsb:Artist_Group`  | 29806   |
+| `wsb:Artist_Person` | 24264   |
+| `wsb:Classic_Song`  | 10864   |
+| `wsb:Choir`         | 44      |
+| `wsb:Orchestra`     | 30      |
 
 
 
