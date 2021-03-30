@@ -1,4 +1,4 @@
-@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+bnbres:@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix bnbdata:	<http://bnb.data.bl.uk/id/data/> .
 @prefix void:	<http://rdfs.org/ns/void#> .
 @prefix xsd:	<http://www.w3.org/2001/XMLSchema#> .
@@ -10,7 +10,8 @@
 @prefix formats:	<http:www.w3.org/ns/formats/> .
 @prefix bnb:	<http://bnb.data.bl.uk/> .
 @prefix foaf:	<http://xmlns.com/foaf/0.1/> .
-@prefix bnbresppe:	<http://bnb.data.bl.uk/id/resource/018131495/projectedpublicationevent/> .
+@prefix bnbres: <http://bnb.data.bl.uk/id/resource/> .
+@prefix bnblcsh: <http://bnb.data.bl.uk/id/concept/lcsh/> .
 
 bnbdata:BNB	rdf:type	void:Dataset ;
     dcterms:title	"The British National Bibliography as Linked Open Data"@en ;
@@ -19,22 +20,22 @@ bnbdata:BNB	rdf:type	void:Dataset ;
     foaf:homepage	<http://bnb.data.bl.uk> ;
     dcterms:created	"2011-07-26"^^xsd:date ;
 	dcterms:modified	"2021-03-03"^^xsd:date ;
+    dcterms:contributor	bnborga:BritishLibraryMetadataServices ;
+    dcterms:creator	bnborga:BritishLibrary ;
+    dcterms:license	<http://creativecommons.org/publicdomain/zero/1.0/> ;
+    dcterms:publisher	bnborga:BritishLibrary ;
+    dcterms:source	<http://bnb.bl.uk/> ;
 	void:subset	bnbdata:BNBBooks ,
 		bnbdata:BNBCIP ,
 		bnbdata:BNBSerials ;
-	dcterms:contributor	bnborga:BritishLibraryMetadataServices ;
-	dcterms:creator	bnborga:BritishLibrary ;
-	dcterms:license	<http://creativecommons.org/publicdomain/zero/1.0/> ;
-	dcterms:publisher	bnborga:BritishLibrary ;
-	dcterms:source	<http://bnb.bl.uk/> ;
-	void:exampleResource	<http://bnb.data.bl.uk/id/concept/lcsh/Structuralanalysis%28Engineering%29> ;
+	void:exampleResource	bnblcsh:Structuralanalysis%28Engineering%29 ;
     void:exampleResource	bnbseries:Solidmechanicsanditsapplications ,
-		<http://bnb.data.bl.uk/id/resource/012938091> ,
-		<http://bnb.data.bl.uk/id/resource/013130126> ,
-		<http://bnb.data.bl.uk/id/resource/007063524> ,
-		<http://bnb.data.bl.uk/id/resource/007740079> ,
-		<http://bnb.data.bl.uk/id/resource/005571580> ,
-		<http://bnb.data.bl.uk/id/resource/005653026> ,
+		bnbres:012938091 ,
+		bnbres:013130126 ,
+		bnbres:007063524 ,
+		bnbres:007740079 ,
+		bnbres:005571580 ,
+		bnbres:005653026 ,
         bnbagent:DunedinAcademic ;
     void:feature	formats:Turtle ,
 		formats:RDF_XML ;
@@ -68,13 +69,13 @@ bnbdata:BNBBooks	rdf:type	void:Dataset ;
 	dcterms:source	<http://bnb.bl.uk/> ;
 	dcterms:title	"The British National Bibliography as Linked Open Data - Books"@en ;
 	void:exampleResource	bnbseries:Solidmechanicsanditsapplications ,
-		<http://bnb.data.bl.uk/id/resource/012938091> ,
-		<http://bnb.data.bl.uk/id/resource/013130126> ,
-		<http://bnb.data.bl.uk/id/concept/lcsh/Structuralanalysis%28Engineering%29> ,
+		bnbres:012938091 ,
+		bnbres:013130126 ,
+		bnblcsh:Structuralanalysis%28Engineering%29 ,
 		bnbperson:ChipmanJohnSomerset1926- ,
 		bnbagent:DunedinAcademic ,
-		<http://bnb.data.bl.uk/id/resource/005571580> ,
-		<http://bnb.data.bl.uk/id/resource/005653026> ;
+		bnbres:005571580 ,
+		bnbres:005653026 ;
 	void:feature	formats:Turtle ,
 		formats:RDF_XML ;
 	void:sparqlEndpoint	bnb:sparql ;
@@ -107,10 +108,10 @@ bnbdata:BNBCIP	rdf:type	void:Dataset ;
 	dcterms:publisher	bnborga:BritishLibrary ;
 	dcterms:source	<http://bnb.bl.uk/> ;
 	dcterms:title	"The British National Bibliography as Linked Open Data - Porthcoming publications"@en ;
-	void:exampleResource	<http://bnb.data.bl.uk/id/resource/018122767> ;
-    void:exampleResource	bnbresppe:LondonKyleBooks201702 ,
-		<http://bnb.data.bl.uk/id/resource/016941046> ,
-		<http://bnb.data.bl.uk/id/resource/016941108> ;
+	void:exampleResource	bnbres:018122767 ;
+    void:exampleResource	bnbres:018131495/projectedpublicationevent/LondonKyleBooks201702 ,
+		bnbres:016941046 ,
+		bnbres:016941108 ;
 	void:feature	formats:Turtle ,
 		formats:RDF_XML ;
 	void:sparqlEndpoint	bnb:sparql ;
@@ -144,10 +145,10 @@ bnbdata:BNBSerials	rdf:type	void:Dataset ;
 	dcterms:publisher	bnborga:BritishLibrary ;
 	dcterms:source	<http://bnb.bl.uk/> ;
     foaf:homepage	<http://bnb.data.bl.uk> ;
-	void:exampleResource	<http://bnb.data.bl.uk/id/resource/005406115> ,
-		<http://bnb.data.bl.uk/id/concept/lcsh/Structuralanalysis%28Engineering%29> ,
-		<http://bnb.data.bl.uk/id/resource/007063524> ,
-		<http://bnb.data.bl.uk/id/resource/007740079> ,
+	void:exampleResource	bnbres:005406115 ,
+		bnblcsh:Structuralanalysis%28Engineering%29 ,
+		bnbres:007063524 ,
+		bnbres:007740079 ,
 		bnbagent:BristolUnitedPress ;
 	void:feature	formats:RDF_XML ,
 		formats:Turtle ;
