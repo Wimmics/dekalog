@@ -12,6 +12,7 @@
 @prefix wasabi:	<http://wasabi.inria.fr/> .
 @prefix owl:	<http://www.w3.org/2002/07/owl#> .
 @prefix dkg: <https://dekalog.univ-nantes.fr/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
 
 # Dataset description
 dkg:Wasabi rdf:type void:Dataset ,
@@ -86,6 +87,8 @@ dkg:Wasabi rdf:type void:Dataset ,
 		<http://univ-cotedazur.fr> ;
 	schema:subjectOf wasabins:fell2019love ;
 	void:triples 55544763 ;
+	void:classes dkg:missingValue ;
+	void:properties dkg:missingValue ;
 	prov:wasGeneratedBy	wasabins:RdfGeneration ;
 	owl:versionInfo	"1.0" ;
 	schema:datePublished "2020-12-09"^^xsd:date ;
@@ -114,11 +117,7 @@ dkg:Wasabi-service rdf:type sd:Service,
 	sd:feature dkg:missingValue ;
 	sd:resultFormat dkg:missingValue ;
 	sd:supportedLanguage dkg:missingValue ;
-	sd:inputFormat dkg:missingValue ;
-	sd:languageExtension dkg:missingValue ;
-	sd:propertyFeature dkg:missingValue ;
-	sd:extensionFunctio dkg:missingValue ;
-	sd:extensionAggregate dkg:missingValue .
+	sd:inputFormat dkg:missingValue .
 
 # Provenance information for the two descriptions
 dkg:Wasabi prov:wasDerivedFrom wasabi:sparql ;
@@ -129,7 +128,15 @@ dkg:Wasabi-service prov:wasDerivedFrom wasabi:sparql ;
 	prov:wasAttributedTo "Pierre Maillot"@en ;
 	prov:generatedAtTime "2021-03-23"^^xsd:date ;
 	prov:actedOnBehalfOf <http://www.inria.fr> .
-:namespaceExtraction earl:subject dkg:Wasabi-service ;
+
+# Linksets
+dkg:wasabi-sameAs rdf:type void:Linkset ;
+	void:inDataset dkg:Wasabi ;
+	void:linkPredicate	owl:sameAs ;
+	void:triples 204775 .
+
+# Error report
+dkg:namespaceExtraction earl:subject dkg:Wasabi-service ;
     earl:test """SELECT DISTINCT ?g WHERE {
         GRAPH ?g {
             ?s ?p ?o
@@ -138,7 +145,8 @@ dkg:Wasabi-service prov:wasDerivedFrom wasabi:sparql ;
     }
     ORDER BY ?g""" ;
     earl:result [
-        earl:outcome "proxy error" ;
+        earl:outcome earl:failed ;
+		prov:generatedAtTime "2021-03-25T14:32:52"^^xsd:datetime ;
         earl:info """Proxy Error
             The proxy server received an invalid response from an upstream server.
             The proxy server could not handle the request
