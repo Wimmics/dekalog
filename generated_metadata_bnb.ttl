@@ -1,22 +1,26 @@
 @prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix bnbdata:	<http://bnb.data.bl.uk/id/data/> .
 @prefix void:	<http://rdfs.org/ns/void#> .
 @prefix xsd:	<http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms:	<http://purl.org/dc/terms/> .
+@prefix sd:	<http://www.w3.org/ns/sparql-service-description#> .
+@prefix formats:	<http:www.w3.org/ns/formats/> .
+@prefix foaf:	<http://xmlns.com/foaf/0.1/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix dkg: <https://dekalog.univ-nantes.fr/> .
+@prefix bnb:	<http://bnb.data.bl.uk/> .
+@prefix bnbdata:	<http://bnb.data.bl.uk/id/data/> .
+@prefix bnbres: <http://bnb.data.bl.uk/id/resource/> .
+@prefix bnblcsh: <http://bnb.data.bl.uk/id/concept/lcsh/> .
 @prefix bnborga:	<http://bnb.data.bl.uk/id/organization/> .
 @prefix bnbseries:	<http://bnb.data.bl.uk/id/series/> .
 @prefix bnbagent:	<http://bnb.data.bl.uk/id/agent/> .
 @prefix bnbperson:	<http://bnb.data.bl.uk/id/person/> .
-@prefix formats:	<http:www.w3.org/ns/formats/> .
-@prefix bnb:	<http://bnb.data.bl.uk/> .
-@prefix foaf:	<http://xmlns.com/foaf/0.1/> .
-@prefix bnbres: <http://bnb.data.bl.uk/id/resource/> .
-@prefix bnblcsh: <http://bnb.data.bl.uk/id/concept/lcsh/> .
 
 # Main dataset description
-bnbdata:BNB	rdf:type	void:Dataset ;
+bnbdata:BNB	rdf:type void:Dataset, dcat:Dataset, prov:Entity ;
 # Labels and human-readable descriptions
     dcterms:title	"The British National Bibliography as Linked Open Data"@en ;
+    rdfs:label "The British National Bibliography as Linked Open Data"@en ;
     dcterms:alternative	"BNB"@en .
 	dcterms:description	"This dataset is a release of the BNB as linked open data.  It includes descriptions of published monographs (including monographs published over time), i.e. BNBBooks; serials publications, i.e. BNBSerials and forthcoming publications, i.e. BNBCIP. Further information about the dataset is available at: https://www.bl.uk/bibliographic/natbib.html." ;
     foaf:homepage	<http://bnb.data.bl.uk> ;
@@ -29,13 +33,17 @@ bnbdata:BNB	rdf:type	void:Dataset ;
     dcterms:publisher	bnborga:BritishLibrary ;
     dcterms:source	<http://bnb.bl.uk/> ;
 # SPARQL endpoint description and dataset structure
+    dcat:accessService dkg:BNB-service ;
     void:feature	formats:Turtle ,
         formats:RDF_XML ;
     void:sparqlEndpoint	bnb:sparql ;
-    void:triples	205479749 ;
 	void:subset	bnbdata:BNBBooks ,
 		bnbdata:BNBCIP ,
 		bnbdata:BNBSerials ;
+# Basic population count
+    void:triples	205482468 ;
+    void:classes 46 ;
+    void:properties 173 ;
 # Vocabularies
 	void:vocabulary	<http://www.w3.org/2002/07/owl#> ,
 		<http://www.w3.org/ns/02/org#> ,
@@ -63,6 +71,7 @@ bnbdata:BNB	rdf:type	void:Dataset ;
 		bnbres:005653026 ,
         bnbagent:DunedinAcademic .
 
+# Subset Books
 bnbdata:BNBBooks	rdf:type	void:Dataset ;
     dcterms:title	"The British National Bibliography as Linked Open Data - Books"@en ;
 	dcterms:alternative	"BNBBooks"@en ;
@@ -103,6 +112,7 @@ bnbdata:BNBBooks	rdf:type	void:Dataset ;
 		bnbres:005571580 ,
 		bnbres:005653026 .
 
+# Subset Porthcoming publications
 bnbdata:BNBCIP	rdf:type	void:Dataset ;
 	dcterms:title	"The British National Bibliography as Linked Open Data - Porthcoming publications"@en ;
 	dcterms:alternative	"BNBCIP"@en ;
@@ -139,6 +149,7 @@ bnbdata:BNBCIP	rdf:type	void:Dataset ;
 		bnbres:016941046 ,
 		bnbres:016941108 .
 
+# Subset Serials
 bnbdata:BNBSerials	rdf:type	void:Dataset ;
     dcterms:title	"The British National Bibliography as Linked Open Data - Serials"@en ;
 	dcterms:description	"This dataset is a subset of the release of the BNB as linked open data.  It includes descriptions of serials, i.e. journals, periodicals, magazines, newspapers, etc." ;
@@ -175,3 +186,153 @@ bnbdata:BNBSerials	rdf:type	void:Dataset ;
 		bnbres:007063524 ,
 		bnbres:007740079 ,
 		bnbagent:BristolUnitedPress .
+
+# Generated endpoint description
+dkg:BNB-service a sd:Service, dcat:DataService, prov:Entity, earl:TestSubject ;
+    sd:endpoint <http://bnb.data.bl.uk/sparql> ;
+    dcat:servesDataset bnbdata:BNB ;
+    sd:availableGraphs [
+        a sd:GraphCollection ;
+        sd:namedGraph <http://www.openlinksw.com/schemas/virtrdf#> ,
+            <http://www.w3.org/ns/ldp#> ,
+            <http://bnb.data.bl.uk/id/graph/Void> ,
+            <http://bnb.data.bl.uk/id/graph/BNBBooks> ,
+            <http://bnb.data.bl.uk/id/graph/BNBCIP> ,
+            <http://bnb.data.bl.uk/id/graph/BNBSerials>
+    ] ;
+    sd:supportedLanguage dkg:missingValue ;
+    sd:resultFormat dkg:missingValue .
+
+# Generated reports
+dkg:classCount earl:subject dkg:BNB-service ;
+    earl:test """SELECT ?class (count(?instance) AS ?count) WHERE {
+            SELECT DISTINCT ?class ?instance
+            WHERE {
+                ?instance a ?class
+            }
+        }""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+		prov:generatedAtTime "2021-03-30T14:23:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 502; error"@en
+    ] .
+dkg:vocabOrgTest earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://www.w3.org/ns/02/org#") )
+        }""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+		prov:generatedAtTime "2021-03-30T20:08:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabGeoposTest earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://www.w3.org/2003/01/geo/wgs84_pos#") )
+        }""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+		prov:generatedAtTime "2021-03-30T20:10:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabSkosTest earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://www.w3.org/2004/02/skos/core#") )
+        }""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+		prov:generatedAtTime "2021-03-30T20:13:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabBltermsTest earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://www.bl.uk/schemas/bibliographic/blterms#") )
+        }""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+		prov:generatedAtTime "2021-03-30T20:15:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabSchemaTest earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://schema.org/") )
+        }""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:17:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabRdaregTest earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://rdaregistry.info/Elements/u/") )
+        }""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:19:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabIsbdTest earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://iflastandards.info/ns/isbd/elements/") )
+        }""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:20:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabEventTest earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://purl.org/NET/c4dm/event.owl#") )
+        }""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:22:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabBioTest earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://purl.org/vocab/bio/0.1/") )
+        }""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:22:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabBioTest earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://purl.org/vocab/bio/0.1/") )
+        }""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:24:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabBiboTest earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://purl.org/ontology/bibo/") )
+        }""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:26:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabFoafTest earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://xmlns.com/foaf/0.1/") )
+        }""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:28:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 504; error"@en
+    ] .

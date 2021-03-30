@@ -343,6 +343,18 @@ WHERE {
 This query has the disadvantage to be quite complex and uses advanced features of SPARQL1.1 that are not implemented in all SPARQL endpoints.
 
 ##### Links to other resources
+Equivalences and links between resources of other datasets are important for the usage of external sources. If the description does not give the namespace of the dataset or the vocabulary used, the identification of resources from another dataset is difficult. The links are generally described by the property `owl:sameAs`, describing an equivalence between two different resources. They are sometimes also defined by the property `rdfs:seeAlso` describing that further information is given in the description of the other resource.
+
+In dataset description based on the VoID vocabulary, the notion of linksets is a set of triples linking resources of the dataset to resources from others, represented as an instance of `void:Linkset`. The linksets are considered as subsets of the dataset, they are linked to the dataset by the relation `void:subset`. The description of a linkset is improved by giving the URI of the other datasets concerned by the links with the `void:target`. It is also useful to give the number of triples in the dataset.
+
+In our example, a set of 24 links to resources in DBpedia would be described as in the following triples:
+```
+:example_dbpedia a void:Linkset ;
+    void:linkPredicate owl:sameAs ;
+    void:target <http://dbpedia.org> ;
+    void:subset :exampleDataset ;
+    void:triples 24 .
+```
 
 ##### Others
 
@@ -357,7 +369,7 @@ In the generated data, we will use the `dkg:missingValue` resource to represent 
 We also add provenance statements about our generated description. This provenance information concerns only the new description resources we have created. It also contains reports of the extraction and generation operation that could not do due to errors or limitations.
 
 #### Generation of error report
-SPARQL endpoints have limitations on the time allocated to the resolution of queries and on the keyword supported by the SPARQL engine. Those limitations make some operations of metadata extraction impossible. We keep a trace of the errors obtained during the process of extraction using the [EARL](https://www.w3.org/TR/EARL10-Schema/) vocabulary. This set of reports can be used to identify the limitations of the server that can not be described in RDF.
+SPARQL endpoints have limitations on the time allocated to the resolution of queries and on the keyword supported by the SPARQL engine. Those limitations make some operations of metadata extraction impossible. We keep a trace of the errors obtained during the process of extraction using the [EARL](https://www.w3.org/TR/EARL10-Schema/) vocabulary. The EARL vocabulary allows the description of assertions and the results of their tests. For our needs, a query sent for metadata retrieval is an assertion that passes its test if it receives results from a SPARQL endpoint. This set of reports can be used to identify the limitations of the server that can not be described in RDF.
 
 We add some properties to the EARL vocabulary to link the reports to descriptions features. We use the property `dkg:featureProperty` to state which property the results are the object of.
 
@@ -392,7 +404,6 @@ As an example, if the extraction of the list of namespaces resulted in a timeout
 This document will be edited to reflect what we learned here:
 
 1. The notion of ONE knowledge base resource does not hold in practice.
-2. Better to treat separately void/dcat and sparql-sd descriptions.
 3. Better to start with the retrieval of the endpoint description.
 4. Look for connexions between descriptions and known endpoint or graph URIs, using `rdfs:seeAlso` for example.
 5. If the feature `sd:requiresDataset` is defined on the endpoint, datasets should be defined too.
@@ -434,12 +445,12 @@ SELECT DISTINCT ?endpoint WHERE {
 ```
 This query returns 4 resources.
 
-| endpoint                     |
-|------------------------------|
-| http://localhost:8890/sparql |
-| nodeID://b10251              |
-| nodeID://b50122              |
-| http://dbpedia.org/sparql-sd |
+| endpoint                       |
+|--------------------------------|
+| `http://localhost:8890/sparql` |
+| `nodeID://b10251`              |
+| `nodeID://b50122`              |
+| `http://dbpedia.org/sparql-sd` |
 
 We retrieve the descriptions of each of these resources, using the query:
 ```
@@ -465,40 +476,40 @@ ORDER BY ?g
 This query returns 32 named graphs, including 5 different spellings of the URI `dbp:sparql-sd` with different capitalizations and HTTP protocols.
 
 
-| g                                           |
-|---------------------------------------------|
-| b3sifp                                      |
-| b3sonto                                     |
-| dbprdf-label                                |
-| facets                                      |
-| http://DBPedia.org/sparql-sd                |
-| http://DBpedia.org/sparql-sd                |
-| http://dbpedia.org                          |
-| http://dbpedia.org/resource/classes#        |
-| http://dbpedia.org/schema/property_rules#   |
-| http://dbpedia.org/sparql-sd                |
-| http://dbpedia.org/void/                    |
-| http://localhost:8890/DAV/                  |
-| http://localhost:8890/sparql                |
-| http://pivot_test_data/campsites            |
-| http://pivot_test_data/ski_resorts          |
-| http://query.wikidata.org/sparql            |
-| http://www.openlinksw.com/schemas/oplweb#   |
-| http://www.openlinksw.com/schemas/virtcxml# |
-| http://www.openlinksw.com/schemas/virtpivot |
-| http://www.openlinksw.com/schemas/virtrdf#  |
-| http://www.openlinksw.com/virtpivot/icons   |
-| http://www.w3.org/2002/07/owl#              |
-| http://www.w3.org/ns/ldp#                   |
-| https://DBpedia.org/sparql-sd               |
-| https://dbpedia.org/sparql-sd               |
-| https://query.wikidata.org/sparql           |
-| urn:activitystreams-owl:map                 |
-| urn:rules.skos                              |
-| urn:virtuoso:val:acl:schema                 |
-| virtpivot-icon-test                         |
-| virtpivot-rules                             |
-| virtrdf-label                               |
+| g                                             |
+|-----------------------------------------------|
+| `b3sifp`                                      |
+| `b3sonto`                                     |
+| `dbprdf-label`                                |
+| `facets`                                      |
+| `http://DBPedia.org/sparql-sd`                |
+| `http://DBpedia.org/sparql-sd`                |
+| `http://dbpedia.org`                          |
+| `http://dbpedia.org/resource/classes#`        |
+| `http://dbpedia.org/schema/property_rules#`   |
+| `http://dbpedia.org/sparql-sd`                |
+| `http://dbpedia.org/void/`                    |
+| `http://localhost:8890/DAV/`                  |
+| `http://localhost:8890/sparql`                |
+| `http://pivot_test_data/campsites`            |
+| `http://pivot_test_data/ski_resorts`          |
+| `http://query.wikidata.org/sparql`            |
+| `http://www.openlinksw.com/schemas/oplweb#`   |
+| `http://www.openlinksw.com/schemas/virtcxml#` |
+| `http://www.openlinksw.com/schemas/virtpivot` |
+| `http://www.openlinksw.com/schemas/virtrdf#`  |
+| `http://www.openlinksw.com/virtpivot/icons`   |
+| `http://www.w3.org/2002/07/owl#`              |
+| `http://www.w3.org/ns/ldp#`                   |
+| `https://DBpedia.org/sparql-sd`               |
+| `https://dbpedia.org/sparql-sd`               |
+| `https://query.wikidata.org/sparql`           |
+| `urn:activitystreams-owl:map`                 |
+| `urn:rules.skos`                              |
+| `urn:virtuoso:val:acl:schema`                 |
+| `virtpivot-icon-test`                         |
+| `virtpivot-rules`                             |
+| `virtrdf-label`                               |
 
 
 The feature `sd:RequiresDataset`, given line 18 of [retrieved_endpoint_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_dbpedia.ttl), indicates that the SPARQL service requires an explicit dataset declaration. Each of those named graphs should be detailed in the endpoint description.
@@ -902,11 +913,44 @@ The resulting metadata is shown in [generated_metadata_wasabi](https://github.co
 | `wsb:Choir`         | 44      |
 | `wsb:Orchestra`     | 30      |
 
-
+###### Extraction of linkset descriptions
+We extracted the descriptions of the linksets for owl:sameAs and rdfs:seeAlso. We found 204775 sameAs relations, there was no triple containing `rdfs:seeAlso`.
+```
+SELECT (count(*) AS ?c)
+    FROM <http://ns.inria.fr/wasabi/ontology/>
+    FROM <http://ns.inria.fr/wasabi/graph/albums>
+    FROM <http://ns.inria.fr/wasabi/graph/artists>
+    FROM <http://ns.inria.fr/wasabi/graph/metadata>
+    FROM <http://ns.inria.fr/wasabi/graph/songs>
+    FROM <http://ns.inria.fr/wasabi/graph/albums>
+    FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c>
+    FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b>
+    FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8>
+    WHERE {
+      ?s owl:sameAs ?o
+    }
+```
+From those results, we generated the following triples, shown in [generated_metadata_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) between line 132 and 136.
 
 *WIP*
 
-##### [British National Library](http://bnb.data.bl.uk/sparql)
+#### [British National Library](http://bnb.data.bl.uk/sparql)
 We suppose that we know the name "British National Library" and the endpoint URL `http://bnb.data.bl.uk/sparql`.
 
-The extraction of endpoint description returns no results. The extraction of the dataset descriptions returns 3 results connected to the endpoint URL. The results are shown in the file [retrieved_dataset_bnb.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_bnb.ttl).
+The extraction of endpoint description returns no results. The extraction of the dataset descriptions returns 4 results connected to the endpoint URL. The results are shown in the file [retrieved_dataset_bnb.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_bnb.ttl).
+OF the 4 results, 3 are subsets of the dataset `bnbdata:BNB`.
+
+The retrieved dataset descriptions are rather complete. The human-readable descriptions, provenance information and vocabularies are described for the main dataset and its subsets. The population counts are partly missing.
+
+##### Generation of metadata
+
+###### Generation of endpoint description
+(Comme le dataset a la meme URI qu'un des grahs, on ne le renomme pas pour garder un lien supplémentaire entre endpoint desc et dataset desc.)
+
+###### Checks of the vocabularies
+
+We test the 11 vocabularies that are listed in the descrption without being used in it. The query to check the presence of properties or classes from each vocabulary returns an error. From this, we generate 11 error reports at the end of the file [retrieved_dataset_bnb.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_bnb.ttl).
+
+###### Checks of the triple count and generation of population counts
+
+###### Generation of linksets descriptions
