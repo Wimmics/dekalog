@@ -216,7 +216,30 @@ The dataset description resource should also be linked to the endpoint descripti
 ```
 
 ##### Ontology descriptions
+The description of the dataset should contain the list of the vocabularies used in it. This list should be given using the property `void:vocabulary` with the URIs of the vocabularies as objects.
 
+The URI of a vocabulary is also its namespace. It is possible to check the presence of vocabulary in a dataset by sending a query to check the apparition of the namespace in properties or classes.
+For example, checking the usage of the Schema vocabulary would be checked with the following query:
+```
+ASK {
+    {?s ?elem ?o } UNION { ?s a ?elem }
+    FILTER(REGEX(?elem, "http://schema.org/"))
+}
+```
+
+In our example, the description of the ontology used would be as such:
+```
+:exampleDataset void:vocabulary <http://rdfs.org/ns/void#> ,
+        <http://www.w3.org/ns/dcat#>  ,
+        <http://www.w3.org/ns/sparql-service-description#> ,
+        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ,
+        <http://www.w3.org/2000/01/rdf-schema#> ,
+        <http://purl.org/dc/terms/> ,
+        <http://www.w3.org/2004/02/skos/core#> ,
+        <http://www.w3.org/ns/prov#> ,
+        <http://schema.org/> ,
+        <http://www.w3.org/ns/earl#>
+```
 
 ##### Population count
 Each graph should indicates its number of triples. If possible, simple population counts should also be given such as the number of classes, properties and instances.
@@ -400,7 +423,7 @@ As an example, if the extraction of the list of namespaces resulted in a timeout
     ] .
 ```
 
-To be able to potentially associate the error with types of SPARQL server, we add the value of the field "server" in the response header of the HTTP requests sent during querying. We link this value to the endpoint description with the property `dkg:server`.
+To be able to associate the errors with types of SPARQL server, we add the value of the field "server" in the response header of the HTTP requests sent during querying. We link this value to the endpoint description with the property `dkg:server`.
 
 ---
 **EDIT:**
@@ -581,6 +604,8 @@ There is a set of VoID properties describing population statistics. The values o
 From the existing metadata about DBpedia, we can gather a partial endpoint description. The link between the `dbv:Dataset` description and the graph `<http://dbpedia.org>` can link the endpoint metadata and the content metadata. We could not get provenance information about `<http://dbpedia.org>`. The SPARQL-SD description of the DBPedia endpoint can be reused as it is, with the addition of the only graph description we could retrieve.
 
 We use two new description resources to regroup our generated metadata. In our generated metadata, the resource `dkg:DBPedia` is the center of the dataset description, and the resource `dkg:DBPedia-service` is the center of the endpoint description. We add to them the retrieved metadata after a check and correction if necessary.
+
+By studying the headers of the response to our HTTP request while sending SPARQL queries, we see that the endpoint is using a "Virtuoso/08.03.3319 (Linux) x86_64-centos_6-linux-glibc2.12  VDB" server.
 
 ###### Check and generation of population statistics
 For the dataset description, as we know the name of the endpoint we have been querying, we can add a label to the knowledge base resource. Some of the population statistics properties, values can be checked using the queries given in previous sections. The generated values for triples, classes and properties are different but close to the retrieved ones, given in the following table. We add the generated values to the generated metadata.
@@ -948,12 +973,19 @@ The retrieved dataset descriptions are rather complete. The human-readable descr
 ##### Generation of metadata
 
 ###### Generation of endpoint description
-(Comme le dataset a la meme URI qu'un des grahs, on ne le renomme pas pour garder un lien supplémentaire entre endpoint desc et dataset desc.)
+We extract the graphs of the dataset to generate a basic endpoint description. We notice that the names of the graphs are the same as the dataset description resources. We decide to not rename the description resources as we did for the precedent datasets, to keep this connection between graphs and descriptions.
+
+By studying the headers of the response to our HTTP request while sending SPARQL queries, we see that the endpoint is using a "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu" server.
 
 ###### Checks of the vocabularies
 
 We test the 11 vocabularies that are listed in the descrption without being used in it. The query to check the presence of properties or classes from each vocabulary returns an error. From this, we generate 11 error reports at the end of the file [retrieved_dataset_bnb.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_bnb.ttl).
 
 ###### Checks of the triple count and generation of population counts
+We received an error while trying to obtain a count of the triples and the count of the classes. However, we count obtain results at a later attempt.
+The original description described 205 479 749 triples in the dataset, we obtained 205 482 468 with our queries, which is close.
+
+We also received errors while trying to obtain the population counts of each class.
 
 ###### Generation of linksets descriptions
+We extract the linksts descriptions for the `owl:sameAs` and `rdfs:seeAlso` properties. There are only links using `owl:sameAs` with 13 091 837 links.
