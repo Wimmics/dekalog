@@ -212,6 +212,19 @@ dkg:BNB-service a sd:Service, dcat:DataService, prov:Entity, earl:TestSubject ;
     dkg:server "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu"@en.
 
 # Generated reports
+dkg:triplesCount rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """SELECT (count(*) AS ?count) WHERE {
+            SELECT DISTINCT ?s ?p ?o WHERE {
+               ?s ?p ?o
+            }
+        }""" ;
+    dkg:featureProperty void:triples ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-31T16:14:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
 dkg:classCount rdf:type earl:Assertion ;
     earl:subject dkg:BNB-service ;
     earl:test """SELECT ?class (count(?instance) AS ?count) WHERE {
@@ -369,4 +382,19 @@ dkg:vocabFoafTest rdf:type earl:Assertion ;
         earl:outcome earl:failed ;
         prov:generatedAtTime "2021-03-30T20:28:52"^^xsd:datetime ;
         earl:info "Dataset Request: HTTP Status: 504; error"@en
+    ] .
+dkg:classPopCount rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """SELECT ?class (count(?instance) AS ?count) WHERE {
+        SELECT DISTINCT ?class ?instance
+        WHERE {
+            ?instance a ?class .
+            ?s ?prop ?o
+        }
+    }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:28:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
     ] .
