@@ -140,7 +140,8 @@ dkg:DBpedia-service	rdf:type sd:Service, dcat:DataService, prov:Entity ;
 			<virtpivot-icon-test> ,
 			<virtpivot-rules> ,
 			<virtrdf-label> .
-	] .
+	] ;
+	dkg:server "Virtuoso/08.03.3319 (Linux) x86_64-centos_6-linux-glibc2.12  VDB"@en .
 
 # Provenance information for the dataset and endpoint description
 dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
