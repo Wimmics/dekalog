@@ -72,6 +72,12 @@ bnbdata:BNB	rdf:type void:Dataset, dcat:Dataset, prov:Entity ;
 		bnbres:005653026 ,
         bnbagent:DunedinAcademic .
 
+# Linksets
+dkg:bnbSameAs rdf:type void:Linkset ;
+	void:inDataset bnbdata:BNB ;
+	void:linkPredicate	owl:sameAs ;
+	void:triples 13091837 .
+
 # Subset Books
 bnbdata:BNBBooks	rdf:type	void:Dataset ;
     dcterms:title	"The British National Bibliography as Linked Open Data - Books"@en ;
