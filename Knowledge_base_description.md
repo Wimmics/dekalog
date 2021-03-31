@@ -371,7 +371,7 @@ We also add provenance statements about our generated description. This provenan
 #### Generation of error report
 SPARQL endpoints have limitations on the time allocated to the resolution of queries and on the keyword supported by the SPARQL engine. Those limitations make some operations of metadata extraction impossible. We keep a trace of the errors obtained during the process of extraction using the [EARL](https://www.w3.org/TR/EARL10-Schema/) vocabulary. The EARL vocabulary allows the description of assertions and the results of their tests. For our needs, a query sent for metadata retrieval is an assertion that passes its test if it receives results from a SPARQL endpoint. This set of reports can be used to identify the limitations of the server that can not be described in RDF.
 
-We add some properties to the EARL vocabulary to link the reports to descriptions features. We use the property `dkg:featureProperty` to state which property the results are the object of.
+We add some properties to the EARL vocabulary to link the reports to descriptions features. We use the property `dkg:featureProperty` to state which property the results should have been the object of.
 
 For our need, each endpoint is an instance of `earl:TestSubject`, and each report is an instance of `earl:Assertion`. For each `earl:Assertion` we give:
 -  The description property that the results of the query should have filled, with `dkg:featureProperty`.
@@ -379,6 +379,7 @@ For our need, each endpoint is an instance of `earl:TestSubject`, and each repor
 -  The results of the test are given by the property `earl:result` with an instance of `earl:TestResult`, generally a blank node, with the following properties:
     -  `earl:outcome` gives the result of the test. The results can be instances of the `earl:OutcomeValue` with the following instance defined by the EARL vocabulary: `earl:passed`, `earl:failed`, `earl:cantTell`, `earl:inapplicable` and `earl:untested`.
     -  `earl:info` gives comments on the comment if possible.
+    - The time of the test with `prov:generatedAtTime`
 
 As an example, if the extraction of the list of namespaces resulted in a timeout, the report would appear as such:
 ```
@@ -398,6 +399,8 @@ As an example, if the extraction of the list of namespaces resulted in a timeout
         earl:info "Error 504 - server returned timeout error"
     ] .
 ```
+
+To be able to potentially associate the error with types of SPARQL server, we add the value of the field "server" in the response header of the HTTP requests sent during querying. We link this value to the endpoint description with the property `dkg:server`.
 
 ---
 **EDIT:**
