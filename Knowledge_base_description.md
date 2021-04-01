@@ -215,7 +215,7 @@ The dataset description resource should also be linked to the endpoint descripti
   dcat:accessService :exampleSparqlService .
 ```
 
-### Ontology descriptions
+### Description of vocabularies used
 The description of the dataset should contain the list of the vocabularies used in it. This list should be given using the property `void:vocabulary` with the URIs of the vocabularies as objects.
 
 The URI of a vocabulary is also its namespace. It is possible to check the presence of vocabulary in a dataset by sending a query to check the apparition of the namespace in properties or classes.
