@@ -366,6 +366,7 @@ WHERE {
 This query has the disadvantage to be quite complex and uses advanced features of SPARQL1.1 that are not implemented in all SPARQL endpoints.
 
 ### Links to other resources
+
 Equivalences and links between resources of other datasets are important for the usage of external sources. If the description does not give the namespace of the dataset or the vocabulary used, the identification of resources from another dataset is difficult. The links are generally described by the property `owl:sameAs`, describing an equivalence between two different resources. They are sometimes also defined by the property `rdfs:seeAlso` describing that further information is given in the description of the other resource.
 
 In dataset description based on the VoID vocabulary, the notion of linksets is a set of triples linking resources of the dataset to resources from others, represented as an instance of `void:Linkset`. The linksets are considered as subsets of the dataset, they are linked to the dataset by the relation `void:subset`. The description of a linkset is improved by giving the URI of the other datasets concerned by the links with the `void:target`. It is also useful to give the number of triples in the dataset.
@@ -391,7 +392,8 @@ In the generated data, we will use the `dkg:missingValue` resource to represent 
 
 We also add provenance statements about our generated description. This provenance information concerns only the new description resources we have created. It also contains reports of the extraction and generation operation that could not do due to errors or limitations.
 
-#### Generation of error report
+ #### Generation of error report
+
 SPARQL endpoints have limitations on the time allocated to the resolution of queries and on the keyword supported by the SPARQL engine. Those limitations make some operations of metadata extraction impossible. We keep a trace of the errors obtained during the process of extraction using the [EARL](https://www.w3.org/TR/EARL10-Schema/) vocabulary. The EARL vocabulary allows the description of assertions and the results of their tests. For our needs, a query sent for metadata retrieval is an assertion that passes its test if it receives results from a SPARQL endpoint. This set of reports can be used to identify the limitations of the server that can not be described in RDF.
 
 We add some properties to the EARL vocabulary to link the reports to descriptions features. We use the property `dkg:featureProperty` to state which property the results should have been the object of.
