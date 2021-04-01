@@ -392,7 +392,7 @@ In the generated data, we will use the `dkg:missingValue` resource to represent 
 
 We also add provenance statements about our generated description. This provenance information concerns only the new description resources we have created. It also contains reports of the extraction and generation operation that could not do due to errors or limitations.
 
-#### Generation of error report
+### Generation of error report
 
 SPARQL endpoints have limitations on the time allocated to the resolution of queries and on the keyword supported by the SPARQL engine. Those limitations make some operations of metadata extraction impossible. We keep a trace of the errors obtained during the process of extraction using the [EARL](https://www.w3.org/TR/EARL10-Schema/) vocabulary. The EARL vocabulary allows the description of assertions and the results of their tests. For our needs, a query sent for metadata retrieval is an assertion that passes its test if it receives results from a SPARQL endpoint. This set of reports can be used to identify the limitations of the server that can not be described in RDF.
 
