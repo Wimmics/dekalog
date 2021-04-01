@@ -8,7 +8,7 @@ dkg:missingValue a rdfs:Thing ;
     rdfs:comment "Placeholder for the missing values of a property in a dataset or endpoint description"@en .
 
 dkg:featureProperty a rdfs:Property ;
-    rdfs:label "Values of the feature" ;
+    rdfs:label "Feature" ;
     rdfs:comment "Used on EARL assertions to indicate which feature of the dataset of endpoint description should have used the results of the test"@en .
     rdfs:domain earl:Assertion ;
     rdfs:range rdf:Property ;

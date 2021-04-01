@@ -36,6 +36,7 @@ dkg:Wasabi rdf:type void:Dataset ,
 		foaf: ,
 		<http://purl.org/ontology/chord/> ,
 		<http://purl.org/ontology/mo/> ;
+# Retrieved provenance information
 	dct:creator	"Michel Buffa" ,
 		"Guillaume Pellerin" ,
 		"Elmahdi Korfed" ,
@@ -85,14 +86,15 @@ dkg:Wasabi rdf:type void:Dataset ,
 	schema:publisher <https://www.cnrs.fr> ,
 		<https://www.inria.fr> ,
 		<http://univ-cotedazur.fr> ;
-	schema:subjectOf wasabins:fell2019love ;
-	void:triples 55544763 ;
-	void:classes dkg:missingValue ;
-	void:properties dkg:missingValue ;
 	prov:wasGeneratedBy	wasabins:RdfGeneration ;
 	owl:versionInfo	"1.0" ;
 	schema:datePublished "2020-12-09"^^xsd:date ;
-	prov:wasGeneratedAtTime	"2020-12-09"^^xsd:date .
+	prov:wasGeneratedAtTime	"2020-12-09"^^xsd:date;
+	schema:subjectOf wasabins:fell2019love ;
+# Population counts
+	void:triples 55544763 ;
+	void:classes dkg:missingValue ;
+	void:properties dkg:missingValue  .
 
 
 # Endpoint description
@@ -135,25 +137,6 @@ dkg:wasabi-sameAs rdf:type void:Linkset ;
 	void:inDataset dkg:Wasabi ;
 	void:linkPredicate	owl:sameAs ;
 	void:triples 204775 .
-
-# Error report
-dkg:namespaceExtraction earl:subject dkg:Wasabi-service ;
-    earl:test """SELECT DISTINCT ?g WHERE {
-        GRAPH ?g {
-            ?s ?p ?o
-        }
-        FILTER(REGEX(?g, "http://ns.inria.fr/wasabi/wasabi-1-0") )
-    }
-    ORDER BY ?g""" ;
-    earl:result [
-        earl:outcome earl:failed ;
-		prov:generatedAtTime "2021-03-25T14:32:52"^^xsd:datetime ;
-        earl:info """Proxy Error
-            The proxy server received an invalid response from an upstream server.
-            The proxy server could not handle the request
-
-            Reason: Error reading from remote server"""
-    ] .
 
 # Class population counts
 @prefix wsb: <http://ns.inria.fr/wasabi/ontology/> .
@@ -245,3 +228,23 @@ dkg:Wasabi void:classPartition [
 	void:classPartition [
 		void:class	dcat:Dataset ;
 		void:entities	1 ] .
+
+
+# Error report
+dkg:namespaceExtraction earl:subject dkg:Wasabi-service ;
+    earl:test """SELECT DISTINCT ?g WHERE {
+        GRAPH ?g {
+            ?s ?p ?o
+        }
+        FILTER(REGEX(?g, "http://ns.inria.fr/wasabi/wasabi-1-0") )
+    }
+    ORDER BY ?g""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+		prov:generatedAtTime "2021-03-25T14:32:52"^^xsd:datetime ;
+        earl:info """Proxy Error
+            The proxy server received an invalid response from an upstream server.
+            The proxy server could not handle the request
+
+            Reason: Error reading from remote server"""
+    ] .

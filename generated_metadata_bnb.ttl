@@ -72,12 +72,6 @@ bnbdata:BNB	rdf:type void:Dataset, dcat:Dataset, prov:Entity ;
 		bnbres:005653026 ,
         bnbagent:DunedinAcademic .
 
-# Linksets
-dkg:bnbSameAs rdf:type void:Linkset ;
-	void:inDataset bnbdata:BNB ;
-	void:linkPredicate	owl:sameAs ;
-	void:triples 13091837 .
-
 # Subset Books
 bnbdata:BNBBooks	rdf:type	void:Dataset ;
     dcterms:title	"The British National Bibliography as Linked Open Data - Books"@en ;
@@ -194,6 +188,14 @@ bnbdata:BNBSerials	rdf:type	void:Dataset ;
 		bnbres:007740079 ,
 		bnbagent:BristolUnitedPress .
 
+
+# Linksets
+dkg:bnbSameAs rdf:type void:Linkset ;
+	void:inDataset bnbdata:BNB ;
+	void:linkPredicate	owl:sameAs ;
+	void:triples 13091837 .
+
+
 # Generated endpoint description
 dkg:BNB-service a sd:Service, dcat:DataService, prov:Entity, earl:TestSubject ;
     sd:endpoint <http://bnb.data.bl.uk/sparql> ;
@@ -211,7 +213,29 @@ dkg:BNB-service a sd:Service, dcat:DataService, prov:Entity, earl:TestSubject ;
     sd:resultFormat dkg:missingValue ;
     dkg:server "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu"@en.
 
-# Generated reports
+# Provenance
+dkg:BNB-service prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;
+	prov:wasAttributedTo "Pierre Maillot"@en ;
+	prov:generatedAtTime "2021-03-29"^^xsd:date ;
+	prov:actedOnBehalfOf <http://www.inria.fr> .
+bnbdata:BNB prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
+	prov:wasAttributedTo "Pierre Maillot"@en ;
+	prov:generatedAtTime "2021-03-29"^^xsd:date ;
+	prov:actedOnBehalfOf <http://www.inria.fr> .
+bnbdata:BNBSerials prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
+	prov:wasAttributedTo "Pierre Maillot"@en ;
+	prov:generatedAtTime "2021-03-29"^^xsd:date ;
+	prov:actedOnBehalfOf <http://www.inria.fr> .
+bnbdata:BNBCIP prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
+	prov:wasAttributedTo "Pierre Maillot"@en ;
+	prov:generatedAtTime "2021-03-29"^^xsd:date ;
+	prov:actedOnBehalfOf <http://www.inria.fr> .
+bnbdata:BNBBooks prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
+	prov:wasAttributedTo "Pierre Maillot"@en ;
+	prov:generatedAtTime "2021-03-29"^^xsd:date ;
+	prov:actedOnBehalfOf <http://www.inria.fr> .
+
+# Generated error reports
 dkg:triplesCount rdf:type earl:Assertion ;
     earl:subject dkg:BNB-service ;
     earl:test """SELECT (count(*) AS ?count) WHERE {
