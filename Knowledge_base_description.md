@@ -4,20 +4,20 @@
 
 The goal of this document is to present the desired features in a dataset description. To do this, we will present the different vocabularies to use to describe each feature. We will give examples of the extraction and re-generation of descriptions as desired.
 
-### Vocabularies
+## Vocabularies
 
 There are three major vocabularies for the description of knowledge bases. Other vocabularies of more general use, such as [Dublin Core](https://www.dublincore.org/specifications/dublin-core/dcmi-terms/2010-10-11/) or [Friend of a Friend](http://xmlns.com/foaf/spec/20100809.html), complement each of those three major ones. The three major vocabularies are also used to complete each other in a description. We give here a succinct description of the scope of each vocabulary.
 
-##### [VoID](https://www.w3.org/TR/void/)
+### [VoID](https://www.w3.org/TR/void/)
 VoID is the most used vocabulary to write metadata about KBs. This vocabulary is tailored to create simple descriptions of a KB, its access, and its links to others. It describes the links with other KBs by giving the properties used to linked resources of different datasets.
 
-##### [DCAT](https://www.w3.org/TR/vocab-dcat-3/)
+### [DCAT](https://www.w3.org/TR/vocab-dcat-3/)
 The DCAT vocabulary is used for the description of a catalog of KBs. It can describe datasets and their means of distribution or access. Compared to VoID, it contains properties and classes to make more in-depth descriptions of endpoints and data dumps.
 
-##### [SPARQL-SD](http://www.w3.org/TR/sparql11-service-description/)
+### [SPARQL-SD](http://www.w3.org/TR/sparql11-service-description/)
 The SPARQL-SD vocabulary is specialized for the detailed description of SPARQL endpoints. Among others, It gives classes and properties for the description of the named graphs, the result formats, which SPARQL standard the endpoint conforms to, etc.
 
-### Features
+## Features
 The goals of a KB's description should be to give a minimal description of the KB, such as the entry in a catalog, with human-readable data. It should also contain enough data to describe as many elements about the KB as possible, such as its provenance, its links to other KBs, its internal structure, its licenses, the technical capacity of its endpoint, etc.
 
 To cover as many features of a KB as possible, a KB description should describe the content of the KB using both VoID and DCAT elements. This description should be linked to a SPARQL-SD description of its endpoint. The content of the KB's description may contain duplicate pieces of information, using different properties. This redundancy could help the extraction of the description by queries from agents without knowledge of the description's ontology.
@@ -42,18 +42,18 @@ To cover as many features of a KB as possible, a KB description should describe 
 
 All the following examples are redacted in [turtle](https://www.w3.org/TR/turtle/) format.
 
-##### Terminology for this document
+### Terminology for this document
 In this document, we name as *knowledge base* (KB) a collection of triples published, maintained, and aggregated by a single provider. For practical reasons, a knowledge base is associated with a SPARQL endpoint. A knowledge graph, also called a *dataset* in the different vocabularies, can also contain graphs, viewed as compartments of triples. A knowledge base can be a set of graphs associated with an endpoint.
 
 We name the *description* of a resource as in-going and out-going triple containing the resource.
 
 
-##### Knowledge base resources
+### Knowledge base resources
 Each knowledge base description is centered around two resources. The first resource is the description of the SPARQL endpoint. The second resource represent a dataset. The description of the resources typed with classes from the VoID/DCAT vocabularies is called the knowledge base description. The description of the resources identified with the SPARQL-SD vocabulary is called the endpoint description.
 
 During the extraction of descriptions, we may not find either the endpoint description or the knowledge base description. If there is an endpoint description but no knowledge base description, by default that the knowledge base consists of all the triples and graphs accessible through the endpoint. If there is a knowledge base description but no endpoint description, the knowledge base is associated with the endpoint that allowed to query the knowledge base description. In both cases, the missing descriptions have to be generated.
 
-###### VoID/DCAT
+#### VoID/DCAT
 In the VoID vocabulary, the class `void:Dataset` represents a knowledge base, as defined in the precedent section. In the DCAT vocabulary, the class `dcat:Dataset` represents any collection of data, not limited to RDF, published or curated by a single agent, and available for access or download in one or more representations.
 Hence, a description of a KB should begin with the definition of a resource typed by those two classes.
 
@@ -76,7 +76,7 @@ SELECT DISTINCT ?central WHERE {
 }
 ```
 
-###### SPARQL-SD
+#### SPARQL-SD
 Contrary to VoID and DCAT, the resource at the center of the description of the endpoint is not identified by its class.
 The endpoint description should be linked as subject to its endpoint URL, as a URI, by the property `sd:endpoint`.
 The endpoint description resource should be retrievable by the query:
@@ -88,7 +88,7 @@ SELECT DISTINCT ?endpoint WHERE {
 ```
 The descriptions present in the dataset should be present around the resources retrieved by the two previous queries.
 
-##### Label and description
+### Label and description
 The description of a KB should the best practices for data publication and offer labels and descriptions.
 
 The knowledge base resource should have at least a name linked to it by the property `rdfs:label`. Other properties such as `dcterms:title`, `foaf:name`, `skos:prefLabel` may be used. Properties such as `dcterms:description` or `rdfs:comment` may be used to give a more detailed human-readable description of the KB. Each resource of the description of a KB should have a label if possible.
@@ -114,7 +114,7 @@ Other elements of description, such as the themes or keywords may be used.
 
 The properties given here are not an exhaustive list of possible labelling properties. There are other properties defined in domain-specific vocabularies.
 
-##### Provenance
+### Provenance
 The provenance of the data of a KB must be given to ensure its reusability. The vocabulary used to describe provenance is most often Dublin Core. The [PROV ontology](http://www.w3.org/TR/prov-o/) gives properties an classes to create detailed descriptions of the provenance. There are mapping between the elements of the Dublin Core and PROV ontology. In this ontology, the datasets are instances of the `prov:Entity` class.
 
 As presented in the PROV ontology recommandation, the provenance can be reduced to the answers to three questions: Who ? What ? How ?
@@ -159,7 +159,7 @@ As an example:
   rdfs:label "French CeCILL Licence"@en .
 ```
 
-##### SPARQL endpoint
+### SPARQL endpoint
 The description of the endpoint has to contain the elements related to the accessibility of the endpoint. The metadata must give the particularities of the SPARQL engine and of the graphs of the KB.
 
 The endpoint metadata should at least give its URL, which version of SPARQL it accepts, the results formats it can return, and the named graphs of the KB.
@@ -215,7 +215,7 @@ The dataset description resource should also be linked to the endpoint descripti
   dcat:accessService :exampleSparqlService .
 ```
 
-##### Ontology descriptions
+### Ontology descriptions
 The description of the dataset should contain the list of the vocabularies used in it. This list should be given using the property `void:vocabulary` with the URIs of the vocabularies as objects.
 
 The URI of a vocabulary is also its namespace. It is possible to check the presence of vocabulary in a dataset by sending a query to check the apparition of the namespace in properties or classes.
@@ -241,7 +241,7 @@ In our example, the description of the ontology used would be as such:
         <http://www.w3.org/ns/earl#>
 ```
 
-##### Population count
+### Population count
 Each graph should indicates its number of triples. If possible, simple population counts should also be given such as the number of classes, properties and instances.
 The number of triples must appear in the SPARQL-SD metadata, as part of the graph description, and in the VoID/DCAT metadata. Both cases use the property `void:triples`.
 
@@ -325,7 +325,7 @@ In our example, with arbitrary populations, the description would be:
   void:distinctObjects 458 ;
 ```
 
-##### Class population count
+### Class population count
 To give an idea of the repartition of instances among classes to end-users, it is possible to give the population of each class in a dataset. The VoID vocabulary gives a property called `void:classPartition` which allows writing the properties of the instances of a class. The same mechanism is also available for properties using `void:propertyPartition`.
 
 The list of class population can be retrieved using the following query:
@@ -349,7 +349,7 @@ The object of the property `void:classPartition` must be the subject of the prop
   ]
 ```
 
-##### Namespaces
+### Namespaces
 The descriptions should contain the namespaces of the dataset.
 We can use the dataset namespaces to identify the resources and graphs of the dataset. They can be defined by two properties `void:uriSpace` and `void:uriPattern`. `void:uriSpace` gives the start of all the dataset resources URIs. `void:uriPattern` gives a regular expression matching all the datasets resources URIs. The dataset namespace should be described using one of those two properties, if possible.
 
@@ -365,7 +365,7 @@ WHERE {
 ```
 This query has the disadvantage to be quite complex and uses advanced features of SPARQL1.1 that are not implemented in all SPARQL endpoints.
 
-##### Links to other resources
+### Links to other resources
 Equivalences and links between resources of other datasets are important for the usage of external sources. If the description does not give the namespace of the dataset or the vocabulary used, the identification of resources from another dataset is difficult. The links are generally described by the property `owl:sameAs`, describing an equivalence between two different resources. They are sometimes also defined by the property `rdfs:seeAlso` describing that further information is given in the description of the other resource.
 
 In dataset description based on the VoID vocabulary, the notion of linksets is a set of triples linking resources of the dataset to resources from others, represented as an instance of `void:Linkset`. The linksets are considered as subsets of the dataset, they are linked to the dataset by the relation `void:subset`. The description of a linkset is improved by giving the URI of the other datasets concerned by the links with the `void:target`. It is also useful to give the number of triples in the dataset.
@@ -379,11 +379,11 @@ In our example, a set of 24 links to resources in DBpedia would be described as 
     void:triples 24 .
 ```
 
-##### Others
+### Others
 
 <!--- Qu'est ce qui a été oublié ? --->
 
-### Examples of descriptions
+## Examples of descriptions
 
 In this section, we try first to extract the descriptions of three KB, detailing each step. We then try to generate a description corresponding to the standards we have defined in the previous sections. The goal of this section is to identify the eventual limitations and problems coming from our previous statements when confronted with real-life examples.
 
@@ -457,12 +457,12 @@ For now, the method of extraction and generation is planned as follows:
 4. Generate missing data.
 ---
 
-#### [DBPedia](http://dbpedia.org/sparql)
+## [DBPedia](http://dbpedia.org/sparql)
 We suppose that we only know the name of the base "DBpedia" and its endpoint URL.
 
 We check the availability of the endpoint using `SELECT * WHERE { ?s ?p ?o } LIMIT 1` sent to http://dbpedia.org/sparql, which returns a result. The endpoint is reachable.
 
-##### Extraction of the SPARQL endpoint description
+### Extraction of the SPARQL endpoint description
 First, we retrieve the list of SPARQL-SD description in the KB, if there are any, using the query:
 ```
 SELECT DISTINCT ?endpoint WHERE {
@@ -540,7 +540,7 @@ This query returns 32 named graphs, including 5 different spellings of the URI `
 
 The feature `sd:RequiresDataset`, given line 18 of [retrieved_endpoint_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_dbpedia.ttl), indicates that the SPARQL service requires an explicit dataset declaration. Each of those named graphs should be detailed in the endpoint description.
 
-##### Extraction of the void/dcat description
+### Extraction of the void/dcat description
 We first check if their are at least one resource representing a DCAT or VoID description, using the query:
 ```
 PREFIX void: <http://rdfs.org/ns/void#>
@@ -600,14 +600,14 @@ The property `void:inDataset` has as object a resource that describes elements i
 
 There is a set of VoID properties describing population statistics. The values of each of those properties should be checked, and corrected, before being added to the generated metadata.
 
-##### Generation of metadata
+### Generation of metadata
 From the existing metadata about DBpedia, we can gather a partial endpoint description. The link between the `dbv:Dataset` description and the graph `<http://dbpedia.org>` can link the endpoint metadata and the content metadata. We could not get provenance information about `<http://dbpedia.org>`. The SPARQL-SD description of the DBPedia endpoint can be reused as it is, with the addition of the only graph description we could retrieve.
 
 We use two new description resources to regroup our generated metadata. In our generated metadata, the resource `dkg:DBPedia` is the center of the dataset description, and the resource `dkg:DBPedia-service` is the center of the endpoint description. We add to them the retrieved metadata after a check and correction if necessary.
 
 By studying the headers of the response to our HTTP request while sending SPARQL queries, we see that the endpoint is using a "Virtuoso/08.03.3319 (Linux) x86_64-centos_6-linux-glibc2.12  VDB" server.
 
-###### Check and generation of population statistics
+#### Check and generation of population statistics
 For the dataset description, as we know the name of the endpoint we have been querying, we can add a label to the knowledge base resource. Some of the population statistics properties, values can be checked using the queries given in previous sections. The generated values for triples, classes and properties are different but close to the retrieved ones, given in the following table. We add the generated values to the generated metadata.
 
 | Property          | Retrieved value | Generated value |
@@ -651,7 +651,7 @@ The values retrieved from the metadata and from the endpoint for those three pro
 The difference of value between our data and the retrieved metadata can be explained either by a limitation of the endpoint capacity to give a full count or by outdated metadata. In this example, we choose to keep the retrieved metadata values over our generated ones, in the hypothesis that the provider of those values had fewer limitations during their generation.
 <!--- NOTE Lequel choisir ? celui donné ou celui re-calculé --->
 
-###### Check of the linkset statistics
+#### Check of the linkset statistics
 In a similar fashion to the population statistics, we can check the count given in the two linksets description retrieved. The count of the sameAs relations in the dataset is retrived by the following query:
 ```
 SELECT (count(*) AS ?c)
@@ -671,7 +671,7 @@ The retrieved endpoint description elements cannot be checked using SPARQL queri
 
 <!--- TODO endpoint description generation --->
 
-###### Addition of basic provenance metadata
+#### Addition of basic provenance metadata
 We add some provenance information to describe our generated data. We had a few lines of provenance information describing the sources and time of generation of the generated metadata.
 ```
 dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
@@ -686,7 +686,7 @@ dkg:DBpedia-service prov:wasDerivedFrom dbp:sparql ;
 
 A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl). Until line 143, the file contains metadata retrieved from the endpoint and checked when possible.
 
-###### Class population count
+#### Class population count
 We extract the population count for each class in the dataset. But, because of the size of the dataset and the number of classes used in it, we can only get partial results with the query written in the previous section. To get the full list of classes and their population counts, we use the limit and offset of the query to limit the charge on the SPARQL server.
 For example, at the fourth iteration, the query would be:
 ```
@@ -722,7 +722,7 @@ CONSTRUCT {
 *WIP*
 <!--- TODO Génération de metadata supplémentaire --->
 
-#### [Wasabi](http://wasabi.inria.fr/sparql)
+## [Wasabi](http://wasabi.inria.fr/sparql)
 We suppose that we only know the name "Wasabi" and its endpoint's URL `http://wasabi.inria.fr/sparql`.
 
 The retrieval of the SPARQL-SD description resource returns only one resource named `http://localhost:8890/sparql`.
@@ -733,11 +733,11 @@ The retrieval of knowledge base resource connected to the endpoint URI returns 1
 
 The file [retrieved_dataset_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_wasabi.ttl) gives the descriptions of each resource. Two of the resources are at the center of exhaustive descriptions of datasets. Only one of the resources is linked to the known URL of WASABI's endpoint by the property `void:sparqlEndpoint`. From this fact, we can assume that the triples between line 116 to 192, centered around the resource `<http://ns.inria.fr/wasabi/wasabi-1-0>` are the description of the WASABI dataset.
 
-##### Generation of metadata
+### Generation of metadata
 
 The VoID/DCAT description centered around `<http://ns.inria.fr/wasabi/wasabi-1-0>` contains almost all the information it should contains. It is well typed, labelled and described, although not by `rdfs:label`, and contains provenance information. It also contains a count of its triples.
 
-###### Generation of basic SPARQL-SD description
+#### Generation of basic SPARQL-SD description
 A SPARQL-SD description of the endpoint we used is missing, as no element allows us to connect this description to the only SPARQL-SD description available.
 
 Extracting the list of named graphs returns 74 results. Of those 74, only 4 a connected to the knowledge base resource by the property `void:vocabulary`. So, they are not graphs of data that we aim to describe in priority.
@@ -777,7 +777,7 @@ By checking amnually the urls of the graphs, we can identify 8 graphs within thi
 
 From this, we can consider that WASABI is a datasets composed of several graphs.
 
-###### Check of the dataset description properties
+#### Check of the dataset description properties
 There are several properties used in the dataset description. Among those properties, there are several that we cannot check. Those properties are given in the following tables, they concern the human-readable description of the dataset, its authorship, its license, and its provenance.
 
 | Labels                |
@@ -884,7 +884,7 @@ We do not have to check the properties and classes from vocabularies that are us
 
 The results show that the dataset does not contain classes or properties from the vocabularies `http://purl.org/vocab/frbr/core#` and `http://www.wikidata.org/entity/`. We can remove those two values from the property `void:vocabulary`.
 
-###### Check of the population count
+#### Check of the population count
 We can extract the number of triples of the dataset by restricting the query to the dataset named graphs, in the following query:
 
 ```
@@ -904,12 +904,12 @@ WHERE {
 ```
 As a result, we get 55 544 763 triples in the graphs combined, which is close to the 55 542 555 triples in the retrieved data with `void:triples`.
 
-###### Generation of basic provenance metadata
+#### Generation of basic provenance metadata
 As for DBpedia, we add provenance information about the generation of this metadata. The file [generated_metadata_wasabi](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) contains the generated descriptions until the line 130.
 
 In the next paragraphs, we move on to the generation of new metadata.
 
-###### Generation of class population counts
+#### Generation of class population counts
 We extract the population count of each class using the following query:
 ```
 SELECT DISTINCT ?class (count(?instance) AS ?count)
@@ -941,7 +941,7 @@ The resulting metadata is shown in [generated_metadata_wasabi](https://github.co
 | `wsb:Choir`         | 44      |
 | `wsb:Orchestra`     | 30      |
 
-###### Extraction of linkset descriptions
+#### Extraction of linkset descriptions
 We extracted the descriptions of the linksets for owl:sameAs and rdfs:seeAlso. We found 204775 sameAs relations, there was no triple containing `rdfs:seeAlso`.
 ```
 SELECT (count(*) AS ?c)
@@ -962,7 +962,7 @@ From those results, we generated the following triples, shown in [generated_meta
 
 *WIP*
 
-#### [British National Library](http://bnb.data.bl.uk/sparql)
+## [British National Library](http://bnb.data.bl.uk/sparql)
 We suppose that we know the name "British National Library" and the endpoint URL `http://bnb.data.bl.uk/sparql`.
 
 The extraction of endpoint description returns no results. The extraction of the dataset descriptions returns 4 results connected to the endpoint URL. The results are shown in the file [retrieved_dataset_bnb.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_bnb.ttl).
@@ -970,22 +970,23 @@ OF the 4 results, 3 are subsets of the dataset `bnbdata:BNB`.
 
 The retrieved dataset descriptions are rather complete. The human-readable descriptions, provenance information and vocabularies are described for the main dataset and its subsets. The population counts are partly missing.
 
-##### Generation of metadata
+### Generation of metadata
 
-###### Generation of endpoint description
+#### Generation of endpoint description
+
 We extract the graphs of the dataset to generate a basic endpoint description. We notice that the names of the graphs are the same as the dataset description resources. We decide to not rename the description resources as we did for the precedent datasets, to keep this connection between graphs and descriptions.
 
 By studying the headers of the response to our HTTP request while sending SPARQL queries, we see that the endpoint is using a "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu" server.
 
-###### Checks of the vocabularies
+#### Checks of the vocabularies
 
 We test the 11 vocabularies that are listed in the descrption without being used in it. The query to check the presence of properties or classes from each vocabulary returns an error. From this, we generate 11 error reports at the end of the file [retrieved_dataset_bnb.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_bnb.ttl).
 
-###### Checks of the triple count and generation of population counts
+#### Checks of the triple count and generation of population counts
 We received an error while trying to obtain a count of the triples and the count of the classes. However, we count obtain results at a later attempt.
 The original description described 205 479 749 triples in the dataset, we obtained 205 482 468 with our queries, which is close.
 
 We also received errors while trying to obtain the population counts of each class.
 
-###### Generation of linksets descriptions
+#### Generation of linksets descriptions
 We extract the linksts descriptions for the `owl:sameAs` and `rdfs:seeAlso` properties. There are only links using `owl:sameAs` with 13 091 837 links.
