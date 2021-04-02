@@ -117,11 +117,11 @@ A knowledge base resource for the description of a KB should be retrievable by t
 PREFIX void: <http://rdfs.org/ns/void#>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 SELECT DISTINCT ?central WHERE {
-  {
-    ?central a void:Dataset .
-  } UNION {
-    ?central a dcat:Dataset .
-  }
+    {
+        ?central a void:Dataset .
+    } UNION {
+        ?central a dcat:Dataset .
+    }
 }
 ```
 
@@ -132,7 +132,7 @@ The endpoint description resource should be retrievable by the query:
 ```
 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
 SELECT DISTINCT ?endpoint WHERE {
-  ?endpoint sd:endpoint ?endpointUrl.
+    ?endpoint sd:endpoint ?endpointUrl.
 }
 ```
 The descriptions present in the dataset should be present around the resources retrieved by the two previous queries.
@@ -145,20 +145,27 @@ The knowledge base resource should have at least a name linked to it by the prop
 As an example:
 ```
 :exampleDataset rdfs:label "Example Dataset"@en ;
-  rdfs:comment "This is a fictional dataset used in the examples of this document"@en .
+    rdfs:comment "This is a fictional dataset used in the examples of this document"@en .
 ```
 Other elements of description, such as the themes or keywords may be used.
 ```
-:exampleDataset dcterms:subject :metadata, :example, "vocabulary", "SPARQL" ;
-  schema:keywords :metadata, :example, "vocabulary", "SPARQL" .
+:exampleDataset dcterms:subject :metadata,
+        :example,
+        "vocabulary",
+        "SPARQL" ;
+    schema:keywords
+        :metadata,
+        :example,
+        "vocabulary",
+        "SPARQL" .
 
 :metadata a skos:Concept ;
-  skos:prefLabel "Metadata" .
-  rdfs:label "Metadata" .
+    skos:prefLabel "Metadata" .
+    rdfs:label "Metadata" .
 
 :example a skos:Concept ;
-  rdfs:label "Example" .
-  skos:prefLabel "Example" .
+    rdfs:label "Example" .
+    skos:prefLabel "Example" .
 ```
 
 The properties given here are not an exhaustive list of possible labelling properties. There are other properties defined in domain-specific vocabularies.
@@ -201,11 +208,11 @@ As an example:
     dcterms:modified "09-02-2021"^^xsd:date .
 
 <https://dblp.org/pid/143/6275> a foaf:Person , prov:Agent ;
-  rdfs:label "Pierre Maillot"@en .
+    rdfs:label "Pierre Maillot"@en .
 
 <https://cecill.info/licences/Licence_CeCILL_V2.1-fr> a dcterms:LicenseDocument ;
-  rdfs:label "License CeCILL"@fr .
-  rdfs:label "French CeCILL Licence"@en .
+    rdfs:label "License CeCILL"@fr .
+    rdfs:label "French CeCILL Licence"@en .
 ```
 
 ### SPARQL endpoint
@@ -216,24 +223,29 @@ The endpoint metadata should at least give its URL, which version of SPARQL it a
 As an example, the endpoint of our example KB supports SPARQL1.1 Query and Update. It can return XML, JSON, Turtle, N3, and CSV.
 ```
 :exampleSparqlService a sd:Service ;
-  sd:endpoint <http://www.example.com/sparql> ;
-  sd:supportedLanguage sd:SPARQL10Query, sd:SPARQL11Update ;
-  sd:resultFormat formats:N3 , formats:RDF_XML , formats:SPARQL_Results_CSV , formats:SPARQL_Results_JSON , formats:SPARQL_Results_XML , formats:Turtle .
+    sd:endpoint <http://www.example.com/sparql> ;
+    sd:supportedLanguage sd:SPARQL10Query, sd:SPARQL11Update ;
+    sd:resultFormat formats:N3 ,
+        formats:RDF_XML ,
+        formats:SPARQL_Results_CSV ,
+        formats:SPARQL_Results_JSON ,
+        formats:SPARQL_Results_XML ,
+        formats:Turtle .
 ```
 
 The example KB has one default graphs and one named graph, named `:ng1`.
 
 ```
 :exampleSparqlService sd:availableGraphs [
-  a sd:Dataset ;
-  sd:defaultGraph [
-    a sd:Graph .
-   ] ;
-   sd:namedGraph [
-    a sd:NamedGraph ;
-      sd:name :ng1 .
-   ]
-  ]
+        a sd:Dataset ;
+        sd:defaultGraph [
+            a sd:Graph .
+        ] ;
+        sd:namedGraph [
+            a sd:NamedGraph ;
+            sd:name :ng1 .
+        ]
+    ]
 ```
 Other features of the endpoint can be added to the description such as the non-standard function proposed or the default treatment of the namedGraph data. The functions offered by the endpoint are given by the property `sd:extensionFunction`, with the function as subject, same for the aggregates with `sd:extensionAggregate`.
 Other features are given by the property `sd:features`. The SPARQL-SD standard defines five features: `sd:DereferencesURIs`, `sd:UnionDefaultGraph`, `sd:RequiresDataset`, `sd:EmptyGraphs`, and `sd:BasicFederatedQuery`. `sd:DereferencesURIs`
@@ -242,20 +254,25 @@ The link between a `sd:DataService` and a `dcat:Dataset` should be represented b
 
 ```
 :exampleSparqlService sd:endpoint <http://www.example.com/sparql> ;
-  a sd:Service, dcat:DataService, prov:Entity ;
-  sd:supportedLanguage sd:SPARQL10Query, sd:SPARQL10Update ;
-  sd:resultFormat formats:N3 , formats:RDF_XML , formats:SPARQL_Results_CSV , formats:SPARQL_Results_JSON , formats:SPARQL_Results_XML , formats:Turtle ;
-  sd:availableGraphs [
-    a sd:Dataset ;
-    sd:defaultGraph [
-      a sd:Graph .
-     ] ;
-     sd:namedGraph [
-      a sd:NamedGraph ;
-      sd:name :ng1 .
-     ]
-  ] ;
-  dcat:servesDataset :exampleDataset .
+    a sd:Service, dcat:DataService, prov:Entity ;
+    sd:supportedLanguage sd:SPARQL10Query, sd:SPARQL10Update ;
+    sd:resultFormat formats:N3 ,
+        formats:RDF_XML ,
+        formats:SPARQL_Results_CSV ,
+        formats:SPARQL_Results_JSON ,
+        formats:SPARQL_Results_XML ,
+        formats:Turtle ;
+    sd:availableGraphs [
+        a sd:Dataset ;
+        sd:defaultGraph [
+            a sd:Graph .
+        ] ;
+        sd:namedGraph [
+            a sd:NamedGraph ;
+            sd:name :ng1 .
+        ]
+    ] ;
+    dcat:servesDataset :exampleDataset .
 ```
 
 The dataset description resource should also be linked to the endpoint descriptino resource by the property `dcat:accessService`. This property links instances of `dcat:Dataset` and `dcat:DataService`. As an example:
@@ -297,25 +314,25 @@ The number of triples must appear in the SPARQL-SD metadata, as part of the grap
 The number of triples can be retrieved by the query:
 ```
 SELECT count(*) WHERE {
-  ?s ?p ?o
+    ?s ?p ?o
 }
 ```
 In our example, the default graph contains 987 triples and the graph `:ng1`, also described by `:exampleDataset`, contains 1234 triples. The count of triples should be used as such:
 ```
 :exampleSparqlService
-  dcat:servesDataset :exampleDataset ;
-  sd:defaultDataset [
-    a sd:Dataset ;
-    sd:defaultGraph [
-      a sd:Graph ;
-      void:triples 987 .
-    ] ;
-    sd:namedGraph [
-      a sd:NamedGraph ;
-      sd:name :ng1 ;
-      void:triples 1234 .
-    ]
-  ] .
+    dcat:servesDataset :exampleDataset ;
+    sd:defaultDataset [
+        a sd:Dataset ;
+        sd:defaultGraph [
+            a sd:Graph ;
+            void:triples 987 .
+        ] ;
+        sd:namedGraph [
+            a sd:NamedGraph ;
+            sd:name :ng1 ;
+            void:triples 1234 .
+        ]
+    ] .
 ```
 The VoID/DCAT metadata can contain other population counts, such as the classes, the properties, the sujects of objets.
 
@@ -323,11 +340,11 @@ The number of classes can be retrieved by the query:
 ```
 SELECT (count(?s) AS ?c)
 WHERE {
-  SELECT DISTINCT ?s WHERE {
-    { ?s a owl:Class }
-    UNION { ?s a rdfs:Class }
-    UNION { ?whatever a ?s }
-  }
+    SELECT DISTINCT ?s WHERE {
+        { ?s a owl:Class }
+        UNION { ?s a rdfs:Class }
+        UNION { ?whatever a ?s }
+    }
 }
 ```
 The number of classes must be linked to the knowledge base resource by the property `void:classes`.
@@ -337,8 +354,8 @@ The number of properties can be retrieved by the query:
 SELECT (count(?p) AS ?c)
 WHERE {
     SELECT DISTINCT ?p WHERE  {
-    ?s ?p ?o
-  }
+        ?s ?p ?o
+    }
 }
 ```
 The number of properties must be linked to the knowledge base resource by the property `void:properties`.
@@ -347,9 +364,9 @@ The number of distinct subjects can be retrieved by the query:
 ```
 SELECT (count(?p) AS ?c)
 WHERE {
-  SELECT DISTINCT ?s WHERE  {
-    ?s ?p ?o
-  }
+    SELECT DISTINCT ?s WHERE  {
+        ?s ?p ?o
+    }
 }
 ```
 The number of distinct subjects must be linked to the knowledge base resource by the property `void:distinctSubjects`.
@@ -358,9 +375,9 @@ The number of distinct objects can be retrieved by the query:
 ```
 SELECT DISTINCT (count(?o) AS ?c)
 WHERE {
-  SELECT DISTINCT ?o WHERE  {
-    ?s ?p ?o
-  }
+    SELECT DISTINCT ?o WHERE  {
+        ?s ?p ?o
+    }
 }
 ```
 The number of distinct objects must be linked to the knowledge base resource by the property `void:distinctObjects`.
@@ -368,10 +385,10 @@ The number of distinct objects must be linked to the knowledge base resource by 
 In our example, with arbitrary populations, the description would be:
 ```
 :exampleDataset void:triples 1234 ;
-  void:classes 8 ;
-  void:properties 11 ;
-  void:distinctSubjects 96 ;
-  void:distinctObjects 458 ;
+    void:classes 8 ;
+    void:properties 11 ;
+    void:distinctSubjects 96 ;
+    void:distinctObjects 458 ;
 ```
 
 ### Class population count
@@ -380,22 +397,22 @@ To give an idea of the repartition of instances among classes to end-users, it i
 The list of class population can be retrieved using the following query:
 ```
 SELECT ?class (count(?instance) AS ?count) WHERE {
-  SELECT DISTINCT ?class ?instance
-  WHERE {
-    ?instance a ?class  
-  }
+    SELECT DISTINCT ?class ?instance
+    WHERE {
+        ?instance a ?class  
+    }
 }
 ```
 The object of the property `void:classPartition` must be the subject of the property `void:class`. In our example with arbitrary population, the class population count appears as follows in the metadata:
 ```
 :exampleDataset void:classPartition [
-    void:class :exampleClass1 ;
-    void:entities 789
-  ] ;
-  void:classPartition [
-    void:class :exampleClass2 ;
-    void:entities 456
-  ]
+        void:class :exampleClass1 ;
+        void:entities 789
+    ] ;
+    void:classPartition [
+        void:class :exampleClass2 ;
+        void:entities 456
+    ] .
 ```
 
 ### Namespaces
@@ -407,9 +424,9 @@ If they are not given, we can extract the namespaces used in the dataset. Namesp
 ```
 SELECT DISTINCT ?ns
 WHERE {
-  { ?s ?elem ?o . }
-  UNION { ?x a ?elem . }
-  BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns )
+    { ?s ?elem ?o . }
+    UNION { ?x a ?elem . }
+    BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns )
 }
 ```
 This query has the disadvantage to be quite complex and uses advanced features of SPARQL1.1 that are not implemented in all SPARQL endpoints.
@@ -463,9 +480,9 @@ As an example, if the extraction of the list of namespaces resulted in a timeout
     dkg:featureProperty void:uriSpace ;
     earl:test """SELECT DISTINCT ?ns
         WHERE {
-          { ?s ?elem ?o . }
-          UNION { ?x a ?elem . }
-          BIND( REPLACE( str(?p), "(#|/)[^#/]*$", "$1" ) AS ?ns )
+            { ?s ?elem ?o . }
+            UNION { ?x a ?elem . }
+            BIND( REPLACE( str(?p), "(#|/)[^#/]*$", "$1" ) AS ?ns )
         }""" ;
     earl:result [
         a earl:TestResult ;
@@ -517,7 +534,7 @@ We check the availability of the endpoint using `SELECT * WHERE { ?s ?p ?o } LIM
 First, we retrieve the list of SPARQL-SD description in the KB, if there are any, using the query:
 ```
 SELECT DISTINCT ?endpoint WHERE {
-  ?endpoint sd:endpoint ?endpointUrl.
+    ?endpoint sd:endpoint ?endpointUrl.
 }
 ```
 This query returns 4 resources.
@@ -546,7 +563,7 @@ The description linked to `dbp:sparql-sd` contains a good description of the par
 We can retrieve the named graphs present in the KB by using the query:
 ```
 SELECT DISTINCT ?g WHERE {
- GRAPH ?g { ?s ?p ?o }
+    GRAPH ?g { ?s ?p ?o }
 }
 ORDER BY ?g
 ```
@@ -598,9 +615,9 @@ PREFIX void: <http://rdfs.org/ns/void#>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 SELECT DISTINCT ?central WHERE {
     {
-      ?central a void:Dataset .
+        ?central a void:Dataset .
     } UNION {
-      ?central a dcat:Dataset .
+        ?central a dcat:Dataset .
     }
 }
 ```
@@ -617,27 +634,27 @@ Retrieval of data about each knowledge base resources using 2 queries:
 Outgoing properties:
 ```
 CONSTRUCT {
-  ?central ?p ?o
+    ?central ?p ?o
 } WHERE {
-  {
-    ?central a void:Dataset .
-  } UNION {
-    ?central a dcat:Dataset .
-  }
-  ?central ?p ?o
+    {
+        ?central a void:Dataset .
+    } UNION {
+        ?central a dcat:Dataset .
+    }
+    ?central ?p ?o
 }
 ```
 Ingoing properties:
 ```
 CONSTRUCT {
-  ?s ?p ?central
+    ?s ?p ?central
 } WHERE {
-  {
-    ?central a void:Dataset .
-  } UNION {
-    ?central a dcat:Dataset .
-  }
-  ?s ?p ?central
+    {
+        ?central a void:Dataset .
+    } UNION {
+        ?central a dcat:Dataset .
+    }
+    ?s ?p ?central
 }
 ```
 
@@ -671,10 +688,10 @@ The generated values of the other properties give values very different from the
 The number of distinct subjects is retrived with the following query:
 ```
 SELECT (count(?s) AS ?c)
-  WHERE {
+WHERE {
     SELECT DISTINCT ?s
     WHERE {
-      ?s ?p ?o
+        ?s ?p ?o
     }
 }
 ```
@@ -682,12 +699,12 @@ The number of distinct objects is obtained by a trivial modification of this que
 The property `void:entities` described the number of distinct URIs or blank nodes present in the base. It can be extracted with the following query:
 ```
 SELECT (count(?u) AS ?c)
-  WHERE {
+WHERE {
     SELECT DISTINCT ?u
     WHERE {
-      { ?u ?p ?o }
-      UNION { ?s ?p ?u }
-      FILTER( isIRI(?u) || isBlank(?u) )
+        { ?u ?p ?o }
+        UNION { ?s ?p ?u }
+        FILTER( isIRI(?u) || isBlank(?u) )
     }
 }
 ```
@@ -707,7 +724,7 @@ In a similar fashion to the population statistics, we can check the count given 
 ```
 SELECT (count(*) AS ?c)
 WHERE {
-  ?s owl:sameAs ?o
+    ?s owl:sameAs ?o
 }
 ```
 
@@ -740,10 +757,10 @@ We extract the population count for each class in the dataset. But, because of t
 For example, at the fourth iteration, the query would be:
 ```
 SELECT ?class (count(?instance) AS ?count) WHERE {
-  SELECT DISTINCT ?class ?instance
-  WHERE {
-    ?instance a ?class  
-  }
+    SELECT DISTINCT ?class ?instance
+    WHERE {
+        ?instance a ?class  
+    }
 }
 LIMIT 100
 OFFSET 300
@@ -751,19 +768,19 @@ OFFSET 300
 For our example, we limited ourselves to the classes part of the `http://dbpedia.org/ontology` namespace. We constructed directly the metadata using the following query. The results of this query are shown in [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl) between line 157 and 1056.
 ```
 CONSTRUCT {
-  <https://dekalog.univ-nantes.fr/DBpedia> void:classPartition [
-    void:class ?class ;
-    void:entities ?count
-  ]
+    <https://dekalog.univ-nantes.fr/DBpedia> void:classPartition [
+        void:class ?class ;
+        void:entities ?count
+    ]
 } WHERE {
-  SELECT DISTINCT ?class (count(?instance) AS ?count) WHERE {
-    SELECT DISTINCT ?class ?instance
-    WHERE {
-      ?instance a ?class
-      FILTER(REGEX(?class, "http://dbpedia.org/ontology") )
+    SELECT DISTINCT ?class (count(?instance) AS ?count) WHERE {
+        SELECT DISTINCT ?class ?instance
+        WHERE {
+            ?instance a ?class
+            FILTER(REGEX(?class, "http://dbpedia.org/ontology") )
+        }
     }
-  }
-  ORDER BY ?count
+    ORDER BY ?count
 }
 ```
 
@@ -878,44 +895,19 @@ As the dataset description gives its namespace, we could identify the graphs com
 
 ```
 ASK {
-  {
-    GRAPH <http://ns.inria.fr/wasabi/ontology/> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem }
+    FROM <http://ns.inria.fr/wasabi/ontology/>
+    FROM <http://ns.inria.fr/wasabi/graph/albums>
+    FROM <http://ns.inria.fr/wasabi/graph/artists>
+    FROM <http://ns.inria.fr/wasabi/graph/metadata>
+    FROM <http://ns.inria.fr/wasabi/graph/songs>
+    FROM <http://ns.inria.fr/wasabi/graph/albums>
+    FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c>
+    FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b>
+    FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8>
+    {
+        { ?s ?elem ?o  } UNION { ?s a ?elem }
     }
-  } UNION {
-    GRAPH <http://ns.inria.fr/wasabi/graph/albums> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem }
-    }
-  } UNION {
-    GRAPH <http://ns.inria.fr/wasabi/graph/artists> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem }
-    }
-  } UNION {
-     GRAPH <http://ns.inria.fr/wasabi/graph/metadata> {
-       { ?s ?elem ?o  } UNION { ?s a ?elem }
-       }
-  } UNION {
-    GRAPH <http://ns.inria.fr/wasabi/graph/songs> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem }
-    }
-  } UNION {
-    GRAPH <http://ns.inria.fr/wasabi/graph/albums> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem }
-    }
-  } UNION {
-    GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem }
-    }
-  } UNION {
-    GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem }
-    }
-  } UNION {
-    GRAPH <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8> {
-      { ?s ?elem ?o  } UNION { ?s a ?elem }
-    }
-  }
-  FILTER( REGEX(?elem, "http://purl.org/ontology/chord/") )
+    FILTER( REGEX(?elem, "http://purl.org/ontology/chord/") )
 }
 ```
 
@@ -947,7 +939,7 @@ SELECT (count(*) AS ?c)
     FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b>
     FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8>
 WHERE {
-      ?s ?p ?o
+    ?s ?p ?o
 }
 ```
 As a result, we get 55 544 763 triples in the graphs combined, which is close to the 55 542 555 triples in the retrieved data with `void:triples`.
@@ -962,19 +954,19 @@ We extract the population count of each class using the following query:
 ```
 SELECT DISTINCT ?class (count(?instance) AS ?count)
 WHERE {
-  SELECT DISTINCT ?class ?instance
-      FROM <http://ns.inria.fr/wasabi/ontology/>
-      FROM <http://ns.inria.fr/wasabi/graph/albums>
-      FROM <http://ns.inria.fr/wasabi/graph/artists>
-      FROM <http://ns.inria.fr/wasabi/graph/metadata>
-      FROM <http://ns.inria.fr/wasabi/graph/songs>
-      FROM <http://ns.inria.fr/wasabi/graph/albums>
-      FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c>
-      FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b>
-      FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8>
-  WHERE {
-      ?instance a ?class
-  }
+    SELECT DISTINCT ?class ?instance
+        FROM <http://ns.inria.fr/wasabi/ontology/>
+        FROM <http://ns.inria.fr/wasabi/graph/albums>
+        FROM <http://ns.inria.fr/wasabi/graph/artists>
+        FROM <http://ns.inria.fr/wasabi/graph/metadata>
+        FROM <http://ns.inria.fr/wasabi/graph/songs>
+        FROM <http://ns.inria.fr/wasabi/graph/albums>
+        FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c>
+        FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b>
+        FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8>
+    WHERE {
+        ?instance a ?class
+    }
 }
 ```
 The resulting metadata is shown in [generated_metadata_wasabi](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) between line 141 and 231. We give here an excerpt of the data for the classes defined in the WASABI namespace:
@@ -1002,9 +994,9 @@ SELECT (count(*) AS ?c)
     FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38392c>
     FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee38393b>
     FROM <http://ns.inria.fr/wasabi/song/5714dec325ac0d8aee386ee8>
-    WHERE {
-      ?s owl:sameAs ?o
-    }
+WHERE {
+    ?s owl:sameAs ?o
+}
 ```
 From those results, we generated the following triples, shown in [generated_metadata_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) between line 135 and 139.
 
