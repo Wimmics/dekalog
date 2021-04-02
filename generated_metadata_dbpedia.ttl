@@ -48,7 +48,7 @@ dbv:seeAlsoLinks	rdf:type	void:Linkset ;
 
 # Endpoint description
 dkg:DBpedia-service	rdf:type sd:Service, dcat:DataService, prov:Entity ;
-	sd:servesDataset dkg:DBpedia ;
+	dcat:servesDataset dkg:DBpedia ;
 	sd:endpoint	dbp:sparql ,
 		dbp:sparql-auth ;
 	sd:feature	sd:RequiresDataset ,

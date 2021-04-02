@@ -102,7 +102,7 @@ dkg:Wasabi-service rdf:type sd:Service,
 		prov:Entity ,
 		earl:TestSubject ;
 	sd:endpoint wasabi:sparql ;
-	sd:servesDataset dkg:Wasabi ;
+	dcat:servesDataset dkg:Wasabi ;
 	sd:availableGraphs [
 		a sd:GraphCollection ;
       	sd:namedGraph wasabins:graph/albums ,

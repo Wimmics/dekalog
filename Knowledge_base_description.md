@@ -1,5 +1,54 @@
 # Knowledge base description
 
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [Knowledge base description](#knowledge-base-description)
+	- [Vocabularies](#vocabularies)
+		- [[VoID](https://www.w3.org/TR/void/)](#voidhttpswwww3orgtrvoid)
+		- [[DCAT](https://www.w3.org/TR/vocab-dcat-3/)](#dcathttpswwww3orgtrvocab-dcat-3)
+		- [[SPARQL-SD](http://www.w3.org/TR/sparql11-service-description/)](#sparql-sdhttpwwww3orgtrsparql11-service-description)
+	- [Features](#features)
+		- [Terminology for this document](#terminology-for-this-document)
+		- [Knowledge base resources](#knowledge-base-resources)
+			- [VoID/DCAT](#voiddcat)
+			- [SPARQL-SD](#sparql-sd)
+		- [Label and description](#label-and-description)
+		- [Provenance](#provenance)
+		- [SPARQL endpoint](#sparql-endpoint)
+		- [Description of vocabularies used](#description-of-vocabularies-used)
+		- [Population count](#population-count)
+		- [Class population count](#class-population-count)
+		- [Namespaces](#namespaces)
+		- [Links to other resources](#links-to-other-resources)
+		- [Others](#others)
+	- [Examples of descriptions](#examples-of-descriptions)
+		- [Generation of error report](#generation-of-error-report)
+		- [[DBPedia](http://dbpedia.org/sparql)](#dbpediahttpdbpediaorgsparql)
+			- [Extraction of the SPARQL endpoint description](#extraction-of-the-sparql-endpoint-description)
+			- [Extraction of the void/dcat description](#extraction-of-the-voiddcat-description)
+			- [Generation of metadata](#generation-of-metadata)
+				- [Check and generation of population statistics](#check-and-generation-of-population-statistics)
+				- [Check of the linkset statistics](#check-of-the-linkset-statistics)
+				- [Addition of basic provenance metadata](#addition-of-basic-provenance-metadata)
+				- [Class population count](#class-population-count)
+		- [[Wasabi](http://wasabi.inria.fr/sparql)](#wasabihttpwasabiinriafrsparql)
+			- [Generation of metadata](#generation-of-metadata)
+				- [Generation of basic SPARQL-SD description](#generation-of-basic-sparql-sd-description)
+				- [Check of the dataset description properties](#check-of-the-dataset-description-properties)
+				- [Check of the population count](#check-of-the-population-count)
+				- [Generation of basic provenance metadata](#generation-of-basic-provenance-metadata)
+				- [Generation of class population counts](#generation-of-class-population-counts)
+				- [Extraction of linkset descriptions](#extraction-of-linkset-descriptions)
+		- [[British National Library](http://bnb.data.bl.uk/sparql)](#british-national-libraryhttpbnbdatabluksparql)
+			- [Generation of metadata](#generation-of-metadata)
+				- [Generation of endpoint description](#generation-of-endpoint-description)
+				- [Checks of the vocabularies](#checks-of-the-vocabularies)
+				- [Checks of the triple count and generation of population counts](#checks-of-the-triple-count-and-generation-of-population-counts)
+				- [Generation of linksets descriptions](#generation-of-linksets-descriptions)
+				- [Addition of basic provenance metadata](#addition-of-basic-provenance-metadata)
+
+<!-- /TOC -->
+
 <!--- NOTE: Le document est rédigé en Markdown pour rapidité d'écriture, trivialité de la conversion vers LateX et compatibilité avec Github --->
 
 The goal of this document is to present the desired features in a dataset description. To do this, we will present the different vocabularies to use to describe each feature. We will give examples of the extraction and re-generation of descriptions as desired.
@@ -358,9 +407,9 @@ If they are not given, we can extract the namespaces used in the dataset. Namesp
 ```
 SELECT DISTINCT ?ns
 WHERE {
-  { ?s ?elem ?o . }
-  UNION { ?x a ?elem . }
-  BIND( REPLACE( str(?p), "(#|/)[^#/]*$", "$1" ) AS ?ns )
+  { ?s ?elem ?o . }
+  UNION { ?x a ?elem . }
+  BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns )
 }
 ```
 This query has the disadvantage to be quite complex and uses advanced features of SPARQL1.1 that are not implemented in all SPARQL endpoints.
@@ -459,12 +508,12 @@ For now, the method of extraction and generation is planned as follows:
 4. Generate missing data.
 ---
 
-## [DBPedia](http://dbpedia.org/sparql)
+### [DBPedia](http://dbpedia.org/sparql)
 We suppose that we only know the name of the base "DBpedia" and its endpoint URL.
 
 We check the availability of the endpoint using `SELECT * WHERE { ?s ?p ?o } LIMIT 1` sent to http://dbpedia.org/sparql, which returns a result. The endpoint is reachable.
 
-### Extraction of the SPARQL endpoint description
+#### Extraction of the SPARQL endpoint description
 First, we retrieve the list of SPARQL-SD description in the KB, if there are any, using the query:
 ```
 SELECT DISTINCT ?endpoint WHERE {
@@ -542,7 +591,7 @@ This query returns 32 named graphs, including 5 different spellings of the URI `
 
 The feature `sd:RequiresDataset`, given line 18 of [retrieved_endpoint_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_dbpedia.ttl), indicates that the SPARQL service requires an explicit dataset declaration. Each of those named graphs should be detailed in the endpoint description.
 
-### Extraction of the void/dcat description
+#### Extraction of the void/dcat description
 We first check if their are at least one resource representing a DCAT or VoID description, using the query:
 ```
 PREFIX void: <http://rdfs.org/ns/void#>
@@ -602,14 +651,14 @@ The property `void:inDataset` has as object a resource that describes elements i
 
 There is a set of VoID properties describing population statistics. The values of each of those properties should be checked, and corrected, before being added to the generated metadata.
 
-### Generation of metadata
+#### Generation of metadata
 From the existing metadata about DBpedia, we can gather a partial endpoint description. The link between the `dbv:Dataset` description and the graph `<http://dbpedia.org>` can link the endpoint metadata and the content metadata. We could not get provenance information about `<http://dbpedia.org>`. The SPARQL-SD description of the DBPedia endpoint can be reused as it is, with the addition of the only graph description we could retrieve.
 
 We use two new description resources to regroup our generated metadata. In our generated metadata, the resource `dkg:DBPedia` is the center of the dataset description, and the resource `dkg:DBPedia-service` is the center of the endpoint description. We add to them the retrieved metadata after a check and correction if necessary.
 
 By studying the headers of the response to our HTTP request while sending SPARQL queries, we see that the endpoint is using a "Virtuoso/08.03.3319 (Linux) x86_64-centos_6-linux-glibc2.12  VDB" server.
 
-#### Check and generation of population statistics
+##### Check and generation of population statistics
 For the dataset description, as we know the name of the endpoint we have been querying, we can add a label to the knowledge base resource. Some of the population statistics properties, values can be checked using the queries given in previous sections. The generated values for triples, classes and properties are different but close to the retrieved ones, given in the following table. We add the generated values to the generated metadata.
 
 | Property          | Retrieved value | Generated value |
@@ -653,7 +702,7 @@ The values retrieved from the metadata and from the endpoint for those three pro
 The difference of value between our data and the retrieved metadata can be explained either by a limitation of the endpoint capacity to give a full count or by outdated metadata. In this example, we choose to keep the retrieved metadata values over our generated ones, in the hypothesis that the provider of those values had fewer limitations during their generation.
 <!--- NOTE Lequel choisir ? celui donné ou celui re-calculé --->
 
-#### Check of the linkset statistics
+##### Check of the linkset statistics
 In a similar fashion to the population statistics, we can check the count given in the two linksets description retrieved. The count of the sameAs relations in the dataset is retrived by the following query:
 ```
 SELECT (count(*) AS ?c)
@@ -671,7 +720,7 @@ The generated values are very close to the ones retrieved from the metadata, we 
 
 The retrieved endpoint description elements cannot be checked using SPARQL queries and will be checked using other methods at a later date. As written in previous sections, we add to the endpoint description the list of all graphs we could extract. We also add the link between the endpoint description and the dataset description with the property `dcat:servesDataset`.
 
-###### Addition of basic provenance metadata
+##### Addition of basic provenance metadata
 We add some provenance information to describe our generated data. We had a few lines of provenance information describing the sources and time of generation of the generated metadata.
 ```
 dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
@@ -686,7 +735,7 @@ dkg:DBpedia-service prov:wasDerivedFrom dbp:sparql ;
 
 A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl). Until line 144, the file contains metadata retrieved from the endpoint and checked when possible.
 
-#### Class population count
+##### Class population count
 We extract the population count for each class in the dataset. But, because of the size of the dataset and the number of classes used in it, we can only get partial results with the query written in the previous section. To get the full list of classes and their population counts, we use the limit and offset of the query to limit the charge on the SPARQL server.
 For example, at the fourth iteration, the query would be:
 ```
@@ -721,7 +770,7 @@ CONSTRUCT {
 
 *WIP*
 
-## [Wasabi](http://wasabi.inria.fr/sparql)
+### [Wasabi](http://wasabi.inria.fr/sparql)
 We suppose that we only know the name "Wasabi" and its endpoint's URL `http://wasabi.inria.fr/sparql`.
 
 The retrieval of the SPARQL-SD description resource returns only one resource named `http://localhost:8890/sparql`.
@@ -732,11 +781,11 @@ The retrieval of knowledge base resource connected to the endpoint URI returns 1
 
 The file [retrieved_dataset_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_wasabi.ttl) gives the descriptions of each resource. Two of the resources are at the center of exhaustive descriptions of datasets. Only one of the resources is linked to the known URL of WASABI's endpoint by the property `void:sparqlEndpoint`. From this fact, we can assume that the triples between line 116 to 192, centered around the resource `<http://ns.inria.fr/wasabi/wasabi-1-0>` are the description of the WASABI dataset.
 
-### Generation of metadata
+#### Generation of metadata
 
 The VoID/DCAT description centered around `<http://ns.inria.fr/wasabi/wasabi-1-0>` contains almost all the information it should contains. It is well typed, labelled and described, although not by `rdfs:label`, and contains provenance information. It also contains a count of its triples.
 
-#### Generation of basic SPARQL-SD description
+##### Generation of basic SPARQL-SD description
 A SPARQL-SD description of the endpoint we used is missing, as no element allows us to connect this description to the only SPARQL-SD description available.
 
 Extracting the list of named graphs returns 74 results. Of those 74, only 4 a connected to the knowledge base resource by the property `void:vocabulary`. So, they are not graphs of data that we aim to describe in priority.
@@ -776,7 +825,7 @@ By checking amnually the urls of the graphs, we can identify 8 graphs within thi
 
 From this, we can consider that WASABI is a datasets composed of several graphs.
 
-#### Check of the dataset description properties
+##### Check of the dataset description properties
 There are several properties used in the dataset description. Among those properties, there are several that we cannot check. Those properties are given in the following tables, they concern the human-readable description of the dataset, its authorship, its license, and its provenance.
 
 | Labels                |
@@ -883,7 +932,7 @@ We do not have to check the properties and classes from vocabularies that are us
 
 The results show that the dataset does not contain classes or properties from the vocabularies `http://purl.org/vocab/frbr/core#` and `http://www.wikidata.org/entity/`. We can remove those two values from the property `void:vocabulary`.
 
-#### Check of the population count
+##### Check of the population count
 We can extract the number of triples of the dataset by restricting the query to the dataset named graphs, in the following query:
 
 ```
@@ -903,12 +952,12 @@ WHERE {
 ```
 As a result, we get 55 544 763 triples in the graphs combined, which is close to the 55 542 555 triples in the retrieved data with `void:triples`.
 
-#### Generation of basic provenance metadata
+##### Generation of basic provenance metadata
 As for DBpedia, we add provenance information about the generation of this metadata. The file [generated_metadata_wasabi.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_wasabi.ttl) contains the generated descriptions until the line 133.
 
 In the next paragraphs, we move on to the generation of new metadata.
 
-#### Generation of class population counts
+##### Generation of class population counts
 We extract the population count of each class using the following query:
 ```
 SELECT DISTINCT ?class (count(?instance) AS ?count)
@@ -940,7 +989,7 @@ The resulting metadata is shown in [generated_metadata_wasabi](https://github.co
 | `wsb:Choir`         | 44      |
 | `wsb:Orchestra`     | 30      |
 
-#### Extraction of linkset descriptions
+##### Extraction of linkset descriptions
 We extracted the descriptions of the linksets for owl:sameAs and rdfs:seeAlso. We found 204775 sameAs relations, there was no triple containing `rdfs:seeAlso`.
 ```
 SELECT (count(*) AS ?c)
@@ -961,7 +1010,7 @@ From those results, we generated the following triples, shown in [generated_meta
 
 *WIP*
 
-## [British National Library](http://bnb.data.bl.uk/sparql)
+### [British National Library](http://bnb.data.bl.uk/sparql)
 We suppose that we know the name "British National Library" and the endpoint URL `http://bnb.data.bl.uk/sparql`.
 
 The extraction of endpoint description returns no results. The extraction of the dataset descriptions returns 4 results connected to the endpoint URL. The results are shown in the file [retrieved_dataset_bnb.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_bnb.ttl) from line 20 to 189.
@@ -969,25 +1018,27 @@ OF the 4 results, 3 are subsets of the dataset `bnbdata:BNB`.
 
 The retrieved dataset descriptions are rather complete. The human-readable descriptions, provenance information and vocabularies are described for the main dataset and its subsets. The population counts are partly missing.
 
-### Generation of metadata
+#### Generation of metadata
 
-###### Generation of endpoint description
+##### Generation of endpoint description
 We extract the graphs of the dataset to generate a basic endpoint description. We notice that the names of the graphs are the same as the dataset description resources. We decide to not rename the description resources as we did for the precedent datasets, to keep this connection between graphs and descriptions.
 
 By studying the headers of the response to our HTTP request while sending SPARQL queries, we see that the endpoint is using a "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu" server.
 
-###### Checks of the vocabularies
+##### Checks of the vocabularies
 
 We test the 11 vocabularies that are listed in the descrption without being used in it. The query to check the presence of properties or classes from each vocabulary returns an error. From this, we generate 11 error reports at the end of the file [retrieved_dataset_bnb.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_bnb.ttl).
 
-###### Checks of the triple count and generation of population counts
+##### Checks of the triple count and generation of population counts
 We received an error while trying to obtain a count of the triples and the count of the classes. However, we count obtain results at a later attempt.
 The original description described 205 479 749 triples in the dataset, we obtained 205 482 468 with our queries, which is close.
 
 We also received errors while trying to obtain the population counts of each class, added to the previous ones at the end of the file.
 
-###### Generation of linksets descriptions
+##### Generation of linksets descriptions
 We extract the linksts descriptions for the `owl:sameAs` and `rdfs:seeAlso` properties. There are only links using `owl:sameAs` with 13 091 837 links.
 
-###### Addition of basic provenance metadata
+##### Addition of basic provenance metadata
 We add basic provenance informations to our generated description. As we did not generate the resources used to describe each of the 4 datasets, we use the property `prov:wasQuotedFrom` to link them to the endpoint. This relation indicates that the resource was used to generate new data around it but was not created by the author of the metadata. The provenance information are shown in file [retrieved_dataset_bnb.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_bnb.ttl) from line 216 to 236.
+
+<!--- TODO Extraction des namespaces --->
