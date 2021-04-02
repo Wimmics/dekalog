@@ -1,1055 +1,1059 @@
-@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix owl:	<http://www.w3.org/2002/07/owl#> .
-@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
-@prefix sd:	<http://www.w3.org/ns/sparql-service-description#> .
-@prefix formats:	<http://www.w3.org/ns/formats/> .
-@prefix dbp:	<http://dbpedia.org/> .
-@prefix virtrdf:	<http://www.openlinksw.com/schemas/virtrdf#> .
-@prefix sql:	<sql:> .
-@prefix bif:	<bif:> .
-@prefix dbv:	<http://dbpedia.org/void/> .
-@prefix local:	<http://localhost:8890/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix formats: <http://www.w3.org/ns/formats/> .
+@prefix dbp: <http://dbpedia.org/> .
+@prefix virtrdf: <http://www.openlinksw.com/schemas/virtrdf#> .
+@prefix sql: <sql:> .
+@prefix bif: <bif:> .
+@prefix dbv: <http://dbpedia.org/void/> .
+@prefix local: <http://localhost:8890/> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix dkg: <https://dekalog.univ-nantes.fr/> .
 
 # Dataset description
-dkg:DBpedia	rdf:type	void:Dataset, dcat:Dataset, prov:Entity ;
-	rdfs:label "DBpedia"@en ;
-	void:sparqlEndpoint	dbp:sparql ;
-	rdfs:seeAlso	<http://dbpedia.org> ;
+dkg:DBpedia rdf:type void:Dataset,
+        dcat:Dataset,
+        prov:Entity ;
+    rdfs:label "DBpedia"@en ;
+    void:sparqlEndpoint dbp:sparql ;
+    rdfs:seeAlso <http://dbpedia.org> ;
 # Basic population counts.
 # The counts have been re-computed from the endpoint. When a result was too different from what was given in the original metadata, the original value was kept.
-	void:triples	859801816 ;
-	void:classes	483912 ;
-	void:properties	54364 ;
-	void:distinctObjects	231116566 ;
-	void:distinctSubjects	43070161 ;
-	void:entities	30127028 ;
+    void:triples 859801816 ;
+    void:classes 483912 ;
+    void:properties 54364 ;
+    void:distinctObjects 231116566 ;
+    void:distinctSubjects 43070161 ;
+    void:entities 30127028 ;
 # Missing values
-	void:vocabulary dkg:missingValue ;
-	dct:creator dkg:missingValue ;
-	dce:publisher dkg:missingValue ;
-	dct:licence dkg:missingValue ;
-	schema:licence dkg:missingValue ;
-	dct:issued dkg:missingValue .
+    void:vocabulary dkg:missingValue ;
+    dct:creator dkg:missingValue ;
+    dce:publisher dkg:missingValue ;
+    dct:licence dkg:missingValue ;
+    schema:licence dkg:missingValue ;
+    dct:issued dkg:missingValue .
 
 # Linksets of the dataset
-dbv:sameAsLinks	void:inDataset	dkg:DBpedia .
-dbv:seeAlsoLinks	void:inDataset	dkg:DBpedia .
-dbv:sameAsLinks	rdf:type	void:Linkset ;
-	void:inDataset	dkg:DBpedia .
-	void:linkPredicate	owl:sameAs ;
-	void:triples	49127465 .
-dbv:seeAlsoLinks	rdf:type	void:Linkset ;
-	void:inDataset	dkg:DBpedia .
-	void:linkPredicate	rdfs:seeAlso ;
-	void:triples	254347 .
+dbv:sameAsLinks void:inDataset dkg:DBpedia .
+dbv:seeAlsoLinks void:inDataset dkg:DBpedia .
+dbv:sameAsLinks rdf:type void:Linkset ;
+    void:inDataset dkg:DBpedia .
+    void:linkPredicate owl:sameAs ;
+    void:triples 49127465 .
+dbv:seeAlsoLinks rdf:type void:Linkset ;
+    void:inDataset dkg:DBpedia .
+    void:linkPredicate rdfs:seeAlso ;
+    void:triples 254347 .
 
 
 # Endpoint description
-dkg:DBpedia-service	rdf:type sd:Service, dcat:DataService, prov:Entity ;
-	dcat:servesDataset dkg:DBpedia ;
-	sd:endpoint	dbp:sparql ,
-		dbp:sparql-auth ;
-	sd:feature	sd:RequiresDataset ,
-		sd:BasicFederatedQuery ,
-		sd:EmptyGraphs ,
-		sd:UnionDefaultGraph ;
-	sd:resultFormat	formats:N-triples ,
-		formats:Turtle ,
-		formats:RDFa ,
-		formats:N3 ,
-		formats:RDF_XML ,
-		formats:SPARQL_Results_CSV ,
-		formats:SPARQL_Results_JSON ,
-		formats:SPARQL_Results_XML ,
-		virtrdf:FileFormat_Triples_HTML_Microdata ,
-		virtrdf:FileFormat_Triples_HTML_list ,
-		virtrdf:FileFormat_Triples_HTML_table ,
-		virtrdf:FileFormat_Triples_Microdata_JSON ,
-		virtrdf:FileFormat_Triples_ODATA_JSON ,
-		virtrdf:FileFormat_Triples_RDF_JSON ,
-		virtrdf:FileFormat_Triples_XHTML_RDFa ,
-		virtrdf:FileFormat_SPARQL_Results_CXML_QR ,
-		virtrdf:FileFormat_SPARQL_Results_HTML ,
-		virtrdf:FileFormat_SPARQL_Results_Javascript ,
-		virtrdf:FileFormat_SPARQL_Results_Spreadsheet ,
-		virtrdf:FileFormat_Triples_ATOM_XML ,
-		virtrdf:FileFormat_Triples_CSV ,
-		virtrdf:FileFormat_Triples_CXML ,
-		virtrdf:FileFormat_Triples_CXML_QR ,
-		virtrdf:FileFormat_Quads_TriG ,
-		virtrdf:FileFormat_SPARQL_Results_CXML ;
-	sd:supportedLanguage	sd:SPARQL11Update ,
-		sd:SPARQL11Query ,
-		sd:SPARQL10Query ;
-	sd:extensionAggregate	sql:STDDEV ;
-	sd:extensionFunction	bif:abs ;
-	sd:inputFormat	formats:N3 ,
-		formats:RDFa ,
-		formats:RDF_XML ,
-		virtrdf:FileFormat_Quads_TriG ,
-		virtrdf:FileFormat_Triples_CXML ,
-		virtrdf:FileFormat_Triples_CXML_QR ,
-		virtrdf:FileFormat_Triples_CSV ,
-		virtrdf:FileFormat_Triples_XHTML_RDFa ,
-		formats:N-triples ;
-	sd:languageExtension	virtrdf:SSG_SD_BI ,
-		virtrdf:SSG_SD_TRANSIT ,
-		virtrdf:SSG_SD_VIRTSPECIFIC ,
-		virtrdf:SSG_SD_QUAD_MAP ,
-		virtrdf:SSG_SD_SERVICE ,
-		virtrdf:SSG_SD_SPARQL11_DRAFT ,
-		virtrdf:SSG_SD_SPARQL11_MORE ,
-		virtrdf:SSG_SD_GLOBALS ,
-		virtrdf:SSG_SD_IN ,
-		virtrdf:SSG_SD_LIKE ,
-		virtrdf:SSG_SD_OPTION ;
-	sd:propertyFeature	bif:contains ;
-	virtrdf:graph-crud-endpoint	dbp:sparql-graph-crud ,
-		dbp:sparql-graph-crud-auth ;
-	sd:availableGraphs [
-		a sd:GraphCollection ;
-		sd:namedGraph <b3sifp> ,
-			<b3sonto> ,
-			<dbprdf-label> ,
-			<facets> ,
-			dkg:DBpedia-service ,
-			<http://dbpedia.org> ,
-			<http://dbpedia.org/resource/classes#> ,
-			<http://dbpedia.org/schema/property_rules#> ,
-			dbv: ,
-			<http://localhost:8890/DAV/>
-			local:sparql ,
-			<http://pivot_test_data/campsites> ,
-			<http://pivot_test_data/ski_resorts> ,
-			<http://query.wikidata.org/sparql> ,
-			<http://www.openlinksw.com/schemas/oplweb#> ,
-			<http://www.openlinksw.com/schemas/virtcxml#> ,
-			<http://www.openlinksw.com/schemas/virtpivot> ,
-			<http://www.openlinksw.com/schemas/virtrdf#> ,
-			<http://www.openlinksw.com/virtpivot/icons> ,
-			owl: ,
-			<http://www.w3.org/ns/ldp#> ,
-			<https://query.wikidata.org/sparql> ,
-			<local:/virt_curi> ,
-			<urn:activitystreams-owl:map> ,
-			<urn:rules.skos> ,
-			<urn:virtuoso:val:acl:schema> ,
-			<virtpivot-icon-test> ,
-			<virtpivot-rules> ,
-			<virtrdf-label> .
-	] ;
-	dkg:server "Virtuoso/08.03.3319 (Linux) x86_64-centos_6-linux-glibc2.12  VDB"@en .
+dkg:DBpedia-service rdf:type sd:Service,
+        dcat:DataService,
+        prov:Entity ;
+    dcat:servesDataset dkg:DBpedia ;
+    sd:endpoint dbp:sparql ,
+        dbp:sparql-auth ;
+    sd:feature sd:RequiresDataset ,
+        sd:BasicFederatedQuery ,
+        sd:EmptyGraphs ,
+        sd:UnionDefaultGraph ;
+    sd:resultFormat formats:N-triples ,
+        formats:Turtle ,
+        formats:RDFa ,
+        formats:N3 ,
+        formats:RDF_XML ,
+        formats:SPARQL_Results_CSV ,
+        formats:SPARQL_Results_JSON ,
+        formats:SPARQL_Results_XML ,
+        virtrdf:FileFormat_Triples_HTML_Microdata ,
+        virtrdf:FileFormat_Triples_HTML_list ,
+        virtrdf:FileFormat_Triples_HTML_table ,
+        virtrdf:FileFormat_Triples_Microdata_JSON ,
+        virtrdf:FileFormat_Triples_ODATA_JSON ,
+        virtrdf:FileFormat_Triples_RDF_JSON ,
+        virtrdf:FileFormat_Triples_XHTML_RDFa ,
+        virtrdf:FileFormat_SPARQL_Results_CXML_QR ,
+        virtrdf:FileFormat_SPARQL_Results_HTML ,
+        virtrdf:FileFormat_SPARQL_Results_Javascript ,
+        virtrdf:FileFormat_SPARQL_Results_Spreadsheet ,
+        virtrdf:FileFormat_Triples_ATOM_XML ,
+        virtrdf:FileFormat_Triples_CSV ,
+        virtrdf:FileFormat_Triples_CXML ,
+        virtrdf:FileFormat_Triples_CXML_QR ,
+        virtrdf:FileFormat_Quads_TriG ,
+        virtrdf:FileFormat_SPARQL_Results_CXML ;
+    sd:supportedLanguage sd:SPARQL11Update ,
+        sd:SPARQL11Query ,
+        sd:SPARQL10Query ;
+    sd:extensionAggregate sql:STDDEV ;
+    sd:extensionFunction bif:abs ;
+    sd:inputFormat formats:N3 ,
+        formats:RDFa ,
+        formats:RDF_XML ,
+        virtrdf:FileFormat_Quads_TriG ,
+        virtrdf:FileFormat_Triples_CXML ,
+        virtrdf:FileFormat_Triples_CXML_QR ,
+        virtrdf:FileFormat_Triples_CSV ,
+        virtrdf:FileFormat_Triples_XHTML_RDFa ,
+        formats:N-triples ;
+    sd:languageExtension virtrdf:SSG_SD_BI ,
+        virtrdf:SSG_SD_TRANSIT ,
+        virtrdf:SSG_SD_VIRTSPECIFIC ,
+        virtrdf:SSG_SD_QUAD_MAP ,
+        virtrdf:SSG_SD_SERVICE ,
+        virtrdf:SSG_SD_SPARQL11_DRAFT ,
+        virtrdf:SSG_SD_SPARQL11_MORE ,
+        virtrdf:SSG_SD_GLOBALS ,
+        virtrdf:SSG_SD_IN ,
+        virtrdf:SSG_SD_LIKE ,
+        virtrdf:SSG_SD_OPTION ;
+    sd:propertyFeature bif:contains ;
+    virtrdf:graph-crud-endpoint dbp:sparql-graph-crud ,
+        dbp:sparql-graph-crud-auth ;
+    sd:availableGraphs [
+        a sd:GraphCollection ;
+        sd:namedGraph <b3sifp> ,
+            <b3sonto> ,
+            <dbprdf-label> ,
+            <facets> ,
+            dkg:DBpedia-service ,
+            <http://dbpedia.org> ,
+            <http://dbpedia.org/resource/classes#> ,
+            <http://dbpedia.org/schema/property_rules#> ,
+            dbv: ,
+            <http://localhost:8890/DAV/>
+            local:sparql ,
+            <http://pivot_test_data/campsites> ,
+            <http://pivot_test_data/ski_resorts> ,
+            <http://query.wikidata.org/sparql> ,
+            <http://www.openlinksw.com/schemas/oplweb#> ,
+            <http://www.openlinksw.com/schemas/virtcxml#> ,
+            <http://www.openlinksw.com/schemas/virtpivot> ,
+            <http://www.openlinksw.com/schemas/virtrdf#> ,
+            <http://www.openlinksw.com/virtpivot/icons> ,
+            owl: ,
+            <http://www.w3.org/ns/ldp#> ,
+            <https://query.wikidata.org/sparql> ,
+            <local:/virt_curi> ,
+            <urn:activitystreams-owl:map> ,
+            <urn:rules.skos> ,
+            <urn:virtuoso:val:acl:schema> ,
+            <virtpivot-icon-test> ,
+            <virtpivot-rules> ,
+            <virtrdf-label> .
+    ] ;
+    dkg:server "Virtuoso/08.03.3319 (Linux) x86_64-centos_6-linux-glibc2.12  VDB"@en .
 
 # Provenance information for the dataset and endpoint description
 dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
-	prov:wasAttributedTo "Pierre Maillot"@en ;
-	prov:generatedAtTime "2021-03-22"^^xsd:date ;
-	prov:actedOnBehalfOf <http://www.inria.fr> .
+    prov:wasAttributedTo "Pierre Maillot"@en ;
+    prov:generatedAtTime "2021-03-22"^^xsd:date ;
+    prov:actedOnBehalfOf <http://www.inria.fr> .
 dkg:DBpedia-service prov:wasDerivedFrom dbp:sparql ;
-	prov:wasAttributedTo "Pierre Maillot"@en ;
-	prov:generatedAtTime "2021-03-22"^^xsd:date ;
-	prov:actedOnBehalfOf <http://www.inria.fr> .
+    prov:wasAttributedTo "Pierre Maillot"@en ;
+    prov:generatedAtTime "2021-03-22"^^xsd:date ;
+    prov:actedOnBehalfOf <http://www.inria.fr> .
 
 
 # Class population counts, limited to the classes in the "dbpedia.org/ontology" namespace for conciseness's sake
-@prefix dbo:	<http://dbpedia.org/ontology/> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
 
 dkg:DBpedia
-	void:classPartition	[	void:entities	1 ;
-				void:class	dbo:ChristianPatriarch ] ,
-		[	void:entities	1 ;
-				void:class	dbo:GolfLeague ] ,
-		[	void:entities	1 ;
-				void:class	dbo:Bay ] ,
-		[	void:entities	1 ;
-				void:class	dbo:HorseRider ] ,
-		[	void:entities	1 ;
-				void:class	dbo:SpaceShuttle ] ,
-		[	void:entities	1 ;
-				void:class	dbo:Lymph ] ,
-		[	void:entities	1 ;
-				void:class	dbo:CricketLeague ] ,
-		[	void:entities	1 ;
-				void:class	dbo:CanadianFootballLeague ] ,
-		[	void:entities	1 ;
-				void:class	dbo:AutoRacingLeague ] ,
-		[	void:entities	1 ;
-				void:class	dbo:Battery ] ,
-		[	void:entities	2 ;
-				void:class	dbo:VolleyballCoach ] ,
-		[	void:entities	2 ;
-				void:class	dbo:Continent ] ,
-		[	void:entities	2 ;
-				void:class	dbo:Chancellor ] ,
-		[	void:entities	2 ;
-				void:class	dbo:InlineHockeyLeague ] ,
-		[	void:entities	2 ;
-				void:class	dbo:CareerStation ] ,
-		[	void:entities	2 ;
-				void:class	dbo:NationalFootballLeagueEvent ] ,
-		[	void:entities	2 ;
-				void:class	dbo:AnimangaCharacter ] ,
-		[	void:entities	2 ;
-				void:class	dbo:SnookerChamp ] ,
-		[	void:entities	2 ;
-				void:class	dbo:AmericanFootballTeam ] ,
-		[	void:entities	3 ;
-				void:class	dbo:ResearchProject ] ,
-		[	void:entities	3 ;
-				void:class	dbo:Vaccine ] ,
-		[	void:entities	3 ;
-				void:class	dbo:TelevisionHost ] ,
-		[	void:entities	3 ;
-				void:class	dbo:Project ] ,
-		[	void:entities	3 ;
-				void:class	dbo:SpaceStation ] ,
-		[	void:entities	3 ;
-				void:class	dbo:SpeedwayLeague ] ,
-		[	void:entities	3 ;
-				void:class	dbo:TennisLeague ] ,
-		[	void:entities	4 ;
-				void:class	dbo:FieldHockeyLeague ] ,
-		[	void:entities	4 ;
-				void:class	dbo:NationalCollegiateAthleticAssociationAthlete ] ,
-		[	void:entities	4 ;
-				void:class	dbo:SpeedwayTeam ] ,
-		[	void:entities	4 ;
-				void:class	dbo:BaseballSeason ] ,
-		[	void:entities	4 ;
-				void:class	dbo:WaterRide ] ,
-		[	void:entities	4 ;
-				void:class	dbo:Instrumentalist ] ,
-		[	void:entities	4 ;
-				void:class	dbo:PoloLeague ] ,
-		[	void:entities	4 ;
-				void:class	dbo:Guitarist ] ,
-		[	void:entities	5 ;
-				void:class	dbo:BeachVolleyballPlayer ] ,
-		[	void:entities	5 ;
-				void:class	dbo:Sea ] ,
-		[	void:entities	5 ;
-				void:class	dbo:YearInSpaceflight ] ,
-		[	void:entities	5 ;
-				void:class	dbo:HandballLeague ] ,
-		[	void:entities	5 ;
-				void:class	dbo:Conifer ] ,
-		[	void:entities	5 ;
-				void:class	dbo:LacrosseLeague ] ,
-		[	void:entities	5 ;
-				void:class	dbo:WaterwayTunnel ] ,
-		[	void:entities	6 ;
-				void:class	dbo:ArtificialSatellite ] ,
-		[	void:entities	6 ;
-				void:class	dbo:ComedyGroup ] ,
-		[	void:entities	6 ;
-				void:class	dbo:GreenAlga ] ,
-		[	void:entities	6 ;
-				void:class	dbo:AmericanFootballLeague ] ,
-		[	void:entities	6 ;
-				void:class	dbo:Bird ] ,
-		[	void:entities	7 ;
-				void:class	dbo:Tunnel ] ,
-		[	void:entities	7 ;
-				void:class	dbo:Outbreak ] ,
-		[	void:entities	7 ;
-				void:class	dbo:AcademicConference ] ,
-		[	void:entities	8 ;
-				void:class	dbo:OlympicResult ] ,
-		[	void:entities	8 ;
-				void:class	dbo:Constellation ] ,
-		[	void:entities	8 ;
-				void:class	dbo:BritishRoyalty ] ,
-		[	void:entities	8 ;
-				void:class	dbo:CricketGround ] ,
-		[	void:entities	8 ;
-				void:class	dbo:Baronet ] ,
-		[	void:entities	9 ;
-				void:class	dbo:Ligament ] ,
-		[	void:entities	9 ;
-				void:class	dbo:Cinema ] ,
-		[	void:entities	9 ;
-				void:class	dbo:PlayboyPlaymate ] ,
-		[	void:entities	12 ;
-				void:class	dbo:Amphibian ] ,
-		[	void:entities	12 ;
-				void:class	dbo:ConcentrationCamp ] ,
-		[	void:entities	13 ;
-				void:class	dbo:Ambassador ] ,
-		[	void:entities	13 ;
-				void:class	dbo:Vein ] ,
-		[	void:entities	14 ;
-				void:class	dbo:Embryology ] ,
-		[	void:entities	15 ;
-				void:class	dbo:Rower ] ,
-		[	void:entities	15 ;
-				void:class	dbo:BaseballLeague ] ,
-		[	void:entities	15 ;
-				void:class	dbo:RadioHost ] ,
-		[	void:entities	15 ;
-				void:class	dbo:IceHockeyLeague ] ,
-		[	void:entities	15 ;
-				void:class	dbo:FormulaOneTeam ] ,
-		[	void:entities	16 ;
-				void:class	dbo:AutomobileEngine ] ,
-		[	void:entities	16 ;
-				void:class	dbo:Engine ] ,
-		[	void:entities	17 ;
-				void:class	dbo:Poet ] ,
-		[	void:entities	17 ;
-				void:class	dbo:RoadJunction ] ,
-		[	void:entities	17 ;
-				void:class	dbo:Priest ] ,
-		[	void:entities	17 ;
-				void:class	dbo:ComicStrip ] ,
-		[	void:entities	17 ;
-				void:class	dbo:Pope ] ,
-		[	void:entities	18 ;
-				void:class	dbo:Senator ] ,
-		[	void:entities	18 ;
-				void:class	dbo:GolfCourse ] ,
-		[	void:entities	18 ;
-				void:class	dbo:Bodybuilder ] ,
-		[	void:entities	18 ;
-				void:class	dbo:SumoWrestler ] ,
-		[	void:entities	19 ;
-				void:class	dbo:Winery ] ,
-		[	void:entities	19 ;
-				void:class	dbo:Moss ] ,
-		[	void:entities	19 ;
-				void:class	dbo:NetballPlayer ] ,
-		[	void:entities	19 ;
-				void:class	dbo:ClassicalMusicArtist ] ,
-		[	void:entities	20 ;
-				void:class	dbo:Nerve ] ,
-		[	void:entities	20 ;
-				void:class	dbo:VolleyballLeague ] ,
-		[	void:entities	21 ;
-				void:class	dbo:RaceTrack ] ,
-		[	void:entities	21 ;
-				void:class	dbo:Galaxy ] ,
-		[	void:entities	21 ;
-				void:class	dbo:Racecourse ] ,
-		[	void:entities	21 ;
-				void:class	dbo:Artery ] ,
-		[	void:entities	21 ;
-				void:class	dbo:Fern ] ,
-		[	void:entities	22 ;
-				void:class	dbo:CombinationDrug ] ,
-		[	void:entities	22 ;
-				void:class	dbo:SolarEclipse ] ,
-		[	void:entities	22 ;
-				void:class	dbo:College ] ,
-		[	void:entities	22 ;
-				void:class	dbo:VoiceActor ] ,
-		[	void:entities	22 ;
-				void:class	dbo:Muscle ] ,
-		[	void:entities	23 ;
-				void:class	dbo:Rocket ] ,
-		[	void:entities	23 ;
-				void:class	dbo:HorseTrainer ] ,
-		[	void:entities	23 ;
-				void:class	dbo:LacrossePlayer ] ,
-		[	void:entities	24 ;
-				void:class	dbo:RailwayTunnel ] ,
-		[	void:entities	24 ;
-				void:class	dbo:CanadianFootballTeam ] ,
-		[	void:entities	24 ;
-				void:class	dbo:Garden ] ,
-		[	void:entities	25 ;
-				void:class	dbo:BasketballLeague ] ,
-		[	void:entities	25 ;
-				void:class	dbo:SnookerPlayer ] ,
-		[	void:entities	26 ;
-				void:class	dbo:LaunchPad ] ,
-		[	void:entities	26 ;
-				void:class	dbo:Fashion ] ,
-		[	void:entities	26 ;
-				void:class	dbo:Presenter ] ,
-		[	void:entities	26 ;
-				void:class	dbo:TableTennisPlayer ] ,
-		[	void:entities	26 ;
-				void:class	dbo:AmateurBoxer ] ,
-		[	void:entities	27 ;
-				void:class	dbo:BaseballTeam ] ,
-		[	void:entities	27 ;
-				void:class	dbo:MusicFestival ] ,
-		[	void:entities	27 ;
-				void:class	dbo:MonoclonalAntibody ] ,
-		[	void:entities	29 ;
-				void:class	dbo:Database ] ,
-		[	void:entities	29 ;
-				void:class	dbo:Volcano ] ,
-		[	void:entities	30 ;
-				void:class	dbo:RugbyLeague ] ,
-		[	void:entities	30 ;
-				void:class	dbo:Bone ] ,
-		[	void:entities	30 ;
-				void:class	dbo:Brain ] ,
-		[	void:entities	30 ;
-				void:class	dbo:BiologicalDatabase ] ,
-		[	void:entities	31 ;
-				void:class	dbo:Reptile ] ,
-		[	void:entities	31 ;
-				void:class	dbo:OrganisationMember ] ,
-		[	void:entities	31 ;
-				void:class	dbo:RoadTunnel ] ,
-		[	void:entities	32 ;
-				void:class	dbo:Engineer ] ,
-		[	void:entities	32 ;
-				void:class	dbo:Astronaut ] ,
-		[	void:entities	32 ;
-				void:class	dbo:SportsTeamMember ] ,
-		[	void:entities	33 ;
-				void:class	dbo:PokerPlayer ] ,
-		[	void:entities	33 ;
-				void:class	dbo:Chef ] ,
-		[	void:entities	33 ;
-				void:class	dbo:Photographer ] ,
-		[	void:entities	33 ;
-				void:class	dbo:Canoeist ] ,
-		[	void:entities	34 ;
-				void:class	dbo:SquashPlayer ] ,
-		[	void:entities	34 ;
-				void:class	dbo:DartsPlayer ] ,
-		[	void:entities	34 ;
-				void:class	dbo:Poem ] ,
-		[	void:entities	35 ;
-				void:class	dbo:Canal ] ,
-		[	void:entities	35 ;
-				void:class	dbo:CyclingRace ] ,
-		[	void:entities	35 ;
-				void:class	dbo:AustralianFootballTeam ] ,
-		[	void:entities	35 ;
-				void:class	dbo:Entomologist ] ,
-		[	void:entities	35 ;
-				void:class	dbo:ScreenWriter ] ,
-		[	void:entities	36 ;
-				void:class	dbo:Cheese ] ,
-		[	void:entities	36 ;
-				void:class	dbo:HollywoodCartoon ] ,
-		[	void:entities	36 ;
-				void:class	dbo:Archaea ] ,
-		[	void:entities	36 ;
-				void:class	dbo:Archbishop ] ,
-		[	void:entities	37 ;
-				void:class	dbo:Colour ] ,
-		[	void:entities	38 ;
-				void:class	dbo:LawFirm ] ,
-		[	void:entities	39 ;
-				void:class	dbo:FloweringPlant ] ,
-		[	void:entities	43 ;
-				void:class	dbo:RollerCoaster ] ,
-		[	void:entities	43 ;
-				void:class	dbo:FashionDesigner ] ,
-		[	void:entities	43 ;
-				void:class	dbo:MythologicalFigure ] ,
-		[	void:entities	44 ;
-				void:class	dbo:HandballTeam ] ,
-		[	void:entities	44 ;
-				void:class	dbo:Surname ] ,
-		[	void:entities	45 ;
-				void:class	dbo:Motorcycle ] ,
-		[	void:entities	46 ;
-				void:class	dbo:SkiArea ] ,
-		[	void:entities	47 ;
-				void:class	dbo:Beverage ] ,
-		[	void:entities	47 ;
-				void:class	dbo:BusinessPerson ] ,
-		[	void:entities	48 ;
-				void:class	dbo:Grape ] ,
-		[	void:entities	49 ;
-				void:class	dbo:FormerMunicipality ] ,
-		[	void:entities	49 ;
-				void:class	dbo:GovernmentalAdministrativeRegion ] ,
-		[	void:entities	49 ;
-				void:class	dbo:Municipality ] ,
-		[	void:entities	51 ;
-				void:class	dbo:Jockey ] ,
-		[	void:entities	51 ;
-				void:class	dbo:WorldHeritageSite ] ,
-		[	void:entities	51 ;
-				void:class	dbo:SpeedwayRider ] ,
-		[	void:entities	51 ;
-				void:class	dbo:Brewery ] ,
-		[	void:entities	52 ;
-				void:class	dbo:MemberOfParliament ] ,
-		[	void:entities	52 ;
-				void:class	dbo:Theatre ] ,
-		[	void:entities	53 ;
-				void:class	dbo:Judge ] ,
-		[	void:entities	53 ;
-				void:class	dbo:Medician ] ,
-		[	void:entities	53 ;
-				void:class	dbo:WineRegion ] ,
-		[	void:entities	54 ;
-				void:class	dbo:Cave ] ,
-		[	void:entities	54 ;
-				void:class	dbo:Hotel ] ,
-		[	void:entities	55 ;
-				void:class	dbo:ClassicalMusicComposition ] ,
-		[	void:entities	56 ;
-				void:class	dbo:Sport ] ,
-		[	void:entities	56 ;
-				void:class	dbo:AdultActor ] ,
-		[	void:entities	58 ;
-				void:class	dbo:PrimeMinister ] ,
-		[	void:entities	58 ;
-				void:class	dbo:CyclingTeam ] ,
-		[	void:entities	59 ;
-				void:class	dbo:FilmFestival ] ,
-		[	void:entities	60 ;
-				void:class	dbo:Governor ] ,
-		[	void:entities	60 ;
-				void:class	dbo:Congressman ] ,
-		[	void:entities	61 ;
-				void:class	dbo:Historian ] ,
-		[	void:entities	62 ;
-				void:class	dbo:MountainPass ] ,
-		[	void:entities	63 ;
-				void:class	dbo:Economist ] ,
-		[	void:entities	65 ;
-				void:class	dbo:Monument ] ,
-		[	void:entities	66 ;
-				void:class	dbo:Comedian ] ,
-		[	void:entities	71 ;
-				void:class	dbo:Cardinal ] ,
-		[	void:entities	72 ;
-				void:class	dbo:MixedMartialArtsEvent ] ,
-		[	void:entities	72 ;
-				void:class	dbo:FormulaOneRacer ] ,
-		[	void:entities	76 ;
-				void:class	dbo:Genre ] ,
-		[	void:entities	76 ;
-				void:class	dbo:Earthquake ] ,
-		[	void:entities	78 ;
-				void:class	dbo:Diocese ] ,
-		[	void:entities	78 ;
-				void:class	dbo:ClericalAdministrativeRegion ] ,
-		[	void:entities	80 ;
-				void:class	dbo:EurovisionSongContestEntry ] ,
-		[	void:entities	81 ;
-				void:class	dbo:CricketTeam ] ,
-		[	void:entities	84 ;
-				void:class	dbo:Currency ] ,
-		[	void:entities	86 ;
-				void:class	dbo:NascarDriver ] ,
-		[	void:entities	91 ;
-				void:class	dbo:ProgrammingLanguage ] ,
-		[	void:entities	93 ;
-				void:class	dbo:SportFacility ] ,
-		[	void:entities	93 ;
-				void:class	dbo:RadioProgram ] ,
-		[	void:entities	96 ;
-				void:class	dbo:President ] ,
-		[	void:entities	97 ;
-				void:class	dbo:Journalist ] ,
-		[	void:entities	97 ;
-				void:class	dbo:Mayor ] ,
-		[	void:entities	97 ;
-				void:class	dbo:Curler ] ,
-		[	void:entities	98 ;
-				void:class	dbo:NaturalEvent ] ,
-		[	void:entities	99 ;
-				void:class	dbo:AmusementParkAttraction ] ,
-		[	void:entities	101 ;
-				void:class	dbo:Restaurant ] ,
-		[	void:entities	102 ;
-				void:class	dbo:TopicalConcept ] ,
-		[	void:entities	107 ;
-				void:class	dbo:Skater ] ,
-		[	void:entities	108 ;
-				void:class	dbo:Model ] ,
-		[	void:entities	109 ;
-				void:class	dbo:Prison ] ,
-		[	void:entities	109 ;
-				void:class	dbo:Glacier ] ,
-		[	void:entities	111 ;
-				void:class	dbo:TimeInterval ] ,
-		[	void:entities	111 ;
-				void:class	dbo:Anime ] ,
-		[	void:entities	112 ;
-				void:class	dbo:Mineral ] ,
-		[	void:entities	112 ;
-				void:class	dbo:Holiday ] ,
-		[	void:entities	113 ;
-				void:class	dbo:Game ] ,
-		[	void:entities	113 ;
-				void:class	dbo:Lake ] ,
-		[	void:entities	115 ;
-				void:class	dbo:WomensTennisAssociationTournament ] ,
-		[	void:entities	118 ;
-				void:class	dbo:BroadcastNetwork ] ,
-		[	void:entities	119 ;
-				void:class	dbo:Library ] ,
-		[	void:entities	121 ;
-				void:class	dbo:Philosopher ] ,
-		[	void:entities	122 ;
-				void:class	dbo:BadmintonPlayer ] ,
-		[	void:entities	123 ;
-				void:class	dbo:MotorcycleRider ] ,
-		[	void:entities	124 ;
-				void:class	dbo:Train ] ,
-		[	void:entities	136 ;
-				void:class	dbo:BusCompany ] ,
-		[	void:entities	139 ;
-				void:class	dbo:Musical ] ,
-		[	void:entities	141 ;
-				void:class	dbo:Planet ] ,
-		[	void:entities	141 ;
-				void:class	dbo:InformationAppliance ] ,
-		[	void:entities	142 ;
-				void:class	dbo:ShoppingMall ] ,
-		[	void:entities	142 ;
-				void:class	dbo:CultivatedVariety ] ,
-		[	void:entities	143 ;
-				void:class	dbo:Castle ] ,
-		[	void:entities	144 ;
-				void:class	dbo:Legislature ] ,
-		[	void:entities	146 ;
-				void:class	dbo:Cartoon ] ,
-		[	void:entities	147 ;
-				void:class	dbo:Lighthouse ] ,
-		[	void:entities	147 ;
-				void:class	dbo:Tower ] ,
-		[	void:entities	148 ;
-				void:class	dbo:MountainRange ] ,
-		[	void:entities	149 ;
-				void:class	dbo:Locomotive ] ,
-		[	void:entities	149 ;
-				void:class	dbo:Activity ] ,
-		[	void:entities	151 ;
-				void:class	dbo:RailwayStation ] ,
-		[	void:entities	151 ;
-				void:class	dbo:WrestlingEvent ] ,
-		[	void:entities	151 ;
-				void:class	dbo:TradeUnion ] ,
-		[	void:entities	152 ;
-				void:class	dbo:PowerStation ] ,
-		[	void:entities	155 ;
-				void:class	dbo:Crater ] ,
-		[	void:entities	155 ;
-				void:class	dbo:ChessPlayer ] ,
-		[	void:entities	157 ;
-				void:class	dbo:BeautyQueen ] ,
-		[	void:entities	158 ;
-				void:class	dbo:Painter ] ,
-		[	void:entities	160 ;
-				void:class	dbo:ComicsCreator ] ,
-		[	void:entities	162 ;
-				void:class	dbo:Religious ] ,
-		[	void:entities	165 ;
-				void:class	dbo:BasketballTeam ] ,
-		[	void:entities	166 ;
-				void:class	dbo:Gymnast ] ,
-		[	void:entities	171 ;
-				void:class	dbo:MotorsportSeason ] ,
-		[	void:entities	173 ;
-				void:class	dbo:Skier ] ,
-		[	void:entities	173 ;
-				void:class	dbo:GaelicGamesPlayer ] ,
-		[	void:entities	179 ;
-				void:class	dbo:SiteOfSpecialScientificInterest ] ,
-		[	void:entities	180 ;
-				void:class	dbo:Crustacean ] ,
-		[	void:entities	189 ;
-				void:class	dbo:Protein ] ,
-		[	void:entities	193 ;
-				void:class	dbo:Criminal ] ,
-		[	void:entities	193 ;
-				void:class	dbo:SpaceMission ] ,
-		[	void:entities	195 ;
-				void:class	dbo:SoapCharacter ] ,
-		[	void:entities	195 ;
-				void:class	dbo:GolfPlayer ] ,
-		[	void:entities	208 ;
-				void:class	dbo:GolfTournament ] ,
-		[	void:entities	219 ;
-				void:class	dbo:MartialArtist ] ,
-		[	void:entities	219 ;
-				void:class	dbo:Play ] ,
-		[	void:entities	220 ;
-				void:class	dbo:RugbyClub ] ,
-		[	void:entities	221 ;
-				void:class	dbo:Arachnid ] ,
-		[	void:entities	225 ;
-				void:class	dbo:GivenName ] ,
-		[	void:entities	232 ;
-				void:class	dbo:FigureSkater ] ,
-		[	void:entities	233 ;
-				void:class	dbo:Wrestler ] ,
-		[	void:entities	236 ;
-				void:class	dbo:VolleyballPlayer ] ,
-		[	void:entities	240 ;
-				void:class	dbo:ComicsCharacter ] ,
-		[	void:entities	247 ;
-				void:class	dbo:Noble ] ,
-		[	void:entities	250 ;
-				void:class	dbo:Stadium ] ,
-		[	void:entities	253 ;
-				void:class	dbo:Bank ] ,
-		[	void:entities	258 ;
-				void:class	dbo:Bacteria ] ,
-		[	void:entities	260 ;
-				void:class	dbo:Publisher ] ,
-		[	void:entities	268 ;
-				void:class	dbo:Name ] ,
-		[	void:entities	270 ;
-				void:class	dbo:HockeyTeam ] ,
-		[	void:entities	272 ;
-				void:class	dbo:RaceHorse ] ,
-		[	void:entities	277 ;
-				void:class	dbo:AnatomicalStructure ] ,
-		[	void:entities	280 ;
-				void:class	dbo:Race ] ,
-		[	void:entities	285 ;
-				void:class	dbo:Convention ] ,
-		[	void:entities	288 ;
-				void:class	dbo:Actor ] ,
-		[	void:entities	294 ;
-				void:class	dbo:MilitaryStructure ] ,
-		[	void:entities	294 ;
-				void:class	dbo:RacingDriver ] ,
-		[	void:entities	294 ;
-				void:class	dbo:Boxer ] ,
-		[	void:entities	296 ;
-				void:class	dbo:Architect ] ,
-		[	void:entities	296 ;
-				void:class	dbo:Saint ] ,
-		[	void:entities	298 ;
-				void:class	dbo:HandballPlayer ] ,
-		[	void:entities	303 ;
-				void:class	dbo:Star ] ,
-		[	void:entities	314 ;
-				void:class	dbo:HorseRace ] ,
-		[	void:entities	316 ;
-				void:class	dbo:SoccerLeague ] ,
-		[	void:entities	325 ;
-				void:class	dbo:ArtistDiscography ] ,
-		[	void:entities	342 ;
-				void:class	dbo:Bridge ] ,
-		[	void:entities	343 ;
-				void:class	dbo:Manga ] ,
-		[	void:entities	344 ;
-				void:class	dbo:Airline ] ,
-		[	void:entities	346 ;
-				void:class	dbo:Hospital ] ,
-		[	void:entities	347 ;
-				void:class	dbo:Website ] ,
-		[	void:entities	348 ;
-				void:class	dbo:ChristianBishop ] ,
-		[	void:entities	359 ;
-				void:class	dbo:Swimmer ] ,
-		[	void:entities	361 ;
-				void:class	dbo:Horse ] ,
-		[	void:entities	374 ;
-				void:class	dbo:TennisPlayer ] ,
-		[	void:entities	384 ;
-				void:class	dbo:ReligiousBuilding ] ,
-		[	void:entities	387 ;
-				void:class	dbo:GrandPrix ] ,
-		[	void:entities	388 ;
-				void:class	dbo:Mammal ] ,
-		[	void:entities	391 ;
-				void:class	dbo:Fish ] ,
-		[	void:entities	395 ;
-				void:class	dbo:SportsLeague ] ,
-		[	void:entities	401 ;
-				void:class	dbo:Dam ] ,
-		[	void:entities	401 ;
-				void:class	dbo:MotorsportRacer ] ,
-		[	void:entities	410 ;
-				void:class	dbo:Magazine ] ,
-		[	void:entities	418 ;
-				void:class	dbo:TelevisionSeason ] ,
-		[	void:entities	423 ;
-				void:class	dbo:Park ] ,
-		[	void:entities	439 ;
-				void:class	dbo:HistoricBuilding ] ,
-		[	void:entities	439 ;
-				void:class	dbo:Year ] ,
-		[	void:entities	440 ;
-				void:class	dbo:Olympics ] ,
-		[	void:entities	446 ;
-				void:class	dbo:Case ] ,
-		[	void:entities	446 ;
-				void:class	dbo:LegalCase ] ,
-		[	void:entities	446 ;
-				void:class	dbo:SupremeCourtOfTheUnitedStatesCase ] ,
-		[	void:entities	449 ;
-				void:class	dbo:UnitOfWork ] ,
-		[	void:entities	467 ;
-				void:class	dbo:OlympicEvent ] ,
-		[	void:entities	473 ;
-				void:class	dbo:CelestialBody ] ,
-		[	void:entities	475 ;
-				void:class	dbo:EthnicGroup ] ,
-		[	void:entities	478 ;
-				void:class	dbo:Automobile ] ,
-		[	void:entities	479 ;
-				void:class	dbo:Drug ] ,
-		[	void:entities	485 ;
-				void:class	dbo:Enzyme ] ,
-		[	void:entities	504 ;
-				void:class	dbo:Museum ] ,
-		[	void:entities	540 ;
-				void:class	dbo:RailwayLine ] ,
-		[	void:entities	544 ;
-				void:class	dbo:Comic ] ,
-		[	void:entities	547 ;
-				void:class	dbo:TimePeriod ] ,
-		[	void:entities	565 ;
-				void:class	dbo:AcademicJournal ] ,
-		[	void:entities	570 ;
-				void:class	dbo:MusicGenre ] ,
-		[	void:entities	575 ;
-				void:class	dbo:Artwork ] ,
-		[	void:entities	593 ;
-				void:class	dbo:Island ] ,
-		[	void:entities	597 ;
-				void:class	dbo:CityDistrict ] ,
-		[	void:entities	598 ;
-				void:class	dbo:PersonFunction ] ,
-		[	void:entities	606 ;
-				void:class	dbo:Coach ] ,
-		[	void:entities	614 ;
-				void:class	dbo:Disease ] ,
-		[	void:entities	618 ;
-				void:class	dbo:Food ] ,
-		[	void:entities	641 ;
-				void:class	dbo:ChemicalCompound ] ,
-		[	void:entities	660 ;
-				void:class	dbo:AustralianRulesFootballPlayer ] ,
-		[	void:entities	665 ;
-				void:class	dbo:Newspaper ] ,
-		[	void:entities	666 ;
-				void:class	dbo:Country ] ,
-		[	void:entities	678 ;
-				void:class	dbo:CollegeCoach ] ,
-		[	void:entities	685 ;
-				void:class	dbo:TelevisionStation ] ,
-		[	void:entities	693 ;
-				void:class	dbo:Cyclist ] ,
-		[	void:entities	694 ;
-				void:class	dbo:PublicTransitSystem ] ,
-		[	void:entities	725 ;
-				void:class	dbo:TelevisionEpisode ] ,
-		[	void:entities	738 ;
-				void:class	dbo:Award ] ,
-		[	void:entities	739 ;
-				void:class	dbo:Fungus ] ,
-		[	void:entities	755 ;
-				void:class	dbo:Weapon ] ,
-		[	void:entities	788 ;
-				void:class	dbo:ProtectedArea ] ,
-		[	void:entities	801 ;
-				void:class	dbo:RecordLabel ] ,
-		[	void:entities	805 ;
-				void:class	dbo:MilitaryConflict ] ,
-		[	void:entities	810 ;
-				void:class	dbo:Language ] ,
-		[	void:entities	855 ;
-				void:class	dbo:SportsTeam ] ,
-		[	void:entities	864 ;
-				void:class	dbo:NationalFootballLeagueSeason ] ,
-		[	void:entities	889 ;
-				void:class	dbo:FootballMatch ] ,
-		[	void:entities	897 ;
-				void:class	dbo:Royalty ] ,
-		[	void:entities	905 ;
-				void:class	dbo:RadioStation ] ,
-		[	void:entities	919 ;
-				void:class	dbo:FictionalCharacter ] ,
-		[	void:entities	931 ;
-				void:class	dbo:GovernmentAgency ] ,
-		[	void:entities	958 ;
-				void:class	dbo:Venue ] ,
-		[	void:entities	997 ;
-				void:class	dbo:Device ] ,
-		[	void:entities	1002 ;
-				void:class	dbo:Airport ] ,
-		[	void:entities	1004 ;
-				void:class	dbo:RugbyPlayer ] ,
-		[	void:entities	1017 ;
-				void:class	dbo:IceHockeyPlayer ] ,
-		[	void:entities	1019 ;
-				void:class	dbo:Cleric ] ,
-		[	void:entities	1083 ;
-				void:class	dbo:HumanGene ] ,
-		[	void:entities	1083 ;
-				void:class	dbo:Gene ] ,
-		[	void:entities	1090 ;
-				void:class	dbo:Aircraft ] ,
-		[	void:entities	1137 ;
-				void:class	dbo:Cricketer ] ,
-		[	void:entities	1157 ;
-				void:class	dbo:BasketballPlayer ] ,
-		[	void:entities	1218 ;
-				void:class	dbo:ChemicalSubstance ] ,
-		[	void:entities	1218 ;
-				void:class	dbo:PoliticalParty ] ,
-		[	void:entities	1285 ;
-				void:class	dbo:Mountain ] ,
-		[	void:entities	1322 ;
-				void:class	dbo:BaseballPlayer ] ,
-		[	void:entities	1394 ;
-				void:class	dbo:SportsManager ] ,
-		[	void:entities	1411 ;
-				void:class	dbo:MilitaryPerson ] ,
-		[	void:entities	1436 ;
-				void:class	dbo:SoccerManager ] ,
-		[	void:entities	1463 ;
-				void:class	dbo:Broadcaster ] ,
-		[	void:entities	1535 ;
-				void:class	dbo:Mollusca ] ,
-		[	void:entities	1578 ;
-				void:class	dbo:WinterSportPlayer ] ,
-		[	void:entities	1580 ;
-				void:class	dbo:VideoGame ] ,
-		[	void:entities	1610 ;
-				void:class	dbo:GridironFootballPlayer ] ,
-		[	void:entities	1614 ;
-				void:class	dbo:AmericanFootballPlayer ] ,
-		[	void:entities	1620 ;
-				void:class	dbo:PeriodicalLiterature ] ,
-		[	void:entities	1632 ;
-				void:class	dbo:TennisTournament ] ,
-		[	void:entities	1657 ;
-				void:class	dbo:Plant ] ,
-		[	void:entities	1722 ;
-				void:class	dbo:City ] ,
-		[	void:entities	1757 ;
-				void:class	dbo:Biomolecule ] ,
-		[	void:entities	1940 ;
-				void:class	dbo:Scientist ] ,
-		[	void:entities	1952 ;
-				void:class	dbo:HistoricPlace ] ,
-		[	void:entities	1996 ;
-				void:class	dbo:Road ] ,
-		[	void:entities	2051 ;
-				void:class	dbo:Stream ] ,
-		[	void:entities	2065 ;
-				void:class	dbo:SoccerTournament ] ,
-		[	void:entities	2095 ;
-				void:class	dbo:MilitaryUnit ] ,
-		[	void:entities	2366 ;
-				void:class	dbo:SportsClub ] ,
-		[	void:entities	2406 ;
-				void:class	dbo:Single ] ,
-		[	void:entities	2468 ;
-				void:class	dbo:Software ] ,
-		[	void:entities	2531 ;
-				void:class	dbo:Writer ] ,
-		[	void:entities	2679 ;
-				void:class	dbo:River ] ,
-		[	void:entities	2720 ;
-				void:class	dbo:School ] ,
-		[	void:entities	2769 ;
-				void:class	dbo:RouteOfTransportation ] ,
-		[	void:entities	2799 ;
-				void:class	dbo:OfficeHolder ] ,
-		[	void:entities	2835 ;
-				void:class	dbo:BodyOfWater ] ,
-		[	void:entities	2871 ;
-				void:class	dbo:Group ] ,
-		[	void:entities	2956 ;
-				void:class	dbo:Election ] ,
-		[	void:entities	3073 ;
-				void:class	dbo:Station ] ,
-		[	void:entities	3165 ;
-				void:class	dbo:TelevisionShow ] ,
-		[	void:entities	3238 ;
-				void:class	dbo:Region ] ,
-		[	void:entities	3563 ;
-				void:class	dbo:AdministrativeRegion ] ,
-		[	void:entities	3608 ;
-				void:class	dbo:Band ] ,
-		[	void:entities	3816 ;
-				void:class	dbo:University ] ,
-		[	void:entities	3900 ;
-				void:class	dbo:Book ] ,
-		[	void:entities	4019 ;
-				void:class	dbo:Tournament ] ,
-		[	void:entities	4054 ;
-				void:class	dbo:SoccerClubSeason ] ,
-		[	void:entities	4405 ;
-				void:class	dbo:Song ] ,
-		[	void:entities	4514 ;
-				void:class	dbo:NaturalPlace ] ,
-		[	void:entities	4700 ;
-				void:class	dbo:FootballLeagueSeason ] ,
-		[	void:entities	4777 ;
-				void:class	dbo:Town ] ,
-		[	void:entities	5066 ;
-				void:class	dbo:MusicalArtist ] ,
-		[	void:entities	5398 ;
-				void:class	dbo:Artist ] ,
-		[	void:entities	5403 ;
-				void:class	dbo:Ship ] ,
-		[	void:entities	5606 ;
-				void:class	dbo:NCAATeamSeason ] ,
-		[	void:entities	5809 ;
-				void:class	dbo:EducationalInstitution ] ,
-		[	void:entities	5860 ;
-				void:class	dbo:SoccerClub ] ,
-		[	void:entities	6399 ;
-				void:class	dbo:SportsEvent ] ,
-		[	void:entities	6415 ;
-				void:class	dbo:Building ] ,
-		[	void:entities	6466 ;
-				void:class	dbo:WrittenWork ] ,
-		[	void:entities	7125 ;
-				void:class	dbo:Company ] ,
-		[	void:entities	7160 ;
-				void:class	dbo:MeanOfTransportation ] ,
-		[	void:entities	7295 ;
-				void:class	dbo:Infrastructure ] ,
-		[	void:entities	7800 ;
-				void:class	dbo:Politician ] ,
-		[	void:entities	9881 ;
-				void:class	dbo:Film ] ,
-		[	void:entities	10360 ;
-				void:class	dbo:SoccerPlayer ] ,
-		[	void:entities	10453 ;
-				void:class	dbo:SocietalEvent ] ,
-		[	void:entities	10719 ;
-				void:class	dbo:Album ] ,
-		[	void:entities	11276 ;
-				void:class	dbo:Event ] ,
-		[	void:entities	13224 ;
-				void:class	dbo:Insect ] ,
-		[	void:entities	14134 ;
-				void:class	dbo:SportsTeamSeason ] ,
-		[	void:entities	14305 ;
-				void:class	dbo:SportsSeason ] ,
-		[	void:entities	14410 ;
-				void:class	dbo:ArchitecturalStructure ] ,
-		[	void:entities	14636 ;
-				void:class	dbo:MusicalWork ] ,
-		[	void:entities	14656 ;
-				void:class	dbo:Animal ] ,
-		[	void:entities	15220 ;
-				void:class	dbo:Village ] ,
-		[	void:entities	16810 ;
-				void:class	dbo:Eukaryote ] ,
-		[	void:entities	17387 ;
-				void:class	dbo:Species ] ,
-		[	void:entities	25775 ;
-				void:class	dbo:Athlete ] ,
-		[	void:entities	26081 ;
-				void:class	dbo:Organisation ] ,
-		[	void:entities	37210 ;
-				void:class	dbo:Settlement ] ,
-		[	void:entities	38418 ;
-				void:class	dbo:Work ] ,
-		[	void:entities	39734 ;
-				void:class	dbo:PopulatedPlace ] ,
-		[	void:entities	62943 ;
-				void:class	dbo:Location ] ,
-		[	void:entities	62944 ;
-				void:class	dbo:Place ] ,
-		[	void:entities	64036 ;
-				void:class	dbo:Person ] ,
-		[	void:entities	88646 ;
-				void:class	dbo:Agent ] .
+    void:classPartition [ void:entities 1 ;
+                void:class dbo:ChristianPatriarch ] ,
+        [ void:entities 1 ;
+                void:class dbo:GolfLeague ] ,
+        [ void:entities 1 ;
+                void:class dbo:Bay ] ,
+        [ void:entities 1 ;
+                void:class dbo:HorseRider ] ,
+        [ void:entities 1 ;
+                void:class dbo:SpaceShuttle ] ,
+        [ void:entities 1 ;
+                void:class dbo:Lymph ] ,
+        [ void:entities 1 ;
+                void:class dbo:CricketLeague ] ,
+        [ void:entities 1 ;
+                void:class dbo:CanadianFootballLeague ] ,
+        [ void:entities 1 ;
+                void:class dbo:AutoRacingLeague ] ,
+        [ void:entities 1 ;
+                void:class dbo:Battery ] ,
+        [ void:entities 2 ;
+                void:class dbo:VolleyballCoach ] ,
+        [ void:entities 2 ;
+                void:class dbo:Continent ] ,
+        [ void:entities 2 ;
+                void:class dbo:Chancellor ] ,
+        [ void:entities 2 ;
+                void:class dbo:InlineHockeyLeague ] ,
+        [ void:entities 2 ;
+                void:class dbo:CareerStation ] ,
+        [ void:entities 2 ;
+                void:class dbo:NationalFootballLeagueEvent ] ,
+        [ void:entities 2 ;
+                void:class dbo:AnimangaCharacter ] ,
+        [ void:entities 2 ;
+                void:class dbo:SnookerChamp ] ,
+        [ void:entities 2 ;
+                void:class dbo:AmericanFootballTeam ] ,
+        [ void:entities 3 ;
+                void:class dbo:ResearchProject ] ,
+        [ void:entities 3 ;
+                void:class dbo:Vaccine ] ,
+        [ void:entities 3 ;
+                void:class dbo:TelevisionHost ] ,
+        [ void:entities 3 ;
+                void:class dbo:Project ] ,
+        [ void:entities 3 ;
+                void:class dbo:SpaceStation ] ,
+        [ void:entities 3 ;
+                void:class dbo:SpeedwayLeague ] ,
+        [ void:entities 3 ;
+                void:class dbo:TennisLeague ] ,
+        [ void:entities 4 ;
+                void:class dbo:FieldHockeyLeague ] ,
+        [ void:entities 4 ;
+                void:class dbo:NationalCollegiateAthleticAssociationAthlete ] ,
+        [ void:entities 4 ;
+                void:class dbo:SpeedwayTeam ] ,
+        [ void:entities 4 ;
+                void:class dbo:BaseballSeason ] ,
+        [ void:entities 4 ;
+                void:class dbo:WaterRide ] ,
+        [ void:entities 4 ;
+                void:class dbo:Instrumentalist ] ,
+        [ void:entities 4 ;
+                void:class dbo:PoloLeague ] ,
+        [ void:entities 4 ;
+                void:class dbo:Guitarist ] ,
+        [ void:entities 5 ;
+                void:class dbo:BeachVolleyballPlayer ] ,
+        [ void:entities 5 ;
+                void:class dbo:Sea ] ,
+        [ void:entities 5 ;
+                void:class dbo:YearInSpaceflight ] ,
+        [ void:entities 5 ;
+                void:class dbo:HandballLeague ] ,
+        [ void:entities 5 ;
+                void:class dbo:Conifer ] ,
+        [ void:entities 5 ;
+                void:class dbo:LacrosseLeague ] ,
+        [ void:entities 5 ;
+                void:class dbo:WaterwayTunnel ] ,
+        [ void:entities 6 ;
+                void:class dbo:ArtificialSatellite ] ,
+        [ void:entities 6 ;
+                void:class dbo:ComedyGroup ] ,
+        [ void:entities 6 ;
+                void:class dbo:GreenAlga ] ,
+        [ void:entities 6 ;
+                void:class    dbo:AmericanFootballLeague ] ,
+        [    void:entities    6 ;
+                void:class    dbo:Bird ] ,
+        [    void:entities    7 ;
+                void:class    dbo:Tunnel ] ,
+        [    void:entities    7 ;
+                void:class    dbo:Outbreak ] ,
+        [    void:entities    7 ;
+                void:class    dbo:AcademicConference ] ,
+        [    void:entities    8 ;
+                void:class    dbo:OlympicResult ] ,
+        [    void:entities    8 ;
+                void:class    dbo:Constellation ] ,
+        [    void:entities    8 ;
+                void:class    dbo:BritishRoyalty ] ,
+        [    void:entities    8 ;
+                void:class    dbo:CricketGround ] ,
+        [    void:entities    8 ;
+                void:class    dbo:Baronet ] ,
+        [    void:entities    9 ;
+                void:class    dbo:Ligament ] ,
+        [    void:entities    9 ;
+                void:class    dbo:Cinema ] ,
+        [    void:entities    9 ;
+                void:class    dbo:PlayboyPlaymate ] ,
+        [    void:entities    12 ;
+                void:class    dbo:Amphibian ] ,
+        [    void:entities    12 ;
+                void:class    dbo:ConcentrationCamp ] ,
+        [    void:entities    13 ;
+                void:class    dbo:Ambassador ] ,
+        [    void:entities    13 ;
+                void:class    dbo:Vein ] ,
+        [    void:entities    14 ;
+                void:class    dbo:Embryology ] ,
+        [    void:entities    15 ;
+                void:class    dbo:Rower ] ,
+        [    void:entities    15 ;
+                void:class    dbo:BaseballLeague ] ,
+        [    void:entities    15 ;
+                void:class    dbo:RadioHost ] ,
+        [    void:entities    15 ;
+                void:class    dbo:IceHockeyLeague ] ,
+        [    void:entities    15 ;
+                void:class    dbo:FormulaOneTeam ] ,
+        [    void:entities    16 ;
+                void:class    dbo:AutomobileEngine ] ,
+        [    void:entities    16 ;
+                void:class    dbo:Engine ] ,
+        [    void:entities    17 ;
+                void:class    dbo:Poet ] ,
+        [    void:entities    17 ;
+                void:class    dbo:RoadJunction ] ,
+        [    void:entities    17 ;
+                void:class    dbo:Priest ] ,
+        [    void:entities    17 ;
+                void:class    dbo:ComicStrip ] ,
+        [    void:entities    17 ;
+                void:class    dbo:Pope ] ,
+        [    void:entities    18 ;
+                void:class    dbo:Senator ] ,
+        [    void:entities    18 ;
+                void:class    dbo:GolfCourse ] ,
+        [    void:entities    18 ;
+                void:class    dbo:Bodybuilder ] ,
+        [    void:entities    18 ;
+                void:class    dbo:SumoWrestler ] ,
+        [    void:entities    19 ;
+                void:class    dbo:Winery ] ,
+        [    void:entities    19 ;
+                void:class    dbo:Moss ] ,
+        [    void:entities    19 ;
+                void:class    dbo:NetballPlayer ] ,
+        [    void:entities    19 ;
+                void:class    dbo:ClassicalMusicArtist ] ,
+        [    void:entities    20 ;
+                void:class    dbo:Nerve ] ,
+        [    void:entities    20 ;
+                void:class    dbo:VolleyballLeague ] ,
+        [    void:entities    21 ;
+                void:class    dbo:RaceTrack ] ,
+        [    void:entities    21 ;
+                void:class    dbo:Galaxy ] ,
+        [    void:entities    21 ;
+                void:class    dbo:Racecourse ] ,
+        [    void:entities    21 ;
+                void:class    dbo:Artery ] ,
+        [    void:entities    21 ;
+                void:class    dbo:Fern ] ,
+        [    void:entities    22 ;
+                void:class    dbo:CombinationDrug ] ,
+        [    void:entities    22 ;
+                void:class    dbo:SolarEclipse ] ,
+        [    void:entities    22 ;
+                void:class    dbo:College ] ,
+        [    void:entities    22 ;
+                void:class    dbo:VoiceActor ] ,
+        [    void:entities    22 ;
+                void:class    dbo:Muscle ] ,
+        [    void:entities    23 ;
+                void:class    dbo:Rocket ] ,
+        [    void:entities    23 ;
+                void:class    dbo:HorseTrainer ] ,
+        [    void:entities    23 ;
+                void:class    dbo:LacrossePlayer ] ,
+        [    void:entities    24 ;
+                void:class    dbo:RailwayTunnel ] ,
+        [    void:entities    24 ;
+                void:class    dbo:CanadianFootballTeam ] ,
+        [    void:entities    24 ;
+                void:class    dbo:Garden ] ,
+        [    void:entities    25 ;
+                void:class    dbo:BasketballLeague ] ,
+        [    void:entities    25 ;
+                void:class    dbo:SnookerPlayer ] ,
+        [    void:entities    26 ;
+                void:class    dbo:LaunchPad ] ,
+        [    void:entities    26 ;
+                void:class    dbo:Fashion ] ,
+        [    void:entities    26 ;
+                void:class    dbo:Presenter ] ,
+        [    void:entities    26 ;
+                void:class    dbo:TableTennisPlayer ] ,
+        [    void:entities    26 ;
+                void:class    dbo:AmateurBoxer ] ,
+        [    void:entities    27 ;
+                void:class    dbo:BaseballTeam ] ,
+        [    void:entities    27 ;
+                void:class    dbo:MusicFestival ] ,
+        [    void:entities    27 ;
+                void:class    dbo:MonoclonalAntibody ] ,
+        [    void:entities    29 ;
+                void:class    dbo:Database ] ,
+        [    void:entities    29 ;
+                void:class    dbo:Volcano ] ,
+        [    void:entities    30 ;
+                void:class    dbo:RugbyLeague ] ,
+        [    void:entities    30 ;
+                void:class    dbo:Bone ] ,
+        [    void:entities    30 ;
+                void:class    dbo:Brain ] ,
+        [    void:entities    30 ;
+                void:class    dbo:BiologicalDatabase ] ,
+        [    void:entities    31 ;
+                void:class    dbo:Reptile ] ,
+        [    void:entities    31 ;
+                void:class    dbo:OrganisationMember ] ,
+        [    void:entities    31 ;
+                void:class    dbo:RoadTunnel ] ,
+        [    void:entities    32 ;
+                void:class    dbo:Engineer ] ,
+        [    void:entities    32 ;
+                void:class    dbo:Astronaut ] ,
+        [    void:entities    32 ;
+                void:class    dbo:SportsTeamMember ] ,
+        [    void:entities    33 ;
+                void:class    dbo:PokerPlayer ] ,
+        [    void:entities    33 ;
+                void:class    dbo:Chef ] ,
+        [    void:entities    33 ;
+                void:class    dbo:Photographer ] ,
+        [    void:entities    33 ;
+                void:class    dbo:Canoeist ] ,
+        [    void:entities    34 ;
+                void:class    dbo:SquashPlayer ] ,
+        [    void:entities    34 ;
+                void:class    dbo:DartsPlayer ] ,
+        [    void:entities    34 ;
+                void:class    dbo:Poem ] ,
+        [    void:entities    35 ;
+                void:class    dbo:Canal ] ,
+        [    void:entities    35 ;
+                void:class    dbo:CyclingRace ] ,
+        [    void:entities    35 ;
+                void:class    dbo:AustralianFootballTeam ] ,
+        [    void:entities    35 ;
+                void:class    dbo:Entomologist ] ,
+        [    void:entities    35 ;
+                void:class    dbo:ScreenWriter ] ,
+        [    void:entities    36 ;
+                void:class    dbo:Cheese ] ,
+        [    void:entities    36 ;
+                void:class    dbo:HollywoodCartoon ] ,
+        [    void:entities    36 ;
+                void:class    dbo:Archaea ] ,
+        [    void:entities    36 ;
+                void:class    dbo:Archbishop ] ,
+        [    void:entities    37 ;
+                void:class    dbo:Colour ] ,
+        [    void:entities    38 ;
+                void:class    dbo:LawFirm ] ,
+        [    void:entities    39 ;
+                void:class    dbo:FloweringPlant ] ,
+        [    void:entities    43 ;
+                void:class    dbo:RollerCoaster ] ,
+        [    void:entities    43 ;
+                void:class    dbo:FashionDesigner ] ,
+        [    void:entities    43 ;
+                void:class    dbo:MythologicalFigure ] ,
+        [    void:entities    44 ;
+                void:class    dbo:HandballTeam ] ,
+        [    void:entities    44 ;
+                void:class    dbo:Surname ] ,
+        [    void:entities    45 ;
+                void:class    dbo:Motorcycle ] ,
+        [    void:entities    46 ;
+                void:class    dbo:SkiArea ] ,
+        [    void:entities    47 ;
+                void:class    dbo:Beverage ] ,
+        [    void:entities    47 ;
+                void:class    dbo:BusinessPerson ] ,
+        [    void:entities    48 ;
+                void:class    dbo:Grape ] ,
+        [    void:entities    49 ;
+                void:class    dbo:FormerMunicipality ] ,
+        [    void:entities    49 ;
+                void:class    dbo:GovernmentalAdministrativeRegion ] ,
+        [    void:entities    49 ;
+                void:class    dbo:Municipality ] ,
+        [    void:entities    51 ;
+                void:class    dbo:Jockey ] ,
+        [    void:entities    51 ;
+                void:class    dbo:WorldHeritageSite ] ,
+        [    void:entities    51 ;
+                void:class    dbo:SpeedwayRider ] ,
+        [    void:entities    51 ;
+                void:class    dbo:Brewery ] ,
+        [    void:entities    52 ;
+                void:class    dbo:MemberOfParliament ] ,
+        [    void:entities    52 ;
+                void:class    dbo:Theatre ] ,
+        [    void:entities    53 ;
+                void:class    dbo:Judge ] ,
+        [    void:entities    53 ;
+                void:class    dbo:Medician ] ,
+        [    void:entities    53 ;
+                void:class    dbo:WineRegion ] ,
+        [    void:entities    54 ;
+                void:class    dbo:Cave ] ,
+        [    void:entities    54 ;
+                void:class    dbo:Hotel ] ,
+        [    void:entities    55 ;
+                void:class    dbo:ClassicalMusicComposition ] ,
+        [    void:entities    56 ;
+                void:class    dbo:Sport ] ,
+        [    void:entities    56 ;
+                void:class    dbo:AdultActor ] ,
+        [    void:entities    58 ;
+                void:class    dbo:PrimeMinister ] ,
+        [    void:entities    58 ;
+                void:class    dbo:CyclingTeam ] ,
+        [    void:entities    59 ;
+                void:class    dbo:FilmFestival ] ,
+        [    void:entities    60 ;
+                void:class    dbo:Governor ] ,
+        [    void:entities    60 ;
+                void:class    dbo:Congressman ] ,
+        [    void:entities    61 ;
+                void:class    dbo:Historian ] ,
+        [    void:entities    62 ;
+                void:class    dbo:MountainPass ] ,
+        [    void:entities    63 ;
+                void:class    dbo:Economist ] ,
+        [    void:entities    65 ;
+                void:class    dbo:Monument ] ,
+        [    void:entities    66 ;
+                void:class    dbo:Comedian ] ,
+        [    void:entities    71 ;
+                void:class    dbo:Cardinal ] ,
+        [    void:entities    72 ;
+                void:class    dbo:MixedMartialArtsEvent ] ,
+        [    void:entities    72 ;
+                void:class    dbo:FormulaOneRacer ] ,
+        [    void:entities    76 ;
+                void:class    dbo:Genre ] ,
+        [    void:entities    76 ;
+                void:class    dbo:Earthquake ] ,
+        [    void:entities    78 ;
+                void:class    dbo:Diocese ] ,
+        [    void:entities    78 ;
+                void:class    dbo:ClericalAdministrativeRegion ] ,
+        [    void:entities    80 ;
+                void:class    dbo:EurovisionSongContestEntry ] ,
+        [    void:entities    81 ;
+                void:class    dbo:CricketTeam ] ,
+        [    void:entities    84 ;
+                void:class    dbo:Currency ] ,
+        [    void:entities    86 ;
+                void:class    dbo:NascarDriver ] ,
+        [    void:entities    91 ;
+                void:class    dbo:ProgrammingLanguage ] ,
+        [    void:entities    93 ;
+                void:class    dbo:SportFacility ] ,
+        [    void:entities    93 ;
+                void:class    dbo:RadioProgram ] ,
+        [    void:entities    96 ;
+                void:class    dbo:President ] ,
+        [    void:entities    97 ;
+                void:class    dbo:Journalist ] ,
+        [    void:entities    97 ;
+                void:class    dbo:Mayor ] ,
+        [    void:entities    97 ;
+                void:class    dbo:Curler ] ,
+        [    void:entities    98 ;
+                void:class    dbo:NaturalEvent ] ,
+        [    void:entities    99 ;
+                void:class    dbo:AmusementParkAttraction ] ,
+        [    void:entities    101 ;
+                void:class    dbo:Restaurant ] ,
+        [    void:entities    102 ;
+                void:class    dbo:TopicalConcept ] ,
+        [    void:entities    107 ;
+                void:class    dbo:Skater ] ,
+        [    void:entities    108 ;
+                void:class    dbo:Model ] ,
+        [    void:entities    109 ;
+                void:class    dbo:Prison ] ,
+        [    void:entities    109 ;
+                void:class    dbo:Glacier ] ,
+        [    void:entities    111 ;
+                void:class    dbo:TimeInterval ] ,
+        [    void:entities    111 ;
+                void:class    dbo:Anime ] ,
+        [    void:entities    112 ;
+                void:class    dbo:Mineral ] ,
+        [    void:entities    112 ;
+                void:class    dbo:Holiday ] ,
+        [    void:entities    113 ;
+                void:class    dbo:Game ] ,
+        [    void:entities    113 ;
+                void:class    dbo:Lake ] ,
+        [    void:entities    115 ;
+                void:class    dbo:WomensTennisAssociationTournament ] ,
+        [    void:entities    118 ;
+                void:class    dbo:BroadcastNetwork ] ,
+        [    void:entities    119 ;
+                void:class    dbo:Library ] ,
+        [    void:entities    121 ;
+                void:class    dbo:Philosopher ] ,
+        [    void:entities    122 ;
+                void:class    dbo:BadmintonPlayer ] ,
+        [    void:entities    123 ;
+                void:class    dbo:MotorcycleRider ] ,
+        [    void:entities    124 ;
+                void:class    dbo:Train ] ,
+        [    void:entities    136 ;
+                void:class    dbo:BusCompany ] ,
+        [    void:entities    139 ;
+                void:class    dbo:Musical ] ,
+        [    void:entities    141 ;
+                void:class    dbo:Planet ] ,
+        [    void:entities    141 ;
+                void:class    dbo:InformationAppliance ] ,
+        [    void:entities    142 ;
+                void:class    dbo:ShoppingMall ] ,
+        [    void:entities    142 ;
+                void:class    dbo:CultivatedVariety ] ,
+        [    void:entities    143 ;
+                void:class    dbo:Castle ] ,
+        [    void:entities    144 ;
+                void:class    dbo:Legislature ] ,
+        [    void:entities    146 ;
+                void:class    dbo:Cartoon ] ,
+        [    void:entities    147 ;
+                void:class    dbo:Lighthouse ] ,
+        [    void:entities    147 ;
+                void:class    dbo:Tower ] ,
+        [    void:entities    148 ;
+                void:class    dbo:MountainRange ] ,
+        [    void:entities    149 ;
+                void:class    dbo:Locomotive ] ,
+        [    void:entities    149 ;
+                void:class    dbo:Activity ] ,
+        [    void:entities    151 ;
+                void:class    dbo:RailwayStation ] ,
+        [    void:entities    151 ;
+                void:class    dbo:WrestlingEvent ] ,
+        [    void:entities    151 ;
+                void:class    dbo:TradeUnion ] ,
+        [    void:entities    152 ;
+                void:class    dbo:PowerStation ] ,
+        [    void:entities    155 ;
+                void:class    dbo:Crater ] ,
+        [    void:entities    155 ;
+                void:class    dbo:ChessPlayer ] ,
+        [    void:entities    157 ;
+                void:class    dbo:BeautyQueen ] ,
+        [    void:entities    158 ;
+                void:class    dbo:Painter ] ,
+        [    void:entities    160 ;
+                void:class    dbo:ComicsCreator ] ,
+        [    void:entities    162 ;
+                void:class    dbo:Religious ] ,
+        [    void:entities    165 ;
+                void:class    dbo:BasketballTeam ] ,
+        [    void:entities    166 ;
+                void:class    dbo:Gymnast ] ,
+        [    void:entities    171 ;
+                void:class    dbo:MotorsportSeason ] ,
+        [    void:entities    173 ;
+                void:class    dbo:Skier ] ,
+        [    void:entities    173 ;
+                void:class    dbo:GaelicGamesPlayer ] ,
+        [    void:entities    179 ;
+                void:class    dbo:SiteOfSpecialScientificInterest ] ,
+        [    void:entities    180 ;
+                void:class    dbo:Crustacean ] ,
+        [    void:entities    189 ;
+                void:class    dbo:Protein ] ,
+        [    void:entities    193 ;
+                void:class    dbo:Criminal ] ,
+        [    void:entities    193 ;
+                void:class    dbo:SpaceMission ] ,
+        [    void:entities    195 ;
+                void:class    dbo:SoapCharacter ] ,
+        [    void:entities    195 ;
+                void:class    dbo:GolfPlayer ] ,
+        [    void:entities    208 ;
+                void:class    dbo:GolfTournament ] ,
+        [    void:entities    219 ;
+                void:class    dbo:MartialArtist ] ,
+        [    void:entities    219 ;
+                void:class    dbo:Play ] ,
+        [    void:entities    220 ;
+                void:class    dbo:RugbyClub ] ,
+        [    void:entities    221 ;
+                void:class    dbo:Arachnid ] ,
+        [    void:entities    225 ;
+                void:class    dbo:GivenName ] ,
+        [    void:entities    232 ;
+                void:class    dbo:FigureSkater ] ,
+        [    void:entities    233 ;
+                void:class    dbo:Wrestler ] ,
+        [    void:entities    236 ;
+                void:class    dbo:VolleyballPlayer ] ,
+        [    void:entities    240 ;
+                void:class    dbo:ComicsCharacter ] ,
+        [    void:entities    247 ;
+                void:class    dbo:Noble ] ,
+        [    void:entities    250 ;
+                void:class    dbo:Stadium ] ,
+        [    void:entities    253 ;
+                void:class    dbo:Bank ] ,
+        [    void:entities    258 ;
+                void:class    dbo:Bacteria ] ,
+        [    void:entities    260 ;
+                void:class    dbo:Publisher ] ,
+        [    void:entities    268 ;
+                void:class    dbo:Name ] ,
+        [    void:entities    270 ;
+                void:class    dbo:HockeyTeam ] ,
+        [    void:entities    272 ;
+                void:class    dbo:RaceHorse ] ,
+        [    void:entities    277 ;
+                void:class    dbo:AnatomicalStructure ] ,
+        [    void:entities    280 ;
+                void:class    dbo:Race ] ,
+        [    void:entities    285 ;
+                void:class    dbo:Convention ] ,
+        [    void:entities    288 ;
+                void:class    dbo:Actor ] ,
+        [    void:entities    294 ;
+                void:class    dbo:MilitaryStructure ] ,
+        [    void:entities    294 ;
+                void:class    dbo:RacingDriver ] ,
+        [    void:entities    294 ;
+                void:class    dbo:Boxer ] ,
+        [    void:entities    296 ;
+                void:class    dbo:Architect ] ,
+        [    void:entities    296 ;
+                void:class    dbo:Saint ] ,
+        [    void:entities    298 ;
+                void:class    dbo:HandballPlayer ] ,
+        [    void:entities    303 ;
+                void:class    dbo:Star ] ,
+        [    void:entities    314 ;
+                void:class    dbo:HorseRace ] ,
+        [    void:entities    316 ;
+                void:class    dbo:SoccerLeague ] ,
+        [    void:entities    325 ;
+                void:class    dbo:ArtistDiscography ] ,
+        [    void:entities    342 ;
+                void:class    dbo:Bridge ] ,
+        [    void:entities    343 ;
+                void:class    dbo:Manga ] ,
+        [    void:entities    344 ;
+                void:class    dbo:Airline ] ,
+        [    void:entities    346 ;
+                void:class    dbo:Hospital ] ,
+        [    void:entities    347 ;
+                void:class    dbo:Website ] ,
+        [    void:entities    348 ;
+                void:class    dbo:ChristianBishop ] ,
+        [    void:entities    359 ;
+                void:class    dbo:Swimmer ] ,
+        [    void:entities    361 ;
+                void:class    dbo:Horse ] ,
+        [    void:entities    374 ;
+                void:class    dbo:TennisPlayer ] ,
+        [    void:entities    384 ;
+                void:class    dbo:ReligiousBuilding ] ,
+        [    void:entities    387 ;
+                void:class    dbo:GrandPrix ] ,
+        [    void:entities    388 ;
+                void:class    dbo:Mammal ] ,
+        [    void:entities    391 ;
+                void:class    dbo:Fish ] ,
+        [    void:entities    395 ;
+                void:class    dbo:SportsLeague ] ,
+        [    void:entities    401 ;
+                void:class    dbo:Dam ] ,
+        [    void:entities    401 ;
+                void:class    dbo:MotorsportRacer ] ,
+        [    void:entities    410 ;
+                void:class    dbo:Magazine ] ,
+        [    void:entities    418 ;
+                void:class    dbo:TelevisionSeason ] ,
+        [    void:entities    423 ;
+                void:class    dbo:Park ] ,
+        [    void:entities    439 ;
+                void:class    dbo:HistoricBuilding ] ,
+        [    void:entities    439 ;
+                void:class    dbo:Year ] ,
+        [    void:entities    440 ;
+                void:class    dbo:Olympics ] ,
+        [    void:entities    446 ;
+                void:class    dbo:Case ] ,
+        [    void:entities    446 ;
+                void:class    dbo:LegalCase ] ,
+        [    void:entities    446 ;
+                void:class    dbo:SupremeCourtOfTheUnitedStatesCase ] ,
+        [    void:entities    449 ;
+                void:class    dbo:UnitOfWork ] ,
+        [    void:entities    467 ;
+                void:class    dbo:OlympicEvent ] ,
+        [    void:entities    473 ;
+                void:class    dbo:CelestialBody ] ,
+        [    void:entities    475 ;
+                void:class    dbo:EthnicGroup ] ,
+        [    void:entities    478 ;
+                void:class    dbo:Automobile ] ,
+        [    void:entities    479 ;
+                void:class    dbo:Drug ] ,
+        [    void:entities    485 ;
+                void:class    dbo:Enzyme ] ,
+        [    void:entities    504 ;
+                void:class    dbo:Museum ] ,
+        [    void:entities    540 ;
+                void:class    dbo:RailwayLine ] ,
+        [    void:entities    544 ;
+                void:class    dbo:Comic ] ,
+        [    void:entities    547 ;
+                void:class    dbo:TimePeriod ] ,
+        [    void:entities    565 ;
+                void:class    dbo:AcademicJournal ] ,
+        [    void:entities    570 ;
+                void:class    dbo:MusicGenre ] ,
+        [    void:entities    575 ;
+                void:class    dbo:Artwork ] ,
+        [    void:entities    593 ;
+                void:class    dbo:Island ] ,
+        [    void:entities    597 ;
+                void:class    dbo:CityDistrict ] ,
+        [    void:entities    598 ;
+                void:class    dbo:PersonFunction ] ,
+        [    void:entities    606 ;
+                void:class    dbo:Coach ] ,
+        [    void:entities    614 ;
+                void:class    dbo:Disease ] ,
+        [    void:entities    618 ;
+                void:class    dbo:Food ] ,
+        [    void:entities    641 ;
+                void:class    dbo:ChemicalCompound ] ,
+        [    void:entities    660 ;
+                void:class    dbo:AustralianRulesFootballPlayer ] ,
+        [    void:entities    665 ;
+                void:class    dbo:Newspaper ] ,
+        [    void:entities    666 ;
+                void:class    dbo:Country ] ,
+        [    void:entities    678 ;
+                void:class    dbo:CollegeCoach ] ,
+        [    void:entities    685 ;
+                void:class    dbo:TelevisionStation ] ,
+        [    void:entities    693 ;
+                void:class    dbo:Cyclist ] ,
+        [    void:entities    694 ;
+                void:class    dbo:PublicTransitSystem ] ,
+        [    void:entities    725 ;
+                void:class    dbo:TelevisionEpisode ] ,
+        [    void:entities    738 ;
+                void:class    dbo:Award ] ,
+        [    void:entities    739 ;
+                void:class    dbo:Fungus ] ,
+        [    void:entities    755 ;
+                void:class    dbo:Weapon ] ,
+        [    void:entities    788 ;
+                void:class    dbo:ProtectedArea ] ,
+        [    void:entities    801 ;
+                void:class    dbo:RecordLabel ] ,
+        [    void:entities    805 ;
+                void:class    dbo:MilitaryConflict ] ,
+        [    void:entities    810 ;
+                void:class    dbo:Language ] ,
+        [    void:entities    855 ;
+                void:class    dbo:SportsTeam ] ,
+        [    void:entities    864 ;
+                void:class    dbo:NationalFootballLeagueSeason ] ,
+        [    void:entities    889 ;
+                void:class    dbo:FootballMatch ] ,
+        [    void:entities    897 ;
+                void:class    dbo:Royalty ] ,
+        [    void:entities    905 ;
+                void:class    dbo:RadioStation ] ,
+        [    void:entities    919 ;
+                void:class    dbo:FictionalCharacter ] ,
+        [    void:entities    931 ;
+                void:class    dbo:GovernmentAgency ] ,
+        [    void:entities    958 ;
+                void:class    dbo:Venue ] ,
+        [    void:entities    997 ;
+                void:class    dbo:Device ] ,
+        [    void:entities    1002 ;
+                void:class    dbo:Airport ] ,
+        [    void:entities    1004 ;
+                void:class    dbo:RugbyPlayer ] ,
+        [    void:entities    1017 ;
+                void:class    dbo:IceHockeyPlayer ] ,
+        [    void:entities    1019 ;
+                void:class    dbo:Cleric ] ,
+        [    void:entities    1083 ;
+                void:class    dbo:HumanGene ] ,
+        [    void:entities    1083 ;
+                void:class    dbo:Gene ] ,
+        [    void:entities    1090 ;
+                void:class    dbo:Aircraft ] ,
+        [    void:entities    1137 ;
+                void:class    dbo:Cricketer ] ,
+        [    void:entities    1157 ;
+                void:class    dbo:BasketballPlayer ] ,
+        [    void:entities    1218 ;
+                void:class    dbo:ChemicalSubstance ] ,
+        [    void:entities    1218 ;
+                void:class    dbo:PoliticalParty ] ,
+        [    void:entities    1285 ;
+                void:class    dbo:Mountain ] ,
+        [    void:entities    1322 ;
+                void:class    dbo:BaseballPlayer ] ,
+        [    void:entities    1394 ;
+                void:class    dbo:SportsManager ] ,
+        [    void:entities    1411 ;
+                void:class    dbo:MilitaryPerson ] ,
+        [    void:entities    1436 ;
+                void:class    dbo:SoccerManager ] ,
+        [    void:entities    1463 ;
+                void:class    dbo:Broadcaster ] ,
+        [    void:entities    1535 ;
+                void:class    dbo:Mollusca ] ,
+        [    void:entities    1578 ;
+                void:class    dbo:WinterSportPlayer ] ,
+        [    void:entities    1580 ;
+                void:class    dbo:VideoGame ] ,
+        [    void:entities    1610 ;
+                void:class    dbo:GridironFootballPlayer ] ,
+        [    void:entities    1614 ;
+                void:class    dbo:AmericanFootballPlayer ] ,
+        [    void:entities    1620 ;
+                void:class    dbo:PeriodicalLiterature ] ,
+        [    void:entities    1632 ;
+                void:class    dbo:TennisTournament ] ,
+        [    void:entities    1657 ;
+                void:class    dbo:Plant ] ,
+        [    void:entities    1722 ;
+                void:class    dbo:City ] ,
+        [    void:entities    1757 ;
+                void:class    dbo:Biomolecule ] ,
+        [    void:entities    1940 ;
+                void:class    dbo:Scientist ] ,
+        [    void:entities    1952 ;
+                void:class    dbo:HistoricPlace ] ,
+        [    void:entities    1996 ;
+                void:class    dbo:Road ] ,
+        [    void:entities    2051 ;
+                void:class    dbo:Stream ] ,
+        [    void:entities    2065 ;
+                void:class    dbo:SoccerTournament ] ,
+        [    void:entities    2095 ;
+                void:class    dbo:MilitaryUnit ] ,
+        [    void:entities    2366 ;
+                void:class    dbo:SportsClub ] ,
+        [    void:entities    2406 ;
+                void:class    dbo:Single ] ,
+        [    void:entities    2468 ;
+                void:class    dbo:Software ] ,
+        [    void:entities    2531 ;
+                void:class    dbo:Writer ] ,
+        [    void:entities    2679 ;
+                void:class    dbo:River ] ,
+        [    void:entities    2720 ;
+                void:class    dbo:School ] ,
+        [    void:entities    2769 ;
+                void:class    dbo:RouteOfTransportation ] ,
+        [    void:entities    2799 ;
+                void:class    dbo:OfficeHolder ] ,
+        [    void:entities    2835 ;
+                void:class    dbo:BodyOfWater ] ,
+        [    void:entities    2871 ;
+                void:class    dbo:Group ] ,
+        [    void:entities    2956 ;
+                void:class    dbo:Election ] ,
+        [    void:entities    3073 ;
+                void:class    dbo:Station ] ,
+        [    void:entities    3165 ;
+                void:class    dbo:TelevisionShow ] ,
+        [    void:entities    3238 ;
+                void:class    dbo:Region ] ,
+        [    void:entities    3563 ;
+                void:class    dbo:AdministrativeRegion ] ,
+        [    void:entities    3608 ;
+                void:class    dbo:Band ] ,
+        [    void:entities    3816 ;
+                void:class    dbo:University ] ,
+        [    void:entities    3900 ;
+                void:class    dbo:Book ] ,
+        [    void:entities    4019 ;
+                void:class    dbo:Tournament ] ,
+        [    void:entities    4054 ;
+                void:class    dbo:SoccerClubSeason ] ,
+        [    void:entities    4405 ;
+                void:class    dbo:Song ] ,
+        [    void:entities    4514 ;
+                void:class    dbo:NaturalPlace ] ,
+        [    void:entities    4700 ;
+                void:class    dbo:FootballLeagueSeason ] ,
+        [    void:entities    4777 ;
+                void:class    dbo:Town ] ,
+        [    void:entities    5066 ;
+                void:class    dbo:MusicalArtist ] ,
+        [    void:entities    5398 ;
+                void:class    dbo:Artist ] ,
+        [    void:entities    5403 ;
+                void:class    dbo:Ship ] ,
+        [    void:entities    5606 ;
+                void:class    dbo:NCAATeamSeason ] ,
+        [    void:entities    5809 ;
+                void:class    dbo:EducationalInstitution ] ,
+        [    void:entities    5860 ;
+                void:class    dbo:SoccerClub ] ,
+        [    void:entities    6399 ;
+                void:class    dbo:SportsEvent ] ,
+        [    void:entities    6415 ;
+                void:class    dbo:Building ] ,
+        [    void:entities    6466 ;
+                void:class    dbo:WrittenWork ] ,
+        [    void:entities    7125 ;
+                void:class    dbo:Company ] ,
+        [    void:entities    7160 ;
+                void:class    dbo:MeanOfTransportation ] ,
+        [    void:entities    7295 ;
+                void:class    dbo:Infrastructure ] ,
+        [    void:entities    7800 ;
+                void:class    dbo:Politician ] ,
+        [    void:entities    9881 ;
+                void:class    dbo:Film ] ,
+        [    void:entities    10360 ;
+                void:class    dbo:SoccerPlayer ] ,
+        [    void:entities    10453 ;
+                void:class    dbo:SocietalEvent ] ,
+        [    void:entities    10719 ;
+                void:class    dbo:Album ] ,
+        [    void:entities    11276 ;
+                void:class    dbo:Event ] ,
+        [    void:entities    13224 ;
+                void:class    dbo:Insect ] ,
+        [    void:entities    14134 ;
+                void:class    dbo:SportsTeamSeason ] ,
+        [    void:entities    14305 ;
+                void:class    dbo:SportsSeason ] ,
+        [    void:entities    14410 ;
+                void:class    dbo:ArchitecturalStructure ] ,
+        [    void:entities    14636 ;
+                void:class    dbo:MusicalWork ] ,
+        [    void:entities    14656 ;
+                void:class    dbo:Animal ] ,
+        [    void:entities    15220 ;
+                void:class    dbo:Village ] ,
+        [    void:entities    16810 ;
+                void:class    dbo:Eukaryote ] ,
+        [    void:entities    17387 ;
+                void:class    dbo:Species ] ,
+        [    void:entities    25775 ;
+                void:class    dbo:Athlete ] ,
+        [    void:entities    26081 ;
+                void:class    dbo:Organisation ] ,
+        [    void:entities    37210 ;
+                void:class    dbo:Settlement ] ,
+        [    void:entities    38418 ;
+                void:class    dbo:Work ] ,
+        [    void:entities    39734 ;
+                void:class    dbo:PopulatedPlace ] ,
+        [    void:entities    62943 ;
+                void:class    dbo:Location ] ,
+        [    void:entities    62944 ;
+                void:class    dbo:Place ] ,
+        [    void:entities    64036 ;
+                void:class    dbo:Person ] ,
+        [    void:entities    88646 ;
+                void:class    dbo:Agent ] .
