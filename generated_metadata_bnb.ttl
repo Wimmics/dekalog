@@ -18,7 +18,7 @@
 @prefix bnbperson: <http://bnb.data.bl.uk/id/person/> .
 
 # Main dataset description
-bnbdata:BNB rdf:type void:Dataset,
+dkg:BNB-dataset rdf:type void:Dataset,
         dcat:Dataset,
         prov:Entity ;
 # Labels and human-readable descriptions
@@ -39,7 +39,7 @@ bnbdata:BNB rdf:type void:Dataset,
     void:feature formats:Turtle ,
         formats:RDF_XML ;
     void:sparqlEndpoint bnb:sparql ;
-    void:subset bnbdata:BNBBooks ,
+    void:subset dkg:BNB-datasetBooks ,
         bnbdata:BNBCIP ,
         bnbdata:BNBSerials ;
 # Basic population count
@@ -192,7 +192,7 @@ bnbdata:BNBSerials rdf:type void:Dataset ;
 
 # Linksets
 dkg:bnbSameAs rdf:type void:Linkset ;
-    void:inDataset bnbdata:BNB ;
+    void:inDataset dkg:BNB-dataset ;
     void:linkPredicate owl:sameAs ;
     void:triples 13091837 .
 
@@ -200,7 +200,7 @@ dkg:bnbSameAs rdf:type void:Linkset ;
 # Generated endpoint description
 dkg:BNB-service a sd:Service, dcat:DataService, prov:Entity, earl:TestSubject ;
     sd:endpoint <http://bnb.data.bl.uk/sparql> ;
-    dcat:servesDataset bnbdata:BNB ;
+    dcat:servesDataset dkg:BNB-dataset ;
     sd:availableGraphs [
         a sd:GraphCollection ;
         sd:namedGraph <http://www.openlinksw.com/schemas/virtrdf#> ,
@@ -215,29 +215,68 @@ dkg:BNB-service a sd:Service, dcat:DataService, prov:Entity, earl:TestSubject ;
     dkg:server "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu"@en.
 
 # Provenance
-dkg:BNB-service prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;
+dkg:BNB-service  a prov:Entity ;
+    prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;
     prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
     prov:actedOnBehalfOf <http://www.inria.fr> .
-bnbdata:BNB prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
+bnbdata:BNB  a prov:Entity ;
+    prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
     prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
     prov:actedOnBehalfOf <http://www.inria.fr> .
-bnbdata:BNBSerials prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
+bnbdata:BNBSerials  a prov:Entity ;
+    prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
     prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
     prov:actedOnBehalfOf <http://www.inria.fr> .
-bnbdata:BNBCIP prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
+bnbdata:BNBCIP  a prov:Entity ;
+    prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
     prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
     prov:actedOnBehalfOf <http://www.inria.fr> .
-bnbdata:BNBBooks prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
+bnbdata:BNBBooks  a prov:Entity ;
+    prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
     prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
     prov:actedOnBehalfOf <http://www.inria.fr> .
+dkg:BNB-dataset a prov:Entity ;
+    prov:wasRevisionOf bnbdata:BNB ;
+    prov:generatedAtTime "2021-03-29"^^xsd:date ;
+    rdfs:comment "dkg:BNB-dataset is derived from bnbdata:BNB, whose properties have been checked and extended";
+
+dkg:BNB-description a prov:Entity ;
+
+dkg:datasetResourceExtraction rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject dkg:BNB-description ;
+    earl:test """PREFIX void: <http://rdfs.org/ns/void#>
+    PREFIX dcat: <http://www.w3.org/ns/dcat#>
+    SELECT DISTINCT ?central WHERE {
+        {
+            ?central a void:Dataset .
+        } UNION {
+            ?central a dcat:Dataset .
+        }
+    }""" ;
+    earl:result [
+        earl:outcome earl:passed ;
+        prov:generatedAtTime "2021-03-24T16:15:52"^^xsd:datetime
+    ] .
+dkg:endpointResourceExtraction rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject dkg:BNB-description ;
+    earl:test """SELECT DISTINCT ?endpoint WHERE {
+        ?endpoint sd:endpoint ?endpointUrl.
+    }""" ;
+    earl:result [
+        earl:outcome earl:passed ;
+        prov:generatedAtTime "2021-03-24T16:15:52"^^xsd:datetime
+    ] .
 
 # Generated error reports
-dkg:triplesCount rdf:type earl:Assertion ;
+dkg:triplesCount rdf:type earl:Assertion ,
+        prov:Activity ;
     earl:subject dkg:BNB-service ;
     earl:test """SELECT (count(*) AS ?count) WHERE {
             SELECT DISTINCT ?s ?p ?o WHERE {
@@ -249,6 +288,10 @@ dkg:triplesCount rdf:type earl:Assertion ;
         earl:outcome earl:failed ;
         prov:generatedAtTime "2021-03-31T16:14:52"^^xsd:datetime ;
         earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] ,
+    [
+        earl:outcome earl:passed ;
+        prov:generatedAtTime "2021-03-31T16:15:52"^^xsd:datetime
     ] .
 dkg:classCount rdf:type earl:Assertion ;
     earl:subject dkg:BNB-service ;
