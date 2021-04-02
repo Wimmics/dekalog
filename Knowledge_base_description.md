@@ -83,7 +83,7 @@ To cover as many features of a KB as possible, a KB description should describe 
 | dcterms: | http://purl.org/dc/terms/                        |
 | dcelem   | http://purl.org/dc/elements/1.1/                 |
 | foaf:    | http://xmlns.com/foaf/0.1/                       |
-| skos:    | http://www.w3.org/2004/02/skos/core#	          |
+| skos:    | http://www.w3.org/2004/02/skos/core#          |
 | prov:    | http://www.w3.org/ns/prov#                       |
 | formats: | http://www.w3.org/ns/formats/                    |
 | schema:  | http://schema.org/                               |
@@ -164,7 +164,7 @@ Other elements of description, such as the themes or keywords may be used.
 The properties given here are not an exhaustive list of possible labelling properties. There are other properties defined in domain-specific vocabularies.
 
 ### Provenance
-The provenance of the data of a KB must be given to ensure its reusability. The vocabulary used to describe provenance is most often Dublin Core. The [PROV ontology](http://www.w3.org/TR/prov-o/) gives properties an classes to create detailed descriptions of the provenance. There are mapping between the elements of the Dublin Core and PROV ontology. In this ontology, the datasets are instances of the `prov:Entity` class.
+The provenance of the data of a KB must be given to ensure its reusability. The vocabulary used to describe provenance is most often Dublin Core. The [PROV ontology](http://www.w3.org/TR/prov-o/) gives properties an classes to create detailed descriptions of the provenance. There are mapping between the elements of the Dublin Core and PROV ontology. In this ontology, the datasets are instances of the `prov:Entity` class. Any description of the generation of the data should be typed with `prov:Activity` and softwares and peoples involved should be typed with `prov:Agent`.
 
 As presented in the PROV ontology recommandation, the provenance can be reduced to the answers to three questions: Who ? What ? How ?
 THe following tables present a non-exhaustive list of the properties to be used to describe a KB. Those that should be used for a description that gives the minimal provenance information are shown in italics.
@@ -194,13 +194,13 @@ THe following tables present a non-exhaustive list of the properties to be used 
 As an example:
 ```
 :exampleDataset a prov:Entity ;
-  dcterms:creator <https://dblp.org/pid/143/6275> ;
-  dcterms:license <https://cecill.info/licences/Licence_CeCILL_V2.1-fr> ;
-  dcterms:created "08-02-2021"^^xsd:date ;
-	prov:wasGeneratedAtTime	"08-02-2021"^^xsd:date .
-  dcterms:modified "09-02-2021"^^xsd:date .
+    dcterms:creator <https://dblp.org/pid/143/6275> ;
+    dcterms:license <https://cecill.info/licences/Licence_CeCILL_V2.1-fr> ;
+    dcterms:created "08-02-2021"^^xsd:date ;
+    prov:wasGeneratedAtTime "08-02-2021"^^xsd:date .
+    dcterms:modified "09-02-2021"^^xsd:date .
 
-<https://dblp.org/pid/143/6275> a foaf:Person ;
+<https://dblp.org/pid/143/6275> a foaf:Person , prov:Agent ;
   rdfs:label "Pierre Maillot"@en .
 
 <https://cecill.info/licences/Licence_CeCILL_V2.1-fr> a dcterms:LicenseDocument ;
@@ -724,13 +724,13 @@ The retrieved endpoint description elements cannot be checked using SPARQL queri
 We add some provenance information to describe our generated data. We had a few lines of provenance information describing the sources and time of generation of the generated metadata.
 ```
 dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
-	prov:wasAttributedTo "Pierre Maillot"@en ;
-	prov:generatedAtTime "2021-03-22"^^xsd:date ;
-	prov:actedOnBehalfOf <http://www.inria.fr> .
+    prov:wasAttributedTo "Pierre Maillot"@en ;
+    prov:generatedAtTime "2021-03-22"^^xsd:date ;
+    prov:actedOnBehalfOf <http://www.inria.fr> .
 dkg:DBpedia-service prov:wasDerivedFrom dbp:sparql ;
-	prov:wasAttributedTo "Pierre Maillot"@en ;
-	prov:generatedAtTime "2021-03-22"^^xsd:date ;
-	prov:actedOnBehalfOf <http://www.inria.fr> .
+    prov:wasAttributedTo "Pierre Maillot"@en ;
+    prov:generatedAtTime "2021-03-22"^^xsd:date ;
+    prov:actedOnBehalfOf <http://www.inria.fr> .
 ```
 
 A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl). Until line 144, the file contains metadata retrieved from the endpoint and checked when possible.
