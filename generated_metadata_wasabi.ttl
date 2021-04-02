@@ -19,7 +19,6 @@ dkg:Wasabi rdf:type void:Dataset ,
 		schema:Dataset ,
 		dcat:Dataset ,
 		prov:Entity ;
-	dcat:accessService dkg:Wasabi-service ;
 	dct:title "The WASABI RDF Knowledge Graph" ;
 	schema:name	"The WASABI RDF Knowledge Graph" ;
 	dct:description	"The WASABI Dataset is a large corpus of songs enriched with metadata extracted from music databases on the Web, and resulting from the processing of song lyrics and from audio analysis. This dataset is the RDF representation of the original WASABI dataset." ;

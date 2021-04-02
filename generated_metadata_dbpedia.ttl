@@ -16,7 +16,6 @@
 dkg:DBpedia	rdf:type	void:Dataset, dcat:Dataset, prov:Entity ;
 	rdfs:label "DBpedia"@en ;
 	void:sparqlEndpoint	dbp:sparql ;
-	dcat:accessService dkg:DBpedia-service ;
 	rdfs:seeAlso	<http://dbpedia.org> ;
 # Basic population counts.
 # The counts have been re-computed from the endpoint. When a result was too different from what was given in the original metadata, the original value was kept.
@@ -49,7 +48,7 @@ dbv:seeAlsoLinks	rdf:type	void:Linkset ;
 
 # Endpoint description
 dkg:DBpedia-service	rdf:type sd:Service, dcat:DataService, prov:Entity ;
-	dcat:servesDataset dkg:DBpedia ;
+	sd:servesDataset dkg:DBpedia ;
 	sd:endpoint	dbp:sparql ,
 		dbp:sparql-auth ;
 	sd:feature	sd:RequiresDataset ,

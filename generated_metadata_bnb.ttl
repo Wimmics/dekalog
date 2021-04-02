@@ -34,7 +34,6 @@ bnbdata:BNB	rdf:type void:Dataset, dcat:Dataset, prov:Entity ;
     dcterms:publisher	bnborga:BritishLibrary ;
     dcterms:source	<http://bnb.bl.uk/> ;
 # SPARQL endpoint description and dataset structure
-    dcat:accessService dkg:BNB-service ;
     void:feature	formats:Turtle ,
         formats:RDF_XML ;
     void:sparqlEndpoint	bnb:sparql ;
