@@ -288,7 +288,7 @@ The URI of a vocabulary is also its namespace. It is possible to check the prese
 For example, checking the usage of the Schema vocabulary would be checked with the following query:
 ```
 ASK {
-    {?s ?elem ?o } UNION { ?s a ?elem }
+    { ?s ?elem ?o } UNION { ?s a ?elem }
     FILTER(REGEX(?elem, "http://schema.org/"))
 }
 ```
@@ -507,6 +507,7 @@ This document will be edited to reflect what we learned here:
 9. Endpoint URIs should be searched both with HTTP and HTTPS.
 10. Retrieve the named graph of the metadata we extract: `SELECT ?g ?s ?p ?o WHERE { GRAPH ?g { ?s ?p ?o . ?s a void:Dataset  } }`
 11. Search for resources typed by DCAT/SPARQL-SD/VoID classes linked to the description resource.
+12. Search for equivalent resources for the description resources using owl:sameAs
 
 For now, the method of extraction and generation is planned as follows:
 1. Extract the existing descriptions.
@@ -533,6 +534,7 @@ We check the availability of the endpoint using `SELECT * WHERE { ?s ?p ?o } LIM
 #### Extraction of the SPARQL endpoint description
 First, we retrieve the list of SPARQL-SD description in the KB, if there are any, using the query:
 ```
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
 SELECT DISTINCT ?endpoint WHERE {
     ?endpoint sd:endpoint ?endpointUrl.
 }
