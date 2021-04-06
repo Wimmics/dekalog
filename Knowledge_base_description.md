@@ -611,6 +611,7 @@ This query returns 32 named graphs, including 5 different spellings of the URI `
 The feature `sd:RequiresDataset`, given line 18 of [retrieved_endpoint_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_dbpedia.ttl), indicates that the SPARQL service requires an explicit dataset declaration. Each of those named graphs should be detailed in the endpoint description. Yet, in practice, we have access to each graph's data without indicating which one we are targeting in a SPARQL query. We can assume that this feature is wrong.
 
 #### Extraction of the void/dcat description
+
 We first check if their are at least one resource representing a DCAT or VoID description, using the query:
 ```
 PREFIX void: <http://rdfs.org/ns/void#>
@@ -671,6 +672,7 @@ The property `void:inDataset` has as object a resource that describes elements i
 There is a set of VoID properties describing population statistics. The values of each of those properties should be checked, and corrected, before being added to the generated metadata.
 
 #### Generation of metadata
+
 From the existing metadata about DBpedia, we can gather a partial endpoint description. The link between the `dbv:Dataset` description and the graph `<http://dbpedia.org>` can link the endpoint metadata and the content metadata. We could not get provenance information about `<http://dbpedia.org>`. The SPARQL-SD description of the DBPedia endpoint can be reused as it is, with the addition of the only graph description we could retrieve.
 
 We use two new description resources to regroup our generated metadata. In our generated metadata, the resource `dkg:DBPedia` is the center of the dataset description, and the resource `dkg:DBPedia-service` is the center of the endpoint description. We add to them the retrieved metadata after a check and correction if necessary.
@@ -678,6 +680,7 @@ We use two new description resources to regroup our generated metadata. In our g
 By studying the headers of the response to our HTTP request while sending SPARQL queries, we see that the endpoint is using a "Virtuoso/08.03.3319 (Linux) x86_64-centos_6-linux-glibc2.12  VDB" server.
 
 ##### Check and generation of population statistics
+
 For the dataset description, as we know the name of the endpoint we have been querying, we can add a label to the knowledge base resource. Some of the population statistics properties, values can be checked using the queries given in previous sections. The generated values for triples, classes and properties are different but close to the retrieved ones, given in the following table. We add the generated values to the generated metadata.
 
 | Property          | Retrieved value | Generated value |
@@ -722,6 +725,7 @@ The difference of value between our data and the retrieved metadata can be expla
 <!--- NOTE Lequel choisir ? celui donné ou celui re-calculé --->
 
 ##### Check of the linkset statistics
+
 In a similar fashion to the population statistics, we can check the count given in the two linksets description retrieved. The count of the sameAs relations in the dataset is retrived by the following query:
 ```
 SELECT (count(*) AS ?c)
@@ -1034,18 +1038,21 @@ OF the 4 results, 3 are subsets of the dataset `bnbdata:BNB`.
 
 The retrieved dataset descriptions are rather complete. The human-readable descriptions, provenance information and vocabularies are described for the main dataset and its subsets. The population counts are partly missing.
 
-#### Generation of metadata
+#### Generation of metadata
 Now, we ceck the content of the retrieved metadata and we generate a basic endpoint description and we extend the dataset description.
 
-##### Generation of endpoint description
+##### Generation of endpoint description
 We extract the graphs of the dataset to generate a basic endpoint description. We notice that the names of the graphs are the same as the dataset description resources. We decide to not rename the description resources as we did for the precedent datasets, to keep this connection between graphs and descriptions.
 
 By studying the headers of the response to our HTTP request while sending SPARQL queries, we see that the endpoint is using a "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu" server.
 
 ##### Checks of the vocabularies
+
 We test the 11 vocabularies that are listed in the descrption without being used in it. The query to check the presence of properties or classes from each vocabulary returns an error. From this, we generate 11 error reports at the end of the file [retrieved_dataset_bnb.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_bnb.ttl).
 
-##### Checks of the triple count and generation of population counts
+
+##### Checks of the triple count and generation of population counts
+
 We received an error while trying to obtain a count of the triples and the count of the classes. However, we count obtain results at a later attempt.
 The original description described 205 479 749 triples in the dataset, we obtained 205 482 468 with our queries, which is close.
 
