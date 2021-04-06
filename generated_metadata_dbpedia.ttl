@@ -27,8 +27,22 @@ dkg:DBpedia rdf:type void:Dataset,
     void:distinctObjects 231116566 ;
     void:distinctSubjects 43070161 ;
     void:entities 30127028 ;
+    void:vocabulary rdf: ,
+        <http://www.w3.org/2003/01/geo/wgs84_pos#> ,
+        rdfs: ,
+        <http://www.w3.org/2004/02/skos/core#> ,
+        owl: ,
+        <http://dbpedia.org/ontology/> ,
+        <http://dbpedia.org/class/> ,
+        <http://www.wikidata.org/entity/> ,
+        <http://umbel.org/umbel/rc/> ,
+        <http://xmlns.com/foaf/0.1/> ,
+        <http://vocab.org/frbr/core#> ,
+        <http://schema.org/> ,
+        <http://purl.org/ontology/bibo/> ,
+        <http://www.ontologydesignpatterns.org/ont/d0.owl#> ,
+        <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> ;
 # Missing values
-    void:vocabulary dkg:missingValue ;
     dct:creator dkg:missingValue ;
     dce:publisher dkg:missingValue ;
     dct:licence dkg:missingValue ;
@@ -118,7 +132,7 @@ dkg:DBpedia-service rdf:type sd:Service,
             <b3sonto> ,
             <dbprdf-label> ,
             <facets> ,
-            dkg:DBpedia-service ,
+            dbp:sparql-sd ,
             <http://dbpedia.org> ,
             <http://dbpedia.org/resource/classes#> ,
             <http://dbpedia.org/schema/property_rules#> ,

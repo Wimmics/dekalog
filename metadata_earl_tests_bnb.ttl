@@ -1,0 +1,68 @@
+dkg:reachableEndpoint rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject dkg:BNB-description ;
+    earl:test """ SELECT * WHERE {
+        ?s ?p ?o
+    }
+    LIMIT 1
+    """ .
+
+dkg:datasetResourceExtraction rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject dkg:BNB-description ;
+    earl:test """PREFIX void: <http://rdfs.org/ns/void#>
+    PREFIX dcat: <http://www.w3.org/ns/dcat#>
+    SELECT DISTINCT ?central WHERE {
+        {
+            ?central a void:Dataset .
+        } UNION {
+            ?central a dcat:Dataset .
+        }
+    }""" .
+
+dkg:datasetResourceConnectedExtraction rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject dkg:BNB-description ;
+    earl:test """PREFIX void: <http://rdfs.org/ns/void#>
+    PREFIX dcat: <http://www.w3.org/ns/dcat#>
+    SELECT DISTINCT ?central WHERE {
+        {
+            ?central a void:Dataset .
+        } UNION {
+            ?central a dcat:Dataset .
+        }
+        ?central ?p <http://bnb.data.bl.uk/sparql> .
+    }""" .
+
+dkg:endpointResourceExtraction rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject dkg:BNB-description ;
+    earl:test """SELECT DISTINCT ?endpoint WHERE {
+        ?endpoint sd:endpoint ?endpointUrl .
+    }""" .
+
+dkg:endpointResourceConnectedExtraction rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject dkg:BNB-description ;
+    earl:test """SELECT DISTINCT ?endpoint WHERE {
+        ?endpoint sd:endpoint <http://bnb.data.bl.uk/sparql> .
+    }""" .
+
+dkg:triplesCount rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject dkg:BNB-service ;
+    earl:test """SELECT (count(*) AS ?count) WHERE {
+            SELECT DISTINCT ?s ?p ?o WHERE {
+               ?s ?p ?o .
+            }
+        }""" .
+
+dkg:classCount rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """SELECT ?class (count(?instance) AS ?count) WHERE {
+            SELECT DISTINCT ?class ?instance
+            WHERE {
+                ?instance a ?class
+            }
+        }""" ;
+    dkg:featureProperty void:classes .

@@ -608,7 +608,7 @@ This query returns 32 named graphs, including 5 different spellings of the URI `
 | `virtrdf-label`                               |
 
 
-The feature `sd:RequiresDataset`, given line 18 of [retrieved_endpoint_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_dbpedia.ttl), indicates that the SPARQL service requires an explicit dataset declaration. Each of those named graphs should be detailed in the endpoint description.
+The feature `sd:RequiresDataset`, given line 18 of [retrieved_endpoint_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_endpoint_dbpedia.ttl), indicates that the SPARQL service requires an explicit dataset declaration. Each of those named graphs should be detailed in the endpoint description. Yet, in practice, we have access to each graph's data without indicating which one we are targeting in a SPARQL query. We can assume that this feature is wrong.
 
 #### Extraction of the void/dcat description
 We first check if their are at least one resource representing a DCAT or VoID description, using the query:
