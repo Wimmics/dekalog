@@ -1013,6 +1013,7 @@ OF the 4 results, 3 are subsets of the dataset `bnbdata:BNB`.
 The retrieved dataset descriptions are rather complete. The human-readable descriptions, provenance information and vocabularies are described for the main dataset and its subsets. The population counts are partly missing.
 
 #### Generation of metadata
+Now, we ceck the content of the retrieved metadata and we generate a basic endpoint description and we extend the dataset description.
 
 ##### Generation of endpoint description
 We extract the graphs of the dataset to generate a basic endpoint description. We notice that the names of the graphs are the same as the dataset description resources. We decide to not rename the description resources as we did for the precedent datasets, to keep this connection between graphs and descriptions.
@@ -1020,7 +1021,6 @@ We extract the graphs of the dataset to generate a basic endpoint description. W
 By studying the headers of the response to our HTTP request while sending SPARQL queries, we see that the endpoint is using a "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu" server.
 
 ##### Checks of the vocabularies
-
 We test the 11 vocabularies that are listed in the descrption without being used in it. The query to check the presence of properties or classes from each vocabulary returns an error. From this, we generate 11 error reports at the end of the file [retrieved_dataset_bnb.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_bnb.ttl).
 
 ##### Checks of the triple count and generation of population counts
