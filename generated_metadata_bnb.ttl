@@ -245,46 +245,43 @@ dkg:BNB-dataset a prov:Entity ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
     rdfs:comment "dkg:BNB-dataset is derived from bnbdata:BNB, whose properties have been checked and extended";
 
-dkg:BNB-description a prov:Entity ;
+dkg:BNB-description a prov:Entity, earl:TestSubject ;
+    dkg:original bnbdata:BNB ,
+        bnbdata:BNBSerials ,
+        bnbdata:BNBCIP ,
+        bnbdata:BNBBooks ;
+    dkg:curated dkg:BNB-service ,
+        dkg:BNB-dataset .
 
-dkg:datasetResourceExtraction rdf:type earl:Assertion ,
-        prov:Activity ;
-    earl:subject dkg:BNB-description ;
-    earl:test """PREFIX void: <http://rdfs.org/ns/void#>
-    PREFIX dcat: <http://www.w3.org/ns/dcat#>
-    SELECT DISTINCT ?central WHERE {
-        {
-            ?central a void:Dataset .
-        } UNION {
-            ?central a dcat:Dataset .
-        }
-    }""" ;
-    earl:result [
+# Passed tests reports
+dkg:reachableEndpoint earl:result [
         earl:outcome earl:passed ;
+        earl:info "The endpoint is reachable and answer to a basic SPARQL SELECT query"@en ;
+        prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime
+    ] .
+dkg:datasetResourceExtraction earl:result [
+        earl:outcome earl:passed ;
+        earl:info "There are potential dataset description resources"@en ;
         prov:generatedAtTime "2021-03-24T16:15:52"^^xsd:datetime
     ] .
-dkg:endpointResourceExtraction rdf:type earl:Assertion ,
-        prov:Activity ;
-    earl:subject dkg:BNB-description ;
-    earl:test """SELECT DISTINCT ?endpoint WHERE {
-        ?endpoint sd:endpoint ?endpointUrl.
-    }""" ;
-    earl:result [
+dkg:datasetResourceConnectedExtraction earl:result [
         earl:outcome earl:passed ;
+        earl:info "There are potential dataset description resources connected to the endpoint URL"@en ;
+        prov:generatedAtTime "2021-03-24T16:16:52"^^xsd:datetime
+    ] .
+dkg:endpointResourceExtraction earl:result [
+        earl:outcome earl:passed ;
+        earl:info "There are potential endpoint description resources"@en ;
         prov:generatedAtTime "2021-03-24T16:15:52"^^xsd:datetime
+    ] .
+dkg:endpointResourceConnectedExtraction earl:result [
+        earl:outcome earl:passed ;
+        earl:info "There are potential dataset description resources connected to the endpoint URL"@en ;
+        prov:generatedAtTime "2021-03-24T16:16:52"^^xsd:datetime
     ] .
 
 # Generated error reports
-dkg:triplesCount rdf:type earl:Assertion ,
-        prov:Activity ;
-    earl:subject dkg:BNB-service ;
-    earl:test """SELECT (count(*) AS ?count) WHERE {
-            SELECT DISTINCT ?s ?p ?o WHERE {
-               ?s ?p ?o
-            }
-        }""" ;
-    dkg:featureProperty void:triples ;
-    earl:result [
+dkg:triplesCount earl:result [
         earl:outcome earl:failed ;
         prov:generatedAtTime "2021-03-31T16:14:52"^^xsd:datetime ;
         earl:info "Dataset Request: HTTP Status: 500; error"@en
@@ -293,16 +290,7 @@ dkg:triplesCount rdf:type earl:Assertion ,
         earl:outcome earl:passed ;
         prov:generatedAtTime "2021-03-31T16:15:52"^^xsd:datetime
     ] .
-dkg:classCount rdf:type earl:Assertion ;
-    earl:subject dkg:BNB-service ;
-    earl:test """SELECT ?class (count(?instance) AS ?count) WHERE {
-            SELECT DISTINCT ?class ?instance
-            WHERE {
-                ?instance a ?class
-            }
-        }""" ;
-    dkg:featureProperty void:classes ;
-    earl:result [
+dkg:classCount earl:result [
         earl:outcome earl:failed ;
         prov:generatedAtTime "2021-03-30T14:23:52"^^xsd:datetime ;
         earl:info "Dataset Request: HTTP Status: 502; error"@en
