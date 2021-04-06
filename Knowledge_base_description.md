@@ -786,6 +786,28 @@ CONSTRUCT {
 }
 ```
 
+#### Extraction of vocabularies
+We extract the namespaces used in the dataset. Technically, the query presented in the previous sections extract the beginnings of the URIs of the classes and properties. The results need to be refined by removing results containing other shorter results.
+
+We obtain the following list of vocabularies
+
+| ns |
+|---|
+| http://www.w3.org/1999/02/22-rdf-syntax-ns# |
+| http://www.w3.org/2003/01/geo/wgs84_pos# |
+| http://www.w3.org/2000/01/rdf-schema# |
+| http://www.w3.org/2004/02/skos/core# |
+| http://www.w3.org/2002/07/owl# |
+| http://dbpedia.org/ontology/ |
+| http://dbpedia.org/class/ |
+| http://www.wikidata.org/entity/ |
+| http://umbel.org/umbel/rc/ |
+| http://xmlns.com/foaf/0.1/ |
+| http://vocab.org/frbr/core# |
+| http://schema.org/ |
+| http://purl.org/ontology/bibo/ |
+| http://www.ontologydesignpatterns.org/ont/d0.owl# |
+| http://www.ontologydesignpatterns.org/ont/dul/DUL.owl# |
 
 *WIP*
 
