@@ -1,38 +1,61 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix formats: <http:www.w3.org/ns/formats/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix dkg: <https://dekalog.univ-nantes.fr/> .
+@prefix ipo: <http://purl.org/ipo/core#> .
+
+# Necessitate a valid SPARQL answer from the endpoint, fail on a HTTP error
 dkg:reachableEndpoint rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-description ;
     earl:test """ SELECT * WHERE {
         ?s ?p ?o
     }
-    LIMIT 1
-    """ .
+    LIMIT 1""" .
 
+# There is at least one dataset description resource.
 dkg:datasetResourceExtraction rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-description ;
-    earl:test """PREFIX void: <http://rdfs.org/ns/void#>
-    PREFIX dcat: <http://www.w3.org/ns/dcat#>
-    SELECT DISTINCT ?central WHERE {
-        {
-            ?central a void:Dataset .
-        } UNION {
-            ?central a dcat:Dataset .
-        }
-    }""" .
+    earl:test dkg:datasetResourcePresenceShape .
+dkg:datasetResourcePresenceShape a sh:NodeShape ;
+    sh:or (
+        [
+            sh:class void:Dataset ;
+            sh:minCount 1 ;
+        ]
+        [
+            sh:class dcat:Dataset ;
+            sh:minCount 1 ;
+        ]
+    ) .
 
+    # There is at least one dataset description resource connected to the endpoint.
 dkg:datasetResourceConnectedExtraction rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-description ;
-    earl:test """PREFIX void: <http://rdfs.org/ns/void#>
-    PREFIX dcat: <http://www.w3.org/ns/dcat#>
-    SELECT DISTINCT ?central WHERE {
-        {
-            ?central a void:Dataset .
-        } UNION {
-            ?central a dcat:Dataset .
-        }
-        ?central ?p <http://bnb.data.bl.uk/sparql> .
-    }""" .
+    earl:test  dkg:datasetResourceConnectedPresenceShape .
+dkg:datasetResourceConnectedPresenceShape a sh:NodeShape ;
+    sh:or (
+        [
+            sh:class void:Dataset ;
+            sh:minCount 1 ;
+        ]
+        [
+            sh:class dcat:Dataset ;
+            sh:minCount 1 ;
+        ]
+    ) ;
+    sh:property [
+		sh:hasValue <http://bnb.data.bl.uk/sparql> ;
+        sh:minCount 1 ;
+	] .
 
 dkg:endpointResourceExtraction rdf:type earl:Assertion ,
         prov:Activity ;
@@ -47,6 +70,24 @@ dkg:endpointResourceConnectedExtraction rdf:type earl:Assertion ,
     earl:test """SELECT DISTINCT ?endpoint WHERE {
         ?endpoint sd:endpoint <http://bnb.data.bl.uk/sparql> .
     }""" .
+
+dkg:graphListExtraction rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject dkg:BNB-description ;
+    earl:test """SELECT DISTINCT ?graph WHERE {
+        GRAPH ?graph { ?s ?p ?o }
+    }
+    ORDER BY ?graph""" .
+
+dkg:vocabularyListExtraction rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject dkg:BNB-description ;
+    earl:test """SELECT DISTINCT ?ns WHERE {
+        { ?s ?elem ?o . }
+        UNION { ?s ?p ?elem . }
+        UNION {?elem ?p ?o }
+        BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
+    }"""
 
 dkg:triplesCount rdf:type earl:Assertion ,
         prov:Activity ;
