@@ -2,6 +2,12 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dce: <http://purl.org/dc/elements/1.1/> .
+@prefix schema: <http://schema.org/> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix formats: <http://www.w3.org/ns/formats/> .
 @prefix dbp: <http://dbpedia.org/> .
 @prefix virtrdf: <http://www.openlinksw.com/schemas/virtrdf#> .
@@ -59,11 +65,11 @@ dkg:DBpedia rdf:type void:Dataset,
 dbv:sameAsLinks void:inDataset dkg:DBpedia .
 dbv:seeAlsoLinks void:inDataset dkg:DBpedia .
 dbv:sameAsLinks rdf:type void:Linkset ;
-    void:inDataset dkg:DBpedia .
+    void:inDataset dkg:DBpedia ;
     void:linkPredicate owl:sameAs ;
     void:triples 49127465 .
 dbv:seeAlsoLinks rdf:type void:Linkset ;
-    void:inDataset dkg:DBpedia .
+    void:inDataset dkg:DBpedia ;
     void:linkPredicate rdfs:seeAlso ;
     void:triples 254347 .
 
@@ -143,7 +149,7 @@ dkg:DBpedia-service rdf:type sd:Service,
             <http://dbpedia.org/resource/classes#> ,
             <http://dbpedia.org/schema/property_rules#> ,
             dbv: ,
-            <http://localhost:8890/DAV/>
+            <http://localhost:8890/DAV/> ,
             local:sparql ,
             <http://pivot_test_data/campsites> ,
             <http://pivot_test_data/ski_resorts> ,
@@ -162,7 +168,7 @@ dkg:DBpedia-service rdf:type sd:Service,
             <urn:virtuoso:val:acl:schema> ,
             <virtpivot-icon-test> ,
             <virtpivot-rules> ,
-            <virtrdf-label> .
+            <virtrdf-label>
     ] ;
     dkg:server "Virtuoso/08.03.3319 (Linux) x86_64-centos_6-linux-glibc2.12  VDB"@en .
 

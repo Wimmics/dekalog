@@ -1,11 +1,14 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix void: <http://rdfs.org/ns/void#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
 @prefix formats: <http:www.w3.org/ns/formats/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix dkg: <https://dekalog.univ-nantes.fr/> .
 @prefix bnb: <http://bnb.data.bl.uk/> .
@@ -24,7 +27,7 @@ dkg:BNB-dataset rdf:type void:Dataset,
 # Labels and human-readable descriptions
     dcterms:title "The British National Bibliography as Linked Open Data"@en ;
     rdfs:label "The British National Bibliography as Linked Open Data"@en ;
-    dcterms:alternative "BNB"@en .
+    dcterms:alternative "BNB"@en ;
     dcterms:description "This dataset is a release of the BNB as linked open data.  It includes descriptions of published monographs (including monographs published over time), i.e. BNBBooks; serials publications, i.e. BNBSerials and forthcoming publications, i.e. BNBCIP. Further information about the dataset is available at: https://www.bl.uk/bibliographic/natbib.html." ;
     foaf:homepage <http://bnb.data.bl.uk> ;
 # Provenance information
@@ -63,7 +66,7 @@ dkg:BNB-dataset rdf:type void:Dataset,
         <http://xmlns.com/foaf/0.1/> ,
         void: ;
 # Other data
-    void:exampleResource bnblcsh:Structuralanalysis%28Engineering%29 ;
+    void:exampleResource bnblcsh:Structuralanalysis%28Engineering%29 ,
         bnbseries:Solidmechanicsanditsapplications ,
         bnbres:012938091 ,
         bnbres:013130126 ,
@@ -146,8 +149,7 @@ bnbdata:BNBCIP rdf:type void:Dataset ;
         <http://purl.org/vocab/bio/0.1/> ,
         <http://purl.org/ontology/bibo/> ,
         foaf: ;
-    void:exampleResource bnbres:018122767 ;
-        bnbres:018131495/projectedpublicationevent/LondonKyleBooks201702 ,
+    void:exampleResource bnbres:018122767 ,
         bnbres:016941046 ,
         bnbres:016941108 .
 
@@ -243,7 +245,7 @@ bnbdata:BNBBooks  a prov:Entity ;
 dkg:BNB-dataset a prov:Entity ;
     prov:wasRevisionOf bnbdata:BNB ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
-    rdfs:comment "dkg:BNB-dataset is derived from bnbdata:BNB, whose properties have been checked and extended";
+    rdfs:comment "dkg:BNB-dataset is derived from bnbdata:BNB, whose properties have been checked and extended" .
 
 dkg:BNB-description a prov:Entity, earl:TestSubject ;
     dkg:original bnbdata:BNB ,

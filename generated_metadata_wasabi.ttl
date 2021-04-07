@@ -8,7 +8,11 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix dce: <http://purl.org/dc/elements/1.1/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
 @prefix wasabins: <http://ns.inria.fr/wasabi/> .
+@prefix wasabigraph: <http://ns.inria.fr/wasabi/graph/> .
+@prefix wasabiontology: <http://ns.inria.fr/wasabi/ontology/> .
+@prefix wasabisong: <http://ns.inria.fr/wasabi/song/> .
 @prefix wasabi: <http://wasabi.inria.fr/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix dkg: <https://dekalog.univ-nantes.fr/> .
@@ -105,14 +109,14 @@ dkg:Wasabi-service rdf:type sd:Service,
     dcat:servesDataset dkg:Wasabi ;
     sd:availableGraphs [
         a sd:GraphCollection ;
-        sd:namedGraph wasabins:graph/albums ,
-            wasabins:graph/artists ,
-            wasabins:graph/metadata ,
-            wasabins:graph/songs ,
-            wasabins:ontology/ ,
-            wasabins:song/5714dec325ac0d8aee38392c ,
-            wasabins:song/5714dec325ac0d8aee38393b ,
-            wasabins:song/5714dec325ac0d8aee386ee8 .
+        sd:namedGraph wasabigraph:albums ,
+            wasabigraph:artists ,
+            wasabigraph:metadata ,
+            wasabigraph:songs ,
+            wasabiontology: ,
+            wasabisong:5714dec325ac0d8aee38392c ,
+            wasabisong:5714dec325ac0d8aee38393b ,
+            wasabisong:5714dec325ac0d8aee386ee8
     ] ;
     dkg:server "Virtuoso/07.20.3229 (Linux) x86_64-pc-linux-gnu"@en ;
 # Missing values
@@ -148,7 +152,7 @@ dkg:Wasabi void:classPartition [
         void:entities 2099287 ] ;
     void:classPartition [
         void:class wsb:Artist_Group ;
-        void:entities 29806 ]
+        void:entities 29806 ] ;
     void:classPartition [
         void:class wsb:Artist_Person ;
         void:entities 24264 ] ;
