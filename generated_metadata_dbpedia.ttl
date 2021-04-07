@@ -34,6 +34,8 @@ dkg:DBpedia rdf:type void:Dataset,
         owl: ,
         <http://dbpedia.org/ontology/> ,
         <http://dbpedia.org/class/> ,
+        <http://dbpedia.org/property/> ,
+        <http://dbpedia.org/resource/>,
         <http://www.wikidata.org/entity/> ,
         <http://umbel.org/umbel/rc/> ,
         <http://xmlns.com/foaf/0.1/> ,
@@ -41,7 +43,11 @@ dkg:DBpedia rdf:type void:Dataset,
         <http://schema.org/> ,
         <http://purl.org/ontology/bibo/> ,
         <http://www.ontologydesignpatterns.org/ont/d0.owl#> ,
-        <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> ;
+        <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> ,
+        <http://www.openlinksw.com/virtrdf-data-formats#> ,
+        <http://www.openlinksw.com/schemas/virtrdf#> ,
+        <http://linkedopencommerce.com/schemas/icecat/v1/> ,
+        <http://www.openlinksw.com/schemas/oplweb#>  ;
 # Missing values
     dct:creator dkg:missingValue ;
     dce:publisher dkg:missingValue ;

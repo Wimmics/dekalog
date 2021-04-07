@@ -448,7 +448,7 @@ dkg:classPopCount rdf:type earl:Assertion ;
             ?s ?prop ?o
         }
     }""" ;
-    dkg:featureProperty void:vocabulary ;
+dkg:featureProperty void:vocabulary ;
     earl:result [
         earl:outcome earl:failed ;
         prov:generatedAtTime "2021-03-30T20:28:52"^^xsd:datetime ;
