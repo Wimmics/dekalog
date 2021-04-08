@@ -281,6 +281,12 @@ dkg:endpointResourceConnectedExtraction earl:result [
         earl:info "There are potential dataset description resources connected to the endpoint URL"@en ;
         prov:generatedAtTime "2021-03-24T16:16:52"^^xsd:datetime
     ] .
+dkg:provenanceCheck earl:result [
+        earl:outcome [ 	a sh:ValidationReport ,
+                earl:Pass ;
+        	sh:conforms true ;
+        ]
+]
 
 # Generated error reports
 dkg:triplesCount earl:result [

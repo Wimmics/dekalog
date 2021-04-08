@@ -4,14 +4,14 @@
 
 - [Knowledge base description](#knowledge-base-description)
 	- [Vocabularies](#vocabularies)
-		- [VoID](#voidhttpswwww3orgtrvoid)
-		- [DCAT](#dcathttpswwww3orgtrvocab-dcat-3)
-		- [SPARQL-SD](#sparql-sdhttpwwww3orgtrsparql11-service-description)
+		- [[VoID](https://www.w3.org/TR/void/)](#voidhttpswwww3orgtrvoid)
+		- [[DCAT](https://www.w3.org/TR/vocab-dcat-3/)](#dcathttpswwww3orgtrvocab-dcat-3)
+		- [[SPARQL-SD](http://www.w3.org/TR/sparql11-service-description/)](#sparql-sdhttpwwww3orgtrsparql11-service-description)
 	- [Features](#features)
 		- [Terminology for this document](#terminology-for-this-document)
-		- [Knowledge base resources](#knowledge-base-resources)
-			- [VoID/DCAT](#voiddcat)
+		- [Knowledge base description resources](#knowledge-base-description-resources)
 			- [SPARQL-SD](#sparql-sd)
+			- [VoID/DCAT](#voiddcat)
 		- [Label and description](#label-and-description)
 		- [Provenance](#provenance)
 		- [SPARQL endpoint](#sparql-endpoint)
@@ -22,8 +22,9 @@
 		- [Links to other resources](#links-to-other-resources)
 		- [Others](#others)
 	- [Examples of descriptions](#examples-of-descriptions)
+		- [Description of the extraction method](#description-of-the-extraction-method)
 		- [Generation of error report](#generation-of-error-report)
-		- [DBPedia](#dbpediahttpdbpediaorgsparql)
+		- [[DBPedia](http://dbpedia.org/sparql)](#dbpediahttpdbpediaorgsparql)
 			- [Extraction of the SPARQL endpoint description](#extraction-of-the-sparql-endpoint-description)
 			- [Extraction of the void/dcat description](#extraction-of-the-voiddcat-description)
 			- [Generation of metadata](#generation-of-metadata)
@@ -31,7 +32,8 @@
 				- [Check of the linkset statistics](#check-of-the-linkset-statistics)
 				- [Addition of basic provenance metadata](#addition-of-basic-provenance-metadata)
 				- [Class population count](#class-population-count)
-		- [Wasabi](#wasabihttpwasabiinriafrsparql)
+			- [Extraction of vocabularies](#extraction-of-vocabularies)
+		- [[Wasabi](http://wasabi.inria.fr/sparql)](#wasabihttpwasabiinriafrsparql)
 			- [Generation of metadata](#generation-of-metadata)
 				- [Generation of basic SPARQL-SD description](#generation-of-basic-sparql-sd-description)
 				- [Check of the dataset description properties](#check-of-the-dataset-description-properties)
@@ -39,7 +41,7 @@
 				- [Generation of basic provenance metadata](#generation-of-basic-provenance-metadata)
 				- [Generation of class population counts](#generation-of-class-population-counts)
 				- [Extraction of linkset descriptions](#extraction-of-linkset-descriptions)
-		- [British National Library](#british-national-libraryhttpbnbdatabluksparql)
+		- [[British National Library](http://bnb.data.bl.uk/sparql)](#british-national-libraryhttpbnbdatabluksparql)
 			- [Generation of metadata](#generation-of-metadata)
 				- [Generation of endpoint description](#generation-of-endpoint-description)
 				- [Checks of the vocabularies](#checks-of-the-vocabularies)
@@ -97,10 +99,20 @@ In this document, we name as *knowledge base* (KB) a collection of triples publi
 We name the *description* of a resource as in-going and out-going triple containing the resource.
 
 
-### Knowledge base resources
+### Knowledge base description resources
 Each knowledge base description is centered around two resources. The first resource is the description of the SPARQL endpoint. The second resource represent a dataset. The description of the resources typed with classes from the VoID/DCAT vocabularies is called the knowledge base description. The description of the resources identified with the SPARQL-SD vocabulary is called the endpoint description.
 
 During the extraction of descriptions, we may not find either the endpoint description or the knowledge base description. If there is an endpoint description but no knowledge base description, by default that the knowledge base consists of all the triples and graphs accessible through the endpoint. If there is a knowledge base description but no endpoint description, the knowledge base is associated with the endpoint that allowed to query the knowledge base description. In both cases, the missing descriptions have to be generated.
+
+#### SPARQL-SD
+The resource at the center of the description of the endpoint is not identified by its class. The endpoint description resource should be linked as subject to its endpoint URL, as a URI, by the property `sd:endpoint`.
+The endpoint description resource should be retrievable by the query:
+```
+PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+SELECT DISTINCT ?endpoint WHERE {
+    ?endpoint sd:endpoint ?endpointUrl.
+}
+```
 
 #### VoID/DCAT
 In the VoID vocabulary, the class `void:Dataset` represents a knowledge base, as defined in the precedent section. In the DCAT vocabulary, the class `dcat:Dataset` represents any collection of data, not limited to RDF, published or curated by a single agent, and available for access or download in one or more representations.
@@ -124,18 +136,6 @@ SELECT DISTINCT ?central WHERE {
     }
 }
 ```
-
-#### SPARQL-SD
-Contrary to VoID and DCAT, the resource at the center of the description of the endpoint is not identified by its class.
-The endpoint description should be linked as subject to its endpoint URL, as a URI, by the property `sd:endpoint`.
-The endpoint description resource should be retrievable by the query:
-```
-PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-SELECT DISTINCT ?endpoint WHERE {
-    ?endpoint sd:endpoint ?endpointUrl.
-}
-```
-The descriptions present in the dataset should be present around the resources retrieved by the two previous queries.
 
 ### Label and description
 The description of a KB should the best practices for data publication and offer labels and descriptions.
@@ -308,6 +308,19 @@ In our example, the description of the ontology used would be as such:
         <http://www.w3.org/ns/earl#>
 ```
 
+
+If they are not given, we can extract the vocabularies used in the dataset. The vocabularies are generally identified by their namespaces. In the same namespace, the name of a resource appears after the final `/` of `#` of its URI. While this is not standard, most namespaces follow this convention. As such, we can extract the list of namespaces used in properties or classes using the following query:
+
+```
+SELECT DISTINCT ?ns
+WHERE {
+    { ?s ?elem ?o . }
+    UNION { ?x a ?elem . }
+    BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns )
+}
+```
+This query has the disadvantage to be quite complex and uses advanced features of SPARQL1.1 that are not implemented in all SPARQL endpoints.
+
 ### Population count
 Each graph should indicates its number of triples. If possible, simple population counts should also be given such as the number of classes, properties and instances.
 The number of triples must appear in the SPARQL-SD metadata, as part of the graph description, and in the VoID/DCAT metadata. Both cases use the property `void:triples`.
@@ -420,23 +433,11 @@ The object of the property `void:classPartition` must be the subject of the prop
 The descriptions should contain the namespaces of the dataset.
 We can use the dataset namespaces to identify the resources and graphs of the dataset. They can be defined by two properties `void:uriSpace` and `void:uriPattern`. `void:uriSpace` gives the start of all the dataset resources URIs. `void:uriPattern` gives a regular expression matching all the datasets resources URIs. The dataset namespace should be described using one of those two properties, if possible.
 
-If they are not given, we can extract the namespaces used in the dataset. Namespaces generally follow the same structure. The name of a resource appears after the final `/` of `#` of its URI. While this is not standard, most namespaces follow this convention. As such, we can extract the list of namespaces used in properties or classes using the following query:
-
-```
-SELECT DISTINCT ?ns
-WHERE {
-    { ?s ?elem ?o . }
-    UNION { ?x a ?elem . }
-    BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns )
-}
-```
-This query has the disadvantage to be quite complex and uses advanced features of SPARQL1.1 that are not implemented in all SPARQL endpoints.
-
 ### Links to other resources
 
-Equivalences and links between resources of other datasets are important for the usage of external sources. If the description does not give the namespace of the dataset or the vocabulary used, the identification of resources from another dataset is difficult. The links are generally described by the property `owl:sameAs`, describing an equivalence between two different resources. They are sometimes also defined by the property `rdfs:seeAlso` describing that further information is given in the description of the other resource.
+Equivalences and links between resources of other datasets are important for the usage of external sources. If the description does not give the namespace of the dataset or the vocabulary used, the identification of resources from another dataset is difficult. The links are generally described by the property `owl:sameAs`, describing an equivalence between two different resources. They are sometimes also defined by the property `rdfs:seeAlso`, describing that the description of another resource gives further information.
 
-In dataset description based on the VoID vocabulary, the notion of linksets is a set of triples linking resources of the dataset to resources from others, represented as an instance of `void:Linkset`. The linksets are considered as subsets of the dataset, they are linked to the dataset by the relation `void:subset`. The description of a linkset is improved by giving the URI of the other datasets concerned by the links with the `void:target`. It is also useful to give the number of triples in the dataset.
+In a dataset description based on the VoID vocabulary, the notion of linksets is a set of triples linking resources of the dataset to resources from others, represented as an instance of `void:Linkset`. The VoID vocabulary defines the linksets as subsets of the dataset, they are linked to the dataset by the relation `void:subset`. Giving the URI of the other datasets concerned by the links with the `void:target` improves the description of a linkset. It is also useful to give the number of triples in the dataset.
 
 In our example, a set of 24 links to resources in DBpedia would be described as in the following triples:
 ```
@@ -458,6 +459,17 @@ In this section, we try first to extract the descriptions of three KB, detailing
 In the generated data, we will use the `dkg:missingValue` resource to represent elements that should have to appear in the examples but could not be retrieved at the moment of reading. This resource should not be used outside this documentation.
 
 We also add provenance statements about our generated description. This provenance information concerns only the new description resources we have created. It also contains reports of the extraction and generation operation that could not do due to errors or limitations.
+
+### Description of the extraction method
+During the following examples, we send different SPARQL queries to build and check the description of datasets. Those queries can be separated into two categories:
+- Extraction queries, made to identify and extract the triples of the description from the dataset. Those queries are either SELECT of CONSTRUCT queries. We use the SELECT queries to identify the resources relevant to the description. We use the CONSTRUCT queries to create the triples of the description.
+- Check queries, made to verify the consistency of the description. Those queries compare the values of the description with values extracted from the content of the dataset.
+
+We describe each query in file associated to each example. 
+
+(Décrire les requêtes d'extraction / génération de données -> Rapport d'erreur HTTP)
+
+(Décrire les requêtes de fact checking)
 
 ### Generation of error report
 

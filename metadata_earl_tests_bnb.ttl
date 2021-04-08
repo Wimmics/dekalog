@@ -11,6 +11,8 @@
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix dkg: <https://dekalog.univ-nantes.fr/> .
 @prefix ipo: <http://purl.org/ipo/core#> .
+@prefix sh:	<http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 # Necessitate a valid SPARQL answer from the endpoint, fail on a HTTP error
 dkg:reachableEndpoint rdf:type earl:Assertion ,
@@ -25,60 +27,82 @@ dkg:reachableEndpoint rdf:type earl:Assertion ,
 dkg:datasetResourceExtraction rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-description ;
-    earl:test dkg:datasetResourcePresenceShape .
-dkg:datasetResourcePresenceShape a sh:NodeShape ;
-    sh:or (
-        [
-            sh:class void:Dataset ;
-            sh:minCount 1 ;
-        ]
-        [
-            sh:class dcat:Dataset ;
-            sh:minCount 1 ;
-        ]
-    ) .
+    dcterms:requires dkg:reachableEndpoint ;
+    earl:test """SELECT DISTINCT ?central WHERE {
+        {
+            ?central a void:Dataset .
+        } UNION {
+            ?central a dcat:Dataset .
+        }
+    }""" .
 
-    # There is at least one dataset description resource connected to the endpoint.
+# There is at least one dataset description resource connected to the endpoint.
 dkg:datasetResourceConnectedExtraction rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-description ;
-    earl:test  dkg:datasetResourceConnectedPresenceShape .
-dkg:datasetResourceConnectedPresenceShape a sh:NodeShape ;
-    sh:or (
-        [
-            sh:class void:Dataset ;
-            sh:minCount 1 ;
-        ]
-        [
-            sh:class dcat:Dataset ;
-            sh:minCount 1 ;
-        ]
-    ) ;
-    sh:property [
-		sh:hasValue <http://bnb.data.bl.uk/sparql> ;
-        sh:minCount 1 ;
-	] .
+    dcterms:requires dkg:datasetResourceExtraction ;
+    skos:broader dkg:datasetResourceExtraction ;
+    earl:test """SELECT DISTINCT ?central WHERE {
+        {
+            ?central a void:Dataset .
+        } UNION {
+            ?central a dcat:Dataset .
+        }
+        ?central ?p <http://bnb.data.bl.uk/sparql> .
+    }""" .
 
 dkg:endpointResourceExtraction rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-description ;
-    earl:test dkg:endpointResourceExtractionShape .
-dkg:endpointResourceExtractionShape a sh:PropertyShape. ;
-
-    """SELECT DISTINCT ?endpoint WHERE {
+    dcterms:requires dkg:reachableEndpoint ;
+    earl:test """SELECT DISTINCT ?endpoint WHERE {
         ?endpoint sd:endpoint ?endpointUrl .
     }""" .
 
 dkg:endpointResourceConnectedExtraction rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-description ;
+    dcterms:requires dkg:endpointResourceExtraction ;
+    skos:broader dkg:endpointResourceExtraction ;
     earl:test """SELECT DISTINCT ?endpoint WHERE {
         ?endpoint sd:endpoint <http://bnb.data.bl.uk/sparql> .
     }""" .
 
+# Provenance information
+dkg:provenanceCheck rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject dkg:BNB-description ;
+    dcterms:requires dkg:datasetResourceConnectedExtraction ;
+    earl:test dkg:provenanceExtractionShape .
+dkg:provenanceExtractionShape rdf:type sh:NodeShape ;
+    sh:targetClass void:Dataset ;
+    # Who ?
+    sh:or (
+		[ sh:targetSubjectsOf dcterms:creator ]
+		[ sh:targetSubjectsOf dcterms:contributor ]
+		[ sh:targetSubjectsOf dcterms:publisher ]
+		[ sh:targetSubjectsOf prov:wasAttributedTo ]
+    ) ;
+    # What ?
+    sh:or (
+		[ sh:targetSubjectsOf dcterms:licence ]
+		[ sh:targetSubjectsOf dcterms:conformsTo ]
+    ) ;
+    # How ?
+    sh:or (
+		[ sh:targetSubjectsOf dcterms:created ]
+		[ sh:targetSubjectsOf dcterms:modified ]
+		[ sh:targetSubjectsOf prov:wasGeneratedAtTime ]
+		[ sh:targetSubjectsOf dcterms:issued ]
+		[ sh:targetSubjectsOf dcterms:source ]
+		[ sh:targetSubjectsOf prov:wasDerivedFrom ]
+		[ sh:targetSubjectsOf dcterms:format ]
+    )  .
+
 dkg:graphListExtraction rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-description ;
+    dcterms:requires dkg:reachableEndpoint ;
     earl:test """SELECT DISTINCT ?graph WHERE {
         GRAPH ?graph { ?s ?p ?o }
     }
@@ -87,23 +111,25 @@ dkg:graphListExtraction rdf:type earl:Assertion ,
 dkg:vocabularyListExtraction rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-description ;
+    dcterms:requires dkg:reachableEndpoint ;
     earl:test """SELECT DISTINCT ?ns WHERE {
         { ?s ?elem ?o . }
         UNION { ?s ?p ?elem . }
         UNION {?elem ?p ?o }
         BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
-    }"""
+    }""" .
 
-dkg:triplesCount rdf:type earl:Assertion ,
+dkg:triplesCountCheck rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-service ;
+    dcterms:requires dkg:reachableEndpoint ;
     earl:test """SELECT (count(*) AS ?count) WHERE {
             SELECT DISTINCT ?s ?p ?o WHERE {
                ?s ?p ?o .
             }
         }""" .
 
-dkg:classCount rdf:type earl:Assertion ;
+dkg:classCountExtraction rdf:type earl:Assertion ;
     earl:subject dkg:BNB-service ;
     earl:test """SELECT ?class (count(?instance) AS ?count) WHERE {
             SELECT DISTINCT ?class ?instance
