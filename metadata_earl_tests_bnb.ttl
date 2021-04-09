@@ -21,7 +21,12 @@ dkg:reachableEndpoint rdf:type earl:Assertion ,
     earl:test """ SELECT * WHERE {
         ?s ?p ?o
     }
-    LIMIT 1""" .
+    LIMIT 1""" ;
+    earl:result [
+        earl:outcome earl:passed ;
+        earl:info "The endpoint is reachable and answer to a basic SPARQL SELECT query"@en ;
+        prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime
+    ] .
 
 # There is at least one dataset description resource.
 dkg:datasetResourceExtraction rdf:type earl:Assertion ,
@@ -34,7 +39,12 @@ dkg:datasetResourceExtraction rdf:type earl:Assertion ,
         } UNION {
             ?central a dcat:Dataset .
         }
-    }""" .
+    }""" ;
+    earl:result [
+        earl:outcome earl:passed ;
+        earl:info "There are potential dataset description resources"@en ;
+        prov:generatedAtTime "2021-03-24T16:15:52"^^xsd:datetime
+    ] .
 
 # There is at least one dataset description resource connected to the endpoint.
 dkg:datasetResourceConnectedExtraction rdf:type earl:Assertion ,
@@ -50,6 +60,11 @@ dkg:datasetResourceConnectedExtraction rdf:type earl:Assertion ,
         }
         ?central ?p <http://bnb.data.bl.uk/sparql> .
     }""" .
+    earl:result [
+        earl:outcome earl:passed ;
+        earl:info "There are potential dataset description resources connected to the endpoint URL"@en ;
+        prov:generatedAtTime "2021-03-24T16:16:52"^^xsd:datetime
+    ] .
 
 dkg:endpointResourceExtraction rdf:type earl:Assertion ,
         prov:Activity ;
@@ -57,7 +72,12 @@ dkg:endpointResourceExtraction rdf:type earl:Assertion ,
     dcterms:requires dkg:reachableEndpoint ;
     earl:test """SELECT DISTINCT ?endpoint WHERE {
         ?endpoint sd:endpoint ?endpointUrl .
-    }""" .
+    }""" ;
+    earl:result [
+        earl:outcome earl:passed ;
+        earl:info "There are potential endpoint description resources"@en ;
+        prov:generatedAtTime "2021-03-24T16:15:52"^^xsd:datetime
+    ] .
 
 dkg:endpointResourceConnectedExtraction rdf:type earl:Assertion ,
         prov:Activity ;
@@ -66,7 +86,12 @@ dkg:endpointResourceConnectedExtraction rdf:type earl:Assertion ,
     skos:broader dkg:endpointResourceExtraction ;
     earl:test """SELECT DISTINCT ?endpoint WHERE {
         ?endpoint sd:endpoint <http://bnb.data.bl.uk/sparql> .
-    }""" .
+    }""" ;
+    earl:result [
+        earl:outcome earl:passed ;
+        earl:info "There are potential dataset description resources connected to the endpoint URL"@en ;
+        prov:generatedAtTime "2021-03-24T16:16:52"^^xsd:datetime
+    ] .
 
 # Provenance information
 dkg:provenanceCheck rdf:type earl:Assertion ,
@@ -97,7 +122,13 @@ dkg:provenanceExtractionShape rdf:type sh:NodeShape ;
 		[ sh:targetSubjectsOf dcterms:source ]
 		[ sh:targetSubjectsOf prov:wasDerivedFrom ]
 		[ sh:targetSubjectsOf dcterms:format ]
-    )  .
+    ) ;
+    earl:result [
+        earl:outcome [ 	a sh:ValidationReport ,
+                earl:Pass ;
+            sh:conforms true
+        ]
+   ] .
 
 dkg:graphListExtraction rdf:type earl:Assertion ,
         prov:Activity ;
@@ -117,9 +148,14 @@ dkg:vocabularyListExtraction rdf:type earl:Assertion ,
         UNION { ?s ?p ?elem . }
         UNION {?elem ?p ?o }
         BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
-    }""" .
+    }"""
+    earl:result [
+        earl:outcome earl:passed ;
+        earl:info "The list of vocabularies could be extracted."@en ;
+        prov:generatedAtTime "2021-03-24T16:16:52"^^xsd:datetime
+    ] ..
 
-dkg:triplesCountCheck rdf:type earl:Assertion ,
+dkg:triplesCountExtraction rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-service ;
     dcterms:requires dkg:reachableEndpoint ;
@@ -127,7 +163,31 @@ dkg:triplesCountCheck rdf:type earl:Assertion ,
             SELECT DISTINCT ?s ?p ?o WHERE {
                ?s ?p ?o .
             }
-        }""" .
+        }"""
+    earl:result [
+        earl:outcome [
+            a earl:Fail ;
+            dkg:httpResponse [
+                a http:Response ;
+                http:statusCodeValue 500 ;
+                http:reasonPhrase "error" ;
+                http:headers [
+                    a http:ResponseHeader ;
+                    http:params [
+                        a http:HeaderElement ;
+                        http:paramName "server" ;
+                        http:paramValue "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu"
+                    ]
+                ]
+            ]
+        ] ;
+        prov:generatedAtTime "2021-03-31T16:14:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] ,
+    [
+        earl:outcome earl:passed ;
+        prov:generatedAtTime "2021-03-31T16:15:52"^^xsd:datetime
+    ] .
 
 dkg:classCountExtraction rdf:type earl:Assertion ;
     earl:subject dkg:BNB-service ;
@@ -137,4 +197,203 @@ dkg:classCountExtraction rdf:type earl:Assertion ;
                 ?instance a ?class
             }
         }""" ;
-    dkg:featureProperty void:classes .
+    dkg:featureProperty void:classes ;
+    earl:result [
+        earl:outcome [
+            a earl:Fail ;
+            dkg:httpResponse [
+                a http:Response ;
+                http:statusCodeValue 502 ;
+                http:reasonPhrase "error" ;
+                http:headers [
+                    a http:ResponseHeader ;
+                    http:params [
+                        a http:HeaderElement ;
+                        http:paramName "server" ;
+                        http:paramValue "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu"
+                    ]
+                ]
+            ]
+        ] ;
+        prov:generatedAtTime "2021-03-30T14:23:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 502; error"@en
+    ] .
+
+dkg:classPopCount rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """SELECT ?class (count(?instance) AS ?count) WHERE {
+        SELECT DISTINCT ?class ?instance
+        WHERE {
+            ?instance a ?class .
+            ?s ?prop ?o
+        }
+    }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome [
+            a earl:Fail ;
+            dkg:httpResponse [
+                a http:Response ;
+                http:statusCodeValue 500 ;
+                http:reasonPhrase "error" ;
+                http:headers [
+                    a http:ResponseHeader ;
+                    http:params [
+                        a http:HeaderElement ;
+                        http:paramName "server" ;
+                        http:paramValue "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu"
+                    ]
+                ]
+            ]
+        ] ;
+        prov:generatedAtTime "2021-03-30T20:28:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+
+
+# =======================================
+# Generated error reports
+dkg:vocabOrgTest rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://www.w3.org/ns/02/org#") )
+        }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:08:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabGeoposTest rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://www.w3.org/2003/01/geo/wgs84_pos#") )
+        }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:10:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabSkosTest rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://www.w3.org/2004/02/skos/core#") )
+        }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:13:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabBltermsTest rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://www.bl.uk/schemas/bibliographic/blterms#") )
+        }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:15:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabSchemaTest rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://schema.org/") )
+        }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:17:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabRdaregTest rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://rdaregistry.info/Elements/u/") )
+        }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:19:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabIsbdTest rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://iflastandards.info/ns/isbd/elements/") )
+        }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:20:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabEventTest rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://purl.org/NET/c4dm/event.owl#") )
+        }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:22:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabBioTest rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://purl.org/vocab/bio/0.1/") )
+        }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:22:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabBioTest rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://purl.org/vocab/bio/0.1/") )
+        }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:24:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabBiboTest rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://purl.org/ontology/bibo/") )
+        }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:26:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 500; error"@en
+    ] .
+dkg:vocabFoafTest rdf:type earl:Assertion ;
+    earl:subject dkg:BNB-service ;
+    earl:test """ASK {
+            { ?s ?elem ?o  } UNION { ?s a ?elem }
+            FILTER( REGEX(?elem, "http://xmlns.com/foaf/0.1/") )
+        }""" ;
+    dkg:featureProperty void:vocabulary ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-30T20:28:52"^^xsd:datetime ;
+        earl:info "Dataset Request: HTTP Status: 504; error"@en
+    ] .

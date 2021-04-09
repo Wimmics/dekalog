@@ -85,11 +85,12 @@ To cover as many features of a KB as possible, a KB description should describe 
 | dcterms: | http://purl.org/dc/terms/                        |
 | dcelem   | http://purl.org/dc/elements/1.1/                 |
 | foaf:    | http://xmlns.com/foaf/0.1/                       |
-| skos:    | http://www.w3.org/2004/02/skos/core#          |
+| skos:    | http://www.w3.org/2004/02/skos/core#             |
 | prov:    | http://www.w3.org/ns/prov#                       |
 | formats: | http://www.w3.org/ns/formats/                    |
 | schema:  | http://schema.org/                               |
 | earl:    | http://www.w3.org/ns/earl#                       |
+| http:    | http://www.w3.org/2011/http#                     |
 
 All the following examples are redacted in [turtle](https://www.w3.org/TR/turtle/) format.
 
@@ -460,16 +461,15 @@ In the generated data, we will use the `dkg:missingValue` resource to represent 
 
 We also add provenance statements about our generated description. This provenance information concerns only the new description resources we have created. It also contains reports of the extraction and generation operation that could not do due to errors or limitations.
 
-### Description of the extraction method
+### Trace of the extraction
 During the following examples, we send different SPARQL queries to build and check the description of datasets. Those queries can be separated into two categories:
-- Extraction queries, made to identify and extract the triples of the description from the dataset. Those queries are either SELECT of CONSTRUCT queries. We use the SELECT queries to identify the resources relevant to the description. We use the CONSTRUCT queries to create the triples of the description.
+- Extraction queries, made to identify and extract the triples of the description from the dataset. Those queries are SELECT queries used to identify the resources relevant to the description.
 - Check queries, made to verify the consistency of the description. Those queries compare the values of the description with values extracted from the content of the dataset.
+We can say that extraction queries can have no results, in which case we will generate a minimal description, while check queries must have the expected results.
 
-We describe each query in file associated to each example. 
+We describe each of the different queries in a file associated with each example. The actual construction of the triples of the generated description can be made with a variety of approaches, e.g. with CONSTRUCT, SELECT, or DESCRIBE when it is implemented. For this reason, we do not describe this part of the extraction, we focus on the preliminary queries searching for the description resources. This allows us to also describe the behavior of the endpoint when confronted with different keywords in our queries.
 
-(Décrire les requêtes d'extraction / génération de données -> Rapport d'erreur HTTP)
-
-(Décrire les requêtes de fact checking)
+The queries described as pure EARL assertion are extraction queries. They fail when the SPARQL endpoint returns an error during their evaluation. The queries described with a test formalized in a SHACL constraint are check queries. Their results depend on the validation of the constraint by the data.
 
 ### Generation of error report
 
@@ -479,10 +479,10 @@ We add some properties to the EARL vocabulary to link the reports to description
 
 For our need, each endpoint is an instance of `earl:TestSubject`, and each report is an instance of `earl:Assertion`. For each `earl:Assertion` we give:
 -  The description property that the results of the query should have filled, with `dkg:featureProperty`.
--  The SPARQL query sent to the endpoint for the extraction of the element of description, object of the property `earl:test`.
+-  The object of the property `earl:test` is either the SPARQL query sent to the endpoint for the extraction of the element of description, or a SHACL shape.
 -  The results of the test are given by the property `earl:result` with an instance of `earl:TestResult`, generally a blank node, with the following properties:
-    -  `earl:outcome` gives the result of the test. The results can be instances of the `earl:OutcomeValue` with the following instance defined by the EARL vocabulary: `earl:passed`, `earl:failed`, `earl:cantTell`, `earl:inapplicable` and `earl:untested`.
-    -  `earl:info` gives comments on the comment if possible.
+    -  `earl:outcome` gives the result of the test. The results can be instances of the `earl:OutcomeValue` with the following instance defined by the EARL vocabulary: `earl:passed`, `earl:failed`, `earl:cantTell`, `earl:inapplicable` and `earl:untested` or with any instance of the `earl:Pass`, `earl:Fail`, `earl:NotTested`, `earl:NotApplicable` or `earl:CannotTell` classes. In the case of a failure because of a HTTP error sent by the SPARQL endpoint, it is advised to create an instance of `earl:Fail` linked to a partial description of the HTTP response with the property `dkg:httpResponse`.
+    -  `earl:info` gives comments on the outcome if possible.
     - The time of the test with `prov:generatedAtTime`
 
 As an example, if the extraction of the list of namespaces resulted in a timeout, the report would appear as such:
@@ -490,7 +490,7 @@ As an example, if the extraction of the list of namespaces resulted in a timeout
 :exampleSparqlService a earl:TestSubject .
 :namespaceExtraction a earl:Assertion ;
     earl:subject :exampleSparqlService ;
-    dkg:featureProperty void:uriSpace ;
+    dkg:featureProperty void:vocabulary ;
     earl:test """SELECT DISTINCT ?ns
         WHERE {
             { ?s ?elem ?o . }
@@ -499,19 +499,31 @@ As an example, if the extraction of the list of namespaces resulted in a timeout
         }""" ;
     earl:result [
         a earl:TestResult ;
-        earl:outcome earl:failed ;
+        earl:outcome [
+            a earl:Fail
+            dkg:httpResponse [
+                a http:Response ;
+                http:statusCodeValue 504 ;
+                http:reasonPhrase "server returned timeout error" ;
+                http:headers [
+                    a http:ResponseHeader ;
+                    http:params [
+                        a http:HeaderElement ;
+                        http:paramName "server" ;
+                        http:paramValue "Virtuoso"
+                    ]
+                ]
+            ]
+        ] ;
         earl:info "Error 504 - server returned timeout error"
     ] .
 ```
-
-To be able to associate the errors with types of SPARQL server, we add the value of the field "server" in the response header of the HTTP requests sent during querying. We link this value to the endpoint description with the property `dkg:server`.
 
 ---
 **EDIT:**
 This document will be edited to reflect what we learned here:
 
 1. The notion of ONE knowledge base resource does not hold in practice.
-3. Better to start with the retrieval of the endpoint description.
 4. Look for connexions between descriptions and known endpoint or graph URIs, using `rdfs:seeAlso` for example.
 5. If the feature `sd:requiresDataset` is defined on the endpoint, datasets should be defined too.
 6. To identify description resources, look for resources linked to the endpoint URL.
