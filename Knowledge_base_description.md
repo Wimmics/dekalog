@@ -495,7 +495,7 @@ As an example, if the extraction of the list of namespaces resulted in a timeout
         WHERE {
             { ?s ?elem ?o . }
             UNION { ?x a ?elem . }
-            BIND( REPLACE( str(?p), "(#|/)[^#/]*$", "$1" ) AS ?ns )
+            BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns )
         }""" ;
     earl:result [
         a earl:TestResult ;
