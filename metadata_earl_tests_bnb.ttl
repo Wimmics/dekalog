@@ -13,6 +13,7 @@
 @prefix ipo: <http://purl.org/ipo/core#> .
 @prefix sh:	<http://www.w3.org/ns/shacl#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix http: <http://www.w3.org/2011/http> .
 
 # Necessitate a valid SPARQL answer from the endpoint, fail on a HTTP error
 dkg:reachableEndpoint rdf:type earl:Assertion ,
@@ -59,7 +60,7 @@ dkg:datasetResourceConnectedExtraction rdf:type earl:Assertion ,
             ?central a dcat:Dataset .
         }
         ?central ?p <http://bnb.data.bl.uk/sparql> .
-    }""" .
+    }""" ;
     earl:result [
         earl:outcome earl:passed ;
         earl:info "There are potential dataset description resources connected to the endpoint URL"@en ;
@@ -98,7 +99,8 @@ dkg:provenanceCheck rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-description ;
     dcterms:requires dkg:datasetResourceConnectedExtraction ;
-    earl:test dkg:provenanceExtractionShape .
+    earl:test dkg:provenanceExtractionShape ;
+    rdfs:comment "Are provenance related triples present around the description resources ?" .
 dkg:provenanceExtractionShape rdf:type sh:NodeShape ;
     sh:targetClass void:Dataset ;
     # Who ?
@@ -137,7 +139,12 @@ dkg:graphListExtraction rdf:type earl:Assertion ,
     earl:test """SELECT DISTINCT ?graph WHERE {
         GRAPH ?graph { ?s ?p ?o }
     }
-    ORDER BY ?graph""" .
+    ORDER BY ?graph""" ;
+    earl:result [
+        earl:outcome earl:passed ;
+        earl:info "The list of graphs could be extracted."@en ;
+        prov:generatedAtTime "2021-03-24T16:16:52"^^xsd:datetime
+    ] .
 
 dkg:vocabularyListExtraction rdf:type earl:Assertion ,
         prov:Activity ;
@@ -148,12 +155,12 @@ dkg:vocabularyListExtraction rdf:type earl:Assertion ,
         UNION { ?s ?p ?elem . }
         UNION {?elem ?p ?o }
         BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
-    }"""
+    }""" ;
     earl:result [
         earl:outcome earl:passed ;
         earl:info "The list of vocabularies could be extracted."@en ;
         prov:generatedAtTime "2021-03-24T16:16:52"^^xsd:datetime
-    ] ..
+    ] .
 
 dkg:triplesCountExtraction rdf:type earl:Assertion ,
         prov:Activity ;
@@ -163,7 +170,7 @@ dkg:triplesCountExtraction rdf:type earl:Assertion ,
             SELECT DISTINCT ?s ?p ?o WHERE {
                ?s ?p ?o .
             }
-        }"""
+        }""" ;
     earl:result [
         earl:outcome [
             a earl:Fail ;
@@ -249,6 +256,7 @@ dkg:classPopCount rdf:type earl:Assertion ;
         prov:generatedAtTime "2021-03-30T20:28:52"^^xsd:datetime ;
         earl:info "Dataset Request: HTTP Status: 500; error"@en
     ] .
+
 
 
 # =======================================
