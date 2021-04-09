@@ -223,30 +223,25 @@ dkg:BNB-service  a prov:Entity ;
     prov:actedOnBehalfOf <http://www.inria.fr> .
 bnbdata:BNB  a prov:Entity ;
     prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
-    prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
-    prov:actedOnBehalfOf <http://www.inria.fr> .
 bnbdata:BNBSerials  a prov:Entity ;
     prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
-    prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
-    prov:actedOnBehalfOf <http://www.inria.fr> .
 bnbdata:BNBCIP  a prov:Entity ;
     prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
-    prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
-    prov:actedOnBehalfOf <http://www.inria.fr> .
 bnbdata:BNBBooks  a prov:Entity ;
     prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
-    prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
-    prov:actedOnBehalfOf <http://www.inria.fr> .
 dkg:BNB-dataset a prov:Entity ;
     prov:wasRevisionOf bnbdata:BNB ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
     rdfs:comment "dkg:BNB-dataset is derived from bnbdata:BNB, whose properties have been checked and extended" .
 
 dkg:BNB-description a prov:Entity, earl:TestSubject ;
+    prov:wasAttributedTo "Pierre Maillot"@en ;
+    prov:generatedAtTime "2021-03-29"^^xsd:date ;
+    prov:actedOnBehalfOf <http://www.inria.fr> .
     dkg:original bnbdata:BNB ,
         bnbdata:BNBSerials ,
         bnbdata:BNBCIP ,
