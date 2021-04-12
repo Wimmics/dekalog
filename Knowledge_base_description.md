@@ -485,6 +485,38 @@ For our need, each endpoint is an instance of `earl:TestSubject`, and each repor
     -  `earl:info` gives comments on the outcome if possible.
     - The time of the test with `prov:generatedAtTime`
 
+As examples, we detail several different types of queries sent during our extraction and refinment process.
+
+The first query to be sent to a server is the simple query:
+```
+SELECT * WHERE {
+    ?s ?p ?o
+}
+LIMIT 1
+```
+We use it to verify the reachability of the SPARQL endpoint. We are not interested in the results of this query, we are only interested in the fact that the SPARQL endpoint accept it and returns an answer to it.  
+```
+:reachableEndpoint rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject :exampleSparqlService ;
+    earl:test :reachabilityTest ;
+    earl:result [
+        earl:outcome earl:passed ;
+        earl:info "The endpoint is reachable and answer to a basic SPARQL SELECT query"@en
+    ] ;
+    prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime .
+:reachabilityTest PROP """SELECT * WHERE {
+    ?s ?p ?o
+}
+LIMIT 1""" ;
+```
+
+(Récupération de ressources)
+
+(Récupération de triples)
+
+(Compte)
+
 As an example, if the extraction of the list of namespaces resulted in a timeout, the report would appear as such:
 ```
 :exampleSparqlService a earl:TestSubject .
@@ -500,7 +532,7 @@ As an example, if the extraction of the list of namespaces resulted in a timeout
     earl:result [
         a earl:TestResult ;
         earl:outcome [
-            a earl:Fail
+            a earl:Fail ;
             dkg:httpResponse [
                 a http:Response ;
                 http:statusCodeValue 504 ;
