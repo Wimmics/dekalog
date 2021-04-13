@@ -91,6 +91,7 @@ To cover as many features of a KB as possible, a KB description should describe 
 | schema:  | http://schema.org/                               |
 | earl:    | http://www.w3.org/ns/earl#                       |
 | http:    | http://www.w3.org/2011/http#                     |
+| sp:      | http://spinrdf.org/sp#                           |
 
 All the following examples are redacted in [turtle](https://www.w3.org/TR/turtle/) format.
 
@@ -335,7 +336,6 @@ SELECT count(*) WHERE {
 In our example, the default graph contains 987 triples and the graph `:ng1`, also described by `:exampleDataset`, contains 1234 triples. The count of triples should be used as such:
 ```
 :exampleSparqlService
-    dcat:servesDataset :exampleDataset ;
     sd:defaultDataset [
         a sd:Dataset ;
         sd:defaultGraph [
@@ -496,26 +496,76 @@ LIMIT 1
 ```
 We use it to verify the reachability of the SPARQL endpoint. We are not interested in the results of this query, we are only interested in the fact that the SPARQL endpoint accept it and returns an answer to it.  
 ```
-:reachableEndpoint rdf:type earl:Assertion ,
+:reachExampleEndpoint rdf:type earl:Assertion ,
         prov:Activity ;
-    earl:subject :exampleSparqlService ;
+    dcterms:title "Reachability test for the example endpoint" ;
+    earl:subject <http://www.example.com/sparql> ;
     earl:test :reachabilityTest ;
+    dkg:adaptedQuery """SELECT * WHERE {
+        ?s ?p ?o
+    }
+    LIMIT 1""" ;
     earl:result [
         earl:outcome earl:passed ;
+        prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime ;
         earl:info "The endpoint is reachable and answer to a basic SPARQL SELECT query"@en
-    ] ;
-    prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime .
-:reachabilityTest PROP """SELECT * WHERE {
-    ?s ?p ?o
-}
-LIMIT 1""" ;
+    ] .
+
+:reachabilityTest a dkg:CheckQuery ;
+    dcterms:title "Reachability test" ;
+    dcterms:description "Reachability is tested with a simple query" ;
+    dkg:query [
+        a sp:Select ;
+        sp:resultVariable () ;
+        sp:where ([
+                sp:subject [ sp:varName "s"^^xsd:string ] ;
+                sp:predicate [ sp:varName "p"^^xsd:string ] ;
+                sp:object [ sp:varName "o"^^xsd:string ]
+            ]) ;
+        sp:limit 1
+    ]
 ```
 
 (Récupération de ressources)
+```
+:connectedEndpointDescResourceExample rdf:type earl:Assertion ,
+        prov:Activity ;
+    dcterms:title "Extraction of the endpoint description resource the example endpoint, if there are any." ;
+    earl:subject <http://www.example.com/sparql> ;
+    earl:test :connectedEndpointDescResourceExtract ;
+    dkg:adaptedQuery """SELECT ?res WHERE {
+        ?res sd:endpoint <http://www.example.com/sparql> .
+    }""" ;
+    earl:result [
+        earl:outcome earl:passed ;
+        prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime ;
+        earl:info "The server returned and answer for this query"@en
+    ] .
 
-(Récupération de triples)
+:endpointDescResourceExtract a dkg:ExtractQuery ;
+    dcterms:title "Extraction of endpoint description resources" ;
+    dcterms:description "Extraction of the endpoint description resource the example endpoint, if there are any. The resources are the subject of the property sd:endpoint." ;
+    dkg:query [
+        a sp:Select ;
+        sp:resultVariable ([ sp:varName "res"^^xsd:string ]) ;
+        sp:where ([
+                sp:subject [ sp:varName "res"^^xsd:string ] ;
+                sp:predicate sd:endpoint ;
+                sp:object dkg:_subject # Pre-defined placeholder for the subject of a report, i.e. object of the earl;subject property.
+            ])
+    ] .
+```
+TODO:
+- Relations de dépendances
+- Acceptation de la requête et nombre de résultats, Différence acceptation de la requête / Contrainte de résultats -> Contrainte de résultat
+- Transformation des templates selon la cible
 
-(Compte)
+<!--- On ne peut pas utiliser des infos qu'on a pas --->
+(Construction de Graphe)
+
+(Contrainte sur le compte de triplets)
+
+(Requête avec graphes spécifiques)
 
 As an example, if the extraction of the list of namespaces resulted in a timeout, the report would appear as such:
 ```
