@@ -473,17 +473,21 @@ The queries described as pure EARL assertion are extraction queries. They fail w
 
 ### Generation of error report
 
+**WIP**
+
 SPARQL endpoints have limitations on the time allocated to the resolution of queries and on the keyword supported by the SPARQL engine. Those limitations make some operations of metadata extraction impossible. We keep a trace of the errors obtained during the process of extraction using the [EARL](https://www.w3.org/TR/EARL10-Schema/) vocabulary. The EARL vocabulary allows the description of assertions and the results of their tests. For our needs, a query sent for metadata retrieval is an assertion that passes its test if it receives results from a SPARQL endpoint. This set of reports can be used to identify the limitations of the server that can not be described in RDF.
 
-We add some properties to the EARL vocabulary to link the reports to descriptions features. We use the property `dkg:featureProperty` to state which property the results should have been the object of.
+<!-- We add some properties to the EARL vocabulary to link the reports to descriptions features. We use the property `dkg:featureProperty` to state which property the results should have been the object of. -->
 
 For our need, each endpoint is an instance of `earl:TestSubject`, and each report is an instance of `earl:Assertion`. For each `earl:Assertion` we give:
--  The description property that the results of the query should have filled, with `dkg:featureProperty`.
--  The object of the property `earl:test` is either the SPARQL query sent to the endpoint for the extraction of the element of description, or a SHACL shape.
+<!-- -  The description property that the results of the query should have filled, with `dkg:featureProperty`. -->
+-  The object of the property `earl:test` is either a SHACL shape or a test of a query, instance of the class `dkg:TestQuery` that we define.
 -  The results of the test are given by the property `earl:result` with an instance of `earl:TestResult`, generally a blank node, with the following properties:
     -  `earl:outcome` gives the result of the test. The results can be instances of the `earl:OutcomeValue` with the following instance defined by the EARL vocabulary: `earl:passed`, `earl:failed`, `earl:cantTell`, `earl:inapplicable` and `earl:untested` or with any instance of the `earl:Pass`, `earl:Fail`, `earl:NotTested`, `earl:NotApplicable` or `earl:CannotTell` classes. In the case of a failure because of a HTTP error sent by the SPARQL endpoint, it is advised to create an instance of `earl:Fail` linked to a partial description of the HTTP response with the property `dkg:httpResponse`.
     -  `earl:info` gives comments on the outcome if possible.
     - The time of the test with `prov:generatedAtTime`
+
+There are dependancies between test, for example every test must be done after the reachability have been tested, or the search for description resources connected to the endpoint is a refinement of the search for any description resource in the dataset. To define the dependancies between tests, we use the relation `dcterms:requires`.
 
 As examples, we detail several different types of queries sent during our extraction and refinment process.
 
@@ -494,94 +498,56 @@ SELECT * WHERE {
 }
 LIMIT 1
 ```
-We use it to verify the reachability of the SPARQL endpoint. We are not interested in the results of this query, we are only interested in the fact that the SPARQL endpoint accept it and returns an answer to it.  
+We use it to verify the reachability of the SPARQL endpoint. We are not interested in the results of this query, we are only interested in the fact that the SPARQL endpoint accepts it and returns an answer to it.
+
+We first define a test to check the HTTP status of the response to or query. In this test we give an RDF representation of the query and a constraint on its HTTP response from the server:
 ```
-:reachabilityTest a earl:TestCase ;
+:reachabilityTest a earl:TestCase ,
+        dkg:TestQuery ; # Class of tests similar to a lower-level SHACL shape where we precise the query and the expected HTTP response.
     dcterms:title "Reachability test" ;
     dcterms:description "Reachability is tested with a simple query" ;
     dkg:query [
         a sp:Select ;
         sp:resultVariable () ;
-        sp:where ([
-                sp:subject [ sp:varName "s"^^xsd:string ] ;
-                sp:predicate [ sp:varName "p"^^xsd:string ] ;
-                sp:object [ sp:varName "o"^^xsd:string ]
-            ]) ;
+        sp:where (
+                [
+                    sp:subject [ sp:varName "s"^^xsd:string ] ;
+                    sp:predicate [ sp:varName "p"^^xsd:string ] ;
+                    sp:object [ sp:varName "o"^^xsd:string ]
+                ]
+            ) ;
         sp:limit 1
-    ] .
+    ] ;
+    dkg:httpResponse dkg:statusOK .
+    # dkg:statusOk represents a HTTP response described with  [ a http:Response ; http:statusCodeValue 200 ] .
+```
+This test is validated if the server accepts the SPARQL query and returned an answer without error.
 
+The result of the test is represented as an EARL assertion linked to the test.
+```
 :reachExampleEndpoint rdf:type earl:Assertion ,
         prov:Activity ;
     dcterms:title "Reachability test for the example endpoint" ;
     earl:subject <http://www.example.com/sparql> ;
     earl:test :reachabilityTest ;
-    dkg:adaptedQuery """SELECT * WHERE { ?s ?p ?o } LIMIT 1""" ;
+    dkg:sentQuery "SELECT * WHERE { ?s ?p ?o } LIMIT 1" ;
     earl:result [
         earl:outcome earl:passed ;
         prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime ;
         earl:info "The endpoint is reachable and answer to a basic SPARQL SELECT query"@en
     ] .
 ```
+This report shows that we could send a basic SPARQL query to the server at some point.
+The reachability test has to be done at least once at the start of the extraction of descriptions from any SPARQL endpoint. Its definition can be used as it is in all their descriptions.
 
-(Récupération de ressources)
+If the test fails, the result should contain a description of the response that failed our test. We indicate the values that differed from our test and the reason phrase given. For traceability, we find useful to add the header values describing the type of server of the endpoint.
 ```
-:endpointDescResourceExtract a dkg:ExtractQuery ;
-dcterms:title "Extraction of endpoint description resources" ;
-dcterms:description "Extraction of the endpoint description resource the example endpoint, if there are any. The resources are the subject of the property sd:endpoint." ;
-dkg:query :endpointDescResourceExtractQuery .
-:endpointDescResourceExtractQuery a sp:Select ;
-sp:resultVariable ([ sp:varName "res"^^xsd:string ]) ;
-sp:where ([
-        sp:subject [ sp:varName "res"^^xsd:string ] ;
-        sp:predicate sd:endpoint ;
-        sp:object dkg:_subject # Pre-defined placeholder for the subject of a report, i.e. object of the earl:subject property.
-    ]) .
-
-
-:connectedEndpointDescResourceExample rdf:type earl:Assertion ,
+:reachExampleEndpoint rdf:type earl:Assertion ,
         prov:Activity ;
-    dcterms:title "Extraction of the endpoint description resource the example endpoint, if there are any." ;
+    dcterms:title "Reachability test for the example endpoint" ;
     earl:subject <http://www.example.com/sparql> ;
-    earl:test :connectedEndpointDescResourceExtract ;
-    dkg:transformation ( [
-        a dkg:QueryTransformation ;
-        dkg:targetType rdf:Resource ;
-        dkg:remove ( dkg:_subject ) ;
-        dkg:add ( <http://www.example.com/sparql> )
-    ] ) ;
-    dkg:transformedQuery """SELECT ?res WHERE {
-        ?res sd:endpoint <http://www.example.com/sparql> .
-    }""" ;
-    earl:result [
-        earl:outcome earl:passed ;
-        prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime ;
-        earl:info "The server returned and answer for this query"@en
-    ] .
-```
-TODO:
-- Relations de dépendances
-- Acceptation de la requête et nombre de résultats, Différence acceptation de la requête / Contrainte de résultats -> 2 types de rapports ?
-- Transformation des templates selon la cible -> nommer les parties de la requete, ajouter des transformations [ a SUBSTITUTION, target noeudDeRequete, result nouveauNoeudDeRequete ]
-
-<!--- On ne peut pas utiliser des infos qu'on a pas --->
-(Construction de Graphe)
-
-(Contrainte sur le compte de triplets)
-
-(Requête avec graphes spécifiques)
-
-As an example, if the extraction of the list of namespaces resulted in a timeout, the report would appear as such:
-```
-:exampleSparqlService a earl:TestSubject .
-:namespaceExtraction a earl:Assertion ;
-    earl:subject :exampleSparqlService ;
-    dkg:featureProperty void:vocabulary ;
-    earl:test """SELECT DISTINCT ?ns
-        WHERE {
-            { ?s ?elem ?o . }
-            UNION { ?x a ?elem . }
-            BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns )
-        }""" ;
+    earl:test :reachabilityTest ;
+    dkg:sentQuery "SELECT * WHERE { ?s ?p ?o } LIMIT 1" ;
     earl:result [
         a earl:TestResult ;
         earl:outcome [
@@ -603,6 +569,130 @@ As an example, if the extraction of the list of namespaces resulted in a timeout
         earl:info "Error 504 - server returned timeout error"
     ] .
 ```
+
+Other tests have to be done for every SPARQL endpoint but need adaptations. Those adaptations can be done using pre-defined variables. As an example, the query used to look for endpoint descriptions connected to the SPARQL endpoint needs to be connected to a different URI for each endpoint. As there is no endpoint description at this point of the extraction, we are looking for it, the subject of the test is the endpoint URI. We define the pre-bound variable `$subject` as the value of the `earl:subject` property of an assertion. We define a test looking for the resources subject of the property sd:endpoint connected to the endpoint URI :
+```
+:connectedEndpointDescResourceExtract a dkg:TestQuery ;
+    dcterms:title "Extraction of endpoint description resources" ;
+    dcterms:description "Extraction of the endpoint description resource the example endpoint, if there are any. The resources are the subject of the property sd:endpoint." ;
+    dcterms:requires :reachabilityTest ;
+    dkg:query [
+        a sp:Select ;
+        sp:resultVariable ([ sp:varName "res"^^xsd:string ]) ;
+        sp:where (
+                [
+                    sp:subject [ sp:varName "res"^^xsd:string ] ;
+                    sp:predicate sd:endpoint ;
+                    sp:object $subject
+                    # $subject is a pre-bound variable for the subject of the report, i.e. object of the earl:subject property.
+                ]
+            )
+    ] .
+```
+
+At the execution of this test on an endpoint, the interpeter replaces `$subject` by the endpoint URI, here `<http://www.example.com/sparql>`. In case of success, we obtain the following `earl:Assertion`:
+```
+:connectedEndpointDescResourceExample rdf:type earl:Assertion ,
+        prov:Activity ;
+    dcterms:title "Extraction of the endpoint description resource the example endpoint, if there are any." ;
+    earl:subject <http://www.example.com/sparql> ;
+    earl:test :connectedEndpointDescResourceExtract ;
+    dkg:sentQuery """SELECT ?res WHERE {
+        ?res sd:endpoint <http://www.example.com/sparql> .
+    }""" ;
+    earl:result [
+        earl:outcome earl:passed ;
+        prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime ;
+        earl:info "The server returned an answer for this query"@en
+    ] .
+```
+
+In other cases, we need to change more the query. For example, in a dataset where we have to add `FROM` clauses to our queries, we need to insert a triple for each graph in the test query. To be able to do that it is preferable to not use blank nodes for the description of the query, as we have shown before.
+
+For our example, we describe the test used to check the presence of dataset description resources:
+```
+:datasetDescResourceExtract a dkg:TestQuery ;
+    dcterms:title "Extraction of dataset description resources" ;
+    dcterms:description "Extraction of the dataset description resource the example endpoint, if there are any. The resources are instances of dcat: or void: Dataset." ;
+    dcterms:requires :reachabilityTest ;
+    dkg:query :datasetDescResourceExtractQuery .
+```
+We take care to describe the query with its own URI:
+```
+:datasetDescResourceExtractQuery a sp:Select ;
+    sp:resultVariable ([ sp:varName "res"^^xsd:string ]) ;
+    sp:where (
+            [
+                a sp:Union ;
+                sp:elements (
+                    ([
+                        sp:subject [ sp:varName "res"^^xsd:string ] ;
+                        sp:predicate rdf:type ;
+                        sp:object dcat:Dataset
+                    ])
+                    ([
+                        sp:subject [ sp:varName "res"^^xsd:string ] ;
+                        sp:predicate rdf:type ;
+                        sp:object void:Dataset
+                    ])
+                )
+            ]
+        )
+```
+For our example dataset, we need to add FROM clases for 3 graphs, :graph1, :graph2, :graph3.
+We add the transformation to the assertion `:datasetDescResourceExtractExample` of the test query as an insertion, described as an INSERT DATA query, into the test query description, with the following triples:
+
+```
+:datasetDescResourceExtractExample dkg:testQueryUpdate [
+    a sp:InsertData ;
+    sp:data ([
+            sp:subject :datasetDescResourceExtractQuery ;
+            sp:predicate sp:from ;
+            sp:object :graph1
+        ]
+        [
+            sp:subject :datasetDescResourceExtractQuery ;
+            sp:predicate sp:from ;
+            sp:object :graph2
+        ][
+            sp:subject :datasetDescResourceExtractQuery ;
+            sp:predicate sp:from ;
+            sp:object :graph3
+        ])
+    ] .
+```
+The `earl:Assertion` is defined as follows:
+```
+:datasetDescResourceExtractExample rdf:type earl:Assertion ,
+        prov:Activity ;
+    dcterms:title "Extraction of the dataset description resource the example endpoint, if there are any." ;
+    earl:subject <http://www.example.com/sparql> ;
+    earl:test :datasetDescResourceExtract ;
+    dkg:sentQuery """SELECT ?res
+        FROM :graph1
+        FROM :graph2
+        FROM :graph3
+        WHERE {
+            { ?res a dcat:Dataset }
+            UNION { ?res a void:Dataset }
+        }""" ;
+    earl:result [
+        earl:outcome earl:passed ;
+        prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime ;
+        earl:info "The server returned an answer for this query"@en
+    ] .
+```
+Note the value of `dkg:sentQuery` taking into account our update.
+
+During the phase when we check the retrieved values against the data, we use SHACL shapes to define the tests.
+
+**TODO**(Contrainte sur le compte de triplets, Utilisation de Shape)
+
+<!---
+TODO:
+- Acceptation de la requête et nombre de résultats, Différence acceptation de la requête / Contrainte de résultats -> 2 types de rapports ? => Pas dans le sémantique de EARL, pour plus tard
+- Transformation des templates selon la cible -> Variable pré-bound ou pseudo SPARQL UPDATE
+--->
 
 ---
 **EDIT:**
