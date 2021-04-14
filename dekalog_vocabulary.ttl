@@ -5,24 +5,58 @@
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
 @prefix http: <http://www.w3.org/2011/http> .
+@prefix sp: <http://spinrdf.org/sp> .
 
 dkg:missingValue a rdfs:Thing ;
     rdfs:label "Placeholder"@en ;
-    rdfs:comment "Placeholder for the missing values of a property in a dataset or endpoint description"@en .
+    rdfs:comment "Placeholder for the missing values of a property in a dataset or endpoint description"@en ;
+    rdfs:isDefinedBy dkg: .
 
 dkg:featureProperty a rdfs:Property ;
     rdfs:label "Feature" ;
     rdfs:comment "Used on EARL assertions to indicate which feature of the dataset of endpoint description should have used the results of the test"@en ;
+    rdfs:isDefinedBy dkg: ;
     rdfs:domain earl:Assertion ;
     rdfs:range rdf:Property .
 
 dkg:server a rdfs:Property ;
     rdfs:label "Server"@en ;
     rdfs:comment "Indicates the type of SPARQL server used in an endpoint description. The value given is generally the one appearing in the server field of response header of http SPARQL queries" @en ;
+    rdfs:isDefinedBy dkg: ;
     rdfs:domain sd:Service .
+
+dkg:sentQery a rdfs:Property ;
+    rdfs:comment "String representation of the SPARQL query sent to the server after transformation to adapt it to the endpoint, if necessary." ;
+    rdfs:label "Query sent to the server" ;
+    rdfs:domain earl:Assertion ;
+    rdfs:range xsd:string .
 
 dkg:httpResponse a rdfs:Property ;
     rdfs:label "HTTP response" ;
     rdfs:comment "Link the result of a failed EARL assertion with a partial description of the HTTP response sent by the server"@en ;
+    rdfs:isDefinedBy dkg: ;
     rdfs:domain earl:OutcomeValue ;
     rdfs:range http:Response .
+
+dkg:TestQuery a rdfs:Class ;
+    rdfs:label "Test of a SPARQL query execution" ;
+    rdfs:comment "Test the result of the execution of a query in the manner of a SHACL shape but allows declaration of constraints on the HTTP response and the result." ;
+    rdfs:isDefinedBy dkg: ;
+    rdfs:subClassOf sh:Shape , # TODO: is subClassOf adapted for the relation with SHACL ?
+        earl:TestCase .
+
+dkg:query a rdfs:Property ;
+    rdfs:label "SPIN representation of the query tested" ;
+    rdfs:domain dkg:TestQuery ;
+    rdfs:range sp:Query .
+
+dkg:httpResponse a rdfs:Property ;
+    rdfs:comment "Describe the parts of the HTTP response to the query as they should be. If the response description equals this one, the test is validated" ;
+    rdfs:label "Model of the HTTP response for validation" ;
+    rdfs:domain dkg:TestQuery ;
+    rdfs:range http:Response .
+
+dkg:statusOk a http:Response ;
+    rdfs:comment "Pre-defined HTTP response to represent an accepted query with a status code OK." ;
+    rdfs:label "HTTP Response status OK" ;
+    http:statusCodeValue 200 .
