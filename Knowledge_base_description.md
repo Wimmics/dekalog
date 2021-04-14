@@ -496,22 +496,7 @@ LIMIT 1
 ```
 We use it to verify the reachability of the SPARQL endpoint. We are not interested in the results of this query, we are only interested in the fact that the SPARQL endpoint accept it and returns an answer to it.  
 ```
-:reachExampleEndpoint rdf:type earl:Assertion ,
-        prov:Activity ;
-    dcterms:title "Reachability test for the example endpoint" ;
-    earl:subject <http://www.example.com/sparql> ;
-    earl:test :reachabilityTest ;
-    dkg:adaptedQuery """SELECT * WHERE {
-        ?s ?p ?o
-    }
-    LIMIT 1""" ;
-    earl:result [
-        earl:outcome earl:passed ;
-        prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime ;
-        earl:info "The endpoint is reachable and answer to a basic SPARQL SELECT query"@en
-    ] .
-
-:reachabilityTest a dkg:CheckQuery ;
+:reachabilityTest a earl:TestCase ;
     dcterms:title "Reachability test" ;
     dcterms:description "Reachability is tested with a simple query" ;
     dkg:query [
@@ -523,17 +508,48 @@ We use it to verify the reachability of the SPARQL endpoint. We are not interest
                 sp:object [ sp:varName "o"^^xsd:string ]
             ]) ;
         sp:limit 1
-    ]
+    ] .
+
+:reachExampleEndpoint rdf:type earl:Assertion ,
+        prov:Activity ;
+    dcterms:title "Reachability test for the example endpoint" ;
+    earl:subject <http://www.example.com/sparql> ;
+    earl:test :reachabilityTest ;
+    dkg:adaptedQuery """SELECT * WHERE { ?s ?p ?o } LIMIT 1""" ;
+    earl:result [
+        earl:outcome earl:passed ;
+        prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime ;
+        earl:info "The endpoint is reachable and answer to a basic SPARQL SELECT query"@en
+    ] .
 ```
 
 (Récupération de ressources)
 ```
+:endpointDescResourceExtract a dkg:ExtractQuery ;
+dcterms:title "Extraction of endpoint description resources" ;
+dcterms:description "Extraction of the endpoint description resource the example endpoint, if there are any. The resources are the subject of the property sd:endpoint." ;
+dkg:query :endpointDescResourceExtractQuery .
+:endpointDescResourceExtractQuery a sp:Select ;
+sp:resultVariable ([ sp:varName "res"^^xsd:string ]) ;
+sp:where ([
+        sp:subject [ sp:varName "res"^^xsd:string ] ;
+        sp:predicate sd:endpoint ;
+        sp:object dkg:_subject # Pre-defined placeholder for the subject of a report, i.e. object of the earl:subject property.
+    ]) .
+
+
 :connectedEndpointDescResourceExample rdf:type earl:Assertion ,
         prov:Activity ;
     dcterms:title "Extraction of the endpoint description resource the example endpoint, if there are any." ;
     earl:subject <http://www.example.com/sparql> ;
     earl:test :connectedEndpointDescResourceExtract ;
-    dkg:adaptedQuery """SELECT ?res WHERE {
+    dkg:transformation ( [
+        a dkg:QueryTransformation ;
+        dkg:targetType rdf:Resource ;
+        dkg:remove ( dkg:_subject ) ;
+        dkg:add ( <http://www.example.com/sparql> )
+    ] ) ;
+    dkg:transformedQuery """SELECT ?res WHERE {
         ?res sd:endpoint <http://www.example.com/sparql> .
     }""" ;
     earl:result [
@@ -541,24 +557,11 @@ We use it to verify the reachability of the SPARQL endpoint. We are not interest
         prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime ;
         earl:info "The server returned and answer for this query"@en
     ] .
-
-:endpointDescResourceExtract a dkg:ExtractQuery ;
-    dcterms:title "Extraction of endpoint description resources" ;
-    dcterms:description "Extraction of the endpoint description resource the example endpoint, if there are any. The resources are the subject of the property sd:endpoint." ;
-    dkg:query [
-        a sp:Select ;
-        sp:resultVariable ([ sp:varName "res"^^xsd:string ]) ;
-        sp:where ([
-                sp:subject [ sp:varName "res"^^xsd:string ] ;
-                sp:predicate sd:endpoint ;
-                sp:object dkg:_subject # Pre-defined placeholder for the subject of a report, i.e. object of the earl;subject property.
-            ])
-    ] .
 ```
 TODO:
 - Relations de dépendances
-- Acceptation de la requête et nombre de résultats, Différence acceptation de la requête / Contrainte de résultats -> Contrainte de résultat
-- Transformation des templates selon la cible
+- Acceptation de la requête et nombre de résultats, Différence acceptation de la requête / Contrainte de résultats -> 2 types de rapports ?
+- Transformation des templates selon la cible -> nommer les parties de la requete, ajouter des transformations [ a SUBSTITUTION, target noeudDeRequete, result nouveauNoeudDeRequete ]
 
 <!--- On ne peut pas utiliser des infos qu'on a pas --->
 (Construction de Graphe)
