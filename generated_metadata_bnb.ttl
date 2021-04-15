@@ -28,7 +28,7 @@ dkg:BNB-dataset rdf:type void:Dataset,
     dcterms:title "The British National Bibliography as Linked Open Data"@en ;
     rdfs:label "The British National Bibliography as Linked Open Data"@en ;
     dcterms:alternative "BNB"@en ;
-    dcterms:description "This dataset is a release of the BNB as linked open data.  It includes descriptions of published monographs (including monographs published over time), i.e. BNBBooks; serials publications, i.e. BNBSerials and forthcoming publications, i.e. BNBCIP. Further information about the dataset is available at: https://www.bl.uk/bibliographic/natbib.html." ;
+    dcterms:description "This dataset is rdf:type release of the BNB as linked open data.  It includes descriptions of published monographs (including monographs published over time), i.e. BNBBooks; serials publications, i.e. BNBSerials and forthcoming publications, i.e. BNBCIP. Further information about the dataset is available at: https://www.bl.uk/bibliographic/natbib.html." ;
     foaf:homepage <http://bnb.data.bl.uk> ;
 # Provenance information
     dcterms:created "2011-07-26"^^xsd:date ;
@@ -80,7 +80,7 @@ dkg:BNB-dataset rdf:type void:Dataset,
 bnbdata:BNBBooks rdf:type void:Dataset ;
     dcterms:title "The British National Bibliography as Linked Open Data - Books"@en ;
     dcterms:alternative "BNBBooks"@en ;
-    dcterms:description "This dataset is a subset of the release of the BNB as linked open data.  It includes descriptions of published monographs, including monographs published over time." ;
+    dcterms:description "This dataset is rdf:type subset of the release of the BNB as linked open data.  It includes descriptions of published monographs, including monographs published over time." ;
     foaf:homepage <http://bnb.data.bl.uk>;
     dcterms:created "2011-07-26"^^xsd:date ;
     dcterms:modified "2021-03-03"^^xsd:date ;
@@ -121,7 +121,7 @@ bnbdata:BNBBooks rdf:type void:Dataset ;
 bnbdata:BNBCIP rdf:type void:Dataset ;
     dcterms:title "The British National Bibliography as Linked Open Data - Porthcoming publications"@en ;
     dcterms:alternative "BNBCIP"@en ;
-    dcterms:description "This dataset is a subset of the release of the BNB as linked open data.  It includes descriptions of forthcoming monographs. Further details about the dataset are available at: https://www.bl.uk/bibliographic/cip.html. " ;
+    dcterms:description "This dataset is rdf:type subset of the release of the BNB as linked open data.  It includes descriptions of forthcoming monographs. Further details about the dataset are available at: https://www.bl.uk/bibliographic/cip.html. " ;
     foaf:homepage <http://bnb.data.bl.uk> ;
     dcterms:created "2017-03-01"^^xsd:date ;
     dcterms:modified "2021-03-03"^^xsd:date ;
@@ -156,7 +156,7 @@ bnbdata:BNBCIP rdf:type void:Dataset ;
 # Subset Serials
 bnbdata:BNBSerials rdf:type void:Dataset ;
     dcterms:title "The British National Bibliography as Linked Open Data - Serials"@en ;
-    dcterms:description "This dataset is a subset of the release of the BNB as linked open data.  It includes descriptions of serials, i.e. journals, periodicals, magazines, newspapers, etc." ;
+    dcterms:description "This dataset is rdf:type subset of the release of the BNB as linked open data.  It includes descriptions of serials, i.e. journals, periodicals, magazines, newspapers, etc." ;
     dcterms:alternative "BNBSerials"@en ;
     foaf:homepage <http://bnb.data.bl.uk> ;
     dcterms:creator bnborga:BritishLibrary ;
@@ -200,11 +200,11 @@ dkg:bnbSameAs rdf:type void:Linkset ;
 
 
 # Generated endpoint description
-dkg:BNB-service a sd:Service, dcat:DataService, prov:Entity, earl:TestSubject ;
+dkg:BNB-service rdf:type sd:Service, dcat:DataService, prov:Entity, earl:TestSubject ;
     sd:endpoint <http://bnb.data.bl.uk/sparql> ;
     dcat:servesDataset dkg:BNB-dataset ;
     sd:availableGraphs [
-        a sd:GraphCollection ;
+        rdf:type sd:GraphCollection ;
         sd:namedGraph <http://www.openlinksw.com/schemas/virtrdf#> ,
             <http://www.w3.org/ns/ldp#> ,
             <http://bnb.data.bl.uk/id/graph/Void> ,
@@ -216,32 +216,32 @@ dkg:BNB-service a sd:Service, dcat:DataService, prov:Entity, earl:TestSubject ;
     sd:resultFormat dkg:missingValue .
 
 # Provenance
-dkg:BNB-service  a prov:Entity ;
+dkg:BNB-service  rdf:type prov:Entity ;
     prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;
     prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
     prov:actedOnBehalfOf <http://www.inria.fr> .
-bnbdata:BNB  a prov:Entity ;
+bnbdata:BNB  rdf:type prov:Entity ;
     prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
-    prov:generatedAtTime "2021-03-29"^^xsd:date ;
-bnbdata:BNBSerials  a prov:Entity ;
+    prov:generatedAtTime "2021-03-29"^^xsd:date .
+bnbdata:BNBSerials  rdf:type prov:Entity ;
     prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
-    prov:generatedAtTime "2021-03-29"^^xsd:date ;
-bnbdata:BNBCIP  a prov:Entity ;
+    prov:generatedAtTime "2021-03-29"^^xsd:date .
+bnbdata:BNBCIP  rdf:type prov:Entity ;
     prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
-    prov:generatedAtTime "2021-03-29"^^xsd:date ;
-bnbdata:BNBBooks  a prov:Entity ;
+    prov:generatedAtTime "2021-03-29"^^xsd:date .
+bnbdata:BNBBooks  rdf:type prov:Entity ;
     prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
-    prov:generatedAtTime "2021-03-29"^^xsd:date ;
-dkg:BNB-dataset a prov:Entity ;
+    prov:generatedAtTime "2021-03-29"^^xsd:date .
+dkg:BNB-dataset rdf:type prov:Entity ;
     prov:wasRevisionOf bnbdata:BNB ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
     rdfs:comment "dkg:BNB-dataset is derived from bnbdata:BNB, whose properties have been checked and extended" .
 
-dkg:BNB-description a prov:Entity, earl:TestSubject ;
+dkg:BNB-description rdf:type prov:Entity, earl:TestSubject ;
     prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
-    prov:actedOnBehalfOf <http://www.inria.fr> .
+    prov:actedOnBehalfOf <http://www.inria.fr> ;
     dkg:original bnbdata:BNB ,
         bnbdata:BNBSerials ,
         bnbdata:BNBCIP ,

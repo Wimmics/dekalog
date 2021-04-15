@@ -11,7 +11,7 @@
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix dkg: <https://dekalog.univ-nantes.fr/> .
 @prefix ipo: <http://purl.org/ipo/core#> .
-@prefix sh:	<http://www.w3.org/ns/shacl#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix http: <http://www.w3.org/2011/http> .
 

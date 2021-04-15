@@ -50,7 +50,7 @@ dkg:query a rdfs:Property ;
     rdfs:domain dkg:TestQuery ;
     rdfs:range sp:Query .
 
-dkg:testQueryUpdate a rdfs:Property ;
+dkg:testUpdate a rdfs:Property ;
     rdfs:label "Update of the test query." ;
     rdfs:comment "Definition of an adapatation of a test query for a particular dataset. The adaptation is representated as a SPIN description of an UPDATE query for the test query description."
     rdfs:domain earl:Assertion ;

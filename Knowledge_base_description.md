@@ -1,55 +1,6 @@
 # Knowledge base description
 
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- [Knowledge base description](#knowledge-base-description)
-	- [Vocabularies](#vocabularies)
-		- [VoID](#voidhttpswwww3orgtrvoid)
-		- [DCAT](#dcathttpswwww3orgtrvocab-dcat-3)
-		- [SPARQL-SD](#sparql-sdhttpwwww3orgtrsparql11-service-description)
-	- [Features](#features)
-		- [Terminology for this document](#terminology-for-this-document)
-		- [Knowledge base description resources](#knowledge-base-description-resources)
-			- [SPARQL-SD](#sparql-sd)
-			- [VoID/DCAT](#voiddcat)
-		- [Label and description](#label-and-description)
-		- [Provenance](#provenance)
-		- [SPARQL endpoint](#sparql-endpoint)
-		- [Description of vocabularies used](#description-of-vocabularies-used)
-		- [Population count](#population-count)
-		- [Class population count](#class-population-count)
-		- [Namespaces](#namespaces)
-		- [Links to other resources](#links-to-other-resources)
-		- [Others](#others)
-	- [Examples of descriptions](#examples-of-descriptions)
-		- [Description of the extraction method](#description-of-the-extraction-method)
-		- [Generation of error report](#generation-of-error-report)
-		- [[DBPedia](http://dbpedia.org/sparql)](#dbpediahttpdbpediaorgsparql)
-			- [Extraction of the SPARQL endpoint description](#extraction-of-the-sparql-endpoint-description)
-			- [Extraction of the void/dcat description](#extraction-of-the-voiddcat-description)
-			- [Generation of metadata](#generation-of-metadata)
-				- [Check and generation of population statistics](#check-and-generation-of-population-statistics)
-				- [Check of the linkset statistics](#check-of-the-linkset-statistics)
-				- [Addition of basic provenance metadata](#addition-of-basic-provenance-metadata)
-				- [Class population count](#class-population-count)
-			- [Extraction of vocabularies](#extraction-of-vocabularies)
-		- [Wasabi](#wasabihttpwasabiinriafrsparql)
-			- [Generation of metadata](#generation-of-metadata)
-				- [Generation of basic SPARQL-SD description](#generation-of-basic-sparql-sd-description)
-				- [Check of the dataset description properties](#check-of-the-dataset-description-properties)
-				- [Check of the population count](#check-of-the-population-count)
-				- [Generation of basic provenance metadata](#generation-of-basic-provenance-metadata)
-				- [Generation of class population counts](#generation-of-class-population-counts)
-				- [Extraction of linkset descriptions](#extraction-of-linkset-descriptions)
-		- [British National Library](#british-national-libraryhttpbnbdatabluksparql)
-			- [Generation of metadata](#generation-of-metadata)
-				- [Generation of endpoint description](#generation-of-endpoint-description)
-				- [Checks of the vocabularies](#checks-of-the-vocabularies)
-				- [Checks of the triple count and generation of population counts](#checks-of-the-triple-count-and-generation-of-population-counts)
-				- [Generation of linksets descriptions](#generation-of-linksets-descriptions)
-				- [Addition of basic provenance metadata](#addition-of-basic-provenance-metadata)
-
-<!-- /TOC -->
 
 <!--- NOTE: Le document est rédigé en Markdown pour rapidité d'écriture, trivialité de la conversion vers LateX et compatibilité avec Github --->
 
@@ -607,7 +558,7 @@ At the execution of this test on an endpoint, the interpeter replaces `$subject`
     ] .
 ```
 
-In other cases, we need to change more the query. For example, in a dataset where we have to add `FROM` clauses to our queries, we need to insert a triple for each graph in the test query. To be able to do that it is preferable to not use blank nodes for the description of the query, as we have shown before.
+In other cases, we need to modify more the query. For example, in a dataset where we have to add `FROM` clauses to our queries, we need to insert a clause for each graph in the dataset. To be able to do that it is preferable to not use blank nodes for the representation of the query, as we have shown before.
 
 For our example, we describe the test used to check the presence of dataset description resources:
 ```
@@ -637,13 +588,13 @@ We take care to describe the query with its own URI:
                     ])
                 )
             ]
-        )
+        ) .
 ```
-For our example dataset, we need to add FROM clases for 3 graphs, :graph1, :graph2, :graph3.
-We add the transformation to the assertion `:datasetDescResourceExtractExample` of the test query as an insertion, described as an INSERT DATA query, into the test query description, with the following triples:
+For our example dataset, we need to add FROM clauses for 3 graphs, `:graph1`, `:graph2`, `:graph3`. As the test query is described by RDF triples, we describe its modification using a SPARQL UPDATE query.
+We insert the clauses in the test query, as an INSERT DATA query, with the following triples:
 
 ```
-:datasetDescResourceExtractExample dkg:testQueryUpdate [
+:datasetDescResourceExtractExample dkg:testUpdate [
     a sp:InsertData ;
     sp:data ([
             sp:subject :datasetDescResourceExtractQuery ;
@@ -654,7 +605,8 @@ We add the transformation to the assertion `:datasetDescResourceExtractExample` 
             sp:subject :datasetDescResourceExtractQuery ;
             sp:predicate sp:from ;
             sp:object :graph2
-        ][
+        ]
+        [
             sp:subject :datasetDescResourceExtractQuery ;
             sp:predicate sp:from ;
             sp:object :graph3
@@ -682,11 +634,59 @@ The `earl:Assertion` is defined as follows:
         earl:info "The server returned an answer for this query"@en
     ] .
 ```
-Note the value of `dkg:sentQuery` taking into account our update.
+Note the value of `dkg:sentQuery` taking into account our update of the query.
 
-During the phase when we check the retrieved values against the data, we use SHACL shapes to define the tests.
+During the phase when we check the retrieved values of the description against values computed from the data, we use SHACL shapes to define the tests.
 
-**TODO**(Contrainte sur le compte de triplets, Utilisation de Shape)
+*The following examples are based on SHACL advanced features.*
+
+We define a shape to check that the number of triples is the value expected. As we have to adapt the shape for the count found in each description, we use `dkg:missingValue` to facilitate the modification of the shape.
+```
+:CountEqualityShape a sh:NodeShape ;
+    sh:target [
+    	rdf:type sh:SPARQLTarget ;
+    	sh:prefixes ex: ;
+    	sh:select """SELECT (count(*) AS ?this) WHERE {
+                SELECT DISTINCT ?s ?p ?o WHERE {
+                   ?s ?p ?o .
+                }
+            }"""
+        ] ;
+    sh:hasValue dkg:missingValue .
+```
+
+In the assertion `dkg:triplesCountExtraction`, representing the application of this shape on our example dataset, we add the following modification of the shape. The modification set the expected number of triples to 54.
+```
+:datasetDescResourceExtractExample
+    dkg:testUpdate [
+           a sp:Modify ;
+           sp:deletePattern ([
+                   sp:subject :CountEqualityShape ;
+                   sp:predicate sh:hasValue ;
+                   sp:object dkg:missingValue
+               ]) ;
+            sp:insertPattern ([
+                    sp:subject :CountEqualityShape ;
+                    sp:predicate sh:hasValue ;
+                    sp:object 54
+                ])
+        ] .
+```
+After adapatation to the dataset, the shape can be applied and the validation report is added to the outcome of the test.
+```
+dkg:triplesCountExtraction rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject :exampleDataset ;
+    dcterms:requires dkg:reachableEndpoint ;
+    earl:test dkg:CountEqualityShape ;
+    earl:result [
+        earl:outcome [
+            rdf:type earl:Pass , sh:ValidationReport ;
+            sh:conforms true ;
+        ] ;
+        prov:generatedAtTime "2021-03-31T16:15:52"^^xsd:datetime
+    ] .
+```
 
 <!---
 TODO:
