@@ -1,6 +1,55 @@
 # Knowledge base description
 
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
+- [Knowledge base description](#knowledge-base-description)
+	- [Vocabularies](#vocabularies)
+		- [VoID](#void)
+		- [DCAT](#dcat)
+		- [SPARQL-SD](#sparql-sd)
+	- [Features](#features)
+		- [Terminology for this document](#terminology-for-this-document)
+		- [Knowledge base description resources](#knowledge-base-description-resources)
+			- [SPARQL-SD](#sparql-sd)
+			- [VoID/DCAT](#voiddcat)
+		- [Label and description](#label-and-description)
+		- [Provenance](#provenance)
+		- [SPARQL endpoint](#sparql-endpoint)
+		- [Description of vocabularies used](#description-of-vocabularies-used)
+		- [Population count](#population-count)
+		- [Class population count](#class-population-count)
+		- [Namespaces](#namespaces)
+		- [Links to other resources](#links-to-other-resources)
+		- [Others](#others)
+	- [Examples of descriptions](#examples-of-descriptions)
+		- [Trace of the extraction](#trace-of-the-extraction)
+		- [Generation of error report](#generation-of-error-report)
+		- [DBpedia <!-- [DBPedia](http://dbpedia.org/sparql) -->](#dbpedia-dbpediahttpdbpediaorgsparql-)
+			- [Extraction of the SPARQL endpoint description](#extraction-of-the-sparql-endpoint-description)
+			- [Extraction of the void/dcat description](#extraction-of-the-voiddcat-description)
+			- [Generation of metadata](#generation-of-metadata)
+				- [Check and generation of population statistics](#check-and-generation-of-population-statistics)
+				- [Check of the linkset statistics](#check-of-the-linkset-statistics)
+				- [Addition of basic provenance metadata](#addition-of-basic-provenance-metadata)
+				- [Class population count](#class-population-count)
+			- [Extraction of vocabularies](#extraction-of-vocabularies)
+		- [Wasabi](#wasabi)
+			- [Generation of metadata](#generation-of-metadata)
+				- [Generation of basic SPARQL-SD description](#generation-of-basic-sparql-sd-description)
+				- [Check of the dataset description properties](#check-of-the-dataset-description-properties)
+				- [Check of the population count](#check-of-the-population-count)
+				- [Generation of basic provenance metadata](#generation-of-basic-provenance-metadata)
+				- [Generation of class population counts](#generation-of-class-population-counts)
+				- [Extraction of linkset descriptions](#extraction-of-linkset-descriptions)
+		- [British National Bibliography](#british-national-bibliography)
+			- [Generation of metadata](#generation-of-metadata)
+				- [Generation of endpoint description](#generation-of-endpoint-description)
+				- [Checks of the vocabularies](#checks-of-the-vocabularies)
+				- [Checks of the triple count and generation of population counts](#checks-of-the-triple-count-and-generation-of-population-counts)
+				- [Generation of linksets descriptions](#generation-of-linksets-descriptions)
+				- [Addition of basic provenance metadata](#addition-of-basic-provenance-metadata)
+
+<!-- /TOC -->
 
 <!--- NOTE: Le document est rédigé en Markdown pour rapidité d'écriture, trivialité de la conversion vers LateX et compatibilité avec Github --->
 
@@ -10,13 +59,16 @@ The goal of this document is to present the desired features in a dataset descri
 
 There are three major vocabularies for the description of knowledge bases. Other vocabularies of more general use, such as [Dublin Core](https://www.dublincore.org/specifications/dublin-core/dcmi-terms/2010-10-11/) or [Friend of a Friend](http://xmlns.com/foaf/spec/20100809.html), complement each of those three major ones. The three major vocabularies are also used to complete each other in a description. We give here a succinct description of the scope of each vocabulary.
 
-### [VoID](https://www.w3.org/TR/void/)
+### VoID
+<!-- https://www.w3.org/TR/void/ -->
 VoID is the most used vocabulary to write metadata about KBs. This vocabulary is tailored to create simple descriptions of a KB, its access, and its links to others. It describes the links with other KBs by giving the properties used to linked resources of different datasets.
 
-### [DCAT](https://www.w3.org/TR/vocab-dcat-3/)
+### DCAT
+<!-- https://www.w3.org/TR/vocab-dcat-3/ -->
 The DCAT vocabulary is used for the description of a catalog of KBs. It can describe datasets and their means of distribution or access. Compared to VoID, it contains properties and classes to make more in-depth descriptions of endpoints and data dumps.
 
-### [SPARQL-SD](http://www.w3.org/TR/sparql11-service-description/)
+### SPARQL-SD
+<!-- http://www.w3.org/TR/sparql11-service-description/ -->
 The SPARQL-SD vocabulary is specialized for the detailed description of SPARQL endpoints. Among others, It gives classes and properties for the description of the named graphs, the result formats, which SPARQL standard the endpoint conforms to, etc.
 
 ## Features
@@ -726,7 +778,7 @@ For now, the method of extraction and generation is planned as follows:
 4. Generate missing data.
 ---
 
-### [DBPedia](http://dbpedia.org/sparql)
+### DBpedia <!-- [DBPedia](http://dbpedia.org/sparql) -->
 We suppose that we only know the name of the base "DBpedia" and its endpoint URL.
 
 We check the availability of the endpoint using `SELECT * WHERE { ?s ?p ?o } LIMIT 1` sent to http://dbpedia.org/sparql, which returns a result. The endpoint is reachable.
@@ -1017,7 +1069,8 @@ We obtain the following list of vocabularies
 
 *WIP*
 
-### [Wasabi](http://wasabi.inria.fr/sparql)
+### Wasabi
+<!-- [Wasabi](http://wasabi.inria.fr/sparql) -->
 We suppose that we only know the name "Wasabi" and its endpoint's URL `http://wasabi.inria.fr/sparql`.
 
 The retrieval of the SPARQL-SD description resource returns only one resource named `http://localhost:8890/sparql`.
@@ -1232,7 +1285,8 @@ From those results, we generated the following triples, shown in [generated_meta
 
 *WIP*
 
-### [British National Library](http://bnb.data.bl.uk/sparql)
+### British National Bibliography
+<!-- [British National Bibliography](http://bnb.data.bl.uk/sparql) -->
 We suppose that we know the name "British National Library" and the endpoint URL `http://bnb.data.bl.uk/sparql`.
 
 The extraction of endpoint description returns no results. The extraction of the dataset descriptions returns 4 results connected to the endpoint URL. The results are shown in the file [retrieved_dataset_bnb.ttl](https://github.com/Wimmics/dekalog/blob/master/retrieved_dataset_bnb.ttl) from line 20 to 189.
