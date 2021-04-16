@@ -12,13 +12,6 @@ dkg:missingValue a rdfs:Thing ;
     rdfs:comment "Placeholder for the missing values of a property in a dataset or endpoint description"@en ;
     rdfs:isDefinedBy dkg: .
 
-# dkg:featureProperty a rdfs:Property ;
-#    rdfs:label "Feature" ;
-#    rdfs:comment "Used on EARL assertions to indicate which feature of the dataset of endpoint description should have used the results of the test"@en ;
-#    rdfs:isDefinedBy dkg: ;
-#    rdfs:domain earl:Assertion ;
-#    rdfs:range rdf:Property .
-
 dkg:server a rdfs:Property ;
     rdfs:label "Server"@en ;
     rdfs:comment "Indicates the type of SPARQL server used in an endpoint description. The value given is generally the one appearing in the server field of response header of http SPARQL queries" @en ;

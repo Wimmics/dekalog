@@ -460,30 +460,26 @@ In our example, a set of 24 links to resources in DBpedia would be described as 
 
 In this section, we try first to extract the descriptions of three KB, detailing each step. We then try to generate a description corresponding to the standards we have defined in the previous sections. The goal of this section is to identify the eventual limitations and problems coming from our previous statements when confronted with real-life examples.
 
-In the generated data, we will use the `dkg:missingValue` resource to represent elements that should have to appear in the examples but could not be retrieved at the moment of reading. This resource should not be used outside this documentation.
+In the generated data, we will use the `dkg:missingValue` resource to represent elements that should have to appear in the examples but could not be retrieved.
 
-We also add provenance statements about our generated description. This provenance information concerns only the new description resources we have created. It also contains reports of the extraction and generation operation that could not do due to errors or limitations.
+We also add provenance statements about our generated description. This provenance information concerns only the new description resources we have created. It also contains reports of the extraction and generation operation.
 
 ### Trace of the extraction
-During the following examples, we send different SPARQL queries to build and check the description of datasets. Those queries can be separated into two categories:
+
+In the following examples, we send different SPARQL queries for the extraction of the description of datasets. Those queries can be separated into two categories:
 - Extraction queries, made to identify and extract the triples of the description from the dataset. Those queries are SELECT queries used to identify the resources relevant to the description.
 - Check queries, made to verify the consistency of the description. Those queries compare the values of the description with values extracted from the content of the dataset.
-We can say that extraction queries can have no results, in which case we will generate a minimal description, while check queries must have the expected results.
+Extraction queries can have no results, in which case we will generate a minimal description, we test the fact that the SPARQL endpoint accepted them. Check queries must have the expected results.
 
-We describe each of the different queries in a file associated with each example. The actual construction of the triples of the generated description can be made with a variety of approaches, e.g. with CONSTRUCT, SELECT, or DESCRIBE when it is implemented. For this reason, we do not describe this part of the extraction, we focus on the preliminary queries searching for the description resources. This allows us to also describe the behavior of the endpoint when confronted with different keywords in our queries.
+We describe each of the different queries in a file associated with each example. The generated description's triples can be made with various approaches, e.g. with CONSTRUCT, SELECT, or DESCRIBE. For this reason, we do not describe this part of the extraction, we focus on the preliminary queries searching for the description resources. This allows us to also describe the behavior of the endpoint when confronted with different keywords in our queries.
 
 The queries described as pure EARL assertion are extraction queries. They fail when the SPARQL endpoint returns an error during their evaluation. The queries described with a test formalized in a SHACL constraint are check queries. Their results depend on the validation of the constraint by the data.
 
-### Generation of error report
+### Generation of reports on query execution
 
-**WIP**
-
-SPARQL endpoints have limitations on the time allocated to the resolution of queries and on the keyword supported by the SPARQL engine. Those limitations make some operations of metadata extraction impossible. We keep a trace of the errors obtained during the process of extraction using the [EARL](https://www.w3.org/TR/EARL10-Schema/) vocabulary. The EARL vocabulary allows the description of assertions and the results of their tests. For our needs, a query sent for metadata retrieval is an assertion that passes its test if it receives results from a SPARQL endpoint. This set of reports can be used to identify the limitations of the server that can not be described in RDF.
-
-<!-- We add some properties to the EARL vocabulary to link the reports to descriptions features. We use the property `dkg:featureProperty` to state which property the results should have been the object of. -->
+SPARQL endpoints limit the time allocated to the resolution of queries and on the keywords supported by the SPARQL engine. Those limitations make some operations of metadata extraction impossible. We keep a trace of the errors obtained during the process of extraction using the [EARL](https://www.w3.org/TR/EARL10-Schema/) vocabulary. The EARL vocabulary allows the description of assertions and the results of their tests. For our needs, a query sent for metadata retrieval is an assertion that passes its test if it receives results from a SPARQL endpoint. We can use this set of reports to identify the limitations of a SPARQL endpoint.
 
 For our need, each endpoint is an instance of `earl:TestSubject`, and each report is an instance of `earl:Assertion`. For each `earl:Assertion` we give:
-<!-- -  The description property that the results of the query should have filled, with `dkg:featureProperty`. -->
 -  The object of the property `earl:test` is either a SHACL shape or a test of a query, instance of the class `dkg:TestQuery` that we define.
 -  The results of the test are given by the property `earl:result` with an instance of `earl:TestResult`, generally a blank node, with the following properties:
     -  `earl:outcome` gives the result of the test. The results can be instances of the `earl:OutcomeValue` with the following instance defined by the EARL vocabulary: `earl:passed`, `earl:failed`, `earl:cantTell`, `earl:inapplicable` and `earl:untested` or with any instance of the `earl:Pass`, `earl:Fail`, `earl:NotTested`, `earl:NotApplicable` or `earl:CannotTell` classes. In the case of a failure because of a HTTP error sent by the SPARQL endpoint, it is advised to create an instance of `earl:Fail` linked to a partial description of the HTTP response with the property `dkg:httpResponse`.
@@ -503,7 +499,7 @@ LIMIT 1
 ```
 We use it to verify the reachability of the SPARQL endpoint. We are not interested in the results of this query, we are only interested in the fact that the SPARQL endpoint accepts it and returns an answer to it.
 
-We first define a test to check the HTTP status of the response to or query. In this test we give an RDF representation of the query and a constraint on its HTTP response from the server:
+We first define a test to check the HTTP status of the response to or query. In this test, we give an RDF representation of the query and a constraint on its HTTP response from the server. The instance of `dkg:testQuery` has at least one instance of the property `dkg:query` with a [SPIN](https://www.w3.org/Submission/2011/SUBM-spin-sparql-20110222/) description of the SPARQL query sent. It also has one instance of the property `dkg:httpResponse` with an HTTP description of the expected answer of the server, an instance of `http:Response`. For convenience, we define the HTTP response of an acceptation of a query with a 200 status code by the resource `dkg:statusOK`.
 ```
 :reachabilityTest a earl:TestCase ,
         dkg:TestQuery ; # Class of tests similar to a lower-level SHACL shape where we precise the query and the expected HTTP response.
@@ -526,7 +522,7 @@ We first define a test to check the HTTP status of the response to or query. In 
 ```
 This test is validated if the server accepts the SPARQL query and returned an answer without error.
 
-The result of the test is represented as an EARL assertion linked to the test.
+The result of this test is represented in the metadata as an EARL assertion linked to it. We define the property `dkg:sentQuery` to add the string representation of the query sent during a test.
 ```
 :reachExampleEndpoint rdf:type earl:Assertion ,
         prov:Activity ;
@@ -540,7 +536,7 @@ The result of the test is represented as an EARL assertion linked to the test.
         earl:info "The endpoint is reachable and answer to a basic SPARQL SELECT query"@en
     ] .
 ```
-This report shows that we could send a basic SPARQL query to the server at some point.
+This report shows that we could send a basic SPARQL query to the server.
 The reachability test has to be done at least once at the start of the extraction of descriptions from any SPARQL endpoint. Its definition can be used as it is in all their descriptions.
 
 If the test fails, the result should contain a description of the response that failed our test. We indicate the values that differed from our test and the reason phrase given. For traceability, we find useful to add the header values describing the type of server of the endpoint.
@@ -692,7 +688,7 @@ During the phase when we check the retrieved values of the description against v
 
 *The following examples are based on SHACL advanced features.*
 
-We define a shape to check that the number of triples is the value expected. As we have to adapt the shape for the count found in each description, we use `dkg:missingValue` to facilitate the modification of the shape.
+We define a shape to check that the number of triples is the value expected. As we have to adapt the shape for the count found in each description, we use `dkg:missingValue` to help the modification of the shape.
 ```
 :CountEqualityShape a sh:NodeShape ;
     sh:target [
