@@ -23,7 +23,7 @@
 		- [Others](#others)
 	- [Examples of descriptions](#examples-of-descriptions)
 		- [Trace of the extraction](#trace-of-the-extraction)
-		- [Generation of error report](#generation-of-error-report)
+		- [Generation of reports on query execution](#generation-of-reports-on-query-execution)
 		- [DBpedia <!-- [DBPedia](http://dbpedia.org/sparql) -->](#dbpedia-dbpediahttpdbpediaorgsparql-)
 			- [Extraction of the SPARQL endpoint description](#extraction-of-the-sparql-endpoint-description)
 			- [Extraction of the void/dcat description](#extraction-of-the-voiddcat-description)
