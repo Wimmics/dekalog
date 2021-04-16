@@ -574,8 +574,8 @@ If the test fails, the result should contain a description of the response that 
         earl:info "Error 504 - server returned timeout error"
     ] .
 ```
+#### Test of the existence of connected endpoint description
 
-#### Test of the existence of connected endpoint description
 Other tests have to be done for every SPARQL endpoint but need adaptations. Those adaptations can be done using pre-defined variables. As an example, the query used to look for endpoint descriptions connected to the SPARQL endpoint needs to be connected to a different URI for each endpoint. As there is no endpoint description at this point of the extraction, we are looking for it, the subject of the test is the endpoint URI. We define the pre-bound variable `$subject` as the value of the `earl:subject` property of an assertion. We define a test looking for the resources subject of the property sd:endpoint connected to the endpoint URI :
 ```
 :connectedEndpointDescResourceExtract a dkg:TestQuery ;
@@ -613,7 +613,7 @@ At the execution of this test on an endpoint, the interpeter replaces `$subject`
     ] .
 ```
 
-#### Test of the existence of connected dataset descriptions, with graphs
+#### Test of the existence of connected dataset descriptions, with graphs
 In other cases, we need to modify more the query. For example, in a dataset where we have to add `FROM` clauses to our queries, we need to insert a clause for each graph in the dataset. To be able to do that it is preferable to not use blank nodes for the representation of the query, as we have shown before.
 
 For our example, we describe the test used to check the presence of dataset description resources:
@@ -696,7 +696,7 @@ During the phase when we check the retrieved values of the description against v
 
 *The following examples are based on SHACL advanced features.*
 
-#### Check of the number of triples
+#### Check of the number of triples
 We define a shape to check that the number of triples is the value expected. As we have to adapt the shape for the count found in each description, we use `dkg:missingValue` to help the modification of the shape.
 ```
 :CountEqualityShape a sh:NodeShape ;
