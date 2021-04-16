@@ -485,6 +485,7 @@ For our need, each endpoint is an instance of `earl:TestSubject`, and each repor
     -  `earl:outcome` gives the result of the test. The results can be instances of the `earl:OutcomeValue` with the following instance defined by the EARL vocabulary: `earl:passed`, `earl:failed`, `earl:cantTell`, `earl:inapplicable` and `earl:untested` or with any instance of the `earl:Pass`, `earl:Fail`, `earl:NotTested`, `earl:NotApplicable` or `earl:CannotTell` classes. In the case of a failure because of a HTTP error sent by the SPARQL endpoint, it is advised to create an instance of `earl:Fail` linked to a partial description of the HTTP response with the property `dkg:httpResponse`.
     -  `earl:info` gives comments on the outcome if possible.
     - The time of the test with `prov:generatedAtTime`
+    - If necessary, the object of the property ` dkg:testUpdate` is an UPDATE query described using SPIN, to be applied to the triples linked to the object of the `earl:test` property.
 
 There are dependancies between test, for example every test must be done after the reachability have been tested, or the search for description resources connected to the endpoint is a refinement of the search for any description resource in the dataset. To define the dependancies between tests, we use the relation `dcterms:requires`.
 
