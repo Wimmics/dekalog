@@ -24,6 +24,10 @@
 	- [Examples of descriptions](#examples-of-descriptions)
 		- [Trace of the extraction](#trace-of-the-extraction)
 		- [Generation of reports on query execution](#generation-of-reports-on-query-execution)
+			- [Reachability test](#reachability-test)
+			- [Test of the existence of connected endpoint description](#test-of-the-existence-of-connected-endpoint-description)
+			- [Test of the existence of connected dataset descriptions, with graphs](#test-of-the-existence-of-connected-dataset-descriptions-with-graphs)
+			- [Check of the number of triples](#check-of-the-number-of-triples)
 		- [DBpedia <!-- [DBPedia](http://dbpedia.org/sparql) -->](#dbpedia-dbpediahttpdbpediaorgsparql-)
 			- [Extraction of the SPARQL endpoint description](#extraction-of-the-sparql-endpoint-description)
 			- [Extraction of the void/dcat description](#extraction-of-the-voiddcat-description)
@@ -489,6 +493,7 @@ For our need, each endpoint is an instance of `earl:TestSubject`, and each repor
 
 There are dependancies between test, for example every test must be done after the reachability have been tested, or the search for description resources connected to the endpoint is a refinement of the search for any description resource in the dataset. To define the dependancies between tests, we use the relation `dcterms:requires`.
 
+#### Reachability test
 As examples, we detail several different types of queries sent during our extraction and refinment process.
 
 The first query to be sent to a server is the simple query:
@@ -570,6 +575,7 @@ If the test fails, the result should contain a description of the response that 
     ] .
 ```
 
+#### Test of the existence of connected endpoint description
 Other tests have to be done for every SPARQL endpoint but need adaptations. Those adaptations can be done using pre-defined variables. As an example, the query used to look for endpoint descriptions connected to the SPARQL endpoint needs to be connected to a different URI for each endpoint. As there is no endpoint description at this point of the extraction, we are looking for it, the subject of the test is the endpoint URI. We define the pre-bound variable `$subject` as the value of the `earl:subject` property of an assertion. We define a test looking for the resources subject of the property sd:endpoint connected to the endpoint URI :
 ```
 :connectedEndpointDescResourceExtract a dkg:TestQuery ;
@@ -607,6 +613,7 @@ At the execution of this test on an endpoint, the interpeter replaces `$subject`
     ] .
 ```
 
+#### Test of the existence of connected dataset descriptions, with graphs
 In other cases, we need to modify more the query. For example, in a dataset where we have to add `FROM` clauses to our queries, we need to insert a clause for each graph in the dataset. To be able to do that it is preferable to not use blank nodes for the representation of the query, as we have shown before.
 
 For our example, we describe the test used to check the presence of dataset description resources:
@@ -689,6 +696,7 @@ During the phase when we check the retrieved values of the description against v
 
 *The following examples are based on SHACL advanced features.*
 
+#### Check of the number of triples
 We define a shape to check that the number of triples is the value expected. As we have to adapt the shape for the count found in each description, we use `dkg:missingValue` to help the modification of the shape.
 ```
 :CountEqualityShape a sh:NodeShape ;
