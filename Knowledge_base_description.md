@@ -703,7 +703,7 @@ We define a shape to check that the number of triples is the value expected. As 
     sh:target [
     	rdf:type sh:SPARQLTarget ;
     	sh:prefixes ex: ;
-    	sh:select """SELECT (count(*) AS ?this) WHERE {
+    	sh:select """SELECT (count(*) AS ?value) WHERE {
                 SELECT DISTINCT ?s ?p ?o WHERE {
                    ?s ?p ?o .
                 }
@@ -711,6 +711,27 @@ We define a shape to check that the number of triples is the value expected. As 
         ] ;
     sh:hasValue dkg:missingValue .
 ```
+
+<!-- *WIP* SHACL Core compliant version:
+```
+@prefix dkg: <https://dekalog.univ-nantes.fr/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+:countEqualityShape a sh:NodeShape ;
+    sh:targetSubjectsOf rdf:type ;
+    sh:vaidator [
+        a sh:SPARQLAskValidator ;
+        sh:ask """ASK {
+            SELECT (count(*) AS ?count) WHERE {
+                SELECT DISTINCT ?s ?p ?o WHERE {
+                    ?s ?p ?o .
+                }
+            }
+      		GROUP BY ?count
+            HAVING ( ?count = 54 )
+        }"""
+    ] .
+``` -->
 
 In the assertion `dkg:triplesCountExtraction`, representing the application of this shape on our example dataset, we add the following modification of the shape. The modification set the expected number of triples to 54.
 ```
