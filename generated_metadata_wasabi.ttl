@@ -126,14 +126,14 @@ dkg:Wasabi-service rdf:type sd:Service,
     sd:inputFormat dkg:missingValue .
 
 # Provenance information for the two descriptions
-dkg:Wasabi prov:wasDerivedFrom wasabi:sparql ;
+dkg:Wasabi-description  a prov:Entity , earl:TestSubject ;
+    prov:wasDerivedFrom wasabi:sparql ;
     prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-23"^^xsd:date ;
-    prov:actedOnBehalfOf <http://www.inria.fr> .
-dkg:Wasabi-service prov:wasDerivedFrom wasabi:sparql ;
-    prov:wasAttributedTo "Pierre Maillot"@en ;
-    prov:generatedAtTime "2021-03-23"^^xsd:date ;
-    prov:actedOnBehalfOf <http://www.inria.fr> .
+    prov:actedOnBehalfOf <http://www.inria.fr> ;
+    dkg:original wasabins:wasabi-1-0 ;
+    dkg:curated dkg:Wasabi ,
+        dkg:Wasabi-service .
 
 # Linksets
 dkg:wasabi-sameAs rdf:type void:Linkset ;

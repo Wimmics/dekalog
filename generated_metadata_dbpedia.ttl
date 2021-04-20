@@ -173,11 +173,11 @@ dkg:DBpedia-service rdf:type sd:Service,
     dkg:server "Virtuoso/08.03.3319 (Linux) x86_64-centos_6-linux-glibc2.12  VDB"@en .
 
 # Provenance information for the dataset and endpoint description
-dkg:DBpedia-description prov:wasDerivedFrom dbp:sparql ;
+dkg:DBpedia-description a prov:Entity , earl:TestSubject ;
+    prov:wasDerivedFrom dbp:sparql ;
     prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-22"^^xsd:date ;
     prov:actedOnBehalfOf <http://www.inria.fr> ;
-    prov:wasDerivedFrom dbp:sparql ;
     dkg:original dbp:sparql-sd ,
         dbv:Dataset ;
     dkg:curated dkg:DBpedia ,
