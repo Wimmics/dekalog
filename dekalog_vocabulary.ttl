@@ -7,6 +7,20 @@
 @prefix http: <http://www.w3.org/2011/http> .
 @prefix sp: <http://spinrdf.org/sp> .
 
+dkg:original a rdfs:Property ;
+    rdfs:label "Original description resources."
+    rdfs:comment "Description resources connected to the endpoint URL extracted from the endpoint"@en ;
+    rdfs:isDefinedBy dkg: ;
+    rdfs:domain prov:Entity ;
+    rdfs:range prov:Entity .
+
+dkg:curated a rdfs:Property ;
+    rdfs:label "Generated description resources."
+    rdfs:comment "Description resources generated from the interrogation of the endpoint URL and the curation of the available original resources descriptions."@en ;
+    rdfs:isDefinedBy dkg: ;
+    rdfs:domain prov:Entity ;
+    rdfs:range prov:Entity .
+
 dkg:missingValue a rdfs:Thing ;
     rdfs:label "Placeholder"@en ;
     rdfs:comment "Placeholder for the missing values of a property in a dataset or endpoint description"@en ;
@@ -40,22 +54,25 @@ dkg:TestQuery a rdfs:Class ;
 
 dkg:query a rdfs:Property ;
     rdfs:label "SPIN representation of the query tested" ;
+    rdfs:isDefinedBy dkg: ;
     rdfs:domain dkg:TestQuery ;
     rdfs:range sp:Query .
 
 dkg:testUpdate a rdfs:Property ;
     rdfs:label "Update of the test query." ;
-    rdfs:comment "Definition of an adapatation of a test query for a particular dataset. The adaptation is representated as a SPIN description of an UPDATE query for the test query description."
+    rdfs:comment "Definition of an adapatation of a test query for a particular dataset. The adaptation is representated as a SPIN description of an UPDATE query for the test query description." ;
     rdfs:domain earl:Assertion ;
     rdfs:range sp:Query .
 
 dkg:httpResponse a rdfs:Property ;
     rdfs:comment "Describe the parts of the HTTP response to the query as they should be. If the response description equals this one, the test is validated" ;
     rdfs:label "Model of the HTTP response of the tested query" ;
+    rdfs:isDefinedBy dkg: ;
     rdfs:domain dkg:TestQuery ;
     rdfs:range http:Response .
 
 dkg:statusOk a http:Response ;
     rdfs:comment "Pre-defined HTTP response to represent an accepted query with a status code OK." ;
     rdfs:label "HTTP Response status OK" ;
+    rdfs:isDefinedBy dkg: ;
     http:statusCodeValue 200 .

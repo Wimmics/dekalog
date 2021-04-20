@@ -216,29 +216,11 @@ dkg:BNB-service rdf:type sd:Service, dcat:DataService, prov:Entity, earl:TestSub
     sd:resultFormat dkg:missingValue .
 
 # Provenance
-dkg:BNB-service  rdf:type prov:Entity ;
-    prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;
-    prov:wasAttributedTo "Pierre Maillot"@en ;
-    prov:generatedAtTime "2021-03-29"^^xsd:date ;
-    prov:actedOnBehalfOf <http://www.inria.fr> .
-bnbdata:BNB  rdf:type prov:Entity ;
-    prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
-    prov:generatedAtTime "2021-03-29"^^xsd:date .
-bnbdata:BNBSerials  rdf:type prov:Entity ;
-    prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
-    prov:generatedAtTime "2021-03-29"^^xsd:date .
-bnbdata:BNBCIP  rdf:type prov:Entity ;
-    prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
-    prov:generatedAtTime "2021-03-29"^^xsd:date .
-bnbdata:BNBBooks  rdf:type prov:Entity ;
-    prov:wasQuotedFrom <http://bnb.data.bl.uk/sparql> ;
-    prov:generatedAtTime "2021-03-29"^^xsd:date .
 dkg:BNB-dataset rdf:type prov:Entity ;
     prov:wasRevisionOf bnbdata:BNB ;
-    prov:generatedAtTime "2021-03-29"^^xsd:date ;
-    rdfs:comment "dkg:BNB-dataset is derived from bnbdata:BNB, whose properties have been checked and extended" .
 
 dkg:BNB-description rdf:type prov:Entity, earl:TestSubject ;
+    prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;
     prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-29"^^xsd:date ;
     prov:actedOnBehalfOf <http://www.inria.fr> ;
