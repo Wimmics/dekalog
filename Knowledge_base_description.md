@@ -493,6 +493,14 @@ For our need, each endpoint is an instance of `earl:TestSubject`, and each repor
 
 There are dependancies between test, for example every test must be done after the reachability have been tested, or the search for description resources connected to the endpoint is a refinement of the search for any description resource in the dataset. To define the dependancies between tests, we use the relation `dcterms:requires`.
 
+Queries defined in instances of `dkg:TestQuery` sometimes need to be adapted to each endpoint. We define a set of keywords as a placeholder for the adaptations. If they are not necessary, there are to be removed from the query. We present the different keywords in the following table.
+
+| Keyword   | Description |
+|-----------|-------------|
+| $endpoint | The endpoint URL. |
+| $FROM     | The set of FROM or FROM NAMED clauses necessary to query the endpoint. |
+| $LIMIT    | A limit to the number of results asked to limit the risk of timeouts. |
+
 #### Reachability test
 As examples, we detail several different types of queries sent during our extraction and refinment process.
 
@@ -506,23 +514,16 @@ LIMIT 1
 We use it to verify the reachability of the SPARQL endpoint. We are not interested in the results of this query, we are only interested in the fact that the SPARQL endpoint accepts it and returns an answer to it.
 
 We first define a test to check the HTTP status of the response to or query. In this test, we give an RDF representation of the query and a constraint on its HTTP response from the server. The instance of `dkg:testQuery` has at least one instance of the property `dkg:query` with a [SPIN](https://www.w3.org/Submission/2011/SUBM-spin-sparql-20110222/) description of the SPARQL query sent. It also has one instance of the property `dkg:httpResponse` with an HTTP description of the expected answer of the server, an instance of `http:Response`. For convenience, we define the HTTP response of an acceptation of a query with a 200 status code by the resource `dkg:statusOK`.
+
 ```
 :reachabilityTest a earl:TestCase ,
         dkg:TestQuery ; # Class of tests similar to a lower-level SHACL shape where we precise the query and the expected HTTP response.
     dcterms:title "Reachability test" ;
     dcterms:description "Reachability is tested with a simple query" ;
-    dkg:query [
-        a sp:Select ;
-        sp:resultVariable () ;
-        sp:where (
-                [
-                    sp:subject [ sp:varName "s"^^xsd:string ] ;
-                    sp:predicate [ sp:varName "p"^^xsd:string ] ;
-                    sp:object [ sp:varName "o"^^xsd:string ]
-                ]
-            ) ;
-        sp:limit 1
-    ] ;
+    dkg:query """SELECT *
+        WHERE {
+            ?s ?p ?o .
+        } LIMIT 1 """ ;
     dkg:httpResponse dkg:statusOK .
     # dkg:statusOk represents a HTTP response described with  [ a http:Response ; http:statusCodeValue 200 ] .
 ```
@@ -533,7 +534,7 @@ The result of this test is represented in the metadata as an EARL assertion link
 :reachExampleEndpoint rdf:type earl:Assertion ,
         prov:Activity ;
     dcterms:title "Reachability test for the example endpoint" ;
-    earl:subject <http://www.example.com/sparql> ;
+    earl:subject :exampleSparqlService ;
     earl:test :reachabilityTest ;
     dkg:sentQuery "SELECT * WHERE { ?s ?p ?o } LIMIT 1" ;
     earl:result [
@@ -550,7 +551,7 @@ If the test fails, the result should contain a description of the response that 
 :reachExampleEndpoint rdf:type earl:Assertion ,
         prov:Activity ;
     dcterms:title "Reachability test for the example endpoint" ;
-    earl:subject <http://www.example.com/sparql> ;
+    earl:subject :exampleSparqlService ;
     earl:test :reachabilityTest ;
     dkg:sentQuery "SELECT * WHERE { ?s ?p ?o } LIMIT 1" ;
     earl:result [
@@ -576,34 +577,28 @@ If the test fails, the result should contain a description of the response that 
 ```
 #### Test of the existence of connected endpoint description
 
-Other tests have to be done for every SPARQL endpoint but need adaptations. Those adaptations can be done using pre-defined variables. As an example, the query used to look for endpoint descriptions connected to the SPARQL endpoint needs to be connected to a different URI for each endpoint. As there is no endpoint description at this point of the extraction, we are looking for it, the subject of the test is the endpoint URI. We define the pre-bound variable `$subject` as the value of the `earl:subject` property of an assertion. We define a test looking for the resources subject of the property sd:endpoint connected to the endpoint URI :
+Other tests have to be done for every SPARQL endpoint but need adaptations. Those adaptations can be done using pre-defined variables. As an example, the query used to look for endpoint descriptions connected to the SPARQL endpoint needs to be connected to a different URI for each endpoint. As there is no endpoint description at this point of the extraction, we are looking for it, the subject of the test is the endpoint URI. We define the pre-bound variable `$endpoint` as the URI of the endpoint currently tested. We define a test looking for the resources subject of the property sd:endpoint connected to the endpoint URI :
 ```
 :connectedEndpointDescResourceExtract a dkg:TestQuery ;
     dcterms:title "Extraction of endpoint description resources" ;
     dcterms:description "Extraction of the endpoint description resource the example endpoint, if there are any. The resources are the subject of the property sd:endpoint." ;
     dcterms:requires :reachabilityTest ;
-    dkg:query [
-        a sp:Select ;
-        sp:resultVariable ([ sp:varName "res"^^xsd:string ]) ;
-        sp:where (
-                [
-                    sp:subject [ sp:varName "res"^^xsd:string ] ;
-                    sp:predicate sd:endpoint ;
-                    sp:object $subject
-                    # $subject is a pre-bound variable for the subject of the report, i.e. object of the earl:subject property.
-                ]
-            )
-    ] .
+    dkg:query """SELECT DISTINCT ?res
+        $FROM
+        WHERE {
+            ?res sd:endpoint $endpoint .
+        }
+        $LIMIT""" .
 ```
 
-At the execution of this test on an endpoint, the interpeter replaces `$subject` by the endpoint URI, here `<http://www.example.com/sparql>`. In case of success, we obtain the following `earl:Assertion`:
+At the execution of this test on an endpoint, the interpeter replaces `$endpoint` by the endpoint URI, here `<http://www.example.com/sparql>`. In case of success, we obtain the following `earl:Assertion`:
 ```
 :connectedEndpointDescResourceExample rdf:type earl:Assertion ,
         prov:Activity ;
     dcterms:title "Extraction of the endpoint description resource the example endpoint, if there are any." ;
-    earl:subject <http://www.example.com/sparql> ;
+    earl:subject :exampleSparqlService ;
     earl:test :connectedEndpointDescResourceExtract ;
-    dkg:sentQuery """SELECT ?res WHERE {
+    dkg:sentQuery """SELECT DISTINCT ?res WHERE {
         ?res sd:endpoint <http://www.example.com/sparql> .
     }""" ;
     earl:result [
@@ -622,7 +617,96 @@ For our example, we describe the test used to check the presence of dataset desc
     dcterms:title "Extraction of dataset description resources" ;
     dcterms:description "Extraction of the dataset description resource the example endpoint, if there are any. The resources are instances of dcat: or void: Dataset." ;
     dcterms:requires :reachabilityTest ;
-    dkg:query :datasetDescResourceExtractQuery .
+    dkg:query """SELECT DISTINCT ?res
+        $FROM
+        WHERE {
+            { ?res a dcat:Dataset }
+            UNION { ?res a void:Dataset }
+        }
+        $LIMIT""" .
+```
+The `earl:Assertion` is defined as follows:
+```
+:datasetDescResourceExtractExample rdf:type earl:Assertion ,
+        prov:Activity ;
+    dcterms:title "Extraction of the dataset description resource the example endpoint, if there are any." ;
+    earl:subject :exampleSparqlService ;
+    earl:test :datasetDescResourceExtract ;
+    dkg:sentQuery """SELECT DISTINCT ?res
+        FROM :graph1
+        FROM :graph2
+        FROM :graph3
+        WHERE {
+            { ?res a dcat:Dataset }
+            UNION { ?res a void:Dataset }
+        }""" ;
+    earl:result [
+        earl:outcome earl:passed ;
+        prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime ;
+        earl:info "The server returned an answer for this query"@en
+    ] .
+```
+Note the value of `dkg:sentQuery` taking into account our update of the query.
+
+During the phase when we check the retrieved values of the description against values computed from the data, we use SHACL shapes to define the tests.
+
+*The following examples are based on SHACL advanced features.*
+
+#### Check of the number of triples
+We define a shape to check that the number of triples is the value expected. As we have to adapt the shape for the count found in each description, we use `dkg:missingValue` to help the modification of the shape.
+```
+:CountEqualityShape a sh:NodeShape ;
+    sh:target [
+    	rdf:type sh:SPARQLTarget ;
+    	sh:prefixes ex: ;
+    	sh:select """SELECT (count(*) AS ?value)
+            $FROM
+            WHERE {
+                SELECT DISTINCT ?s ?p ?o WHERE {
+                   ?s ?p ?o .
+                }
+            }"""
+        ] ;
+    sh:hasValue dkg:missingValue .
+```
+
+In the assertion `dkg:triplesCountExtraction`, representing the application of this shape on our example dataset, we add the following modification of the shape. The modification set the expected number of triples to 54.
+```
+:datasetDescResourceExtractExample
+    dkg:testUpdate [
+           a sp:Modify ;
+           sp:deletePattern ([
+                   sp:subject :CountEqualityShape ;
+                   sp:predicate sh:hasValue ;
+                   sp:object dkg:missingValue
+               ]) ;
+            sp:insertPattern ([
+                    sp:subject :CountEqualityShape ;
+                    sp:predicate sh:hasValue ;
+                    sp:object 54
+                ])
+        ] .
+```
+After adapatation to the dataset, the shape can be applied and the validation report is added to the outcome of the test.
+```
+dkg:triplesCountExtraction rdf:type earl:Assertion ,
+        prov:Activity ;
+    earl:subject :exampleSparqlService ;
+    dcterms:requires dkg:reachableEndpoint ;
+    earl:test dkg:CountEqualityShape ;
+    earl:result [
+        earl:outcome [
+            rdf:type earl:Pass , sh:ValidationReport ;
+            sh:conforms true ;
+        ] ;
+        prov:generatedAtTime "2021-03-31T16:15:52"^^xsd:datetime
+    ] .
+```
+
+##### Alternative query notation
+As an alternative to the SPARQL queries templates used to define tests, we also propose to use SPIN notations to define queries. We also propose to replace the usage of templates by the definition of the transformations applied to the SPIN description of the queries with a SPARQL UPDATE query.
+```
+:datasetDescResourceExtract dkg:querySPIN :datasetDescResourceExtractQuery .
 ```
 We take care to describe the query with its own URI:
 ```
@@ -669,109 +753,6 @@ We insert the clauses in the test query, as an INSERT DATA query, with the follo
         ])
     ] .
 ```
-The `earl:Assertion` is defined as follows:
-```
-:datasetDescResourceExtractExample rdf:type earl:Assertion ,
-        prov:Activity ;
-    dcterms:title "Extraction of the dataset description resource the example endpoint, if there are any." ;
-    earl:subject <http://www.example.com/sparql> ;
-    earl:test :datasetDescResourceExtract ;
-    dkg:sentQuery """SELECT ?res
-        FROM :graph1
-        FROM :graph2
-        FROM :graph3
-        WHERE {
-            { ?res a dcat:Dataset }
-            UNION { ?res a void:Dataset }
-        }""" ;
-    earl:result [
-        earl:outcome earl:passed ;
-        prov:generatedAtTime "2021-03-23T16:15:52"^^xsd:datetime ;
-        earl:info "The server returned an answer for this query"@en
-    ] .
-```
-Note the value of `dkg:sentQuery` taking into account our update of the query.
-
-During the phase when we check the retrieved values of the description against values computed from the data, we use SHACL shapes to define the tests.
-
-*The following examples are based on SHACL advanced features.*
-
-#### Check of the number of triples
-We define a shape to check that the number of triples is the value expected. As we have to adapt the shape for the count found in each description, we use `dkg:missingValue` to help the modification of the shape.
-```
-:CountEqualityShape a sh:NodeShape ;
-    sh:target [
-    	rdf:type sh:SPARQLTarget ;
-    	sh:prefixes ex: ;
-    	sh:select """SELECT (count(*) AS ?value) WHERE {
-                SELECT DISTINCT ?s ?p ?o WHERE {
-                   ?s ?p ?o .
-                }
-            }"""
-        ] ;
-    sh:hasValue dkg:missingValue .
-```
-
-<!-- *WIP* SHACL Core compliant version:
-```
-@prefix dkg: <https://dekalog.univ-nantes.fr/> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-
-:countEqualityShape a sh:NodeShape ;
-    sh:targetSubjectsOf rdf:type ;
-    sh:vaidator [
-        a sh:SPARQLAskValidator ;
-        sh:ask """ASK {
-            SELECT (count(*) AS ?count) WHERE {
-                SELECT DISTINCT ?s ?p ?o WHERE {
-                    ?s ?p ?o .
-                }
-            }
-      		GROUP BY ?count
-            HAVING ( ?count = 54 )
-        }"""
-    ] .
-``` -->
-
-In the assertion `dkg:triplesCountExtraction`, representing the application of this shape on our example dataset, we add the following modification of the shape. The modification set the expected number of triples to 54.
-```
-:datasetDescResourceExtractExample
-    dkg:testUpdate [
-           a sp:Modify ;
-           sp:deletePattern ([
-                   sp:subject :CountEqualityShape ;
-                   sp:predicate sh:hasValue ;
-                   sp:object dkg:missingValue
-               ]) ;
-            sp:insertPattern ([
-                    sp:subject :CountEqualityShape ;
-                    sp:predicate sh:hasValue ;
-                    sp:object 54
-                ])
-        ] .
-```
-After adapatation to the dataset, the shape can be applied and the validation report is added to the outcome of the test.
-```
-dkg:triplesCountExtraction rdf:type earl:Assertion ,
-        prov:Activity ;
-    earl:subject :exampleDataset ;
-    dcterms:requires dkg:reachableEndpoint ;
-    earl:test dkg:CountEqualityShape ;
-    earl:result [
-        earl:outcome [
-            rdf:type earl:Pass , sh:ValidationReport ;
-            sh:conforms true ;
-        ] ;
-        prov:generatedAtTime "2021-03-31T16:15:52"^^xsd:datetime
-    ] .
-```
-
-<!---
-TODO:
-- Acceptation de la requête et nombre de résultats, Différence acceptation de la requête / Contrainte de résultats -> 2 types de rapports ? => Pas dans le sémantique de EARL, pour plus tard
-- Transformation des templates selon la cible -> Variable pré-bound ou pseudo SPARQL UPDATE
---->
-
 ---
 **EDIT:**
 This document will be edited to reflect what we learned here:
@@ -997,7 +978,6 @@ The values retrieved from the metadata and from the endpoint for those three pro
 | `void:entities`         | 30 127 028      | 7 835 229       |
 
 The difference of value between our data and the retrieved metadata can be explained either by a limitation of the endpoint capacity to give a full count or by outdated metadata. In this example, we choose to keep the retrieved metadata values over our generated ones, in the hypothesis that the provider of those values had fewer limitations during their generation.
-<!--- NOTE Lequel choisir ? celui donné ou celui re-calculé --->
 
 ##### Check of the linkset statistics
 In a similar fashion to the population statistics, we can check the count given in the two linksets description retrieved. The count of the sameAs relations in the dataset is retrived by the following query:
