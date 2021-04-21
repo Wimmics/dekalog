@@ -126,7 +126,8 @@ dkg:Wasabi-service rdf:type sd:Service,
     sd:inputFormat dkg:missingValue .
 
 # Provenance information for the two descriptions
-dkg:Wasabi-description  a prov:Entity , earl:TestSubject ;
+dkg:Wasabi-description  a prov:Entity ,
+        earl:TestSubject ;
     prov:wasDerivedFrom wasabi:sparql ;
     prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-23"^^xsd:date ;
@@ -231,23 +232,3 @@ dkg:Wasabi void:classPartition [
     void:classPartition [
         void:class dcat:Dataset ;
         void:entities 1 ] .
-
-
-# Error report
-dkg:namespaceExtraction earl:subject dkg:Wasabi-service ;
-    earl:test """SELECT DISTINCT ?g WHERE {
-        GRAPH ?g {
-            ?s ?p ?o
-        }
-        FILTER(REGEX(?g, "http://ns.inria.fr/wasabi/wasabi-1-0") )
-    }
-    ORDER BY ?g""" ;
-    earl:result [
-        earl:outcome earl:failed ;
-        prov:generatedAtTime "2021-03-25T14:32:52"^^xsd:datetime ;
-        earl:info """Proxy Error
-            The proxy server received an invalid response from an upstream server.
-            The proxy server could not handle the request
-
-            Reason: Error reading from remote server"""
-    ] .

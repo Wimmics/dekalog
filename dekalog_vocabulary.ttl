@@ -5,17 +5,19 @@
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
 @prefix http: <http://www.w3.org/2011/http> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix sp: <http://spinrdf.org/sp> .
 
 dkg:original a rdfs:Property ;
-    rdfs:label "Original description resources."
+    rdfs:label "Original description resources." ;
     rdfs:comment "Description resources connected to the endpoint URL extracted from the endpoint"@en ;
     rdfs:isDefinedBy dkg: ;
     rdfs:domain prov:Entity ;
     rdfs:range prov:Entity .
 
 dkg:curated a rdfs:Property ;
-    rdfs:label "Generated description resources."
+    rdfs:label "Generated description resources." ;
     rdfs:comment "Description resources generated from the interrogation of the endpoint URL and the curation of the available original resources descriptions."@en ;
     rdfs:isDefinedBy dkg: ;
     rdfs:domain prov:Entity ;
@@ -52,11 +54,17 @@ dkg:TestQuery a rdfs:Class ;
     rdfs:subClassOf sh:Shape , # TODO: is subClassOf adapted for the relation with SHACL ?
         earl:TestCase .
 
-dkg:query a rdfs:Property ;
+dkg:querySPIN a rdfs:Property ;
     rdfs:label "SPIN representation of the query tested" ;
     rdfs:isDefinedBy dkg: ;
     rdfs:domain dkg:TestQuery ;
     rdfs:range sp:Query .
+
+dkg:query a rdfs:Property ;
+    rdfs:label "String representation with templates elements of the tested query" ;
+    rdfs:isDefinedBy dkg: ;
+    rdfs:domain dkg:TestQuery ;
+    rdfs:range xsd:string .
 
 dkg:testUpdate a rdfs:Property ;
     rdfs:label "Update of the test query." ;
