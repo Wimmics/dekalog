@@ -158,22 +158,22 @@ As an example:
 ```
 Other elements of description, such as the themes or keywords may be used.
 ```
-:exampleDataset dcterms:subject :metadata,
-        :example,
-        "vocabulary",
+:exampleDataset dcterms:subject :metadata ,
+        :example ,
+        "vocabulary" ,
         "SPARQL" ;
     schema:keywords
-        :metadata,
-        :example,
+        :metadata ,
+        :example ,
         "vocabulary",
         "SPARQL" .
 
 :metadata a skos:Concept ;
-    skos:prefLabel "Metadata" .
+    skos:prefLabel "Metadata" ;
     rdfs:label "Metadata" .
 
 :example a skos:Concept ;
-    rdfs:label "Example" .
+    rdfs:label "Example" ;
     skos:prefLabel "Example" .
 ```
 
@@ -493,7 +493,7 @@ For our need, each endpoint is an instance of `earl:TestSubject`, and each repor
 
 There are dependancies between test, for example every test must be done after the reachability have been tested, or the search for description resources connected to the endpoint is a refinement of the search for any description resource in the dataset. To define the dependancies between tests, we use the relation `dcterms:requires`.
 
-Queries defined in instances of `dkg:TestQuery` sometimes need to be adapted to each endpoint. We define a set of keywords as a placeholder for the adaptations. If they are not necessary, there are to be removed from the query. We present the different keywords in the following table.
+Queries defined in instances of `dkg:TestQuery` sometimes need to be adapted to each endpoint. We define a set of template keywords as a placeholder for the adaptations. If they are not necessary, there are to be removed from the query. We present the different keywords in the following table.
 
 | Keyword   | Description |
 |-----------|-------------|
@@ -513,7 +513,7 @@ LIMIT 1
 ```
 We use it to verify the reachability of the SPARQL endpoint. We are not interested in the results of this query, we are only interested in the fact that the SPARQL endpoint accepts it and returns an answer to it.
 
-We first define a test to check the HTTP status of the response to or query. In this test, we give an RDF representation of the query and a constraint on its HTTP response from the server. The instance of `dkg:testQuery` has at least one instance of the property `dkg:query` with a [SPIN](https://www.w3.org/Submission/2011/SUBM-spin-sparql-20110222/) description of the SPARQL query sent. It also has one instance of the property `dkg:httpResponse` with an HTTP description of the expected answer of the server, an instance of `http:Response`. For convenience, we define the HTTP response of an acceptation of a query with a 200 status code by the resource `dkg:statusOK`.
+We first define a test to check the HTTP status of the response to or query. In this test, we give an RDF representation of the query and a constraint on its HTTP response from the server. The instance of `dkg:testQuery` has at least one instance of the property `dkg:query` with a SPARQL query. It also has one instance of the property `dkg:httpResponse` with an HTTP description of the expected answer of the server, an instance of `http:Response`. For convenience, we define the HTTP response of an acceptation of a query with a 200 status code by the resource `dkg:statusOK`.
 
 ```
 :reachabilityTest a earl:TestCase ,
@@ -577,7 +577,7 @@ If the test fails, the result should contain a description of the response that 
 ```
 #### Test of the existence of connected endpoint description
 
-Other tests have to be done for every SPARQL endpoint but need adaptations. Those adaptations can be done using pre-defined variables. As an example, the query used to look for endpoint descriptions connected to the SPARQL endpoint needs to be connected to a different URI for each endpoint. As there is no endpoint description at this point of the extraction, we are looking for it, the subject of the test is the endpoint URI. We define the pre-bound variable `$endpoint` as the URI of the endpoint currently tested. We define a test looking for the resources subject of the property sd:endpoint connected to the endpoint URI :
+Other tests have to be done for every SPARQL endpoint but need adaptations. Those adaptations can be done using pre-defined variables. As an example, the query used to look for endpoint descriptions connected to the SPARQL endpoint needs to be connected to a different URI for each endpoint. As there is no endpoint description at this point of the extraction, we are looking for it, the subject of the test is the endpoint URI. We define the template keyword `$endpoint` as the URI of the endpoint currently tested. We define a test looking for the resources subject of the property sd:endpoint connected to the endpoint URI :
 ```
 :connectedEndpointDescResourceExtract a dkg:TestQuery ;
     dcterms:title "Extraction of endpoint description resources" ;
@@ -704,7 +704,9 @@ dkg:triplesCountExtraction rdf:type earl:Assertion ,
 ```
 
 ##### Alternative query notation
-As an alternative to the SPARQL queries templates used to define tests, we also propose to use SPIN notations to define queries. We also propose to replace the usage of templates by the definition of the transformations applied to the SPIN description of the queries with a SPARQL UPDATE query.
+As an alternative to the SPARQL queries templates used to define tests, we also propose to use [SPIN](https://www.w3.org/Submission/2011/SUBM-spin-sparql-20110222/) description of the SPARQL query sent notations to define queries. We also propose to replace the usage of templates by the definition of the transformations applied to the SPIN description of the queries with a SPARQL UPDATE query.
+
+As an example, for the [test of the existence of connected dataset descriptions, with graphs](#test-of-the-existence-of-connected-dataset-descriptions-with-graphs), we describe the test as follows:
 ```
 :datasetDescResourceExtract dkg:querySPIN :datasetDescResourceExtractQuery .
 ```
@@ -753,6 +755,7 @@ We insert the clauses in the test query, as an INSERT DATA query, with the follo
         ])
     ] .
 ```
+<!--
 ---
 **EDIT:**
 This document will be edited to reflect what we learned here:
@@ -784,7 +787,7 @@ For now, the method of extraction and generation is planned as follows:
   * If their are population statistics values, re-calculate those values using SPARQL queries.
 4. Generate missing data.
 ---
-
+-->
 ### DBpedia <!-- [DBPedia](http://dbpedia.org/sparql) -->
 We suppose that we only know the name of the base "DBpedia" and its endpoint URL.
 
