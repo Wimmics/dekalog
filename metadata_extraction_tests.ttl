@@ -1,0 +1,111 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix formats: <http:www.w3.org/ns/formats/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix dkg: <https://dekalog.univ-nantes.fr/> .
+@prefix ipo: <http://purl.org/ipo/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix http: <http://www.w3.org/2011/http> .
+
+dkg:reachableEndpointTest a earl:TestCase ,
+        dkg:TestQuery ;
+    dcterms:title "Reachability test" ;
+    dcterms:description "Reachability is tested with a simple query" ;
+    dkg:query """SELECT *
+        WHERE {
+            ?s ?p ?o .
+        } LIMIT 1 """ ;
+    dkg:httpResponse dkg:statusOK .
+
+dkg:connectedEndpointDescResourceTest a dkg:TestQuery ;
+    dcterms:title "Extraction of endpoint description resources" ;
+    dcterms:description "Extraction of the endpoint description resource the example endpoint, if there are any. The resources are the subject of the property sd:endpoint." ;
+    dcterms:requires dkg:reachableEndpointTest ;
+    dkg:query """SELECT DISTINCT ?res
+        $FROM
+        WHERE {
+            ?res sd:endpoint $endpoint .
+        }
+        $LIMIT""" .
+
+dkg:datasetDescResourceTest dkg:TestQuery ;
+    dcterms:title "Extraction of dataset description resources" ;
+    dcterms:description "Extraction of the dataset description resource the example endpoint, if there are any. The resources are instances of dcat: or void: Dataset." ;
+    dcterms:requires dkg:reachableEndpointTest ;
+    dkg:query """SELECT DISTINCT ?res
+        $FROM
+        WHERE {
+            { ?res a dcat:Dataset }
+            UNION { ?res a void:Dataset }
+        }
+        $LIMIT""" .
+
+dkg:datasetDescResourceConnectedTest dkg:TestQuery ;
+    dcterms:title "Extraction of dataset description resources" ;
+    dcterms:description "Extraction of the dataset description resource the example endpoint, if there are any. The resources are instances of dcat: or void: Dataset." ;
+    dcterms:requires dkg:datasetDescResourceTest ;
+    dkg:query """SELECT DISTINCT ?res
+        $FROM
+        WHERE {
+            { ?res a dcat:Dataset }
+            UNION { ?res a void:Dataset }
+            ?res ?p $endpoint .
+        }
+        $LIMIT""" .
+
+dkg:provenanceExtractionShape rdf:type sh:NodeShape ;
+    sh:targetClass void:Dataset ;
+    # Who ?
+    sh:or (
+		[ sh:targetSubjectsOf dcterms:creator ]
+		[ sh:targetSubjectsOf dcterms:contributor ]
+		[ sh:targetSubjectsOf dcterms:publisher ]
+		[ sh:targetSubjectsOf prov:wasAttributedTo ]
+    ) ;
+    # What ?
+    sh:or (
+		[ sh:targetSubjectsOf dcterms:licence ]
+		[ sh:targetSubjectsOf dcterms:conformsTo ]
+    ) ;
+    # How ?
+    sh:or (
+		[ sh:targetSubjectsOf dcterms:created ]
+		[ sh:targetSubjectsOf dcterms:modified ]
+		[ sh:targetSubjectsOf prov:wasGeneratedAtTime ]
+		[ sh:targetSubjectsOf dcterms:issued ]
+		[ sh:targetSubjectsOf dcterms:source ]
+		[ sh:targetSubjectsOf prov:wasDerivedFrom ]
+		[ sh:targetSubjectsOf dcterms:format ]
+    ) .
+
+dkg:graphListExtractionTest rdf:type dkg:TestQuery ;
+    dcterms:title "Extraction of the list of graphs in the endpoint"@en ;
+    dcterms:requires dkg:reachableEndpointTest ;
+    dkg:query """SELECT DISTINCT ?graph
+        $FROM
+        WHERE {
+            GRAPH ?graph { ?s ?p ?o }
+        }
+        ORDER BY ?graph
+        $LIMIT""" .
+
+dkg:vocabularyListExtractionTest rdf:type dkg:TestQuery ;
+    dcterms:title ""@en ;
+    dcterms:requires dkg:reachableEndpointTest ;
+    dkg:query """SELECT DISTINCT ?ns
+        $FROM
+        WHERE {
+            { ?s ?elem ?o . }
+            UNION { ?s ?p ?elem . }
+            UNION {?elem ?p ?o }
+            BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
+        }
+        $LIMIT""" ;
