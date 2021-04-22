@@ -61,7 +61,8 @@ dkg:datasetDescResourceConnectedTest dkg:TestQuery ;
         }
         $LIMIT""" .
 
-dkg:provenanceExtractionShape rdf:type sh:NodeShape ;
+dkg:provenanceExtractionShape rdf:type sh:NodeShape ,
+        earl:TestCase ;
     sh:targetClass void:Dataset ;
     # Who ?
     sh:or (
@@ -97,15 +98,61 @@ dkg:graphListExtractionTest rdf:type dkg:TestQuery ;
         ORDER BY ?graph
         $LIMIT""" .
 
+dkg:graphListExtractionInNamespaceTest rdf:type dkg:TestQuery ;
+    dcterms:title "Extraction of the list of graphs in the namespace of the dataset"@en ;
+    dcterms:requires dkg:reachableEndpointTest ;
+    dkg:query """SELECT DISTINCT ?graph
+        $FROM
+        WHERE {
+            GRAPH ?graph { ?s ?p ?o }
+            FILTER( REGEX( ?graph, $namespace) )
+        }
+        ORDER BY ?graph
+        $LIMIT""" .
+
 dkg:vocabularyListExtractionTest rdf:type dkg:TestQuery ;
-    dcterms:title ""@en ;
+    dcterms:title "Extraction of the namespaces of properties and classes."@en ;
     dcterms:requires dkg:reachableEndpointTest ;
     dkg:query """SELECT DISTINCT ?ns
         $FROM
         WHERE {
             { ?s ?elem ?o . }
             UNION { ?s ?p ?elem . }
-            UNION {?elem ?p ?o }
             BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
         }
-        $LIMIT""" ;
+        $LIMIT""" .
+
+dkg:triplesCountExtractionTest rdf:type dkg:TestQuery ;
+    dcterms:title "Count of triples in the dataset"@en ;
+    dcterms:requires dkg:reachableEndpointTest ;
+    dkg:query """SELECT (count(*) AS ?count) WHERE {
+            SELECT DISTINCT ?s ?p ?o
+            $FROM
+            WHERE {
+               ?s ?p ?o .
+            }
+        }""" .
+
+dkg:classCountExtractionTest rdf:type dkg:TestQuery ;
+    dcterms:title "Count of the classes in the dataset"@en ;
+    dcterms:requires dkg:reachableEndpointTest ;
+    dkg:query """SELECT ?class (count(?instance) AS ?count)
+        $FROM
+        WHERE {
+            SELECT DISTINCT ?class ?instance
+            WHERE {
+                ?instance a ?class
+            }
+        }""" .
+
+dkg:classPopCountTest rdf:type dkg:TestQuery ;
+    dcterms:title "Extraction of the counts of instances for each classes."@en ;
+    dcterms:requires dkg:reachableEndpointTest ;
+    dkg:query """SELECT ?class (count(?instance) AS ?count) WHERE {
+        SELECT DISTINCT ?class ?instance
+        $FROM
+        WHERE {
+            ?instance a ?class .
+            ?s ?prop ?o
+        }
+    }""" .

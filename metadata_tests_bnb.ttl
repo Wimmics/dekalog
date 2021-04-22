@@ -85,8 +85,8 @@ dkg:endpointResourceConnectedExtraction rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-description ;
     dcterms:requires dkg:endpointResourceExtraction ;
-    skos:broader dkg:endpointResourceExtraction ;
-    earl:test """SELECT DISTINCT ?endpoint WHERE {
+    earl:test dkg:connectedEndpointDescResourceTest ;
+    dkg:sentQuery """SELECT DISTINCT ?endpoint WHERE {
         ?endpoint sd:endpoint <http://bnb.data.bl.uk/sparql> .
     }""" ;
     earl:result [
@@ -145,7 +145,8 @@ dkg:triplesCountExtraction rdf:type earl:Assertion ,
         prov:Activity ;
     earl:subject dkg:BNB-service ;
     dcterms:requires dkg:reachableEndpoint ;
-    earl:test """SELECT (count(*) AS ?count) WHERE {
+    earl:test dkg:triplesCountExtractionTest ;
+    dkg:sentQuery """SELECT (count(*) AS ?count) WHERE {
             SELECT DISTINCT ?s ?p ?o WHERE {
                ?s ?p ?o .
             }
@@ -169,15 +170,17 @@ dkg:triplesCountExtraction rdf:type earl:Assertion ,
         ] ;
         prov:generatedAtTime "2021-03-31T16:14:52"^^xsd:datetime ;
         earl:info "Dataset Request: HTTP Status: 500; error"@en
-    ] ,
-    [
+    ] ;
+    earl:result [
         earl:outcome earl:passed ;
         prov:generatedAtTime "2021-03-31T16:15:52"^^xsd:datetime
     ] .
 
 dkg:classCountExtraction rdf:type earl:Assertion ;
     earl:subject dkg:BNB-service ;
-    earl:test """SELECT ?class (count(?instance) AS ?count) WHERE {
+    dcterms:requires dkg:reachableEndpoint ;
+    earl:test dkg:classCountExtractionTest ;
+    dkg:sentQuery """SELECT ?class (count(?instance) AS ?count) WHERE {
             SELECT DISTINCT ?class ?instance
             WHERE {
                 ?instance a ?class
@@ -207,7 +210,8 @@ dkg:classCountExtraction rdf:type earl:Assertion ;
 
 dkg:classPopCount rdf:type earl:Assertion ;
     earl:subject dkg:BNB-service ;
-    earl:test """SELECT ?class (count(?instance) AS ?count) WHERE {
+    earl:test dkg:classPopCountTest ;
+    dkg:sentQuery """SELECT ?class (count(?instance) AS ?count) WHERE {
         SELECT DISTINCT ?class ?instance
         WHERE {
             ?instance a ?class .
