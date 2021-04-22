@@ -51,8 +51,7 @@ dkg:TestQuery a rdfs:Class ;
     rdfs:label "Test of a SPARQL query execution" ;
     rdfs:comment "Test the result of the execution of a query in the manner of a SHACL shape but allows declaration of constraints on the HTTP response and the result." ;
     rdfs:isDefinedBy dkg: ;
-    rdfs:subClassOf sh:Shape , # TODO: is subClassOf adapted for the relation with SHACL ?
-        earl:TestCase .
+    rdfs:subClassOf earl:TestCase .
 
 dkg:querySPIN a rdfs:Property ;
     rdfs:label "SPIN representation of the query tested" ;

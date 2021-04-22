@@ -495,11 +495,12 @@ There are dependancies between test, for example every test must be done after t
 
 Queries defined in instances of `dkg:TestQuery` sometimes need to be adapted to each endpoint. We define a set of template keywords as a placeholder for the adaptations. If they are not necessary, there are to be removed from the query. We present the different keywords in the following table.
 
-| Keyword   | Description |
-|-----------|-------------|
-| $endpoint | The endpoint URL. |
-| $FROM     | The set of FROM or FROM NAMED clauses necessary to query the endpoint. |
-| $LIMIT    | A limit to the number of results asked to limit the risk of timeouts. |
+| Keyword    | Description |
+|------------|-------------|
+| $endpoint  | The endpoint URL. |
+| $namespace | The namespace of the the dataset, if it is given |
+| $FROM      | The set of FROM or FROM NAMED clauses necessary to query the endpoint. |
+| $LIMIT     | A limit to the number of results asked to limit the risk of timeouts. |
 
 #### Reachability test
 As examples, we detail several different types of queries sent during our extraction and refinment process.
@@ -1001,16 +1002,16 @@ The generated values are very close to the ones retrieved from the metadata, we 
 The retrieved endpoint description elements cannot be checked using SPARQL queries and will be checked using other methods at a later date. As written in previous sections, we add to the endpoint description the list of all graphs we could extract. We also add the link between the endpoint description and the dataset description with the property `dcat:servesDataset`.
 
 ##### Addition of basic provenance metadata
-We add some provenance information to describe our generated data. We had a few lines of provenance information describing the sources and time of generation of the generated metadata.
+We add some provenance information to describe our generated data. We had a few lines of provenance information describing the sources and time of generation of the generated metadata. We link the resource `dkg:DBpedia-description`, used to describe the provenance of the generated metadata, to the resources from the dataset and the generated description resources using `dkg:original` and `dkg:curated`.
 ```
-dkg:DBpedia prov:wasDerivedFrom dbp:sparql ;
+dkg:DBpedia-description prov:wasDerivedFrom dbp:sparql ;
     prov:wasAttributedTo "Pierre Maillot"@en ;
     prov:generatedAtTime "2021-03-22"^^xsd:date ;
-    prov:actedOnBehalfOf <http://www.inria.fr> .
-dkg:DBpedia-service prov:wasDerivedFrom dbp:sparql ;
-    prov:wasAttributedTo "Pierre Maillot"@en ;
-    prov:generatedAtTime "2021-03-22"^^xsd:date ;
-    prov:actedOnBehalfOf <http://www.inria.fr> .
+    prov:actedOnBehalfOf <http://www.inria.fr> ;
+    dkg:curated dkg:DBpedia ,
+        dkg:DBpedia-service .
+    dkg:original <http://dbpedia.org/void/Dataset> ,
+        <http://DBpedia.org/sparql-sd> .
 ```
 
 A first version of the metadata about DBPedia would be as presented in file [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl). Until line 144, the file contains metadata retrieved from the endpoint and checked when possible.
@@ -1031,7 +1032,7 @@ OFFSET 300
 For our example, we limited ourselves to the classes part of the `http://dbpedia.org/ontology` namespace. We constructed directly the metadata using the following query. The results of this query are shown in [generated_metadata_dbpedia.ttl](https://github.com/Wimmics/dekalog/blob/master/generated_metadata_dbpedia.ttl) between line 157 and 1056.
 ```
 CONSTRUCT {
-    <https://dekalog.univ-nantes.fr/DBpedia> void:classPartition [
+    dkb:DBpedia void:classPartition [
         void:class ?class ;
         void:entities ?count
     ]
@@ -1076,8 +1077,6 @@ We obtain the following list of vocabularies
 | <http://www.openlinksw.com/schemas/virtrdf#>             |
 | <http://www.openlinksw.com/schemas/oplweb#>              |
 
-*WIP*
-
 ### Wasabi
 <!-- [Wasabi](http://wasabi.inria.fr/sparql) -->
 We suppose that we only know the name "Wasabi" and its endpoint's URL `http://wasabi.inria.fr/sparql`.
@@ -1103,7 +1102,19 @@ Yet, the VoID/DCAT description contains the value `"http://ns.inria.fr/wasabi/"`
  ```
 dkg:Wasabi-service a earl:TestSubject .
 :namespaceExtraction earl:subject dkg:Wasabi-service ;
-    earl:test """SELECT DISTINCT ?g WHERE {
+    earl:test [
+        a earl:TestCase , dkg:TestQuery ;
+        dcterms:title "Extraction of graphs in the dataset namespace." ;
+        dkg:query """SELECT DISTINCT ?g WHERE {
+            GRAPH ?g {
+                ?s ?p ?o
+            }
+            FILTER(REGEX(?g, $namespace) )
+        }
+        ORDER BY ?g
+        $LIMIT """
+    ]
+    dkg:sentQuery """SELECT DISTINCT ?g WHERE {
         GRAPH ?g {
             ?s ?p ?o
         }
@@ -1111,7 +1122,7 @@ dkg:Wasabi-service a earl:TestSubject .
     }
     ORDER BY ?g""" ;
     earl:result [
-        earl:outcome "proxy error" ;
+        earl:outcome earl:failed ;
         earl:info """Proxy Error
             The proxy server received an invalid response from an upstream server.
             The proxy server could not handle the request
