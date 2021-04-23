@@ -137,9 +137,9 @@ dkg:classCountExtractionTest rdf:type dkg:TestQuery ;
     dcterms:title "Count of the classes in the dataset"@en ;
     dcterms:requires dkg:reachableEndpointTest ;
     dkg:query """SELECT ?class (count(?instance) AS ?count)
-        $FROM
         WHERE {
-            SELECT DISTINCT ?class ?instance
+            SELECT DISTINCT ?class
+            $FROM
             WHERE {
                 ?instance a ?class
             }
@@ -153,6 +153,5 @@ dkg:classPopCountTest rdf:type dkg:TestQuery ;
         $FROM
         WHERE {
             ?instance a ?class .
-            ?s ?prop ?o
         }
     }""" .
