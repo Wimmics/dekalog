@@ -9,14 +9,14 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix sp: <http://spinrdf.org/sp> .
 
-dkg:original a rdfs:Property ;
+dkg:original a rdf:Property ;
     rdfs:label "Original description resources." ;
     rdfs:comment "Description resources connected to the endpoint URL extracted from the endpoint"@en ;
     rdfs:isDefinedBy dkg: ;
     rdfs:domain prov:Entity ;
     rdfs:range prov:Entity .
 
-dkg:curated a rdfs:Property ;
+dkg:curated a rdf:Property ;
     rdfs:label "Generated description resources." ;
     rdfs:comment "Description resources generated from the interrogation of the endpoint URL and the curation of the available original resources descriptions."@en ;
     rdfs:isDefinedBy dkg: ;
@@ -28,19 +28,19 @@ dkg:missingValue a rdfs:Thing ;
     rdfs:comment "Placeholder for the missing values of a property in a dataset or endpoint description"@en ;
     rdfs:isDefinedBy dkg: .
 
-dkg:server a rdfs:Property ;
+dkg:server a rdf:Property ;
     rdfs:label "Server"@en ;
     rdfs:comment "Indicates the type of SPARQL server used in an endpoint description. The value given is generally the one appearing in the server field of response header of http SPARQL queries" @en ;
     rdfs:isDefinedBy dkg: ;
     rdfs:domain sd:Service .
 
-dkg:sentQery a rdfs:Property ;
+dkg:sentQery a rdf:Property ;
     rdfs:comment "String representation of the SPARQL query sent to the server after transformation to adapt it to the endpoint, if necessary." ;
     rdfs:label "Query sent to the server" ;
     rdfs:domain earl:Assertion ;
     rdfs:range xsd:string .
 
-dkg:httpResponse a rdfs:Property ;
+dkg:httpResponse a rdf:Property ;
     rdfs:label "HTTP response" ;
     rdfs:comment "Link the result of a failed EARL assertion with a partial description of the HTTP response sent by the server"@en ;
     rdfs:isDefinedBy dkg: ;
@@ -53,25 +53,25 @@ dkg:TestQuery a rdfs:Class ;
     rdfs:isDefinedBy dkg: ;
     rdfs:subClassOf earl:TestCase .
 
-dkg:querySPIN a rdfs:Property ;
+dkg:querySPIN a rdf:Property ;
     rdfs:label "SPIN representation of the query tested" ;
     rdfs:isDefinedBy dkg: ;
     rdfs:domain dkg:TestQuery ;
     rdfs:range sp:Query .
 
-dkg:query a rdfs:Property ;
+dkg:query a rdf:Property ;
     rdfs:label "String representation with templates elements of the tested query" ;
     rdfs:isDefinedBy dkg: ;
     rdfs:domain dkg:TestQuery ;
     rdfs:range xsd:string .
 
-dkg:testUpdate a rdfs:Property ;
+dkg:testUpdate a rdf:Property ;
     rdfs:label "Update of the test query." ;
     rdfs:comment "Definition of an adapatation of a test query for a particular dataset. The adaptation is representated as a SPIN description of an UPDATE query for the test query description." ;
     rdfs:domain earl:Assertion ;
     rdfs:range sp:Query .
 
-dkg:httpResponse a rdfs:Property ;
+dkg:httpResponse a rdf:Property ;
     rdfs:comment "Describe the parts of the HTTP response to the query as they should be. If the response description equals this one, the test is validated" ;
     rdfs:label "Model of the HTTP response of the tested query" ;
     rdfs:isDefinedBy dkg: ;
