@@ -15,7 +15,7 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix http: <http://www.w3.org/2011/http> .
 
-dkg:reachableEndpointTest a earl:TestCase ,
+dkg:reachableEndpointTest rdf:type earl:TestCase ,
         dkg:TestQuery ;
     dcterms:title "Reachability test" ;
     dcterms:description "Reachability is tested with a simple query" ;
@@ -25,7 +25,7 @@ dkg:reachableEndpointTest a earl:TestCase ,
         } LIMIT 1 """ ;
     dkg:httpResponse dkg:statusOK .
 
-dkg:connectedEndpointDescResourceTest a dkg:TestQuery ;
+dkg:connectedEndpointDescResourceTest rdf:type dkg:TestQuery ;
     dcterms:title "Extraction of endpoint description resources" ;
     dcterms:description "Extraction of the endpoint description resource the example endpoint, if there are any. The resources are the subject of the property sd:endpoint." ;
     dcterms:requires dkg:reachableEndpointTest ;

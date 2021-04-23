@@ -108,7 +108,7 @@ dkg:Wasabi-service rdf:type sd:Service,
     sd:endpoint wasabi:sparql ;
     dcat:servesDataset dkg:Wasabi ;
     sd:availableGraphs [
-        a sd:GraphCollection ;
+        rdf:type sd:GraphCollection ;
         sd:namedGraph wasabigraph:albums ,
             wasabigraph:artists ,
             wasabigraph:metadata ,
@@ -126,7 +126,7 @@ dkg:Wasabi-service rdf:type sd:Service,
     sd:inputFormat dkg:missingValue .
 
 # Provenance information for the two descriptions
-dkg:Wasabi-description  a prov:Entity ,
+dkg:Wasabi-description  rdf:type prov:Entity ,
         earl:TestSubject ;
     prov:wasDerivedFrom wasabi:sparql ;
     prov:wasAttributedTo "Pierre Maillot"@en ;

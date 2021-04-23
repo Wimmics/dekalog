@@ -153,15 +153,15 @@ dkg:triplesCountExtraction rdf:type earl:Assertion ,
         }""" ;
     earl:result [
         earl:outcome [
-            a earl:Fail ;
+            rdf:type earl:Fail ;
             dkg:httpResponse [
-                a http:Response ;
+                rdf:type http:Response ;
                 http:statusCodeValue 500 ;
                 http:reasonPhrase "error" ;
                 http:headers [
-                    a http:ResponseHeader ;
+                    rdf:type http:ResponseHeader ;
                     http:params [
-                        a http:HeaderElement ;
+                        rdf:type http:HeaderElement ;
                         http:paramName "server" ;
                         http:paramValue "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu"
                     ]
@@ -189,15 +189,15 @@ dkg:classCountExtraction rdf:type earl:Assertion ;
     dkg:featureProperty void:classes ;
     earl:result [
         earl:outcome [
-            a earl:Fail ;
+            rdf:type earl:Fail ;
             dkg:httpResponse [
-                a http:Response ;
+                rdf:type http:Response ;
                 http:statusCodeValue 502 ;
                 http:reasonPhrase "error" ;
                 http:headers [
-                    a http:ResponseHeader ;
+                    rdf:type http:ResponseHeader ;
                     http:params [
-                        a http:HeaderElement ;
+                        rdf:type http:HeaderElement ;
                         http:paramName "server" ;
                         http:paramValue "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu"
                     ]
@@ -221,15 +221,15 @@ dkg:classPopCount rdf:type earl:Assertion ;
     dkg:featureProperty void:vocabulary ;
     earl:result [
         earl:outcome [
-            a earl:Fail ;
+            rdf:type earl:Fail ;
             dkg:httpResponse [
-                a http:Response ;
+                rdf:type http:Response ;
                 http:statusCodeValue 500 ;
                 http:reasonPhrase "error" ;
                 http:headers [
-                    a http:ResponseHeader ;
+                    rdf:type http:ResponseHeader ;
                     http:params [
-                        a http:HeaderElement ;
+                        rdf:type http:HeaderElement ;
                         http:paramName "server" ;
                         http:paramValue "Virtuoso/07.20.3217 (Linux) x86_64-unknown-linux-gnu"
                     ]
