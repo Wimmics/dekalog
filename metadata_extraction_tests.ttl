@@ -36,7 +36,7 @@ dkg:connectedEndpointDescResourceTest a dkg:TestQuery ;
         }
         $LIMIT""" .
 
-dkg:datasetDescResourceTest dkg:TestQuery ;
+dkg:datasetDescResourceTest a dkg:TestQuery ;
     dcterms:title "Extraction of dataset description resources" ;
     dcterms:description "Extraction of the dataset description resource the example endpoint, if there are any. The resources are instances of dcat: or void: Dataset." ;
     dcterms:requires dkg:reachableEndpointTest ;
