@@ -456,7 +456,16 @@ In our example, a set of 24 links to resources in DBpedia would be described as 
     void:triples 24 .
 ```
 
-### Others
+### Dereferencing URIs
+Dereferencing [is defined](https://www.w3.org/TR/webarch/#uri-dereference) as the possibility of obtaining RDF content by sending an HTTP request to an URI, demanding for RDF content.
+
+This can be used in the SPARQL engine of an endpoint or via HTTP request to an URI.
+The resource `sd:DereferencesURIs` defined by the SPARQL-SD vocabulary is defined as follows:
+> sd:DereferencesURIs, when used as the object of the sd:feature property, indicates that a SPARQL service will dereference [AWWW] URIs used in FROM/FROM NAMED and USING/USING NAMED clauses and use the resulting RDF in the dataset during query evaluation.
+
+This can be indicated in the endpoint description as object of the property `sd:feature`.
+
+As defined by SPARQL-SD, the dereferencing of URIs can be tested by taking a dereferencable URI from another base, e.g. DBpedia, and test if the triples of its description can be used in a query.
 
 <!--- Qu'est ce qui a été oublié ? --->
 
