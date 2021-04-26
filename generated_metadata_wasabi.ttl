@@ -15,7 +15,7 @@
 @prefix wasabisong: <http://ns.inria.fr/wasabi/song/> .
 @prefix wasabi: <http://wasabi.inria.fr/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix dkg: <https://dekalog.univ-nantes.fr/> .
+@prefix dkg: <http://ns.inria.fr/kgindex/#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 
 # Dataset description
