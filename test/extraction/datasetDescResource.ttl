@@ -5,6 +5,7 @@
 @prefix dkg: <http://ns.inria.fr/kgindex#> .
 @prefix void: <http://rdfs.org/ns/void#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 dkg:datasetDescResourceTest rdf:type dkg:TestQuery ;
     dcterms:title "Extraction of dataset description resources" ;
