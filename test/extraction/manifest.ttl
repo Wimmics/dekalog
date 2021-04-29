@@ -1,0 +1,70 @@
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix dkg: <http://ns.inria.fr/kgindex#> .
+
+<> a mf:Manifest ;
+    mf:entries  (
+            <reachability.ttl>
+            <endpointDescResource.ttl>
+            <datasetDescResource.ttl>
+            <graphList.ttl>
+            <vocabularyList.ttl>
+            <tripleCount.ttl>
+            <classCount.ttl>
+            <classPopulation.ttl>
+        ) .
+
+<reachability.ttl> a mf:ManifestEntry ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        CONSTRUCT {
+            $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
+            $endpointDescription sd:endpoint $endpoint ;
+                a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
+            $metadataDescription rdf:type prov:Entity , earl:TestSubject ;
+                prov:wasDerivedFrom $endpoint ;
+                dkg:curated $datasetDescription , $endpointDescription .
+        }
+        WHERE {
+        }
+        """ .
+
+<endpointDescResource.ttl> a mf:ManifestEntry ;
+    mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        CONSTRUCT {
+            $endpointDescription ?p ?o .
+        } WHERE {
+            ?res sd:endpoint $endpoint .
+            ?res ?p ?o .
+        }""" ;
+    mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        CONSTRUCT {
+           ?s ?p $endpointDescription .
+        } WHERE {
+           ?res sd:endpoint $endpoint .
+           ?s ?p ?res .
+        }""" .
+
+<datasetDescResource.ttl> a mf:ManifestEntry ;
+    mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX void: <http://rdfs.org/ns/void#>
+        CONSTRUCT {
+            $datasetDescription ?pp ?o .
+        }
+        WHERE {
+            { ?res a dcat:Dataset }
+            UNION { ?res a void:Dataset }
+            ?res ?p $endpoint .
+            ?res ?pp ?o .
+         }""" ;
+    mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX void: <http://rdfs.org/ns/void#>
+        CONSTRUCT {
+            ?s ?pp $datasetDescription .
+        }
+        WHERE {
+            { ?res a dcat:Dataset }
+            UNION { ?res a void:Dataset }
+            ?res ?p $endpoint .
+            ?s ?pp ?res .
+         }""" .

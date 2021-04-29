@@ -1,0 +1,38 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+
+dkg:datasetDescResourceTest rdf:type dkg:TestQuery ;
+    dcterms:title "Extraction of dataset description resources" ;
+    dcterms:description "Extraction of the dataset description resource the example endpoint, if there are any. The resources are instances of dcat: or void: Dataset." ;
+    dcterms:requires dkg:reachableEndpointTest ;
+    skos:narrower dkg:datasetDescResourceConnectedTest ;
+    dkg:query """PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX void: <http://rdfs.org/ns/void#>
+        SELECT DISTINCT ?res
+        $FROM
+        WHERE {
+            { ?res a dcat:Dataset }
+            UNION { ?res a void:Dataset }
+        }
+        $LIMIT""" .
+
+dkg:datasetDescResourceConnectedTest rdf:type dkg:TestQuery ;
+    dcterms:title "Extraction of dataset description resources" ;
+    dcterms:description "Extraction of the dataset description resource the example endpoint, if there are any. The resources are instances of dcat: or void: Dataset." ;
+    dcterms:requires dkg:datasetDescResourceTest ;
+    skos:broader dkg:datasetDescResourceTest ;
+    dkg:query """PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX void: <http://rdfs.org/ns/void#>
+        SELECT DISTINCT ?res
+        $FROM
+        WHERE {
+            { ?res a dcat:Dataset }
+            UNION { ?res a void:Dataset }
+            ?res ?p $endpoint .
+        }
+        $LIMIT""" .
