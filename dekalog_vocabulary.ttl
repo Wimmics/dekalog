@@ -23,9 +23,14 @@ dkg:curated rdf:type rdf:Property ;
     rdfs:domain prov:Entity ;
     rdfs:range prov:Entity .
 
-dkg:missingValue rdf:type rdfs:Thing ;
+dkg:missingValue rdf:type rdfs:Resource ;
     rdfs:label "Placeholder"@en ;
     rdfs:comment "Placeholder for the missing values of rdf:type property in rdf:type dataset or endpoint description"@en ;
+    rdfs:isDefinedBy dkg: .
+
+dkg:dummyTarget rdf:type rdfs:Resource ;
+    rdfs:label "Placeholder SHACL shape target"@en ;
+    rdfs:comment "Placeholder for the target of a shape that do not need a target."@en ;
     rdfs:isDefinedBy dkg: .
 
 dkg:server rdf:type rdf:Property ;

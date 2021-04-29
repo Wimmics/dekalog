@@ -1,0 +1,33 @@
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+dkg:provenanceExtractionShape rdf:type sh:NodeShape ,
+        earl:TestCase ;
+    sh:targetClass void:Dataset ;
+    # Who ?
+    sh:or (
+		[ sh:targetSubjectsOf dcterms:creator ]
+		[ sh:targetSubjectsOf dcterms:contributor ]
+		[ sh:targetSubjectsOf dcterms:publisher ]
+		[ sh:targetSubjectsOf prov:wasAttributedTo ]
+    ) ;
+    # What ?
+    sh:or (
+		[ sh:targetSubjectsOf dcterms:licence ]
+		[ sh:targetSubjectsOf dcterms:conformsTo ]
+    ) ;
+    # How ?
+    sh:or (
+		[ sh:targetSubjectsOf dcterms:created ]
+		[ sh:targetSubjectsOf dcterms:modified ]
+		[ sh:targetSubjectsOf prov:wasGeneratedAtTime ]
+		[ sh:targetSubjectsOf dcterms:issued ]
+		[ sh:targetSubjectsOf dcterms:source ]
+		[ sh:targetSubjectsOf prov:wasDerivedFrom ]
+		[ sh:targetSubjectsOf dcterms:format ]
+    ) .

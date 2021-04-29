@@ -17,10 +17,16 @@
 <reachability.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX void: <http://rdfs.org/ns/void#>
         PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         CONSTRUCT {
             $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
             $endpointDescription sd:endpoint $endpoint ;
-                a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
+                a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
+                sd:availableGraphs [
+                   a sd:Dataset ;
+                   sd:defaultGraph [
+                       a sd:Graph .
+                   ] .
             $metadataDescription rdf:type prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
                 dkg:curated $datasetDescription , $endpointDescription .
@@ -68,3 +74,103 @@
             ?res ?p $endpoint .
             ?s ?pp ?res .
          }""" .
+
+<graphList.ttl> a mf:ManifestEntry ;
+    mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        CONSTRUCT {
+            $endpointDescription sd:availableGraphs [
+                sd:namedGraph [
+                    a sd:NamedGraph ;
+                    sd:name ?graph .
+                ]
+            ]
+        }
+        WHERE {
+            GRAPH ?graph { ?s ?p ?o }
+            FILTER( REGEX( ?graph, $namespace) )
+        }
+        """ .
+
+<vocabularyList.ttl> a mf:ManifestEntry ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        CONSTRUCT {
+        $datasetDescription void:vocabulary ?elem .
+    }
+    WHERE {
+        { ?s ?elem ?o . }
+        UNION { ?s ?p ?elem . }
+        BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
+    }
+    """ .
+
+<tripleCount.ttl> a mf:ManifestEntry ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        CONSTRUCT {
+            $datasetDescription void:triples ?count .
+        }
+        WHERE {
+            SELECT (count(*) AS ?count) WHERE {
+                SELECT DISTINCT ?s ?p ?o
+                $FROM
+                WHERE {
+                   ?s ?p ?o .
+                }
+            }
+        }
+    """ .
+
+<classCount.ttl> a mf:ManifestEntry ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        CONSTRUCT {
+            $datasetDescription void:classes ?count .
+        }
+        WHERE {
+            SELECT (count(?class) AS ?count)
+            WHERE {
+                SELECT DISTINCT ?class
+                $FROM
+                WHERE {
+                    { ?class a owl:Class }
+                    UNION { ?class a rdfs:Class }
+                    UNION { ?whatever a ?class }
+                }
+            }
+        }
+    """ .
+
+<propertyCount.ttl> a mf:ManifestEntry ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        CONSTRUCT {
+            $datasetDescription void:properties ?count .
+        }
+        WHERE {
+            SELECT (count(?p) AS ?count)
+            WHERE {
+                SELECT DISTINCT ?p
+                $FROM
+                WHERE {
+                    ?s ?p ?o
+                }
+            }
+        }
+    """ .
+
+<classPopulation.ttl> a mf:ManifestEntry ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        CONSTRUCT {
+            $datasetDescription void:classPartition [
+                void:class ?class ;
+                void:entities ?count
+            ] .
+        }
+        WHERE {
+            SELECT ?class (count(?instance) AS ?count)
+            WHERE {
+                SELECT DISTINCT ?class ?instance
+                $FROM
+                WHERE {
+                    ?instance a ?class
+                }
+            }
+        }
+    """ .

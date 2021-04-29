@@ -260,7 +260,7 @@ The example KB has one default graphs and one named graph, named `:ng1`.
     ]
 ```
 Other features of the endpoint can be added to the description such as the non-standard function proposed or the default treatment of the namedGraph data. The functions offered by the endpoint are given by the property `sd:extensionFunction`, with the function as subject, same for the aggregates with `sd:extensionAggregate`.
-Other features are given by the property `sd:features`. The SPARQL-SD standard defines five features: `sd:DereferencesURIs`, `sd:UnionDefaultGraph`, `sd:RequiresDataset`, `sd:EmptyGraphs`, and `sd:BasicFederatedQuery`. `sd:DereferencesURIs`
+Other features are given by the property `sd:features`. The SPARQL-SD standard defines five features: `sd:DereferencesURIs`, `sd:UnionDefaultGraph`, `sd:RequiresDataset`, `sd:EmptyGraphs`, and `sd:BasicFederatedQuery`.
 
 The link between a `sd:DataService` and a `dcat:Dataset` should be represented by the relation `dcat:servesDataset`. In our example, the example dataset is contained in the `:ng1` graph. The final minimal SPARQL-SD description of our example should be:
 
@@ -512,6 +512,10 @@ Queries defined in instances of `dkg:TestQuery` sometimes need to be adapted to 
 | $namespace | The namespace of the the dataset, if it is given |
 | $FROM      | The set of FROM or FROM NAMED clauses necessary to query the endpoint. |
 | $LIMIT     | A limit to the number of results asked to limit the risk of timeouts. |
+| $datasetDescription | The dataset description resource |
+| $endpointDescription | The endpoint description resource |
+| $metadataDescription | The metadata description resource |
+| $extractedValue | Used in shapes to compare a value from the extracted description against the value computed from the dataset |
 
 #### Reachability test
 As examples, we detail several different types of queries sent during our extraction and refinment process.

@@ -1,0 +1,20 @@
+@prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+dkg:countTripleShape a sh:NodeShape ;
+    sh:targetNode dkg:dummyTarget ;
+    sh:sparql [
+    		rdf:type sh:SPARQLConstraint ;
+    		sh:message "There are as many triples as expected." ;
+            sh:select """SELECT $this (count(*) AS ?value)
+            $FROM
+            WHERE {
+                SELECT DISTINCT ?s ?p ?o
+                WHERE {
+                    ?s ?p ?o .
+                }
+            }
+            GROUP BY $this
+            HAVING ( ?value != $extractedValue ) """
+        ] .

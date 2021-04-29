@@ -29,7 +29,8 @@ dkg:connectedEndpointDescResourceTest rdf:type dkg:TestQuery ;
     dcterms:title "Extraction of endpoint description resources" ;
     dcterms:description "Extraction of the endpoint description resource the example endpoint, if there are any. The resources are the subject of the property sd:endpoint." ;
     dcterms:requires dkg:reachableEndpointTest ;
-    dkg:query """SELECT DISTINCT ?res
+    dkg:query """PREFIX sd: <http://www.w3.org/ns/shacl#>
+    SELECT DISTINCT ?res
         $FROM
         WHERE {
             ?res sd:endpoint $endpoint .
@@ -60,32 +61,6 @@ dkg:datasetDescResourceConnectedTest rdf:type dkg:TestQuery ;
             ?res ?p $endpoint .
         }
         $LIMIT""" .
-
-dkg:provenanceExtractionShape rdf:type sh:NodeShape ,
-        earl:TestCase ;
-    sh:targetClass void:Dataset ;
-    # Who ?
-    sh:or (
-		[ sh:targetSubjectsOf dcterms:creator ]
-		[ sh:targetSubjectsOf dcterms:contributor ]
-		[ sh:targetSubjectsOf dcterms:publisher ]
-		[ sh:targetSubjectsOf prov:wasAttributedTo ]
-    ) ;
-    # What ?
-    sh:or (
-		[ sh:targetSubjectsOf dcterms:licence ]
-		[ sh:targetSubjectsOf dcterms:conformsTo ]
-    ) ;
-    # How ?
-    sh:or (
-		[ sh:targetSubjectsOf dcterms:created ]
-		[ sh:targetSubjectsOf dcterms:modified ]
-		[ sh:targetSubjectsOf prov:wasGeneratedAtTime ]
-		[ sh:targetSubjectsOf dcterms:issued ]
-		[ sh:targetSubjectsOf dcterms:source ]
-		[ sh:targetSubjectsOf prov:wasDerivedFrom ]
-		[ sh:targetSubjectsOf dcterms:format ]
-    ) .
 
 dkg:graphListExtractionTest rdf:type dkg:TestQuery ;
     dcterms:title "Extraction of the list of graphs in the endpoint"@en ;
@@ -136,7 +111,7 @@ dkg:triplesCountExtractionTest rdf:type dkg:TestQuery ;
 dkg:classCountExtractionTest rdf:type dkg:TestQuery ;
     dcterms:title "Count of the classes in the dataset"@en ;
     dcterms:requires dkg:reachableEndpointTest ;
-    dkg:query """SELECT ?class (count(?instance) AS ?count)
+    dkg:query """SELECT (count(?class) AS ?count)
         WHERE {
             SELECT DISTINCT ?class
             $FROM
@@ -147,7 +122,7 @@ dkg:classCountExtractionTest rdf:type dkg:TestQuery ;
 
 dkg:classPopCountTest rdf:type dkg:TestQuery ;
     dcterms:title "Extraction of the counts of instances for each classes."@en ;
-    dcterms:requires dkg:reachableEndpointTest ;
+    dcterms:requires dkg:classCountExtractionTest ;
     dkg:query """SELECT ?class (count(?instance) AS ?count) WHERE {
         SELECT DISTINCT ?class ?instance
         $FROM
@@ -155,3 +130,29 @@ dkg:classPopCountTest rdf:type dkg:TestQuery ;
             ?instance a ?class .
         }
     }""" .
+
+dkg:provenanceExtractionShape rdf:type sh:NodeShape ,
+        earl:TestCase ;
+    sh:targetClass void:Dataset ;
+    # Who ?
+    sh:or (
+		[ sh:targetSubjectsOf dcterms:creator ]
+		[ sh:targetSubjectsOf dcterms:contributor ]
+		[ sh:targetSubjectsOf dcterms:publisher ]
+		[ sh:targetSubjectsOf prov:wasAttributedTo ]
+    ) ;
+    # What ?
+    sh:or (
+		[ sh:targetSubjectsOf dcterms:licence ]
+		[ sh:targetSubjectsOf dcterms:conformsTo ]
+    ) ;
+    # How ?
+    sh:or (
+		[ sh:targetSubjectsOf dcterms:created ]
+		[ sh:targetSubjectsOf dcterms:modified ]
+		[ sh:targetSubjectsOf prov:wasGeneratedAtTime ]
+		[ sh:targetSubjectsOf dcterms:issued ]
+		[ sh:targetSubjectsOf dcterms:source ]
+		[ sh:targetSubjectsOf prov:wasDerivedFrom ]
+		[ sh:targetSubjectsOf dcterms:format ]
+    ) .
