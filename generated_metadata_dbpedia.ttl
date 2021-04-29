@@ -16,7 +16,7 @@
 @prefix dbv: <http://dbpedia.org/void/> .
 @prefix local: <http://localhost:8890/> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix dkg: <http://ns.inria.fr/kgindex/#> .
+@prefix dkg: <http://ns.inria.fr/kgindex#> .
 
 # Dataset description
 dkg:DBpedia rdf:type void:Dataset,

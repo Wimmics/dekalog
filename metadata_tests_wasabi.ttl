@@ -1,0 +1,39 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix schema: <http://schema.org/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dce: <http://purl.org/dc/elements/1.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix wasabins: <http://ns.inria.fr/wasabi/> .
+@prefix wasabigraph: <http://ns.inria.fr/wasabi/graph/> .
+@prefix wasabiontology: <http://ns.inria.fr/wasabi/ontology/> .
+@prefix wasabisong: <http://ns.inria.fr/wasabi/song/> .
+@prefix wasabi: <http://wasabi.inria.fr/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+
+# Error report
+dkg:namespaceExtraction earl:subject dkg:Wasabi-service ;
+    earl:test dkg:graphListExtractionInNamespaceTest ;
+    dkg:sentQery """SELECT DISTINCT ?g WHERE {
+        GRAPH ?g {
+            ?s ?p ?o
+        }
+        FILTER(REGEX(?g, "http://ns.inria.fr/wasabi/wasabi-1-0") )
+    }
+    ORDER BY ?g""" ;
+    earl:result [
+        earl:outcome earl:failed ;
+        prov:generatedAtTime "2021-03-25T14:32:52"^^xsd:datetime ;
+        earl:info """Proxy Error
+            The proxy server received an invalid response from an upstream server.
+            The proxy server could not handle the request
+
+            Reason: Error reading from remote server"""
+    ] .
