@@ -18,6 +18,7 @@
     mf:action """PREFIX void: <http://rdfs.org/ns/void#>
         PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        PREFIX dkg: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
             $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
             $endpointDescription sd:endpoint $endpoint ;
@@ -26,8 +27,8 @@
                    a sd:Dataset ;
                    sd:defaultGraph [
                        a sd:Graph .
-                   ] .
-            $metadataDescription rdf:type prov:Entity , earl:TestSubject ;
+                   ] ] .
+            $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
                 dkg:curated $datasetDescription , $endpointDescription .
         }
