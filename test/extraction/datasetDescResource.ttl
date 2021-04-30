@@ -14,8 +14,7 @@ dkg:datasetDescResourceTest rdf:type dkg:TestQuery ;
     skos:narrower dkg:datasetDescResourceConnectedTest ;
     dkg:query """PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX void: <http://rdfs.org/ns/void#>
-        SELECT DISTINCT ?res
-        $FROM
+        ASK
         WHERE {
             { ?res a dcat:Dataset }
             UNION { ?res a void:Dataset }
@@ -29,8 +28,7 @@ dkg:datasetDescResourceConnectedTest rdf:type dkg:TestQuery ;
     skos:broader dkg:datasetDescResourceTest ;
     dkg:query """PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX void: <http://rdfs.org/ns/void#>
-        SELECT DISTINCT ?res
-        $FROM
+        ASK
         WHERE {
             { ?res a dcat:Dataset }
             UNION { ?res a void:Dataset }

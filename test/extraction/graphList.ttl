@@ -9,8 +9,7 @@ dkg:graphListExtractionTest rdf:type dkg:TestQuery ;
     dcterms:title "Extraction of the list of graphs in the endpoint"@en ;
     dcterms:requires dkg:reachableEndpointTest ;
     skos:narrower dkg:graphListExtractionInNamespaceTest ;
-    dkg:query """SELECT DISTINCT ?graph
-        $FROM
+    dkg:query """ASK
         WHERE {
             GRAPH ?graph { ?s ?p ?o }
         }

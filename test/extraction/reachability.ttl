@@ -3,6 +3,7 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 
 dkg:reachableEndpointTest rdf:type dkg:TestQuery ;
     dcterms:title "Reachability test" ;

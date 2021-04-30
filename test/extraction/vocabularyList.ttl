@@ -7,11 +7,9 @@
 dkg:vocabularyListExtractionTest rdf:type dkg:TestQuery ;
     dcterms:title "Extraction of the namespaces of properties and classes."@en ;
     dcterms:requires dkg:reachableEndpointTest ;
-    dkg:query """SELECT DISTINCT ?ns
-        $FROM
+    dkg:query """ASK
         WHERE {
             { ?s ?elem ?o . }
             UNION { ?s ?p ?elem . }
             BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
-        }
-        $LIMIT""" .
+        }""" .

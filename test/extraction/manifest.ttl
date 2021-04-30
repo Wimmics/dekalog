@@ -38,15 +38,19 @@
 
 <endpointDescResource.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        PREFIX dkg: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
             $endpointDescription ?p ?o .
+            $metadataDescription dkg:original ?res .
         } WHERE {
             ?res sd:endpoint $endpoint .
             ?res ?p ?o .
         }""" ;
     mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        PREFIX dkg: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
            ?s ?p $endpointDescription .
+           $metadataDescription dkg:original ?res .
         } WHERE {
            ?res sd:endpoint $endpoint .
            ?s ?p ?res .
@@ -55,8 +59,10 @@
 <datasetDescResource.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX dkg: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
             $datasetDescription ?pp ?o .
+            $metadataDescription dkg:original ?res .
         }
         WHERE {
             { ?res a dcat:Dataset }
@@ -66,8 +72,10 @@
          }""" ;
     mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX dkg: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
             ?s ?pp $datasetDescription .
+            $metadataDescription dkg:original ?res .
         }
         WHERE {
             { ?res a dcat:Dataset }
@@ -82,7 +90,7 @@
             $endpointDescription sd:availableGraphs [
                 sd:namedGraph [
                     a sd:NamedGraph ;
-                    sd:name ?graph .
+                    sd:name ?graph
                 ]
             ]
         }
