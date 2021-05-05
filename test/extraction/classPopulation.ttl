@@ -13,4 +13,5 @@ dkg:classPopCountTest rdf:type dkg:TestQuery ;
         WHERE {
             ?instance a ?class .
         }
-    }""" .
+    }
+    GROUP BY ?class""" .

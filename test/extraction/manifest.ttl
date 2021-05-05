@@ -1,6 +1,8 @@
 @prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
 @prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 
 <> a mf:Manifest ;
     mf:entries  (
@@ -17,7 +19,9 @@
 <reachability.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX void: <http://rdfs.org/ns/void#>
         PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
         PREFIX dkg: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
             $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
@@ -26,7 +30,7 @@
                 sd:availableGraphs [
                    a sd:Dataset ;
                    sd:defaultGraph [
-                       a sd:Graph .
+                       a sd:Graph
                    ] ] .
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
@@ -95,8 +99,10 @@
             ]
         }
         WHERE {
-            GRAPH ?graph { ?s ?p ?o }
-            FILTER( REGEX( ?graph, $namespace) )
+            SELECT DISTINCT ?graph WHERE {
+                GRAPH ?graph { ?s ?p ?o }
+                FILTER( REGEX( ?graph, $namespace) )
+            }
         }
         """ .
 
@@ -130,6 +136,8 @@
 
 <classCount.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
         CONSTRUCT {
             $datasetDescription void:classes ?count .
         }
@@ -181,5 +189,6 @@
                     ?instance a ?class
                 }
             }
+            GROUP BY ?class
         }
     """ .

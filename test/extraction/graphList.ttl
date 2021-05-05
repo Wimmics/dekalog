@@ -12,19 +12,5 @@ dkg:graphListExtractionTest rdf:type dkg:TestQuery ;
     dkg:query """ASK
         WHERE {
             GRAPH ?graph { ?s ?p ?o }
-        }
-        ORDER BY ?graph
-        $LIMIT""" .
-
-dkg:graphListExtractionInNamespaceTest rdf:type dkg:TestQuery ;
-    dcterms:title "Extraction of the list of graphs in the namespace of the dataset"@en ;
-    dcterms:requires dkg:graphListExtractionTest ;
-    skos:broader dkg:graphListExtractionTest ;
-    dkg:query """SELECT DISTINCT ?graph
-        $FROM
-        WHERE {
-            GRAPH ?graph { ?s ?p ?o }
             FILTER( REGEX( ?graph, $namespace) )
-        }
-        ORDER BY ?graph
-        $LIMIT""" .
+        }""" .

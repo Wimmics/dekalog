@@ -7,14 +7,16 @@ dkg:countClassShape a sh:NodeShape ;
     sh:sparql [
     		rdf:type sh:SPARQLConstraint ;
     		sh:message "There are as many classes as expected." ;
-            sh:select """SELECT $this (count(?c) AS ?value)
-            $FROM
-            WHERE {
-                SELECT DISTINCT ?c
+            sh:select """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                PREFIX owl: <http://www.w3.org/2002/07/owl#>
+                SELECT $this (count(?c) AS ?value)
+                $FROM
                 WHERE {
-                    ?s a ?c .
+                    SELECT DISTINCT ?c
+                    WHERE {
+                        ?s a ?c .
+                    }
                 }
-            }
-            GROUP BY $this
-            HAVING ( ?value != $extractedValue ) """
+                GROUP BY $this
+                HAVING ( ?value != $extractedValue ) """
         ] .

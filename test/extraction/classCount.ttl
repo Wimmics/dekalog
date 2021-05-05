@@ -3,15 +3,20 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 
 dkg:classCountExtractionTest rdf:type dkg:TestQuery ;
     dcterms:title "Count of the classes in the dataset"@en ;
     dcterms:requires dkg:reachableEndpointTest ;
-    dkg:query """SELECT (count(?class) AS ?count)
+    dkg:query """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        SELECT (count(?class) AS ?count)
         WHERE {
             SELECT DISTINCT ?class
             $FROM
             WHERE {
-                ?instance a ?class
+                { ?class a owl:Class }
+                UNION { ?class a rdfs:Class }
+                UNION { ?whatever a ?class }
             }
         }""" .
