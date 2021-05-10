@@ -8,8 +8,5 @@
 dkg:reachableEndpointTest rdf:type dkg:TestQuery ;
     dcterms:title "Reachability test" ;
     dcterms:description "Reachability is tested with a simple query" ;
-    dkg:query """SELECT *
-        WHERE {
-            ?s ?p ?o .
-        } LIMIT 1 """ ;
+    dkg:query """SELECT * WHERE { ?s ?p ?o . } LIMIT 1""" ;
     dkg:httpResponse dkg:statusOK .

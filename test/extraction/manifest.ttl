@@ -27,11 +27,11 @@
             $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
             $endpointDescription sd:endpoint $endpoint ;
                 a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                sd:availableGraphs [
-                   a sd:Dataset ;
+                sd:availableGraphs $graphList .
+            $graphList a sd:Dataset ;
                    sd:defaultGraph [
                        a sd:Graph
-                   ] ] .
+                   ] .
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
                 dkg:curated $datasetDescription , $endpointDescription .
@@ -91,12 +91,11 @@
 <graphList.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         CONSTRUCT {
-            $endpointDescription sd:availableGraphs [
-                sd:namedGraph [
+            $endpointDescription sd:availableGraphs $graphList .
+            $graphList sd:namedGraph [
                     a sd:NamedGraph ;
                     sd:name ?graph
-                ]
-            ]
+                ] .
         }
         WHERE {
             SELECT DISTINCT ?graph WHERE {
