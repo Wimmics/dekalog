@@ -1,0 +1,179 @@
+@prefix schema: <http://schema.org/> .
+@prefix void:  <http://rdfs.org/ns/void#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sd:    <http://www.w3.org/ns/sparql-service-description#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix dcat:   <http://www.w3.org/ns/dcat#> .
+@prefix kgindex:   <http://ns.inria.fr/kgindex#> .
+@prefix wasabi:   <http://ns.inria.fr/wasabi/> .
+@prefix ns5:   <http://wasabi.inria.fr/> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+
+kgindex:WasabiDataset  a             dcat:Dataset , void:Dataset , <http://www.w3.org/ns/earl#TestSubject> , prov:Entity , schema:Dataset ;
+        dct:creator              "Michel Buffa" , "Fabrice Jauvat" , "Elmahdi Korfed" , "Johan Pauwels" , "Guillaume Pellerin" , "Maroua Tikat" , "Elena Cabrio" , "Michael Fell" ;
+        dct:creator              <https://orcid.org/0000-0003-1007-0101> , <https://orcid.org/0000-0002-0756-6934> , <https://orcid.org/0000-0003-0543-1232> , <https://team.inria.fr/wimmics/> , <https://orcid.org/0000-0001-9064-0463> , <https://orcid.org/0000-0001-8158-5562> ;
+        dct:description          "The WASABI Dataset is a large corpus of songs enriched with metadata extracted from music databases on the Web, and resulting from the processing of song lyrics and from audio analysis. This dataset is the RDF representation of the original WASABI dataset." ;
+        dct:issued               "2020-12-09"^^xsd:date ;
+        dct:licence              <https://creativecommons.org/licenses/by-nc/4.0/> ;
+        dct:publisher            <https://ror.org/0496p8026> , <https://ror.org/02feahw73> , <https://ror.org/02kvxyf05> ;
+        dct:subject              "lyrics" , "song" , "audio analysis" , "metadata" , "music" , "chord" ;
+        dct:title                "The WASABI RDF Knowledge Graph" ;
+        void:classes             14547 ;
+        void:dataDump            <https://doi.org/10.5281/zenodo.4312641> ;
+        void:sparqlEndpoint      ns5:sparql ;
+        void:triples             55542555 ;
+        void:uriSpace            "http://ns.inria.fr/wasabi/" ;
+        void:vocabulary          dct: , <http://purl.org/ontology/mo/> , <http://purl.org/ontology/chord/> , <http://dbpedia.org/ontology/> , <http://www.wikidata.org/entity/> , prov: , void: , schema: , <http://purl.org/ontology/af/> , <http://purl.org/vocab/frbr/core#> , <http://purl.org/dc/elements/1.1/> , <http://purl.org/ontology/bibo/> , dcat: , <http://xmlns.com/foaf/0.1/> ;
+        schema:author            "Michael Fell" , "Michel Buffa" , "Johan Pauwels" , "Elmahdi Korfed" , "Elena Cabrio" , "Maroua Tikat" , "Guillaume Pellerin" , "Fabrice Jauvat" ;
+        schema:author            <https://orcid.org/0000-0001-9064-0463> , <https://orcid.org/0000-0002-0756-6934> , <https://orcid.org/0000-0003-0543-1232> , <https://orcid.org/0000-0001-8158-5562> , <https://team.inria.fr/wimmics/> , <https://orcid.org/0000-0003-1007-0101> ;
+        schema:datePublished     "2020-12-09"^^xsd:date ;
+        schema:keywords          "chord" , "metadata" , "audio analysis" , "lyrics" , "song" , "music" ;
+        schema:licence           <https://creativecommons.org/licenses/by-nc/4.0/> ;
+        schema:name              "The WASABI RDF Knowledge Graph" ;
+        schema:publisher         <https://ror.org/02feahw73> , <https://ror.org/02kvxyf05> , <https://ror.org/0496p8026> ;
+        schema:subjectOf         wasabi:fell2019love ;
+        owl:versionInfo          "1.0" ;
+        prov:wasGeneratedAtTime  "2020-12-09"^^xsd:date ;
+        prov:wasGeneratedBy      wasabi:RdfGeneration .
+
+kgindex:WasabiMetadata  a        <http://www.w3.org/ns/earl#TestSubject> , prov:Entity ;
+        kgindex:curated          kgindex:WasabiEndpoint , kgindex:WasabiDataset ;
+        kgindex:original         wasabi:wasabi-1-0 , wasabi:sparql-service ;
+        prov:wasDerivedFrom  ns5:sparql .
+
+kgindex:WasabiEndpoint  a         prov:Entity , sd:Service , dcat:DataService , <http://www.w3.org/ns/earl#TestSubject> ;
+        rdfs:label            "SPARQL endpoint serving the WASABI RDF Knowledge Graph" ;
+        dcat:endpointURL       ns5:sparql ;
+        dcat:servesDataset     wasabi:wasabi-1-0 ;
+        sd:availableGraphs    kgindex:WasabiGraphList ;
+        sd:availableGraphs    []  ;
+        sd:endpoint           ns5:sparql ;
+        sd:supportedLanguage  sd:SPARQL10Query , sd:SPARQL11Query .
+
+wasabi:sparql-service  dcat:servesDataset  kgindex:WasabiDataset .
+
+kgindex:WasabiGraphList  a   sd:Dataset ;
+        sd:defaultGraph  [ a  sd:Graph ] .
+
+[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
+  kgindex:sentQuery  "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://wasabi.inria.fr/sparql> .\n        }\n        " ;
+  <http://www.w3.org/ns/earl#result>
+          [ <http://www.w3.org/ns/earl#info>
+                    "Extraction of endpoint description resources" ;
+            <http://www.w3.org/ns/earl#outcome>
+                    <http://www.w3.org/ns/earl#passed> ;
+            prov:generatedAtTime  "10-05-2021T18:20:44"
+          ] ;
+  <http://www.w3.org/ns/earl#subject>
+          kgindex:WasabiMetadata ;
+  <http://www.w3.org/ns/earl#test>
+          kgindex:connectedEndpointDescResourceTest
+] .
+
+[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
+  kgindex:sentQuery  "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n            FILTER( CONTAINS( str(?graph), \"http://ns.inria.fr/wasabi/\") )\n        }" ;
+  <http://www.w3.org/ns/earl#result>
+          [ <http://www.w3.org/ns/earl#info>
+                    "Extraction of the list of graphs in the endpoint" ;
+            <http://www.w3.org/ns/earl#outcome>
+                    <http://www.w3.org/ns/earl#passed> ;
+            prov:generatedAtTime  "10-05-2021T18:20:45"
+          ] ;
+  <http://www.w3.org/ns/earl#subject>
+          kgindex:WasabiMetadata ;
+  <http://www.w3.org/ns/earl#test>
+          kgindex:graphListExtractionTest
+] .
+
+[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
+  kgindex:sentQuery  "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <http://wasabi.inria.fr/sparql> .\n        }\n        " ;
+  <http://www.w3.org/ns/earl#result>
+          [ <http://www.w3.org/ns/earl#info>
+                    "Extraction of dataset description resources" ;
+            <http://www.w3.org/ns/earl#outcome>
+                    <http://www.w3.org/ns/earl#passed> ;
+            prov:generatedAtTime  "10-05-2021T18:20:44"
+          ] ;
+  <http://www.w3.org/ns/earl#subject>
+          kgindex:WasabiMetadata ;
+  <http://www.w3.org/ns/earl#test>
+          kgindex:datasetDescResourceConnectedTest
+] .
+
+[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
+  kgindex:sentQuery  "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+  <http://www.w3.org/ns/earl#result>
+          [ <http://www.w3.org/ns/earl#info>
+                    "Reachability test" ;
+            <http://www.w3.org/ns/earl#outcome>
+                    <http://www.w3.org/ns/earl#passed> ;
+            prov:generatedAtTime  "10-05-2021T18:20:44"
+          ] ;
+  <http://www.w3.org/ns/earl#subject>
+          kgindex:WasabiMetadata ;
+  <http://www.w3.org/ns/earl#test>
+          kgindex:reachableEndpointTest
+] .
+
+[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
+  kgindex:sentQuery  "ASK\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
+  <http://www.w3.org/ns/earl#result>
+          [ <http://www.w3.org/ns/earl#info>
+                    "Extraction of the namespaces of properties and classes." ;
+            <http://www.w3.org/ns/earl#outcome>
+                    <http://www.w3.org/ns/earl#passed> ;
+            prov:generatedAtTime  "10-05-2021T18:22:45"
+          ] ;
+  <http://www.w3.org/ns/earl#subject>
+          kgindex:WasabiMetadata ;
+  <http://www.w3.org/ns/earl#test>
+          kgindex:vocabularyListExtractionTest
+] .
+
+[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
+  kgindex:sentQuery  "SELECT (count(*) AS ?count) WHERE {\n            SELECT DISTINCT ?s ?p ?o\n            \n            WHERE {\n               ?s ?p ?o .\n            }\n        }" ;
+  <http://www.w3.org/ns/earl#result>
+          [ <http://www.w3.org/ns/earl#info>
+                    "Count of triples in the dataset" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+            <http://www.w3.org/ns/earl#outcome>
+                    <http://www.w3.org/ns/earl#failed> ;
+            prov:generatedAtTime  "10-05-2021T18:26:46"
+          ] ;
+  <http://www.w3.org/ns/earl#subject>
+          kgindex:WasabiMetadata ;
+  <http://www.w3.org/ns/earl#test>
+          kgindex:triplesCountExtractionTest
+] .
+
+[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
+  kgindex:sentQuery  "SELECT ?class (count(?instance) AS ?count) WHERE {\n        SELECT DISTINCT ?class ?instance\n        \n        WHERE {\n            ?instance a ?class .\n        }\n    }\n    GROUP BY ?class" ;
+  <http://www.w3.org/ns/earl#result>
+          [ <http://www.w3.org/ns/earl#info>
+                    "Extraction of the counts of instances for each classes." , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+            <http://www.w3.org/ns/earl#outcome>
+                    <http://www.w3.org/ns/earl#failed> ;
+            prov:generatedAtTime  "10-05-2021T18:29:13"
+          ] ;
+  <http://www.w3.org/ns/earl#subject>
+          kgindex:WasabiMetadata ;
+  <http://www.w3.org/ns/earl#test>
+          kgindex:classPopCountTest
+] .
+
+[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
+  kgindex:sentQuery  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        SELECT (count(?class) AS ?count)\n        WHERE {\n            SELECT DISTINCT ?class\n            \n            WHERE {\n                { ?class a owl:Class }\n                UNION { ?class a rdfs:Class }\n                UNION { ?whatever a ?class }\n            }\n        }" ;
+  <http://www.w3.org/ns/earl#result>
+          [ <http://www.w3.org/ns/earl#info>
+                    "Count of the classes in the dataset" ;
+            <http://www.w3.org/ns/earl#outcome>
+                    <http://www.w3.org/ns/earl#passed> ;
+            prov:generatedAtTime  "10-05-2021T18:27:01"
+          ] ;
+  <http://www.w3.org/ns/earl#subject>
+          kgindex:WasabiMetadata ;
+  <http://www.w3.org/ns/earl#test>
+          kgindex:classCountExtractionTest
+] .
