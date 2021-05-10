@@ -12,5 +12,5 @@ dkg:graphListExtractionTest rdf:type dkg:TestQuery ;
     dkg:query """ASK
         WHERE {
             GRAPH ?graph { ?s ?p ?o }
-            FILTER( REGEX( ?graph, $namespace) )
+            FILTER( CONTAINS( str(?graph), $namespace) )
         }""" .

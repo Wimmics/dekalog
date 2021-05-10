@@ -101,7 +101,7 @@
         WHERE {
             SELECT DISTINCT ?graph WHERE {
                 GRAPH ?graph { ?s ?p ?o }
-                FILTER( REGEX( ?graph, $namespace) )
+                FILTER( CONTAINS( str(?graph), $namespace) )
             }
         }
         """ .
