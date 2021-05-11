@@ -1,0 +1,161 @@
+@prefix void:  <http://rdfs.org/ns/void#> .
+@prefix ns0:   <http://ns.inria.fr/kgindex#> .
+@prefix ns1:   <http://ns.inria.fr/kgindex#> .
+@prefix ns4:   <https://dbpedia.org/> .
+@prefix ns3:   <http://www.w3.org/ns/earl#> .
+@prefix sql:   <sql:> .
+@prefix ns5:   <http://www.w3.org/ns/dcat#> .
+@prefix sd:    <http://www.w3.org/ns/sparql-service-description#> .
+@prefix ns7:   <http://www.w3.org/ns/formats/> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix virtrdf: <http://www.openlinksw.com/schemas/virtrdf#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix bif:   <bif:> .
+
+<http://dbpedia.org/sparql>
+        virtrdf:isEndpointOfService  ns1:DBpediaEndpoint .
+
+ns1:DBpediaDataset  void:classes  484048 .
+
+<http://dbpedia.org/sparql-auth>
+        virtrdf:isEndpointOfService  ns1:DBpediaEndpoint .
+
+ns1:DBpediaMetadata  a       ns3:TestSubject , prov:Entity ;
+        ns1:curated          ns1:DBpediaDataset , ns1:DBpediaEndpoint ;
+        ns1:original         <http://dbpedia.org/sparql-sd> ;
+        prov:wasDerivedFrom  ns4:sparql , <http://dbpedia.org/sparql> .
+
+ns1:DBpediaEndpoint  a               prov:Entity , ns5:DataService , sd:Service , ns3:TestSubject ;
+        virtrdf:graph-crud-endpoint  <http://dbpedia.org/sparql-graph-crud> , <http://dbpedia.org/sparql-graph-crud-auth> ;
+        sd:availableGraphs           ns1:DBpediaGraphList ;
+        sd:endpoint                  <http://dbpedia.org/sparql-auth> , <http://dbpedia.org/sparql> ;
+        sd:extensionAggregate        sql:STDDEV ;
+        sd:extensionFunction         bif:abs ;
+        sd:feature                   sd:BasicFederatedQuery , sd:UnionDefaultGraph , sd:EmptyGraphs , sd:RequiresDataset ;
+        sd:inputFormat               ns7:N-triples , virtrdf:FileFormat_Triples_CXML , ns7:RDFa , ns7:N3 , ns7:RDF_XML , virtrdf:FileFormat_Triples_CXML_QR , virtrdf:FileFormat_Triples_CSV , virtrdf:FileFormat_Triples_XHTML_RDFa , virtrdf:FileFormat_Quads_TriG ;
+        sd:languageExtension         virtrdf:SSG_SD_OPTION , virtrdf:SSG_SD_QUAD_MAP , virtrdf:SSG_SD_LIKE , virtrdf:SSG_SD_SPARQL11_DRAFT , virtrdf:SSG_SD_BI , virtrdf:SSG_SD_GLOBALS , virtrdf:SSG_SD_IN , virtrdf:SSG_SD_VIRTSPECIFIC , virtrdf:SSG_SD_SERVICE , virtrdf:SSG_SD_TRANSIT , virtrdf:SSG_SD_SPARQL11_MORE ;
+        sd:propertyFeature           bif:contains ;
+        sd:resultFormat              virtrdf:FileFormat_Triples_Microdata_JSON , virtrdf:FileFormat_Triples_RDF_JSON , virtrdf:FileFormat_SPARQL_Results_CXML , virtrdf:FileFormat_SPARQL_Results_HTML , ns7:RDFa , virtrdf:FileFormat_Triples_XHTML_RDFa , virtrdf:FileFormat_Triples_CXML_QR , virtrdf:FileFormat_Triples_CSV , ns7:Turtle , virtrdf:FileFormat_Triples_HTML_table , virtrdf:FileFormat_Triples_CXML , virtrdf:FileFormat_SPARQL_Results_CXML_QR , virtrdf:FileFormat_Quads_TriG , ns7:RDF_XML , virtrdf:FileFormat_SPARQL_Results_Javascript , ns7:N3 , virtrdf:FileFormat_Triples_ODATA_JSON , ns7:SPARQL_Results_CSV , virtrdf:FileFormat_Triples_HTML_Microdata , virtrdf:FileFormat_Triples_HTML_list , virtrdf:FileFormat_SPARQL_Results_Spreadsheet , ns7:N-triples , virtrdf:FileFormat_Triples_ATOM_XML , ns7:SPARQL_Results_XML , ns7:SPARQL_Results_JSON ;
+        sd:supportedLanguage         sd:SPARQL10Query , sd:SPARQL11Update , sd:SPARQL11Query .
+
+ns1:DBpediaGraphList  a  sd:Dataset .
+
+[ a            ns3:Assertion , prov:Activity ;
+  ns3:result   [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                 ns3:info              "Reachability test" ;
+                 ns3:outcome           ns3:passed ;
+                 prov:generatedAtTime  "11-05-2021T17:58:43"
+               ] ;
+  ns3:subject  ns1:DBpediaMetadata ;
+  ns3:test     ns1:reachableEndpointTest
+] .
+
+[ a            ns3:Assertion , prov:Activity ;
+  ns3:result   [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <http://dbpedia.org/sparql> .\n        }\n        " ;
+                 ns3:info              "Extraction of dataset description resources" , "" ;
+                 ns3:outcome           ns3:failed ;
+                 prov:generatedAtTime  "11-05-2021T17:58:43"
+               ] ;
+  ns3:subject  ns1:DBpediaMetadata ;
+  ns3:test     ns1:datasetDescResourceConnectedTest
+] .
+
+[ a            ns3:Assertion , prov:Activity ;
+  ns3:result   [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://dbpedia.org/sparql> .\n        }\n        " ;
+                 ns3:info              "Extraction of endpoint description resources" ;
+                 ns3:outcome           ns3:passed ;
+                 prov:generatedAtTime  "11-05-2021T17:58:43"
+               ] ;
+  ns3:subject  ns1:DBpediaMetadata ;
+  ns3:test     ns1:connectedEndpointDescResourceTest
+] .
+
+[ a            prov:Activity , ns3:Assertion ;
+  ns3:result   [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX dkg: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n        <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n            prov:wasDerivedFrom <https://dbpedia.org/sparql> ;\n            dkg:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n        <http://ns.inria.fr/kgindex#DBpediaDataset> void:vocabulary ?elem .\n    }\n    WHERE {\n        { ?s ?elem ?o . }\n        UNION { ?s ?p ?elem . }\n        BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n    }\n    " ;
+                 ns3:info              "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "Extraction of the namespaces of properties and classes." ;
+                 ns3:outcome           ns3:failed ;
+                 prov:generatedAtTime  "11-05-2021T18:04:45"
+               ] ;
+  ns3:subject  ns1:DBpediaMetadata ;
+  ns3:test     ns1:vocabularyListExtractionTest
+] .
+
+[ a            ns3:Assertion , prov:Activity ;
+  ns3:result   [ ns1:sentQuery         "SELECT ?class (count(?instance) AS ?count) WHERE {\n        SELECT DISTINCT ?class ?instance\n        \n        WHERE {\n            ?instance a ?class .\n        }\n    }\n    GROUP BY ?class" ;
+                 ns3:info              "Extraction of the counts of instances for each classes." , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                 ns3:outcome           ns3:failed ;
+                 prov:generatedAtTime  "11-05-2021T18:09:11"
+               ] ;
+  ns3:subject  ns1:DBpediaMetadata ;
+  ns3:test     ns1:classPopCountTest
+] .
+
+[ a            ns3:Assertion , prov:Activity ;
+  ns3:result   [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <https://dbpedia.org/sparql> .\n        }\n        " ;
+                 ns3:info              "Extraction of dataset description resources" , "" ;
+                 ns3:outcome           ns3:failed ;
+                 prov:generatedAtTime  "11-05-2021T17:58:44"
+               ] ;
+  ns3:subject  ns1:DBpediaMetadata ;
+  ns3:test     ns1:datasetDescResourceConnectedTest
+] .
+
+[ a            ns3:Assertion , prov:Activity ;
+  ns3:result   [ ns1:sentQuery         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        SELECT (count(?class) AS ?count)\n        WHERE {\n            SELECT DISTINCT ?class\n            \n            WHERE {\n                { ?class a owl:Class }\n                UNION { ?class a rdfs:Class }\n                UNION { ?whatever a ?class }\n            }\n        }" ;
+                 ns3:info              "Count of the classes in the dataset" ;
+                 ns3:outcome           ns3:passed ;
+                 prov:generatedAtTime  "11-05-2021T18:06:45"
+               ] ;
+  ns3:subject  ns1:DBpediaMetadata ;
+  ns3:test     ns1:classCountExtractionTest
+] .
+
+[ a            ns3:Assertion , prov:Activity ;
+  ns3:result   [ ns1:sentQuery         "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n            FILTER( CONTAINS( str(?graph), \"\") )\n        }" ;
+                 ns3:info              "Extraction of the list of graphs in the endpoint" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                 ns3:outcome           ns3:failed ;
+                 prov:generatedAtTime  "11-05-2021T18:00:44"
+               ] ;
+  ns3:subject  ns1:DBpediaMetadata ;
+  ns3:test     ns1:graphListExtractionTest
+] .
+
+[ a            ns3:Assertion , prov:Activity ;
+  ns3:result   [ ns1:sentQuery         "SELECT (count(*) AS ?count) WHERE {\n            SELECT DISTINCT ?s ?p ?o\n            \n            WHERE {\n               ?s ?p ?o .\n            }\n        }" ;
+                 ns3:info              "Count of triples in the dataset" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                 ns3:outcome           ns3:failed ;
+                 prov:generatedAtTime  "11-05-2021T18:06:45"
+               ] ;
+  ns3:subject  ns1:DBpediaMetadata ;
+  ns3:test     ns1:triplesCountExtractionTest
+] .
+
+[ a            ns3:Assertion , prov:Activity ;
+  ns3:result   [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <https://dbpedia.org/sparql> .\n        }\n        " ;
+                 ns3:info              "Extraction of endpoint description resources" , "" ;
+                 ns3:outcome           ns3:failed ;
+                 prov:generatedAtTime  "11-05-2021T17:58:43"
+               ] ;
+  ns3:subject  ns1:DBpediaMetadata ;
+  ns3:test     ns1:connectedEndpointDescResourceTest
+] .
+
+[ a            ns3:Assertion , prov:Activity ;
+  ns3:result   [ ns1:sentQuery         "ASK\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
+                 ns3:info              "Extraction of the namespaces of properties and classes." ;
+                 ns3:outcome           ns3:passed ;
+                 prov:generatedAtTime  "11-05-2021T18:00:44"
+               ] ;
+  ns3:subject  ns1:DBpediaMetadata ;
+  ns3:test     ns1:vocabularyListExtractionTest
+] .
+
+[ a            prov:Activity , ns3:Assertion ;
+  ns3:result   [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX dkg: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n        <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n            prov:wasDerivedFrom <http://dbpedia.org/sparql> ;\n            dkg:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n        <http://ns.inria.fr/kgindex#DBpediaDataset> void:vocabulary ?elem .\n    }\n    WHERE {\n        { ?s ?elem ?o . }\n        UNION { ?s ?p ?elem . }\n        BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n    }\n    " ;
+                 ns3:info              "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "Extraction of the namespaces of properties and classes." ;
+                 ns3:outcome           ns3:failed ;
+                 prov:generatedAtTime  "11-05-2021T18:02:44"
+               ] ;
+  ns3:subject  ns1:DBpediaMetadata ;
+  ns3:test     ns1:vocabularyListExtractionTest
+] .

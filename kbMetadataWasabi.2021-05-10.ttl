@@ -3,16 +3,24 @@
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ns0:   <http://www.w3.org/ns/dcat#> .
+@prefix ns2:   <http://ns.inria.fr/kgindex#> .
+@prefix ns1:   <http://ns.inria.fr/kgindex#> .
+@prefix ns4:   <http://www.w3.org/ns/earl#> .
+@prefix ns3:   <http://www.w3.org/ns/earl#> .
+@prefix ns6:   <http://www.w3.org/ns/earl#> .
 @prefix sd:    <http://www.w3.org/ns/sparql-service-description#> .
-@prefix prov:  <http://www.w3.org/ns/prov#> .
-@prefix dcat:   <http://www.w3.org/ns/dcat#> .
-@prefix kgindex:   <http://ns.inria.fr/kgindex#> .
-@prefix wasabi:   <http://ns.inria.fr/wasabi/> .
 @prefix ns5:   <http://wasabi.inria.fr/> .
+@prefix ns8:   <http://ns.inria.fr/wasabi/> .
+@prefix ns7:   <http://wasabi.inria.fr/> .
 @prefix dct:   <http://purl.org/dc/terms/> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ns9:   <http://wasabi.inria.fr/> .
+@prefix ns11:  <http://www.w3.org/ns/earl#> .
+@prefix ns10:  <http://ns.inria.fr/wasabi/> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
 
-kgindex:WasabiDataset  a             dcat:Dataset , void:Dataset , <http://www.w3.org/ns/earl#TestSubject> , prov:Entity , schema:Dataset ;
+ns1:WasabiDataset  a             ns0:Dataset , void:Dataset , ns11:TestSubject , prov:Entity , schema:Dataset ;
         dct:creator              "Michel Buffa" , "Fabrice Jauvat" , "Elmahdi Korfed" , "Johan Pauwels" , "Guillaume Pellerin" , "Maroua Tikat" , "Elena Cabrio" , "Michael Fell" ;
         dct:creator              <https://orcid.org/0000-0003-1007-0101> , <https://orcid.org/0000-0002-0756-6934> , <https://orcid.org/0000-0003-0543-1232> , <https://team.inria.fr/wimmics/> , <https://orcid.org/0000-0001-9064-0463> , <https://orcid.org/0000-0001-8158-5562> ;
         dct:description          "The WASABI Dataset is a large corpus of songs enriched with metadata extracted from music databases on the Web, and resulting from the processing of song lyrics and from audio analysis. This dataset is the RDF representation of the original WASABI dataset." ;
@@ -23,10 +31,10 @@ kgindex:WasabiDataset  a             dcat:Dataset , void:Dataset , <http://www.w
         dct:title                "The WASABI RDF Knowledge Graph" ;
         void:classes             14547 ;
         void:dataDump            <https://doi.org/10.5281/zenodo.4312641> ;
-        void:sparqlEndpoint      ns5:sparql ;
+        void:sparqlEndpoint      ns9:sparql ;
         void:triples             55542555 ;
         void:uriSpace            "http://ns.inria.fr/wasabi/" ;
-        void:vocabulary          dct: , <http://purl.org/ontology/mo/> , <http://purl.org/ontology/chord/> , <http://dbpedia.org/ontology/> , <http://www.wikidata.org/entity/> , prov: , void: , schema: , <http://purl.org/ontology/af/> , <http://purl.org/vocab/frbr/core#> , <http://purl.org/dc/elements/1.1/> , <http://purl.org/ontology/bibo/> , dcat: , <http://xmlns.com/foaf/0.1/> ;
+        void:vocabulary          dct: , <http://purl.org/ontology/mo/> , <http://purl.org/ontology/chord/> , <http://dbpedia.org/ontology/> , <http://www.wikidata.org/entity/> , prov: , void: , schema: , <http://purl.org/ontology/af/> , <http://purl.org/vocab/frbr/core#> , <http://purl.org/dc/elements/1.1/> , <http://purl.org/ontology/bibo/> , ns0: , <http://xmlns.com/foaf/0.1/> ;
         schema:author            "Michael Fell" , "Michel Buffa" , "Johan Pauwels" , "Elmahdi Korfed" , "Elena Cabrio" , "Maroua Tikat" , "Guillaume Pellerin" , "Fabrice Jauvat" ;
         schema:author            <https://orcid.org/0000-0001-9064-0463> , <https://orcid.org/0000-0002-0756-6934> , <https://orcid.org/0000-0003-0543-1232> , <https://orcid.org/0000-0001-8158-5562> , <https://team.inria.fr/wimmics/> , <https://orcid.org/0000-0003-1007-0101> ;
         schema:datePublished     "2020-12-09"^^xsd:date ;
@@ -34,146 +42,165 @@ kgindex:WasabiDataset  a             dcat:Dataset , void:Dataset , <http://www.w
         schema:licence           <https://creativecommons.org/licenses/by-nc/4.0/> ;
         schema:name              "The WASABI RDF Knowledge Graph" ;
         schema:publisher         <https://ror.org/02feahw73> , <https://ror.org/02kvxyf05> , <https://ror.org/0496p8026> ;
-        schema:subjectOf         wasabi:fell2019love ;
+        schema:subjectOf         ns10:fell2019love ;
         owl:versionInfo          "1.0" ;
         prov:wasGeneratedAtTime  "2020-12-09"^^xsd:date ;
-        prov:wasGeneratedBy      wasabi:RdfGeneration .
+        prov:wasGeneratedBy      ns10:RdfGeneration .
 
-kgindex:WasabiMetadata  a        <http://www.w3.org/ns/earl#TestSubject> , prov:Entity ;
-        kgindex:curated          kgindex:WasabiEndpoint , kgindex:WasabiDataset ;
-        kgindex:original         wasabi:wasabi-1-0 , wasabi:sparql-service ;
-        prov:wasDerivedFrom  ns5:sparql .
+ns1:WasabiMetadata  a        ns11:TestSubject , prov:Entity ;
+        ns1:curated          ns1:WasabiEndpoint , ns1:WasabiDataset ;
+        ns1:original         ns10:wasabi-1-0 , ns10:sparql-service ;
+        prov:wasDerivedFrom  <https://wasabi.inria.fr/sparql> , ns9:sparql .
 
-kgindex:WasabiEndpoint  a         prov:Entity , sd:Service , dcat:DataService , <http://www.w3.org/ns/earl#TestSubject> ;
+ns1:WasabiEndpoint  a         prov:Entity , sd:Service , ns0:DataService , ns11:TestSubject ;
         rdfs:label            "SPARQL endpoint serving the WASABI RDF Knowledge Graph" ;
-        dcat:endpointURL       ns5:sparql ;
-        dcat:servesDataset     wasabi:wasabi-1-0 ;
-        sd:availableGraphs    kgindex:WasabiGraphList ;
+        ns0:endpointURL       ns9:sparql ;
+        ns0:servesDataset     ns10:wasabi-1-0 ;
+        sd:availableGraphs    ns1:WasabiGraphList ;
         sd:availableGraphs    []  ;
-        sd:endpoint           ns5:sparql ;
+        sd:endpoint           ns9:sparql , <https://wasabi.inria.fr/sparql> ;
         sd:supportedLanguage  sd:SPARQL10Query , sd:SPARQL11Query .
 
-wasabi:sparql-service  dcat:servesDataset  kgindex:WasabiDataset .
+ns10:sparql-service  ns0:servesDataset  ns1:WasabiDataset .
 
-kgindex:WasabiGraphList  a   sd:Dataset ;
-        sd:defaultGraph  [ a  sd:Graph ] .
+ns1:WasabiGraphList  a  sd:Dataset .
 
-[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
-  kgindex:sentQuery  "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://wasabi.inria.fr/sparql> .\n        }\n        " ;
-  <http://www.w3.org/ns/earl#result>
-          [ <http://www.w3.org/ns/earl#info>
-                    "Extraction of endpoint description resources" ;
-            <http://www.w3.org/ns/earl#outcome>
-                    <http://www.w3.org/ns/earl#passed> ;
-            prov:generatedAtTime  "10-05-2021T18:20:44"
-          ] ;
-  <http://www.w3.org/ns/earl#subject>
-          kgindex:WasabiMetadata ;
-  <http://www.w3.org/ns/earl#test>
-          kgindex:connectedEndpointDescResourceTest
+[ a             ns11:Assertion , prov:Activity ;
+  ns11:result   [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://wasabi.inria.fr/sparql> .\n        }\n        " ;
+                  ns11:info             "Extraction of endpoint description resources" ;
+                  ns11:outcome          ns11:passed ;
+                  prov:generatedAtTime  "11-05-2021T17:38:51"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:connectedEndpointDescResourceTest
 ] .
 
-[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
-  kgindex:sentQuery  "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n            FILTER( CONTAINS( str(?graph), \"http://ns.inria.fr/wasabi/\") )\n        }" ;
-  <http://www.w3.org/ns/earl#result>
-          [ <http://www.w3.org/ns/earl#info>
-                    "Extraction of the list of graphs in the endpoint" ;
-            <http://www.w3.org/ns/earl#outcome>
-                    <http://www.w3.org/ns/earl#passed> ;
-            prov:generatedAtTime  "10-05-2021T18:20:45"
-          ] ;
-  <http://www.w3.org/ns/earl#subject>
-          kgindex:WasabiMetadata ;
-  <http://www.w3.org/ns/earl#test>
-          kgindex:graphListExtractionTest
+[ a             prov:Activity , ns11:Assertion ;
+  ns11:result   [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX dkg: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                dkg:curated <http://ns.inria.fr/kgindex#WasabiEndpoint> .\n            <http://ns.inria.fr/kgindex#WasabiEndpoint> sd:availableGraphs <http://ns.inria.fr/kgindex#WasabiGraphList> .\n            <http://ns.inria.fr/kgindex#WasabiGraphList> sd:namedGraph [\n                    a sd:NamedGraph ;\n                    sd:name ?graph\n                ] .\n        }\n        WHERE {\n            SELECT DISTINCT ?graph WHERE {\n                GRAPH ?graph { ?s ?p ?o }\n                FILTER( CONTAINS( str(?graph), \"http://ns.inria.fr/wasabi/\") )\n            }\n        }\n        " ;
+                  ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "Extraction of the list of graphs in the endpoint" ;
+                  ns11:outcome          ns11:failed ;
+                  prov:generatedAtTime  "11-05-2021T17:42:52"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:graphListExtractionTest
 ] .
 
-[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
-  kgindex:sentQuery  "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <http://wasabi.inria.fr/sparql> .\n        }\n        " ;
-  <http://www.w3.org/ns/earl#result>
-          [ <http://www.w3.org/ns/earl#info>
-                    "Extraction of dataset description resources" ;
-            <http://www.w3.org/ns/earl#outcome>
-                    <http://www.w3.org/ns/earl#passed> ;
-            prov:generatedAtTime  "10-05-2021T18:20:44"
-          ] ;
-  <http://www.w3.org/ns/earl#subject>
-          kgindex:WasabiMetadata ;
-  <http://www.w3.org/ns/earl#test>
-          kgindex:datasetDescResourceConnectedTest
+[ a             ns11:Assertion , prov:Activity ;
+  ns11:result   [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <http://wasabi.inria.fr/sparql> .\n        }\n        " ;
+                  ns11:info             "Extraction of dataset description resources" ;
+                  ns11:outcome          ns11:passed ;
+                  prov:generatedAtTime  "11-05-2021T17:38:52"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:datasetDescResourceConnectedTest
 ] .
 
-[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
-  kgindex:sentQuery  "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
-  <http://www.w3.org/ns/earl#result>
-          [ <http://www.w3.org/ns/earl#info>
-                    "Reachability test" ;
-            <http://www.w3.org/ns/earl#outcome>
-                    <http://www.w3.org/ns/earl#passed> ;
-            prov:generatedAtTime  "10-05-2021T18:20:44"
-          ] ;
-  <http://www.w3.org/ns/earl#subject>
-          kgindex:WasabiMetadata ;
-  <http://www.w3.org/ns/earl#test>
-          kgindex:reachableEndpointTest
+[ a             ns11:Assertion , prov:Activity ;
+  ns11:result   [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                  ns11:info             "Reachability test" ;
+                  ns11:outcome          ns11:passed ;
+                  prov:generatedAtTime  "11-05-2021T17:38:51"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:reachableEndpointTest
 ] .
 
-[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
-  kgindex:sentQuery  "ASK\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
-  <http://www.w3.org/ns/earl#result>
-          [ <http://www.w3.org/ns/earl#info>
-                    "Extraction of the namespaces of properties and classes." ;
-            <http://www.w3.org/ns/earl#outcome>
-                    <http://www.w3.org/ns/earl#passed> ;
-            prov:generatedAtTime  "10-05-2021T18:22:45"
-          ] ;
-  <http://www.w3.org/ns/earl#subject>
-          kgindex:WasabiMetadata ;
-  <http://www.w3.org/ns/earl#test>
-          kgindex:vocabularyListExtractionTest
+[ a             prov:Activity , ns11:Assertion ;
+  ns11:result   [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX dkg: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n        <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n            prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n            dkg:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n        <http://ns.inria.fr/kgindex#WasabiDataset> void:vocabulary ?elem .\n    }\n    WHERE {\n        { ?s ?elem ?o . }\n        UNION { ?s ?p ?elem . }\n        BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n    }\n    " ;
+                  ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "Extraction of the namespaces of properties and classes." ;
+                  ns11:outcome          ns11:failed ;
+                  prov:generatedAtTime  "11-05-2021T17:46:53"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:vocabularyListExtractionTest
 ] .
 
-[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
-  kgindex:sentQuery  "SELECT (count(*) AS ?count) WHERE {\n            SELECT DISTINCT ?s ?p ?o\n            \n            WHERE {\n               ?s ?p ?o .\n            }\n        }" ;
-  <http://www.w3.org/ns/earl#result>
-          [ <http://www.w3.org/ns/earl#info>
-                    "Count of triples in the dataset" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
-            <http://www.w3.org/ns/earl#outcome>
-                    <http://www.w3.org/ns/earl#failed> ;
-            prov:generatedAtTime  "10-05-2021T18:26:46"
-          ] ;
-  <http://www.w3.org/ns/earl#subject>
-          kgindex:WasabiMetadata ;
-  <http://www.w3.org/ns/earl#test>
-          kgindex:triplesCountExtractionTest
+[ a             ns11:Assertion , prov:Activity ;
+  ns11:result   [ ns1:sentQuery         "ASK\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
+                  ns11:info             "Extraction of the namespaces of properties and classes." ;
+                  ns11:outcome          ns11:passed ;
+                  prov:generatedAtTime  "11-05-2021T17:42:52"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:vocabularyListExtractionTest
 ] .
 
-[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
-  kgindex:sentQuery  "SELECT ?class (count(?instance) AS ?count) WHERE {\n        SELECT DISTINCT ?class ?instance\n        \n        WHERE {\n            ?instance a ?class .\n        }\n    }\n    GROUP BY ?class" ;
-  <http://www.w3.org/ns/earl#result>
-          [ <http://www.w3.org/ns/earl#info>
-                    "Extraction of the counts of instances for each classes." , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
-            <http://www.w3.org/ns/earl#outcome>
-                    <http://www.w3.org/ns/earl#failed> ;
-            prov:generatedAtTime  "10-05-2021T18:29:13"
-          ] ;
-  <http://www.w3.org/ns/earl#subject>
-          kgindex:WasabiMetadata ;
-  <http://www.w3.org/ns/earl#test>
-          kgindex:classPopCountTest
+[ a             ns11:Assertion , prov:Activity ;
+  ns11:result   [ ns1:sentQuery         "SELECT ?class (count(?instance) AS ?count) WHERE {\n        SELECT DISTINCT ?class ?instance\n        \n        WHERE {\n            ?instance a ?class .\n        }\n    }\n    GROUP BY ?class" ;
+                  ns11:info             "Extraction of the counts of instances for each classes." , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                  ns11:outcome          ns11:failed ;
+                  prov:generatedAtTime  "11-05-2021T17:51:37"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:classPopCountTest
 ] .
 
-[ a              <http://www.w3.org/ns/earl#Assertion> , prov:Activity ;
-  kgindex:sentQuery  "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        SELECT (count(?class) AS ?count)\n        WHERE {\n            SELECT DISTINCT ?class\n            \n            WHERE {\n                { ?class a owl:Class }\n                UNION { ?class a rdfs:Class }\n                UNION { ?whatever a ?class }\n            }\n        }" ;
-  <http://www.w3.org/ns/earl#result>
-          [ <http://www.w3.org/ns/earl#info>
-                    "Count of the classes in the dataset" ;
-            <http://www.w3.org/ns/earl#outcome>
-                    <http://www.w3.org/ns/earl#passed> ;
-            prov:generatedAtTime  "10-05-2021T18:27:01"
-          ] ;
-  <http://www.w3.org/ns/earl#subject>
-          kgindex:WasabiMetadata ;
-  <http://www.w3.org/ns/earl#test>
-          kgindex:classCountExtractionTest
+[ a             ns11:Assertion , prov:Activity ;
+  ns11:result   [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <https://wasabi.inria.fr/sparql> .\n        }\n        " ;
+                  ns11:info             "Extraction of dataset description resources" , "" ;
+                  ns11:outcome          ns11:failed ;
+                  prov:generatedAtTime  "11-05-2021T17:38:52"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:datasetDescResourceConnectedTest
+] .
+
+[ a             ns11:Assertion , prov:Activity ;
+  ns11:result   [ ns1:sentQuery         "SELECT (count(*) AS ?count) WHERE {\n            SELECT DISTINCT ?s ?p ?o\n            \n            WHERE {\n               ?s ?p ?o .\n            }\n        }" ;
+                  ns11:info             "Count of triples in the dataset" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                  ns11:outcome          ns11:failed ;
+                  prov:generatedAtTime  "11-05-2021T17:48:53"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:triplesCountExtractionTest
+] .
+
+[ a             ns11:Assertion , prov:Activity ;
+  ns11:result   [ ns1:sentQuery         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        SELECT (count(?class) AS ?count)\n        WHERE {\n            SELECT DISTINCT ?class\n            \n            WHERE {\n                { ?class a owl:Class }\n                UNION { ?class a rdfs:Class }\n                UNION { ?whatever a ?class }\n            }\n        }" ;
+                  ns11:info             "Count of the classes in the dataset" ;
+                  ns11:outcome          ns11:passed ;
+                  prov:generatedAtTime  "11-05-2021T17:49:09"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:classCountExtractionTest
+] .
+
+[ a             prov:Activity , ns11:Assertion ;
+  ns11:result   [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX dkg: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n        <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n            prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n            dkg:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n        <http://ns.inria.fr/kgindex#WasabiDataset> void:vocabulary ?elem .\n    }\n    WHERE {\n        { ?s ?elem ?o . }\n        UNION { ?s ?p ?elem . }\n        BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n    }\n    " ;
+                  ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "Extraction of the namespaces of properties and classes." ;
+                  ns11:outcome          ns11:failed ;
+                  prov:generatedAtTime  "11-05-2021T17:44:53"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:vocabularyListExtractionTest
+] .
+
+[ a             prov:Activity , ns11:Assertion ;
+  ns11:result   [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX dkg: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                dkg:curated <http://ns.inria.fr/kgindex#WasabiEndpoint> .\n            <http://ns.inria.fr/kgindex#WasabiEndpoint> sd:availableGraphs <http://ns.inria.fr/kgindex#WasabiGraphList> .\n            <http://ns.inria.fr/kgindex#WasabiGraphList> sd:namedGraph [\n                    a sd:NamedGraph ;\n                    sd:name ?graph\n                ] .\n        }\n        WHERE {\n            SELECT DISTINCT ?graph WHERE {\n                GRAPH ?graph { ?s ?p ?o }\n                FILTER( CONTAINS( str(?graph), \"http://ns.inria.fr/wasabi/\") )\n            }\n        }\n        " ;
+                  ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "Extraction of the list of graphs in the endpoint" ;
+                  ns11:outcome          ns11:failed ;
+                  prov:generatedAtTime  "11-05-2021T17:40:52"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:graphListExtractionTest
+] .
+
+[ a             ns11:Assertion , prov:Activity ;
+  ns11:result   [ ns1:sentQuery         "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n            FILTER( CONTAINS( str(?graph), \"http://ns.inria.fr/wasabi/\") )\n        }" ;
+                  ns11:info             "Extraction of the list of graphs in the endpoint" ;
+                  ns11:outcome          ns11:passed ;
+                  prov:generatedAtTime  "11-05-2021T17:38:52"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:graphListExtractionTest
+] .
+
+[ a             ns11:Assertion , prov:Activity ;
+  ns11:result   [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <https://wasabi.inria.fr/sparql> .\n        }\n        " ;
+                  ns11:info             "Extraction of endpoint description resources" , "" ;
+                  ns11:outcome          ns11:failed ;
+                  prov:generatedAtTime  "11-05-2021T17:38:51"
+                ] ;
+  ns11:subject  ns1:WasabiMetadata ;
+  ns11:test     ns1:connectedEndpointDescResourceTest
 ] .
