@@ -42,7 +42,7 @@ dkg:server rdf:type rdf:Property ;
 dkg:sentQery rdf:type rdf:Property ;
     rdfs:comment "String representation of the SPARQL query sent to the server after transformation to adapt it to the endpoint, if necessary." ;
     rdfs:label "Query sent to the server" ;
-    rdfs:domain earl:Assertion ;
+    rdfs:domain earl:TestResult ;
     rdfs:range xsd:string .
 
 dkg:httpResponse rdf:type rdf:Property ;
