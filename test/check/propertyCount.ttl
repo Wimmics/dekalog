@@ -1,8 +1,10 @@
 @prefix dkg: <http://ns.inria.fr/kgindex#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
 
-dkg:countPropertyShape a sh:NodeShape ;
+dkg:countPropertyShape a sh:NodeShape  ,
+        earl:TestCase ;
     sh:targetNode dkg:dummyTarget ;
     sh:sparql [
     		rdf:type sh:SPARQLConstraint ;
