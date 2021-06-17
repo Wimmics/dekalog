@@ -481,14 +481,14 @@ We also add provenance statements about our generated description. This provenan
 
 ### Trace of the extraction
 
-In the following examples, we send different SPARQL queries for the extraction of the description of datasets. Those queries can be separated into two categories:
-- Extraction queries, made to identify and extract the triples of the description from the dataset. Those queries are SELECT queries used to identify the resources relevant to the description.
-- Check queries, made to verify the consistency of the description. Those queries compare the values of the description with values extracted from the content of the dataset.
-Extraction queries can have no results, in which case we will generate a minimal description, we test the fact that the SPARQL endpoint accepted them. Check queries must have the expected results.
+In the following examples, we send different tests for the extraction of the description of datasets. Those tests can be separated into two categories:
+- Extraction tests, made to identify and extract the triples of the description from the dataset. Those tests are based on SELECT queries used to identify the resources relevant to the description.
+- Check tests, made to verify the consistency of the description. Those tests compare the values of the description with values extracted from the content of the dataset and correct them if necessary.
+Extraction tests can have no results, in which case we generate a minimal description, we test the fact that the SPARQL endpoint accepted them. Check queries must have the expected results.
 
-We describe each of the different queries in a file associated with each example. The generated description's triples can be made with various approaches, e.g. with CONSTRUCT, SELECT, or DESCRIBE. For this reason, we do not describe this part of the extraction, we focus on the preliminary queries searching for the description resources. This allows us to also describe the behavior of the endpoint when confronted with different keywords in our queries.
+We describe each of the different tests in a file associated with each example. The generated description's triples can be made with either CONSTRUCT or UPDATE queries. The trace of the extraction allows us to also describe the behavior of the endpoint when confronted with different keywords in our queries.
 
-The queries described as pure EARL assertion are extraction queries. They fail when the SPARQL endpoint returns an error during their evaluation. The queries described with a test formalized in a SHACL constraint are check queries. Their results depend on the validation of the constraint by the data.
+The queries described with a test as a TestQuery instance are extraction queries. They fail when the SPARQL endpoint returns an error during their evaluation. The queries described with a test formalized in a SHACL constraint are check queries. Their results depend on the validation of the constraint by the data.
 
 ### Generation of reports on query execution
 
