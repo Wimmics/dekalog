@@ -9,14 +9,22 @@ dkg:countTripleShape a sh:NodeShape  ,
     sh:sparql [
     		rdf:type sh:SPARQLConstraint ;
     		sh:message "There are as many triples as expected." ;
-            sh:select """SELECT $this (count(*) AS ?value)
+            sh:select """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            SELECT $this ?extractedValue ?value
             $FROM
             WHERE {
-                SELECT DISTINCT ?s ?p ?o
-                WHERE {
-                    ?s ?p ?o .
+                ?res void:triples ?extractedValue .
+                ?res ?p $endpoint .
+                { ?res a dcat:Dataset }
+                UNION { ?res a void:Dataset }
+                {
+                    SELECT (count(*) AS ?value) WHERE {
+                        ?s ?p ?o .
+                    }
                 }
-            }
-            GROUP BY $this
-            HAVING ( ?value != $extractedValue ) """
+                FILTER ( ?value != ?extractedValue )
+            } """
         ] .

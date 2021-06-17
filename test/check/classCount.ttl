@@ -15,7 +15,7 @@ dkg:countClassShape a sh:NodeShape  ,
                 PREFIX owl: <http://www.w3.org/2002/07/owl#>
                 PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
-                SELECT ?extractedValue
+                SELECT $this ?extractedValue ?value
                 $FROM
                 WHERE {
                     ?res void:classes ?extractedValue .
@@ -23,14 +23,11 @@ dkg:countClassShape a sh:NodeShape  ,
                     { ?res a dcat:Dataset }
                     UNION { ?res a void:Dataset }
                     {
-                        SELECT (count(?c) AS ?value) WHERE {
-                            SELECT DISTINCT ?c
-                            WHERE {
-                                ?s a ?c .
-                            }
+                        SELECT (count( DISTINCT ?c) AS ?value)
+                        WHERE {
+                            ?s a ?c .
                         }
                     }
-                }
-                GROUP BY ?extractedValue
-                HAVING ( ?value != ?extractedValue ) """
+                    FILTER(?extractedValue != ?value)
+                } """
         ] .
