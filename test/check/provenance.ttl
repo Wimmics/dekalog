@@ -9,25 +9,66 @@
 dkg:provenanceExtractionShape rdf:type sh:NodeShape ,
         earl:TestCase ;
     sh:targetClass void:Dataset ;
+    sh:name "Provenance information"@en ;
+	sh:description "We need information about the authors, the licensing and the creation process." ;
     # Who ?
     sh:or (
-		[ sh:targetSubjectsOf dcterms:creator ]
-		[ sh:targetSubjectsOf dcterms:contributor ]
-		[ sh:targetSubjectsOf dcterms:publisher ]
-		[ sh:targetSubjectsOf prov:wasAttributedTo ]
+		[ sh:property [
+    		sh:path dcterms:creator ;
+    		sh:minCount 1 ;
+	       ]  ]
+		[ sh:property [
+    		sh:path  dcterms:contributor ;
+    		sh:minCount 1 ;
+	       ] ]
+		[ sh:property [
+    		sh:path  dcterms:publisher ;
+    		sh:minCount 1 ;
+	       ] ]
+		[ sh:property [
+    		sh:path  prov:wasAttributedTo ;
+    		sh:minCount 1 ;
+	       ] ]
     ) ;
     # What ?
     sh:or (
-		[ sh:targetSubjectsOf dcterms:licence ]
-		[ sh:targetSubjectsOf dcterms:conformsTo ]
+		[ sh:property [
+    		sh:path  dcterms:licence ;
+    		sh:minCount 1 ;
+	       ] ]
+		[ sh:property [
+    		sh:path  dcterms:conformsTo ;
+    		sh:minCount 1 ;
+	       ] ]
     ) ;
     # How ?
     sh:or (
-		[ sh:targetSubjectsOf dcterms:created ]
-		[ sh:targetSubjectsOf dcterms:modified ]
-		[ sh:targetSubjectsOf prov:wasGeneratedAtTime ]
-		[ sh:targetSubjectsOf dcterms:issued ]
-		[ sh:targetSubjectsOf dcterms:source ]
-		[ sh:targetSubjectsOf prov:wasDerivedFrom ]
-		[ sh:targetSubjectsOf dcterms:format ]
+		[ sh:property [
+    		sh:path  dcterms:created ;
+    		sh:minCount 1 ;
+	       ] ]
+		[ sh:property [
+    		sh:path  dcterms:modified ;
+    		sh:minCount 1 ;
+	       ] ]
+		[ sh:property [
+    		sh:path  prov:wasGeneratedAtTime ;
+    		sh:minCount 1 ;
+	       ] ]
+		[ sh:property [
+    		sh:path  dcterms:issued ;
+    		sh:minCount 1 ;
+	       ] ]
+		[ sh:property [
+    		sh:path  dcterms:source ;
+    		sh:minCount 1 ;
+	       ] ]
+		[ sh:property [
+    		sh:path  prov:wasDerivedFrom ;
+    		sh:minCount 1 ;
+	       ] ]
+		[ sh:property [
+    		sh:path  dcterms:format ;
+    		sh:minCount 1 ;
+	       ] ]
     ) .
