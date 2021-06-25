@@ -1,4 +1,5 @@
-@prefix mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix dkg: <http://ns.inria.fr/kgindex#> .
 
 <> a mf:Manifest ;
     mf:entries (
@@ -6,4 +7,94 @@
             <provenance.ttl>
             <propertyCount.ttl>
             <tripleCount.ttl>
-        )
+        ) .
+
+<provenance.ttl> a mf:ManifestEntry ;
+    mf:actions """
+    """ .
+
+<classCount.ttl> a mf:ManifestEntry ;
+    mf:actions """PREFIX void: <http://rdfs.org/ns/void#>
+        DELETE {
+            $datasetDescription void:classes ?classCount .
+        }
+    """ ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        CONSTRUCT {
+            $datasetDescription void:classes ?count .
+        }
+        WHERE {
+            SELECT (count(?class) AS ?count)
+            WHERE {
+                SELECT DISTINCT ?class
+                $FROM
+                WHERE {
+                    { ?class a owl:Class }
+                    UNION { ?class a rdfs:Class }
+                    UNION { ?whatever a ?class }
+                }
+            }
+        }
+    """ .
+
+<propertyCount.ttl> a mf:ManifestEntry ;
+    mf:actions """PREFIX void: <http://rdfs.org/ns/void#>
+        DELETE {
+            $datasetDescription void:properties ?propCount .
+        }
+    """ ;
+    mf:actions """PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        CONSTRUCT {
+            $datasetDescription void:properties ?count .
+        }
+        WHERE {
+            SELECT (count(?p) AS ?count)
+            WHERE {
+                SELECT DISTINCT ?p
+                $FROM
+                WHERE {
+                    ?s ?p ?o
+                }
+            }
+        }
+    """ .
+
+<tripleCount.ttl> a mf:ManifestEntry ;
+    mf:actions """PREFIX void: <http://rdfs.org/ns/void#>
+        DELETE {
+            $datasetDescription void:triples ?propCount .
+        }
+    """ ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        CONSTRUCT {
+            $datasetDescription void:triples ?count .
+        }
+        WHERE {
+            SELECT (count(*) AS ?count) WHERE {
+                SELECT DISTINCT ?s ?p ?o
+                $FROM
+                WHERE {
+                   ?s ?p ?o .
+                }
+            }
+        }
+    """ .
