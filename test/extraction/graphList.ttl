@@ -5,7 +5,7 @@
 @prefix dkg: <http://ns.inria.fr/kgindex#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-dkg:graphListExtractionTest rdf:type dkg:TestQuery ;
+dkg:graphListExtractionTest rdf:type dkg:TestQuery , earl:TestCase ;
     dcterms:title "Extraction of the list of graphs in the endpoint"@en ;
     dcterms:requires dkg:reachableEndpointTest ;
     skos:narrower dkg:graphListExtractionInNamespaceTest ;

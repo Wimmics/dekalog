@@ -4,7 +4,7 @@
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix dkg: <http://ns.inria.fr/kgindex#> .
 
-dkg:classPopCountTest rdf:type dkg:TestQuery ;
+dkg:classPopCountTest rdf:type dkg:TestQuery , earl:TestCase ;
     dcterms:title "Extraction of the counts of instances for each classes."@en ;
     dcterms:requires dkg:reachableEndpointTest ;
     dkg:query """SELECT ?class (count(?instance) AS ?count) WHERE {

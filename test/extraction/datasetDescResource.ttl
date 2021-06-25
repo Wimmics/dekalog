@@ -7,7 +7,7 @@
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-dkg:datasetDescResourceTest rdf:type dkg:TestQuery ;
+dkg:datasetDescResourceTest rdf:type dkg:TestQuery , earl:TestCase;
     dcterms:title "Extraction of dataset description resources" ;
     dcterms:description "Extraction of the dataset description resource the example endpoint, if there are any. The resources are instances of dcat: or void: Dataset." ;
     dcterms:requires dkg:reachableEndpointTest ;
@@ -21,7 +21,7 @@ dkg:datasetDescResourceTest rdf:type dkg:TestQuery ;
         }
         $LIMIT""" .
 
-dkg:datasetDescResourceConnectedTest rdf:type dkg:TestQuery ;
+dkg:datasetDescResourceConnectedTest rdf:type dkg:TestQuery , earl:TestCase ;
     dcterms:title "Extraction of dataset description resources" ;
     dcterms:description "Extraction of the dataset description resource the example endpoint, if there are any. The resources are instances of dcat: or void: Dataset." ;
     dcterms:requires dkg:datasetDescResourceTest ;

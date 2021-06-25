@@ -4,7 +4,7 @@
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix dkg: <http://ns.inria.fr/kgindex#> .
 
-dkg:vocabularyListExtractionTest rdf:type dkg:TestQuery ;
+dkg:vocabularyListExtractionTest rdf:type dkg:TestQuery , earl:TestCase ;
     dcterms:title "Extraction of the namespaces of properties and classes."@en ;
     dcterms:requires dkg:reachableEndpointTest ;
     dkg:query """ASK

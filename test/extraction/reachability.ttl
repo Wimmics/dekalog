@@ -5,7 +5,7 @@
 @prefix dkg: <http://ns.inria.fr/kgindex#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
-dkg:reachableEndpointTest rdf:type dkg:TestQuery ;
+dkg:reachableEndpointTest rdf:type dkg:TestQuery , earl:TestCase ;
     dcterms:title "Reachability test" ;
     dcterms:description "Reachability is tested with a simple query" ;
     dkg:query """SELECT * WHERE { ?s ?p ?o . } LIMIT 1""" ;

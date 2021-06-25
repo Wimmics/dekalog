@@ -4,7 +4,7 @@
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix dkg: <http://ns.inria.fr/kgindex#> .
 
-dkg:triplesCountExtractionTest rdf:type dkg:TestQuery ;
+dkg:triplesCountExtractionTest rdf:type dkg:TestQuery , earl:TestCase ;
     dcterms:title "Count of triples in the dataset"@en ;
     dcterms:requires dkg:reachableEndpointTest ;
     dkg:query """SELECT (count(*) AS ?count) WHERE {

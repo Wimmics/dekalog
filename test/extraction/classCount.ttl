@@ -5,7 +5,7 @@
 @prefix dkg: <http://ns.inria.fr/kgindex#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-dkg:classCountExtractionTest rdf:type dkg:TestQuery ;
+dkg:classCountExtractionTest rdf:type dkg:TestQuery , earl:TestCase ;
     dcterms:title "Count of the classes in the dataset"@en ;
     dcterms:requires dkg:reachableEndpointTest ;
     dkg:query """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

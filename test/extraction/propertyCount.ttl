@@ -4,7 +4,7 @@
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix dkg: <http://ns.inria.fr/kgindex#> .
 
-dkg:classCountExtractionTest rdf:type dkg:TestQuery ;
+dkg:classCountExtractionTest rdf:type dkg:TestQuery , earl:TestCase ;
     dcterms:title "Count of the classes in the dataset"@en ;
     dcterms:requires dkg:reachableEndpointTest ;
     dkg:query """SELECT (count(?p) AS ?count)
