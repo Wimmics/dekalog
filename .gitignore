@@ -1,0 +1,12 @@
+metadata_tests_dbpedia.ttl
+generated_metadata_bnb.ttl        
+metadata_tests_wasabi.ttl
+generated_metadata_dbpedia.ttl    
+generated_metadata_wasabi.ttl          
+retrieved_dataset_bnb.ttl  
+retrieved_dataset_dbpedia.ttl
+retrieved_dataset_wasabi.ttl
+retrieved_endpoint_dbpedia.ttl
+retrieved_endpoint_wasabi.ttl
+metadata_extraction_tests.ttl     
+metadata_tests_bnb.ttl            
