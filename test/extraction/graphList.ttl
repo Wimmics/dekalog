@@ -2,14 +2,14 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
-@prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix kgi: <http://ns.inria.fr/kgindex#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-dkg:graphListExtractionTest rdf:type dkg:TestQuery , earl:TestCase ;
+kgi:graphListExtractionTest rdf:type kgi:TestQuery , earl:TestCase ;
     dcterms:title "Extraction of the list of graphs in the endpoint"@en ;
-    dcterms:requires dkg:reachableEndpointTest ;
-    skos:narrower dkg:graphListExtractionInNamespaceTest ;
-    dkg:query """ASK
+    dcterms:requires kgi:reachableEndpointTest ;
+    skos:narrower kgi:graphListExtractionInNamespaceTest ;
+    kgi:query """ASK
         WHERE {
             GRAPH ?graph { ?s ?p ?o }
             FILTER( CONTAINS( str(?graph), $namespace) )

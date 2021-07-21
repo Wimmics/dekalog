@@ -1,6 +1,6 @@
 @prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
-@prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix kgi: <http://ns.inria.fr/kgindex#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
@@ -22,7 +22,7 @@
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
             $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
             $endpointDescription sd:endpoint $endpoint ;
@@ -31,7 +31,7 @@
             $graphList a sd:Dataset .
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
-                dkg:curated $datasetDescription , $endpointDescription .
+                kgi:curated $datasetDescription , $endpointDescription .
         }
         WHERE {
         }
@@ -43,7 +43,7 @@
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
             $endpointDescription ?p ?o .
             $endpointDescription sd:endpoint $endpoint ;
@@ -52,17 +52,17 @@
             $graphList a sd:Dataset .
             $metadataDescription a prov:Entity , earl:TestSubject ;
                  prov:wasDerivedFrom $endpoint ;
-                 dkg:curated $endpointDescription ;
-                 dkg:original ?res .
+                 kgi:curated $endpointDescription ;
+                 kgi:original ?res .
         } WHERE {
             ?res sd:endpoint $endpoint .
             ?res ?p ?o .
         }""" ;
     mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
            ?s ?p $endpointDescription .
-           $metadataDescription dkg:original ?res .
+           $metadataDescription kgi:original ?res .
         } WHERE {
            ?res sd:endpoint $endpoint .
            ?s ?p ?res .
@@ -74,13 +74,13 @@
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
             $datasetDescription ?pp ?o .
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
-                dkg:curated $datasetDescription ;
-                dkg:original ?res .
+                kgi:curated $datasetDescription ;
+                kgi:original ?res .
         }
         WHERE {
             { ?res a dcat:Dataset }
@@ -90,10 +90,10 @@
          }""" ;
     mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX void: <http://rdfs.org/ns/void#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
             ?s ?pp $datasetDescription .
-            $metadataDescription dkg:original ?res .
+            $metadataDescription kgi:original ?res .
         }
         WHERE {
             { ?res a dcat:Dataset }
@@ -108,11 +108,11 @@
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
-                dkg:curated $endpointDescription .
+                kgi:curated $endpointDescription .
             $endpointDescription sd:availableGraphs $graphList .
             $graphList sd:namedGraph [
                     a sd:NamedGraph ;
@@ -133,11 +133,11 @@
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
         $metadataDescription a prov:Entity , earl:TestSubject ;
             prov:wasDerivedFrom $endpoint ;
-            dkg:curated $datasetDescription .
+            kgi:curated $datasetDescription .
         $datasetDescription void:vocabulary ?elem .
     }
     WHERE {
@@ -153,11 +153,11 @@
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
-                dkg:curated $datasetDescription .
+                kgi:curated $datasetDescription .
             $datasetDescription void:triples ?count .
         }
         WHERE {
@@ -177,13 +177,13 @@
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
         CONSTRUCT {
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
-                dkg:curated $datasetDescription .
+                kgi:curated $datasetDescription .
             $datasetDescription void:classes ?count .
         }
         WHERE {
@@ -206,13 +206,13 @@
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
         CONSTRUCT {
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
-                dkg:curated $datasetDescription .
+                kgi:curated $datasetDescription .
             $datasetDescription void:properties ?count .
         }
         WHERE {
@@ -233,13 +233,13 @@
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
         CONSTRUCT {
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
-                dkg:curated $datasetDescription .
+                kgi:curated $datasetDescription .
             $datasetDescription void:classPartition [
                 void:class ?class ;
                 void:entities ?count

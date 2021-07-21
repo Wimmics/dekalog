@@ -1,5 +1,5 @@
 @prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
-@prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix kgi: <http://ns.inria.fr/kgindex#> .
 
 <> a mf:Manifest ;
     mf:entries (
@@ -24,7 +24,7 @@
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
         CONSTRUCT {
@@ -55,7 +55,7 @@
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
         CONSTRUCT {
@@ -84,7 +84,7 @@
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
             $datasetDescription void:triples ?count .
         }

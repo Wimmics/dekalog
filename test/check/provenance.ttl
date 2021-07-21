@@ -1,12 +1,12 @@
 @prefix earl: <http://www.w3.org/ns/earl#> .
-@prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix kgi: <http://ns.inria.fr/kgindex#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix void: <http://rdfs.org/ns/void#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
-dkg:provenanceExtractionShape rdf:type sh:NodeShape ,
+kgi:provenanceExtractionShape rdf:type sh:NodeShape ,
         earl:TestCase ;
     sh:targetClass void:Dataset ;
     sh:name "Provenance information"@en ;

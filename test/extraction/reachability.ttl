@@ -2,11 +2,10 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
-@prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix kgi: <http://ns.inria.fr/kgindex#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
-dkg:reachableEndpointTest rdf:type dkg:TestQuery , earl:TestCase ;
+kgi:reachableEndpointTest rdf:type kgi:TestQuery , earl:TestCase ;
     dcterms:title "Reachability test" ;
     dcterms:description "Reachability is tested with a simple query" ;
-    dkg:query """SELECT * WHERE { ?s ?p ?o . } LIMIT 1""" ;
-    dkg:httpResponse dkg:statusOK .
+    kgi:query """SELECT * WHERE { ?s ?p ?o . } LIMIT 1"""  .

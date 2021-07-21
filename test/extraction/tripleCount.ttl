@@ -2,12 +2,12 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
-@prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix kgi: <http://ns.inria.fr/kgindex#> .
 
-dkg:triplesCountExtractionTest rdf:type dkg:TestQuery , earl:TestCase ;
+kgi:triplesCountExtractionTest rdf:type kgi:TestQuery , earl:TestCase ;
     dcterms:title "Count of triples in the dataset"@en ;
-    dcterms:requires dkg:reachableEndpointTest ;
-    dkg:query """SELECT (count(*) AS ?count) WHERE {
+    dcterms:requires kgi:reachableEndpointTest ;
+    kgi:query """SELECT (count(*) AS ?count) WHERE {
             SELECT DISTINCT ?s ?p ?o
             $FROM
             WHERE {
