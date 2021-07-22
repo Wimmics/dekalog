@@ -10,7 +10,18 @@
         ) .
 
 <provenance.ttl> a mf:ManifestEntry ;
-    mf:actions """
+    mf:actions """PREFIX dqv: <http://www.w3.org/ns/dqv#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX kgi: <http://ns.inria.fr/kgindex#>
+    CONSTRUCT {
+        $metadataDescription dqv:hasQualityMeasurement [
+            a dqv:QualityMeasurement ;
+            rdfs:label "Provenance information are present in the metadata"@en ;
+            dqv:computedOn $endpointDescription ;
+            dqv:isMeasurementOf kgi:provenanceExtractionShape ;
+            dqv:value "true"^^xsd:boolean
+        ] .
+    }
     """ .
 
 <classCount.ttl> a mf:ManifestEntry ;
