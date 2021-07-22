@@ -173,6 +173,7 @@
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
         PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
         CONSTRUCT {
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
