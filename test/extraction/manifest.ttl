@@ -6,7 +6,6 @@
 
 <> a mf:Manifest ;
     mf:entries  (
-            <reachability.ttl>
             <endpointDescResource.ttl>
             <datasetDescResource.ttl>
             <graphList.ttl>
@@ -16,35 +15,6 @@
             <classPopulation.ttl>
             <sportalStatistics.ttl>
         ) .
-
-<reachability.ttl> a mf:ManifestEntry ;
-    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        PREFIX dcat: <http://www.w3.org/ns/dcat#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
-        PREFIX dqv: <http://www.w3.org/ns/dqv#>
-        CONSTRUCT {
-            $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
-            $endpointDescription sd:endpoint $endpoint ;
-                a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                sd:availableGraphs $graphList .
-            $graphList a sd:Dataset .
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpoint ;
-                kgi:curated $datasetDescription , $endpointDescription ;
-                dqv:hasQualityMeasurement [
-                    a dqv:QualityMeasurement ;
-                    dqv:computedOn $endpointDescription ;
-                    dqv:isMeasurementOf kgi:reachableEndpointTest ;
-                    dqv:value "true"^^xsd:boolean
-                ] .
-
-        }
-        WHERE {
-        }
-        """ .
 
 <endpointDescResource.ttl> a mf:ManifestEntry ;
     mf:action """
