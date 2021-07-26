@@ -18,7 +18,7 @@
         PREFIX earl: <http://www.w3.org/ns/earl#>
         PREFIX kgi: <http://ns.inria.fr/kgindex#>
         PREFIX dqv: <http://www.w3.org/ns/dqv#>
-        PREFIX xsd: <http://www.w3.org/2001/XMLSchema>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
         CONSTRUCT {
             $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
             $endpointDescription sd:endpoint $endpoint ;
@@ -44,7 +44,7 @@
     mf:actions """PREFIX dqv: <http://www.w3.org/ns/dqv#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
-    PREFIX xsd: <http://www.w3.org/2001/XMLSchema>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     CONSTRUCT {
         $metadataDescription dqv:hasQualityMeasurement [
             a dqv:QualityMeasurement ;
