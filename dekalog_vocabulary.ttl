@@ -23,10 +23,12 @@ kgi:curated rdf:type rdf:Property ;
     rdfs:domain prov:Entity ;
     rdfs:range prov:Entity .
 
-kgi:missingValue rdf:type rdfs:Resource ;
-    rdfs:label "Placeholder"@en ;
-    rdfs:comment "Placeholder for the missing values of rdf:type property in rdf:type dataset or endpoint description"@en ;
-    rdfs:isDefinedBy kgi: .
+kgi:trace rdf:type rdf:Property ;
+    rdfs:label "Trace report of the metadata generation." ;
+    rdfs:comment "EARL report resulting in the execution of a query during the generation of the metadata."@en ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain prov:Entity ;
+    rdfs:range earl:Assertion .
 
 kgi:dummyTarget rdf:type rdfs:Resource ;
     rdfs:label "Placeholder SHACL shape target"@en ;
@@ -58,33 +60,8 @@ kgi:TestQuery rdf:type rdfs:Class ;
     rdfs:isDefinedBy kgi: ;
     rdfs:subClassOf earl:TestCase .
 
-kgi:querySPIN rdf:type rdf:Property ;
-    rdfs:label "SPIN representation of the query tested" ;
-    rdfs:isDefinedBy kgi: ;
-    rdfs:domain kgi:TestQuery ;
-    rdfs:range sp:Query .
-
 kgi:query rdf:type rdf:Property ;
     rdfs:label "String representation with templates elements of the tested query" ;
     rdfs:isDefinedBy kgi: ;
     rdfs:domain kgi:TestQuery ;
     rdfs:range xsd:string .
-
-kgi:testUpdate rdf:type rdf:Property ;
-    rdfs:label "Update of the test query." ;
-    rdfs:comment "Definition of an adapatation of rdf:type test query for rdf:type particular dataset. The adaptation is representated as rdf:type SPIN description of an UPDATE query for the test query description." ;
-    rdfs:domain earl:Assertion ;
-    rdfs:range sp:Query .
-
-kgi:httpResponse rdf:type rdf:Property ;
-    rdfs:comment "Describe the parts of the HTTP response to the query as they should be. If the response description equals this one, the test is validated" ;
-    rdfs:label "Model of the HTTP response of the tested query" ;
-    rdfs:isDefinedBy kgi: ;
-    rdfs:domain kgi:TestQuery ;
-    rdfs:range http:Response .
-
-kgi:statusOk rdf:type http:Response ;
-    rdfs:comment "Pre-defined HTTP response to represent an accepted query with rdf:type status code OK." ;
-    rdfs:label "HTTP Response status OK" ;
-    rdfs:isDefinedBy kgi: ;
-    http:statusCodeValue 200 .

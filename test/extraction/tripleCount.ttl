@@ -1,16 +1,30 @@
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix kgi: <http://ns.inria.fr/kgindex#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
 
-kgi:triplesCountExtractionTest rdf:type kgi:TestQuery , earl:TestCase ;
-    dcterms:title "Count of triples in the dataset"@en ;
-    dcterms:requires kgi:reachableEndpointTest ;
-    kgi:query """SELECT (count(*) AS ?count) WHERE {
-            SELECT DISTINCT ?s ?p ?o
+kgi:countTripleShape a sh:NodeShape  ,
+        earl:TestCase ;
+    sh:targetNode kgi:dummyTarget ;
+    sh:sparql [
+    		rdf:type sh:SPARQLConstraint ;
+    		sh:message "There are as many triples as expected." ;
+            sh:select """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            SELECT $this ?extractedValue ?value
             $FROM
             WHERE {
-               ?s ?p ?o .
-            }
-        }""" .
+                ?res void:triples ?extractedValue .
+                ?res ?p $endpoint .
+                { ?res a dcat:Dataset }
+                UNION { ?res a void:Dataset }
+                {
+                    SELECT (count(*) AS ?value) WHERE {
+                        ?s ?p ?o .
+                    }
+                }
+                FILTER ( ?value != ?extractedValue )
+            } """
+        ] .
