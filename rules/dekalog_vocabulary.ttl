@@ -1,0 +1,67 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix kgi: <http://ns.inria.fr/kgindex#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix http: <http://www.w3.org/2011/http> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sp: <http://spinrdf.org/sp> .
+
+kgi:original rdf:type rdf:Property ;
+    rdfs:label "Original description resources." ;
+    rdfs:comment "Description resources connected to the endpoint URL extracted from the endpoint"@en ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain prov:Entity ;
+    rdfs:range prov:Entity .
+
+kgi:curated rdf:type rdf:Property ;
+    rdfs:label "Generated description resources." ;
+    rdfs:comment "Description resources generated from the interrogation of the endpoint URL and the curation of the available original resources descriptions."@en ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain prov:Entity ;
+    rdfs:range prov:Entity .
+
+kgi:trace rdf:type rdf:Property ;
+    rdfs:label "Trace report of the metadata generation." ;
+    rdfs:comment "EARL report resulting in the execution of a query during the generation of the metadata."@en ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain prov:Entity ;
+    rdfs:range earl:Assertion .
+
+kgi:dummyTarget rdf:type rdfs:Resource ;
+    rdfs:label "Placeholder SHACL shape target"@en ;
+    rdfs:comment "Placeholder for the target of a shape that do not need a target."@en ;
+    rdfs:isDefinedBy kgi: .
+
+kgi:server rdf:type rdf:Property ;
+    rdfs:label "Server"@en ;
+    rdfs:comment "Indicates the type of SPARQL server used in an endpoint description. The value given is generally the one appearing in the server field of response header of http SPARQL queries" @en ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain sd:Service .
+
+kgi:sentQuery rdf:type rdf:Property ;
+    rdfs:comment "String representation of the SPARQL query sent to the server after transformation to adapt it to the endpoint, if necessary." ;
+    rdfs:label "Query sent to the server" ;
+    rdfs:domain earl:TestResult ;
+    rdfs:range xsd:string .
+
+kgi:httpResponse rdf:type rdf:Property ;
+    rdfs:label "HTTP response" ;
+    rdfs:comment "Link the result of rdf:type failed EARL assertion with rdf:type partial description of the HTTP response sent by the server"@en ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain earl:OutcomeValue ;
+    rdfs:range http:Response .
+
+kgi:TestQuery rdf:type rdfs:Class ;
+    rdfs:label "Test of rdf:type SPARQL query execution" ;
+    rdfs:comment "Test the result of the execution of rdf:type query in the manner of rdf:type SHACL shape but allows declaration of constraints on the HTTP response and the result." ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:subClassOf earl:TestCase .
+
+kgi:query rdf:type rdf:Property ;
+    rdfs:label "String representation with templates elements of the tested query" ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain kgi:TestQuery ;
+    rdfs:range xsd:string .
