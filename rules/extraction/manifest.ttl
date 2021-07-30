@@ -125,28 +125,6 @@
     }
     """ .
 
-<tripleCount.ttl> a mf:ManifestEntry ;
-    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
-        CONSTRUCT {
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpoint ;
-                kgi:curated $datasetDescription .
-            $datasetDescription void:triples ?count .
-        }
-        WHERE {
-            SELECT (count(*) AS ?count) WHERE {
-                SELECT DISTINCT ?s ?p ?o
-                $FROM
-                WHERE {
-                   ?s ?p ?o .
-                }
-            }
-        }
-    """ .
-
 <classCount.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX void: <http://rdfs.org/ns/void#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -273,7 +251,7 @@
 
 <tripleCount.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        DELETE {
+        DELETE WHERE {
             $datasetDescription void:triples ?propCount .
         }
     """ ;
