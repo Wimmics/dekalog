@@ -38,7 +38,7 @@
         """ .
 
 <provenance.ttl> a mf:ManifestEntry ;
-    mf:actions """PREFIX dqv: <http://www.w3.org/ns/dqv#>
+    mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
