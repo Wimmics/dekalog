@@ -1,0 +1,107 @@
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+
+<> a mf:Manifest ;
+    mf:entries  (
+            <https://raw.githubusercontent.com/Wimmics/dekalog/master/test/extraction/datasetDescResource.ttl>
+            <https://raw.githubusercontent.com/Wimmics/dekalog/master/test/extraction/endpointDescResource.ttl>
+            <https://raw.githubusercontent.com/Wimmics/dekalog/master/test/check/propertyCount.ttl>
+        ) .
+
+<https://raw.githubusercontent.com/Wimmics/dekalog/master/test/extraction/datasetDescResource.ttl> a mf:ManifestEntry ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        CONSTRUCT {
+            $datasetDescription ?pp ?o .
+            $metadataDescription a prov:Entity , earl:TestSubject ;
+                prov:wasDerivedFrom $endpoint ;
+                dkg:curated $datasetDescription ;
+                dkg:original ?res .
+        }
+        WHERE {
+            { ?res a dcat:Dataset }
+            UNION { ?res a void:Dataset }
+            ?res ?p $endpoint .
+            ?res ?pp ?o .
+         }""" ;
+    mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX dkg: <http://ns.inria.fr/kgindex#>
+        CONSTRUCT {
+            ?s ?pp $datasetDescription .
+            $metadataDescription dkg:original ?res .
+        }
+        WHERE {
+            { ?res a dcat:Dataset }
+            UNION { ?res a void:Dataset }
+            ?res ?p $endpoint .
+            ?s ?pp ?res .
+         }""" .
+
+<https://raw.githubusercontent.com/Wimmics/dekalog/master/test/extraction/endpointDescResource.ttl> a mf:ManifestEntry ;
+    mf:action """
+        PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        CONSTRUCT {
+            $endpointDescription ?p ?o .
+            $endpointDescription sd:endpoint $endpoint ;
+                a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
+                sd:availableGraphs $graphList .
+            $graphList a sd:Dataset .
+            $metadataDescription a prov:Entity , earl:TestSubject ;
+                 prov:wasDerivedFrom $endpoint ;
+                 kgi:curated $endpointDescription ;
+                 kgi:original ?res .
+        } WHERE {
+            ?res sd:endpoint $endpoint .
+            ?res ?p ?o .
+        }""" ;
+    mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        CONSTRUCT {
+           ?s ?p $endpointDescription .
+           $metadataDescription kgi:original ?res .
+        } WHERE {
+           ?res sd:endpoint $endpoint .
+           ?s ?p ?res .
+        }""" .
+
+<https://raw.githubusercontent.com/Wimmics/dekalog/master/test/check/propertyCount.ttl> a mf:ManifestEntry ;
+    mf:actions """PREFIX void: <http://rdfs.org/ns/void#>
+        DELETE {
+            $datasetDescription void:properties ?propCount .
+        }
+    """ ;
+    mf:actions """PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        CONSTRUCT {
+            $datasetDescription void:properties ?count .
+        }
+        WHERE {
+            SELECT (count(?p) AS ?count)
+            WHERE {
+                SELECT DISTINCT ?p
+                $FROM
+                WHERE {
+                    ?s ?p ?o
+                }
+            }
+        }
+    """ .

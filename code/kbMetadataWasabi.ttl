@@ -1,0 +1,648 @@
+@prefix dct:    <http://purl.org/dc/terms/> .
+@prefix ns0:    <http://www.w3.org/ns/dcat#> .
+@prefix ns1:    <http://ns.inria.fr/kgindex#> .
+@prefix ns10:   <http://ns.inria.fr/wasabi/> .
+@prefix ns11:   <http://www.w3.org/ns/earl#> .
+@prefix ns2:    <http://ns.inria.fr/kgindex#> .
+@prefix ns5:    <http://www.w3.org/ns/dcat#> .
+@prefix ns9:    <http://wasabi.inria.fr/> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix prov:   <http://www.w3.org/ns/prov#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh:     <http://www.w3.org/ns/shacl#> .
+@prefix void:   <http://rdfs.org/ns/void#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+ns1:WasabiMetadata  rdf:type  prov:Entity , ns11:TestSubject ;
+        ns1:curated          ns1:WasabiDataset ;
+        ns1:original         ns10:wasabi-1-0 ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX voidex: <http://ldf.fi/void-ext#>\n    PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctIRIReferenceSubjects ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:01:03"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:01:03" ;
+                               prov:startedAtTime  "29-07-2021T15:00:58"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctRDFNodes ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:00:28"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:00:28" ;
+                               prov:startedAtTime  "29-07-2021T15:00:23"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ] }\n        WHERE { ?s a ?c }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:01:13"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:01:13" ;
+                               prov:startedAtTime  "29-07-2021T15:01:08"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:properties ?x ] }\n        WHERE { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:01:18"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:01:18" ;
+                               prov:startedAtTime  "29-07-2021T15:01:13"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctBlankNodes ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:02:09"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:02:09" ;
+                               prov:startedAtTime  "29-07-2021T15:02:04"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT { <http://ns.inria.fr/kgindex#WasabiDataset> void:propertyPartition [ void:property ?p ; void:triples ?x ] } WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }" ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:01:38"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:01:38" ;
+                               prov:startedAtTime  "29-07-2021T15:01:33"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctBlankNodeObjects ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:00:48"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:00:48" ;
+                               prov:startedAtTime  "29-07-2021T15:00:43"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns1:sentQuery         "SELECT ?class (count(?instance) AS ?count) WHERE {\n        SELECT DISTINCT ?class ?instance\n        \n        WHERE {\n            ?instance a ?class .\n        }\n    }\n    GROUP BY ?class" ;
+                                                     ns11:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:48"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:classPopCountTest ;
+                               prov:endedAtTime    "29-07-2021T14:59:48" ;
+                               prov:startedAtTime  "29-07-2021T14:59:43"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:triples ?x ] ] }\n        WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:01:33"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:01:33" ;
+                               prov:startedAtTime  "29-07-2021T15:01:28"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:triples ?count .\n        }\n        WHERE {\n            SELECT (count(*) AS ?count) WHERE {\n                SELECT DISTINCT ?s ?p ?o\n                \n                WHERE {\n                   ?s ?p ?o .\n                }\n            }\n        }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:32"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:countTripleShape ;
+                               prov:endedAtTime    "29-07-2021T14:59:32" ;
+                               prov:startedAtTime  "29-07-2021T14:59:27"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:triples ?count .\n        }\n        WHERE {\n            SELECT (count(*) AS ?count) WHERE {\n                SELECT DISTINCT ?s ?p ?o\n                \n                WHERE {\n                   ?s ?p ?o .\n                }\n            }\n        }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:42"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:countTripleShape ;
+                               prov:endedAtTime    "29-07-2021T14:59:42" ;
+                               prov:startedAtTime  "29-07-2021T14:59:37"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:triples ?x ] }\n        WHERE { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:00:18"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:00:18" ;
+                               prov:startedAtTime  "29-07-2021T15:00:13"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:classes ?x ] }\n        WHERE { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:01:53"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:01:53" ;
+                               prov:startedAtTime  "29-07-2021T15:01:48"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns11:info             "" ;
+                                                     ns11:info             [ rdf:type     sh:ValidationReport ;
+                                                                             sh:conforms  true
+                                                                           ] ;
+                                                     ns11:outcome          ns11:passed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:03:09"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:provenanceExtractionShape ;
+                               prov:endedAtTime    "29-07-2021T15:03:09" ;
+                               prov:startedAtTime  "29-07-2021T15:03:09"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:distinctSubjects ?x ] }\n        WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:00:38"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:00:38" ;
+                               prov:startedAtTime  "29-07-2021T15:00:33"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <https://wasabi.inria.fr/sparql> .\n        }\n        " ;
+                                                     ns11:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:03:09"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:connectedEndpointDescResourceTest ;
+                               prov:endedAtTime    "29-07-2021T15:03:09" ;
+                               prov:startedAtTime  "29-07-2021T15:02:59"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT { <http://ns.inria.fr/kgindex#WasabiDataset> void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }" ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:02:59"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:02:59" ;
+                               prov:startedAtTime  "29-07-2021T15:02:54"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n        }\n        " ;
+                                                     ns11:info             "" ;
+                                                     ns11:outcome          ns11:passed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:48"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:datasetDescResourceConnectedTest ;
+                               prov:endedAtTime    "29-07-2021T14:59:48" ;
+                               prov:startedAtTime  "29-07-2021T14:59:48"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns1:sentQuery         "ASK\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
+                                                     ns11:info             "" , "SPARQL Request Failed" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:48"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:vocabularyListExtractionTest ;
+                               prov:endedAtTime    "29-07-2021T14:59:48" ;
+                               prov:startedAtTime  "29-07-2021T14:59:48"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns1:sentQuery         "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n            FILTER( CONTAINS( str(?graph), \"\") )\n        }" ;
+                                                     ns11:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:21"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:graphListExtractionTest ;
+                               prov:endedAtTime    "29-07-2021T14:59:21" ;
+                               prov:startedAtTime  "29-07-2021T14:59:16"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT { <http://ns.inria.fr/kgindex#WasabiDataset> void:propertyPartition [ void:property ?p ; void:distinctObjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }" ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:02:34"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:02:34" ;
+                               prov:startedAtTime  "29-07-2021T15:02:29"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctIRIReferenceObjects ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:00:08"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:00:08" ;
+                               prov:startedAtTime  "29-07-2021T15:00:03"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:distinctSubjects ?x ] }\n        WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:00:43"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:00:43" ;
+                               prov:startedAtTime  "29-07-2021T15:00:38"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }\n        WHERE { ?s a ?c ; ?p ?o }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:02:29"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:02:29" ;
+                               prov:startedAtTime  "29-07-2021T15:02:24"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctIRIReferences ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:02:39"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:02:39" ;
+                               prov:startedAtTime  "29-07-2021T15:02:34"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT { <http://ns.inria.fr/kgindex#WasabiDataset> void:propertyPartition [ void:property ?p ] } WHERE { ?s ?p ?o }" ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:00:13"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:00:13" ;
+                               prov:startedAtTime  "29-07-2021T15:00:08"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                     ns11:info             "" ;
+                                                     ns11:outcome          ns11:passed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:48"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T14:59:48" ;
+                               prov:startedAtTime  "29-07-2021T14:59:48"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:distinctSubjects ?x ] ] }\n        WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:01:48"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:01:48" ;
+                               prov:startedAtTime  "29-07-2021T15:01:43"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                     ns11:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:03:14"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:reachableEndpointTest ;
+                               prov:endedAtTime    "29-07-2021T15:03:14" ;
+                               prov:startedAtTime  "29-07-2021T15:03:09"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:distinctObjects ?x ] }\n        WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:02:54"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:02:54" ;
+                               prov:startedAtTime  "29-07-2021T15:02:49"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctBlankNodes ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:02:04"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:02:04" ;
+                               prov:startedAtTime  "29-07-2021T15:01:58"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns11:info             "" ;
+                                                     ns11:info             [ rdf:type     sh:ValidationReport ;
+                                                                             sh:conforms  true
+                                                                           ] ;
+                                                     ns11:outcome          ns11:passed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:48"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:countPropertyShape ;
+                               prov:endedAtTime    "29-07-2021T14:59:48" ;
+                               prov:startedAtTime  "29-07-2021T14:59:48"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:properties ?x ] }\n        WHERE { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:01:23"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:01:23" ;
+                               prov:startedAtTime  "29-07-2021T15:01:18"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctBlankNodeSubjects ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:53"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T14:59:53" ;
+                               prov:startedAtTime  "29-07-2021T14:59:48"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctLiterals ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:02:19"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:02:19" ;
+                               prov:startedAtTime  "29-07-2021T15:02:14"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:triples ?x ] ] }\n        WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:01:28"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:01:28" ;
+                               prov:startedAtTime  "29-07-2021T15:01:23"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctLiterals ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:02:14"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:02:14" ;
+                               prov:startedAtTime  "29-07-2021T15:02:09"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctIRIReferenceObjects ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:00:03"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:00:03" ;
+                               prov:startedAtTime  "29-07-2021T14:59:58"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ] }\n        WHERE { ?s a ?c }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:01:08"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:01:08" ;
+                               prov:startedAtTime  "29-07-2021T15:01:03"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:distinctSubjects ?x ] ] }\n        WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:01:43"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:01:43" ;
+                               prov:startedAtTime  "29-07-2021T15:01:38"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://wasabi.inria.fr/sparql> .\n        }\n        " ;
+                                                     ns11:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:03:04"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:connectedEndpointDescResourceTest ;
+                               prov:endedAtTime    "29-07-2021T15:03:04" ;
+                               prov:startedAtTime  "29-07-2021T15:02:59"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX voidex: <http://ldf.fi/void-ext#>\n    PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctIRIReferenceSubjects ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:00:58"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:00:58" ;
+                               prov:startedAtTime  "29-07-2021T15:00:53"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctBlankNodeSubjects ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:58"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T14:59:58" ;
+                               prov:startedAtTime  "29-07-2021T14:59:53"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:triples ?x ] }\n        WHERE { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:00:23"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:00:23" ;
+                               prov:startedAtTime  "29-07-2021T15:00:18"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }\n        WHERE { ?s a ?c ; ?p ?o }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:02:24"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:02:24" ;
+                               prov:startedAtTime  "29-07-2021T15:02:19"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:classes ?x ] }\n        WHERE { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:01:58"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:01:58" ;
+                               prov:startedAtTime  "29-07-2021T15:01:53"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns11:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:27"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:countTripleShape ;
+                               prov:endedAtTime    "29-07-2021T14:59:27" ;
+                               prov:startedAtTime  "29-07-2021T14:59:21"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctBlankNodeObjects ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:00:53"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:00:53" ;
+                               prov:startedAtTime  "29-07-2021T15:00:48"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:triples ?count .\n        }\n        WHERE {\n            SELECT (count(*) AS ?count) WHERE {\n                SELECT DISTINCT ?s ?p ?o\n                \n                WHERE {\n                   ?s ?p ?o .\n                }\n            }\n        }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:37"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:countTripleShape ;
+                               prov:endedAtTime    "29-07-2021T14:59:37" ;
+                               prov:startedAtTime  "29-07-2021T14:59:32"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctRDFNodes ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:00:33"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:00:33" ;
+                               prov:startedAtTime  "29-07-2021T15:00:28"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX voidex: <http://ldf.fi/void-ext#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> voidex:distinctIRIReferences ?x }\n        WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:02:44"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:02:44" ;
+                               prov:startedAtTime  "29-07-2021T15:02:39"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n        }\n        " ;
+                                                     ns11:info             "" ;
+                                                     ns11:outcome          ns11:passed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:42"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:datasetDescResourceTest ;
+                               prov:endedAtTime    "29-07-2021T14:59:42" ;
+                               prov:startedAtTime  "29-07-2021T14:59:42"
+                             ] ;
+        ns1:trace            [ rdf:type            prov:Activity , ns11:Assertion ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n    PREFIX earl: <http://www.w3.org/ns/earl#>\n    PREFIX kgi: <http://ns.inria.fr/kgindex#>\n    PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#WasabiMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://wasabi.inria.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#WasabiDataset> .\n            <http://ns.inria.fr/kgindex#WasabiDataset> void:classPartition [ void:class ?c ; void:distinctObjects ?x ] }\n        WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n    " ;
+                                                     ns11:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "29-07-2021T15:02:49"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:sportalTest ;
+                               prov:endedAtTime    "29-07-2021T15:02:49" ;
+                               prov:startedAtTime  "29-07-2021T15:02:44"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns11:info             "" ;
+                                                     ns11:info             [ rdf:type     sh:ValidationReport ;
+                                                                             sh:conforms  true
+                                                                           ] ;
+                                                     ns11:outcome          ns11:passed ;
+                                                     prov:generatedAtTime  "29-07-2021T14:59:42"
+                                                   ] ;
+                               ns11:subject        ns1:WasabiMetadata ;
+                               ns11:test           ns1:countClassShape ;
+                               prov:endedAtTime    "29-07-2021T14:59:42" ;
+                               prov:startedAtTime  "29-07-2021T14:59:42"
+                             ] ;
+        prov:wasDerivedFrom  ns9:sparql .
+
+ns1:WasabiDataset  rdf:type      ns5:Dataset , void:Dataset , prov:Entity , schema:Dataset ;
+        dct:creator              "Michel Buffa" , "Fabrice Jauvat" , "Elmahdi Korfed" , "Johan Pauwels" , "Guillaume Pellerin" , "Maroua Tikat" , "Elena Cabrio" , "Michael Fell" ;
+        dct:creator              <https://orcid.org/0000-0003-1007-0101> , <https://orcid.org/0000-0002-0756-6934> , <https://orcid.org/0000-0003-0543-1232> , <https://team.inria.fr/wimmics/> , <https://orcid.org/0000-0001-9064-0463> , <https://orcid.org/0000-0001-8158-5562> ;
+        dct:description          "The WASABI Dataset is a large corpus of songs enriched with metadata extracted from music databases on the Web, and resulting from the processing of song lyrics and from audio analysis. This dataset is the RDF representation of the original WASABI dataset." ;
+        dct:issued               "2020-12-09"^^xsd:date ;
+        dct:licence              <https://creativecommons.org/licenses/by-nc/4.0/> ;
+        dct:publisher            <https://ror.org/0496p8026> , <https://ror.org/02feahw73> , <https://ror.org/02kvxyf05> ;
+        dct:subject              "lyrics" , "song" , "audio analysis" , "metadata" , "music" , "chord" ;
+        dct:title                "The WASABI RDF Knowledge Graph" ;
+        void:dataDump            <https://doi.org/10.5281/zenodo.4312641> ;
+        void:sparqlEndpoint      ns9:sparql ;
+        void:triples             55542555 ;
+        void:uriSpace            "http://ns.inria.fr/wasabi/" ;
+        void:vocabulary          dct: , <http://purl.org/ontology/mo/> , <http://purl.org/ontology/chord/> , <http://dbpedia.org/ontology/> , <http://www.wikidata.org/entity/> , prov: , void: , schema: , <http://purl.org/ontology/af/> , <http://purl.org/vocab/frbr/core#> , <http://purl.org/dc/elements/1.1/> , <http://purl.org/ontology/bibo/> , ns5: , <http://xmlns.com/foaf/0.1/> ;
+        schema:author            "Michael Fell" , "Michel Buffa" , "Johan Pauwels" , "Elmahdi Korfed" , "Elena Cabrio" , "Maroua Tikat" , "Guillaume Pellerin" , "Fabrice Jauvat" ;
+        schema:author            <https://orcid.org/0000-0001-9064-0463> , <https://orcid.org/0000-0002-0756-6934> , <https://orcid.org/0000-0003-0543-1232> , <https://orcid.org/0000-0001-8158-5562> , <https://team.inria.fr/wimmics/> , <https://orcid.org/0000-0003-1007-0101> ;
+        schema:datePublished     "2020-12-09"^^xsd:date ;
+        schema:keywords          "chord" , "metadata" , "audio analysis" , "lyrics" , "song" , "music" ;
+        schema:licence           <https://creativecommons.org/licenses/by-nc/4.0/> ;
+        schema:name              "The WASABI RDF Knowledge Graph" ;
+        schema:publisher         <https://ror.org/02feahw73> , <https://ror.org/02kvxyf05> , <https://ror.org/0496p8026> ;
+        schema:subjectOf         ns10:fell2019love ;
+        owl:versionInfo          "1.0" ;
+        prov:wasGeneratedAtTime  "2020-12-09"^^xsd:date ;
+        prov:wasGeneratedBy      ns10:RdfGeneration .
+
+ns10:sparql-service  ns5:servesDataset  ns1:WasabiDataset .
