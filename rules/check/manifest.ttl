@@ -50,5 +50,6 @@
             dqv:isMeasurementOf kgi:provenanceExtractionShape ;
             dqv:value "true"^^xsd:boolean
         ] .
+    } WHERE {
     }
     """ .
