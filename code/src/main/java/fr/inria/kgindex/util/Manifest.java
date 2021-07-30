@@ -7,7 +7,7 @@ import org.apache.jena.rdf.model.Resource;
 
 public class Manifest {
 	
-	private static Model model = ModelFactory.createDefaultModel();
+	private static final Model model = ModelFactory.createDefaultModel();
 	private static final String manifestNamespace = "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#";
 	public static final Property include = model.createProperty(manifestNamespace + "include");
 	public static final Property entries = model.createProperty(manifestNamespace + "entries");
