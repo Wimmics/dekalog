@@ -90,7 +90,7 @@ public class InteractionApplication {
                     Literal startDateLiteral =  result.createLiteral(dateFormatter.format(startDate));
                     try {
                         if(queryString.contains("CONSTRUCT")) {
-                            QueryExecution actionExecution = QueryExecutionFactory.sparqlService(this._describedDataset.getEndpointUrl(), queryString);
+                            QueryExecution actionExecution = QueryExecutionFactory.sparqlService(this._actions.getEndpointUrl(), queryString);
                             actionExecution.setTimeout(Utils.queryTimeout);
 
                             try {

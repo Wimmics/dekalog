@@ -29,8 +29,8 @@ public class SHACLTestExecution extends TestExecution {
 
     private static final Logger logger = LogManager.getLogger(SHACLTestExecution.class);
 
-    public SHACLTestExecution(Tests tests) {
-        super(tests);
+    public SHACLTestExecution(Tests tests, String url) {
+        super(tests, url);
     }
 
     public Model execute(Dataset describedDataset, Model datasetDescription) {
@@ -103,7 +103,7 @@ public class SHACLTestExecution extends TestExecution {
                         if (selectObject.isLiteral()) {
                             Literal selectObjLit = selectObject.asLiteral();
                             String selectQuery = selectObjLit.getString();
-                            QueryExecution selectExec = QueryExecutionFactory.sparqlService(describedDataset.getEndpointUrl(), selectQuery);
+                            QueryExecution selectExec = QueryExecutionFactory.sparqlService(this.getEndpointUrl(), selectQuery);
                             selectExec.setTimeout(Utils.queryTimeout);
                             ResultSet selectResults = selectExec.execSelect();
                             if (selectResults.hasNext()) {

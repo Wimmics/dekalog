@@ -24,8 +24,8 @@ public class QueryTestExecution extends TestExecution {
 
     private static final Logger logger = LogManager.getLogger(QueryTestExecution.class);
 
-    public QueryTestExecution(Tests tests) {
-        super(tests);
+    public QueryTestExecution(Tests tests, String url) {
+        super(tests, url);
     }
 
     public Model execute(Dataset describedDataset, Model datasetDescription) {
@@ -61,7 +61,7 @@ public class QueryTestExecution extends TestExecution {
 
                 // Execution de la requête
                 try {
-                    QueryExecution testQueryExecution = QueryExecutionFactory.sparqlService(describedDataset.getEndpointUrl(), queryString);
+                    QueryExecution testQueryExecution = QueryExecutionFactory.sparqlService(this.getEndpointUrl(), queryString);
                     testQueryExecution.setTimeout(Utils.queryTimeout);
                     if(queryString.contains("ASK")) {
                         passed = testQueryExecution.execAsk();
