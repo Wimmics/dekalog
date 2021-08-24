@@ -86,7 +86,22 @@ public class MainClass {
 
 				// TODO Gérer dépendances entre tests -> Ordonnancement des tests
 				Set<ManifestEntry> testList = ManifestEntry.extractEntriesFromManifest(includedManifestModel);
-				testList.forEach(testEntry -> {
+				TreeSet<ManifestEntry> sortedTestList = new TreeSet<ManifestEntry>(new Comparator<ManifestEntry>() {
+					@Override
+					public int compare(ManifestEntry o1, ManifestEntry o2) {
+						if( o1.requires(o2.getTestResource())) {
+							return 100;
+						} else if(o1.getRequirements().size() != o2.getRequirements().size()) {
+							return o1.getRequirements().size() - o2.getRequirements().size();
+						} else if(o1.getActions().size() != o2.getActions().size()) {
+							return o1.getActions().size() - o2.getActions().size();
+						} else {
+							return o1.getFileResource().getURI().compareTo(o2.getFileResource().getURI());
+						}
+					}
+				});
+				sortedTestList.addAll(testList);
+				sortedTestList.forEach(testEntry -> {
 					InteractionApplication application = InteractionFactory.create(testEntry, describedDataset, datasetDescription);
 					Model testResult = application.apply();
 					datasetDescription.add(testResult);
