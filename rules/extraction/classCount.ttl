@@ -7,6 +7,7 @@
 
 kgi:countClassShape a sh:NodeShape  ,
         earl:TestCase ;
+    dcterms:requires kgi:reachableEndpointTest ;
     sh:targetNode kgi:dummyTarget ;
     sh:sparql [
     		rdf:type sh:SPARQLConstraint ;

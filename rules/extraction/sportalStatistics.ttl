@@ -8,4 +8,5 @@
 kgi:sportalTest rdf:type kgi:TestQuery , earl:TestCase ;
     dcterms:title "Reachability test used as a placeholder for SPORTAL actions trigger." ;
     dcterms:description "Reachability is tested with a simple query" ;
+    dcterms:requires kgi:reachableEndpointTest ;
     kgi:query """SELECT * WHERE { ?s ?p ?o . } LIMIT 1"""  .
