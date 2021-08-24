@@ -3,6 +3,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix void: <http://rdfs.org/ns/void#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 
 kgi:countClassShape a sh:NodeShape  ,

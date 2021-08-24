@@ -8,8 +8,8 @@
 
 kgi:provenanceExtractionShape rdf:type sh:NodeShape ,
         earl:TestCase ;
-    dcterms:requires kgi:datasetDescResourceConnectedTest ;
     sh:targetClass void:Dataset ;
+    dcterms:requires kgi:datasetDescResourceConnectedTest ;
     sh:name "Provenance information"@en ;
 	sh:description "We need information about the authors, the licensing and the creation process." ;
     # Who ?
