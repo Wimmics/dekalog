@@ -58,13 +58,11 @@ public class MainClass {
 			}
 			if(cmd.hasOption("timeout")) {
 				String queryTimeoutString = cmd.getOptionValue("timeout", "30000");
-				long tmpQueryTimeout = Long.parseLong(queryTimeoutString);
-				Utils.queryTimeout = tmpQueryTimeout;
+				Utils.queryTimeout = Long.parseLong(queryTimeoutString);
 			}
 			String manifestRootFile = "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl";
 			if(cmd.hasOption("manifest")) {
-				String manifestString = cmd.getOptionValue("manifest", "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl");
-				manifestRootFile = manifestString;
+				manifestRootFile = cmd.getOptionValue("manifest", "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl");
 			}
 
 			/*
@@ -81,20 +79,17 @@ public class MainClass {
 
 			List<RDFNode> manifestList = ManifestEntry.extractIncludedFromManifest(manifestModel);
 			// Ordonnancement des tests par requirements, nombre de requirements, nombre d'actions et noms
-			TreeSet<ManifestEntry> sortedTestList = new TreeSet<ManifestEntry>(new Comparator<ManifestEntry>() {
-				@Override
-				public int compare(ManifestEntry o1, ManifestEntry o2) {
-					if(o1.requires(o2.getTestResource())) {
-						return 1;
-					} else if(o2.requires(o1.getTestResource())) {
-						return -1;
-					} else if(o1.getRequirements().size() != o2.getRequirements().size()) {
-						return o1.getRequirements().size() - o2.getRequirements().size();
-					} else if(o1.getActions().size() != o2.getActions().size()) {
-						return o1.getActions().size() - o2.getActions().size();
-					} else {
-						return o1.getFileResource().getURI().compareTo(o2.getFileResource().getURI());
-					}
+			TreeSet<ManifestEntry> sortedTestList = new TreeSet<>((o1, o2) -> {
+				if (o1.requires(o2.getTestResource())) {
+					return 1;
+				} else if (o2.requires(o1.getTestResource())) {
+					return -1;
+				} else if (o1.getRequirements().size() != o2.getRequirements().size()) {
+					return o1.getRequirements().size() - o2.getRequirements().size();
+				} else if (o1.getActions().size() != o2.getActions().size()) {
+					return o1.getActions().size() - o2.getActions().size();
+				} else {
+					return o1.getFileResource().getURI().compareTo(o2.getFileResource().getURI());
 				}
 			});
 			
@@ -125,9 +120,10 @@ public class MainClass {
 						namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
 					}
 
+					assert namespaceIt != null;
 					describedDataset.addNamespaces( namespaceIt.toList()
 							.stream()
-							.map(node -> node.toString())
+							.map(RDFNode::toString)
 							.collect(Collectors.toList()));
 				}
 
