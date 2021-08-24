@@ -58,13 +58,11 @@ public class MainClass {
 			}
 			if(cmd.hasOption("timeout")) {
 				String queryTimeoutString = cmd.getOptionValue("timeout", "30000");
-				long tmpQueryTimeout = Long.parseLong(queryTimeoutString);
-				Utils.queryTimeout = tmpQueryTimeout;
+				Utils.queryTimeout = Long.parseLong(queryTimeoutString);
 			}
 			String manifestRootFile = "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl";
 			if(cmd.hasOption("manifest")) {
-				String manifestString = cmd.getOptionValue("manifest", "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl");
-				manifestRootFile = manifestString;
+				manifestRootFile = cmd.getOptionValue("manifest", "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl");
 			}
 
 			/*
@@ -80,45 +78,61 @@ public class MainClass {
 			Model datasetDescription = ModelFactory.createDefaultModel();
 
 			List<RDFNode> manifestList = ManifestEntry.extractIncludedFromManifest(manifestModel);
+			// Ordonnancement des tests par requirements, nombre de requirements, nombre d'actions et noms
+			TreeSet<ManifestEntry> sortedTestList = new TreeSet<>((o1, o2) -> {
+				if (o1.requires(o2.getTestResource())) {
+					return 1;
+				} else if (o2.requires(o1.getTestResource())) {
+					return -1;
+				} else if (o1.getRequirements().size() != o2.getRequirements().size()) {
+					return o1.getRequirements().size() - o2.getRequirements().size();
+				} else if (o1.getActions().size() != o2.getActions().size()) {
+					return o1.getActions().size() - o2.getActions().size();
+				} else {
+					return o1.getFileResource().getURI().compareTo(o2.getFileResource().getURI());
+				}
+			});
+			
 			manifestList.forEach( included -> {
 				Model includedManifestModel = ModelFactory.createDefaultModel();
 				includedManifestModel.read(included.toString(), "TTL");
 
-				// TODO Gérer dépendances entre tests -> Ordonnancement des tests
 				Set<ManifestEntry> testList = ManifestEntry.extractEntriesFromManifest(includedManifestModel);
-				testList.forEach(testEntry -> {
-					InteractionApplication application = InteractionFactory.create(testEntry, describedDataset, datasetDescription);
-					Model testResult = application.apply();
-					datasetDescription.add(testResult);
-
-					// Keeping the list of the dataset namespaces up to date
-					if(describedDataset.getNamespaces().isEmpty()
-							&& (datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
-							|| datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
-						NodeIterator namespaceIt = null;
-						if(datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
-							namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
-						}
-						if(datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
-							namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
-						}
-
-						describedDataset.addNamespaces( namespaceIt.toList()
-								.stream()
-								.map(node -> node.toString())
-								.collect(Collectors.toList()));
-					}
-
-					// Checking if the graph list is necessary according to the endpoint description
-					if(! datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
-							&& datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
-						describedDataset.setGraphsAreRequired(true);
-					}
-				});
+				sortedTestList.addAll(testList);
 
 				includedManifestModel.close();
 			});
 
+			sortedTestList.forEach(testEntry -> {
+				InteractionApplication application = InteractionFactory.create(testEntry, describedDataset, datasetDescription);
+				Model testResult = application.apply();
+				datasetDescription.add(testResult);
+
+				// Keeping the list of the dataset namespaces up to date
+				if(describedDataset.getNamespaces().isEmpty()
+						&& (datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
+						|| datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
+					NodeIterator namespaceIt = null;
+					if(datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
+						namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
+					}
+					if(datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
+						namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
+					}
+
+					assert namespaceIt != null;
+					describedDataset.addNamespaces( namespaceIt.toList()
+							.stream()
+							.map(RDFNode::toString)
+							.collect(Collectors.toList()));
+				}
+
+				// Checking if the graph list is necessary according to the endpoint description
+				if(! datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
+						&& datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
+					describedDataset.setGraphsAreRequired(true);
+				}
+			});
 
 			try {
 				OutputStream outputStream = new FileOutputStream("kbMetadata"+ datasetName +".ttl");

@@ -7,7 +7,7 @@ import org.apache.jena.rdf.model.Resource;
 
 public class PROV {
 	
-	private static Model model = ModelFactory.createDefaultModel();
+	private static final Model model = ModelFactory.createDefaultModel();
 	private static final String provNamespace = "http://www.w3.org/ns/prov#";
 
 	public static final Resource Activity = model.createResource(provNamespace + "Activity");

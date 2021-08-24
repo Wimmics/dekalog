@@ -3,11 +3,13 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix void: <http://rdfs.org/ns/void#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 
 kgi:countClassShape a sh:NodeShape  ,
         earl:TestCase ;
     sh:targetNode kgi:dummyTarget ;
+    dcterms:requires kgi:reachableEndpointTest ;
     sh:sparql [
     		rdf:type sh:SPARQLConstraint ;
     		sh:message "There are as many classes as expected." ;

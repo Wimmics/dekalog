@@ -4,11 +4,13 @@ import fr.inria.kgindex.step.QueryTestExecution;
 import fr.inria.kgindex.util.Manifest;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.vocabulary.EARL;
+import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ManifestEntry {
 
@@ -19,12 +21,14 @@ public class ManifestEntry {
 	private Set<Model> _tests = null;
 	private Resource _testResource = null;
 	private String _title = "";
+	private Set<Resource> _requirements = null;
 
 	public ManifestEntry(Resource fileResource, Model action, Resource testResource, Model test) {
 		this._fileResource = fileResource;
 		this._actions = new HashSet<Model>(Collections.singleton(action));
 		this._tests = new HashSet<Model>(Collections.singleton(test));
 		this._testResource = testResource;
+		this._requirements = new HashSet<Resource>();
 	}
 
 	public String getTitle() {
@@ -67,12 +71,21 @@ public class ManifestEntry {
 		this._tests.add(test);
 	}
 
+	public Set<Resource> getRequirements() { return this._requirements; }
+
+	public void addRequirement(Resource res) { this._requirements.add(res); }
+
+	public void addRequirements(Collection<Resource> resColl) { this._requirements.addAll(resColl); }
+
+	public boolean requires(Resource testRes) {
+		this.getRequirements().stream().map(Resource::getURI).collect(Collectors.toSet()).contains(testRes.getURI());
+		return this._requirements.contains(testRes);
+	}
+
 	@Override
 	public String toString() {
 		return this._fileResource.toString();
 	}
-
-
 
 	/**
 	 * Extract all the manifests in a hierarchy, starting from a root manifest given.
@@ -143,6 +156,12 @@ public class ManifestEntry {
 				Model tmpTestModel = ModelFactory.createDefaultModel();
 				tmpTestModel.add(testModel);
 				ManifestEntry resultEntry = new ManifestEntry(testEntry.asResource(), actionModel, testResource, tmpTestModel);
+
+				NodeIterator requiresIterator = testModelWithInference.listObjectsOfProperty(DCTerms.requires);
+				requiresIterator.forEach(requiredTest -> {
+					Resource required = requiredTest.asResource();
+					resultEntry.addRequirement(required);
+				});
 				result.add(resultEntry);
 			});
 		});
