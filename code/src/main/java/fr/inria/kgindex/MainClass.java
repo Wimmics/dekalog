@@ -80,45 +80,63 @@ public class MainClass {
 			Model datasetDescription = ModelFactory.createDefaultModel();
 
 			List<RDFNode> manifestList = ManifestEntry.extractIncludedFromManifest(manifestModel);
+			// Ordonnancement des tests par requirements, nombre de requirements, nombre d'actions et noms
+			TreeSet<ManifestEntry> sortedTestList = new TreeSet<ManifestEntry>(new Comparator<ManifestEntry>() {
+				@Override
+				public int compare(ManifestEntry o1, ManifestEntry o2) {
+					if(o1.requires(o2.getTestResource())) {
+						return 1;
+					} else if(o2.requires(o1.getTestResource())) {
+						return -1;
+					} else if(o1.getRequirements().size() != o2.getRequirements().size()) {
+						return o1.getRequirements().size() - o2.getRequirements().size();
+					} else if(o1.getActions().size() != o2.getActions().size()) {
+						return o1.getActions().size() - o2.getActions().size();
+					} else {
+						return o1.getFileResource().getURI().compareTo(o2.getFileResource().getURI());
+					}
+				}
+			});
+			
 			manifestList.forEach( included -> {
 				Model includedManifestModel = ModelFactory.createDefaultModel();
 				includedManifestModel.read(included.toString(), "TTL");
 
-				// TODO Gérer dépendances entre tests -> Ordonnancement des tests
 				Set<ManifestEntry> testList = ManifestEntry.extractEntriesFromManifest(includedManifestModel);
-				testList.forEach(testEntry -> {
-					InteractionApplication application = InteractionFactory.create(testEntry, describedDataset, datasetDescription);
-					Model testResult = application.apply();
-					datasetDescription.add(testResult);
-
-					// Keeping the list of the dataset namespaces up to date
-					if(describedDataset.getNamespaces().isEmpty()
-							&& (datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
-							|| datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
-						NodeIterator namespaceIt = null;
-						if(datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
-							namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
-						}
-						if(datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
-							namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
-						}
-
-						describedDataset.addNamespaces( namespaceIt.toList()
-								.stream()
-								.map(node -> node.toString())
-								.collect(Collectors.toList()));
-					}
-
-					// Checking if the graph list is necessary according to the endpoint description
-					if(! datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
-							&& datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
-						describedDataset.setGraphsAreRequired(true);
-					}
-				});
+				sortedTestList.addAll(testList);
 
 				includedManifestModel.close();
 			});
 
+			sortedTestList.forEach(testEntry -> {
+				InteractionApplication application = InteractionFactory.create(testEntry, describedDataset, datasetDescription);
+				Model testResult = application.apply();
+				datasetDescription.add(testResult);
+
+				// Keeping the list of the dataset namespaces up to date
+				if(describedDataset.getNamespaces().isEmpty()
+						&& (datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
+						|| datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
+					NodeIterator namespaceIt = null;
+					if(datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
+						namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
+					}
+					if(datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
+						namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
+					}
+
+					describedDataset.addNamespaces( namespaceIt.toList()
+							.stream()
+							.map(node -> node.toString())
+							.collect(Collectors.toList()));
+				}
+
+				// Checking if the graph list is necessary according to the endpoint description
+				if(! datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
+						&& datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
+					describedDataset.setGraphsAreRequired(true);
+				}
+			});
 
 			try {
 				OutputStream outputStream = new FileOutputStream("kbMetadata"+ datasetName +".ttl");
