@@ -28,8 +28,6 @@
             $endpointDescription ?p ?o .
             $endpointDescription sd:endpoint $endpoint ;
                 a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                sd:availableGraphs $graphList .
-            $graphList a sd:Dataset .
             $metadataDescription a prov:Entity , earl:TestSubject ;
                  prov:wasDerivedFrom $endpoint ;
                  kgi:curated $endpointDescription ;
