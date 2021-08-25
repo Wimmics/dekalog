@@ -117,8 +117,22 @@
         $datasetDescription void:vocabulary ?elem .
     }
     WHERE {
+        { ?s a ?elem . }
+        BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
+    }
+    """ ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        CONSTRUCT {
+        $metadataDescription a prov:Entity , earl:TestSubject ;
+            prov:wasDerivedFrom $endpoint ;
+            kgi:curated $datasetDescription .
+        $datasetDescription void:vocabulary ?elem .
+    }
+    WHERE {
         { ?s ?elem ?o . }
-        UNION { ?s a ?elem . }
         BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
     }
     """ .
