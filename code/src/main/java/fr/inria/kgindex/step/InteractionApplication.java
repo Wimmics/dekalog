@@ -79,10 +79,10 @@ public class InteractionApplication {
         }
 
         logger.trace("Test END " + this._entry.getTestResource() + " " + testPassed );
-        logger.trace("Action START " + this._entry.getFileResource() );
         // Génération des triplets à ajouter à la description
         if((testPassed && (this.getType() == TYPE.SHACL))
                 || !testPassed && this.getType() == TYPE.SPARQL) {
+            logger.trace("Action START " + this._entry.getFileResource() );
             this._actions.getActions().forEach(queryStringRaw -> {
                 Set<String> queryStringSet = Utils.rewriteQueryPlaceholders(queryStringRaw, this._describedDataset);
                 queryStringSet.forEach(queryString -> {
@@ -113,14 +113,17 @@ public class InteractionApplication {
                         Date endDate = new Date();
                         Literal endDateLiteral =  result.createLiteral(dateFormatter.format(endDate));
                         result.add(EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral));
+                    } catch(QueryParseException e) {
+                        logger.debug(queryString);
+                        throw e;
                     }
 
                 });
 
             });
 
+            logger.trace("Action END " + this._entry.getFileResource() );
         }
-        logger.trace("Action END " + this._entry.getFileResource() );
 
         return result;
     }
