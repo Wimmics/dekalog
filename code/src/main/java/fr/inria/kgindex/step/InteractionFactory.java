@@ -26,10 +26,8 @@ public class InteractionFactory {
         List<String> testActionStringList = new ArrayList<String>();
         InteractionApplication.TYPE interactionType = InteractionApplication.TYPE.SPARQL;
 
-        Iterator<Model> itAction = entry.getActions().iterator();
-        while(itAction.hasNext()) {
-            Model entryModel = itAction.next();
-
+        String actionEndpointUrl = describedDataset.getEndpointUrl();
+        for (Model entryModel : entry.getActions()) {
             // Récuperer l'URI de l'interaction
             List<Resource> typeEntryList = entryModel.listSubjectsWithProperty(RDF.type, Manifest.ManifestEntry).toList();
             if (typeEntryList.size() > 0) { // Si il n'y a pas de manifestEntry, on ne fait rien
@@ -48,13 +46,19 @@ public class InteractionFactory {
                 List<Resource> resTestQueryList = testModel.listSubjectsWithProperty(RDF.type, KGIndex.TestQuery).toList();
                 List<Resource> resShapeList = testModel.listSubjectsWithProperty(RDF.type, testModel.createProperty(SHACL.NodeShape.getURI())).toList();
 
-                // Lancer fonction d'application adaptée
-                if (resTestQueryList.isEmpty() && ! resShapeList.isEmpty()) {
+                // Fonction d'application adaptée
+                if (resTestQueryList.isEmpty() && !resShapeList.isEmpty()) {
                     interactionType = InteractionApplication.TYPE.SPARQL;
-                } else if(! resTestQueryList.isEmpty() && resShapeList.isEmpty()) {
+                } else if (!resTestQueryList.isEmpty() && resShapeList.isEmpty()) {
                     interactionType = InteractionApplication.TYPE.SHACL;
                 } else {
                     interactionType = InteractionApplication.TYPE.SHACL;
+                }
+
+                // Identifier l'endpoint visé
+                List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(testFileResource, KGIndex.endpoint).toList();
+                if (!actionEndpointUrlList.isEmpty()) {
+                    actionEndpointUrl = actionEndpointUrlList.get(0).toString();
                 }
             }
         }
@@ -62,15 +66,24 @@ public class InteractionFactory {
         Tests tests = new Tests(entry);
         tests.setTests(entry.getTests());
 
-        Actions actions = new Actions(testActionStringList);
+        // Detection de l'endpoint précisé pour les tests
+        Model testsModel = ModelFactory.createDefaultModel();
+        tests.getTests().forEach(testsModel::add);
+        List<RDFNode> testEndpointNodeList = testsModel.listObjectsOfProperty(KGIndex.endpoint).toList();
+        String testEndpointUrl = describedDataset.getEndpointUrl();
+        if(! testEndpointNodeList.isEmpty()) {
+            testEndpointUrl = testEndpointNodeList.get(0).toString();
+        }
+
+        Actions actions = new Actions(testActionStringList, actionEndpointUrl);
 
         TestExecution testExec = null;
         if(interactionType.equals(InteractionApplication.TYPE.SPARQL)) {
-            testExec = new SHACLTestExecution(tests);
+            testExec = new SHACLTestExecution(tests, testEndpointUrl);
         } else if(interactionType.equals(InteractionApplication.TYPE.SHACL)) {
-            testExec = new QueryTestExecution(tests);
+            testExec = new QueryTestExecution(tests, testEndpointUrl);
         } else {
-            testExec = new QueryTestExecution(tests);
+            testExec = new QueryTestExecution(tests, testEndpointUrl);
         }
 
         InteractionApplication result =  new InteractionApplication(entry, testExec, actions, describedDataset, datasetDescription);

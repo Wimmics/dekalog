@@ -11,5 +11,5 @@ kgi:graphListExtractionTest rdf:type kgi:TestQuery , earl:TestCase ;
     kgi:query """ASK
         WHERE {
             GRAPH ?graph { ?s ?p ?o }
-            FILTER( CONTAINS( str(?graph), $namespace) )
+            FILTER(STRSTARTS(str(?graph), $namespace))
         }""" .
