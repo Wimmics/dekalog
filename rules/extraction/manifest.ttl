@@ -26,8 +26,8 @@
         PREFIX kgi: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
             $endpointDescription ?p ?o .
-            $endpointDescription sd:endpoint $endpoint ;
-                a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
+            $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
+                sd:endpoint $endpoint .
             $metadataDescription a prov:Entity , earl:TestSubject ;
                  prov:wasDerivedFrom $endpoint ;
                  kgi:curated $endpointDescription ;
@@ -66,12 +66,18 @@
             ?res ?p $endpoint .
             ?res ?pp ?o .
          }""" ;
-    mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#>
-        PREFIX void: <http://rdfs.org/ns/void#>
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
         PREFIX kgi: <http://ns.inria.fr/kgindex#>
         CONSTRUCT {
+            $metadataDescription a prov:Entity , earl:TestSubject ;
+                prov:wasDerivedFrom $endpoint ;
+                kgi:curated $datasetDescription ;
+                kgi:original ?res .
             ?s ?pp $datasetDescription .
-            $metadataDescription kgi:original ?res .
         }
         WHERE {
             { ?res a dcat:Dataset }
@@ -100,7 +106,7 @@
         WHERE {
             SELECT DISTINCT ?graph WHERE {
                 GRAPH ?graph { ?s ?p ?o }
-                FILTER( CONTAINS( str(?graph), $namespace) )
+                FILTER( STRSTARTS( str(?graph), $namespace) )
             }
         }
         """ .

@@ -11,4 +11,5 @@ kgi:graphListExtractionTest rdf:type kgi:TestQuery , earl:TestCase ;
     kgi:query """ASK
         WHERE {
             GRAPH ?graph { ?s ?p ?o }
+            FILTER(STRSTARTS(str(?graph), $namespace))
         }""" .
