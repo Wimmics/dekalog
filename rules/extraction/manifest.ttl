@@ -114,10 +114,10 @@
         $metadataDescription a prov:Entity , earl:TestSubject ;
             prov:wasDerivedFrom $endpoint ;
             kgi:curated $datasetDescription .
-        $datasetDescription void:vocabulary ?elem .
+        $datasetDescription void:vocabulary ?ns .
     }
     WHERE {
-        { ?s a ?elem . }
+        ?s a ?elem .
         BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
     }
     """ ;
@@ -129,10 +129,10 @@
         $metadataDescription a prov:Entity , earl:TestSubject ;
             prov:wasDerivedFrom $endpoint ;
             kgi:curated $datasetDescription .
-        $datasetDescription void:vocabulary ?elem .
+        $datasetDescription void:vocabulary ?ns .
     }
     WHERE {
-        { ?s ?elem ?o . }
+        ?s ?elem ?o .
         BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
     }
     """ .
