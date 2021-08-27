@@ -30,8 +30,8 @@ public class InteractionApplication {
         SHACL
     }
 
-    private ManifestEntry _entry;
-    private Dataset _describedDataset;
+    private final ManifestEntry _entry;
+    private final Dataset _describedDataset;
     private Model _datasetDescription;
     private Actions _actions = null;
     private TestExecution _tests = null;
@@ -67,10 +67,8 @@ public class InteractionApplication {
 
         // Vérification du résultat
         if(testResultList.size() > 0){
-            ArrayList<String> testResultNodeString = new ArrayList<String>();
-            testResultList.forEach(node -> {
-                testResultNodeString.add(node.toString());
-            });
+            ArrayList<String> testResultNodeString = new ArrayList<>();
+            testResultList.forEach(node -> testResultNodeString.add(node.toString()));
             for (String resultString : testResultNodeString) {
                 if (resultString.equals(EARL.passed.toString())) {
                     testPassed = true;
@@ -100,6 +98,7 @@ public class InteractionApplication {
                                 logger.error(e);
                                 logger.trace(this._entry.getTestResource() + " action could not be added because of RiotException");
                             }
+                            actionExecution.close();
                         } else if(queryString.contains("INSERT")) {
                             UpdateRequest insertUpdate = UpdateFactory.create(queryString);
                             UpdateAction.execute(insertUpdate, this._datasetDescription);
