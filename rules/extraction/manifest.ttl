@@ -14,7 +14,27 @@
             <classCount.ttl>
             <classPopulation.ttl>
             <propertyCount.ttl>
-            <sportalStatistics.ttl>
+            <sportalClassPartitionClasses.ttl>
+            <sportalClassPartitionTriples.ttl>
+            <sportalDistinctRDFNodes.ttl>
+            <sportalClassPartitionDistinctObjects.ttl>
+            <sportalClassPartition.ttl>
+            <sportalDistinctUrisObjects.ttl>
+            <sportalClassPartitionDistinctSubjects.ttl>
+            <sportalDistinctBlankNodeObjects.ttl>
+            <sportalDistinctUrisSubjects.ttl>
+            <sportalClassPartitionProperties.ttl>
+            <sportalDistinctBlankNodes.ttl>
+            <sportalPropertyPartitionDistinctObject.ttl>
+            <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl>
+            <sportalDistinctBlankNodeSubjects.ttl>
+            <sportalPropertyPartitionDistinctSubject.ttl>
+            <sportalClassPartitionPropertyPartitionTriples.ttl>
+            <sportalDistinctIRIReferences.ttl>
+            <sportalPropertyPartitionTriples.ttl>
+            <sportalClassPartitionPropertyPartition.ttl>
+            <sportalDistinctLiterals.ttl>
+            <sportalPropertyPartition.ttl>
         ) .
 
 <endpointDescResource.ttl> a mf:ManifestEntry ;
@@ -242,7 +262,7 @@
         }
     """ .
 
-<sportalStatistics.ttl> a mf:ManifestEntry ;
+<sportalDistinctUrisSubjects.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
     PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
@@ -252,7 +272,9 @@
                 prov:wasDerivedFrom $endpoint ;
                 kgi:curated $datasetDescription .
             $datasetDescription voidex:distinctIRIReferenceSubjects ?x }
-        WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } """ ;
+        WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } """ .
+
+<sportalDistinctBlankNodeSubjects.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -262,7 +284,9 @@
                 prov:wasDerivedFrom $endpoint ;
                 kgi:curated $datasetDescription .
             $datasetDescription voidex:distinctBlankNodeSubjects ?x }
-        WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} } """ ;
+        WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} } """ .
+
+<sportalDistinctUrisObjects.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -272,7 +296,9 @@
                 prov:wasDerivedFrom $endpoint ;
                 kgi:curated $datasetDescription .
             $datasetDescription voidex:distinctIRIReferenceObjects ?x }
-        WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } """ ;
+        WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } """ .
+
+<sportalDistinctLiterals.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -282,7 +308,9 @@
                 prov:wasDerivedFrom $endpoint ;
                 kgi:curated $datasetDescription .
             $datasetDescription voidex:distinctLiterals ?x }
-        WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } """ ;
+        WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } """ .
+
+<sportalDistinctBlankNodeObjects.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -292,7 +320,9 @@
                 prov:wasDerivedFrom $endpoint ;
                 kgi:curated $datasetDescription .
             $datasetDescription voidex:distinctBlankNodeObjects ?x }
-        WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} } """ ;
+        WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} } """ .
+
+<sportalDistinctBlankNodes.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -302,7 +332,9 @@
                 prov:wasDerivedFrom $endpoint ;
                 kgi:curated $datasetDescription .
             $datasetDescription voidex:distinctBlankNodes ?x }
-        WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } """ ;
+        WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } """ .
+
+<sportalDistinctIRIReferences.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -312,7 +344,9 @@
                 prov:wasDerivedFrom $endpoint ;
                 kgi:curated $datasetDescription .
             $datasetDescription voidex:distinctIRIReferences ?x }
-        WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } """ ;
+        WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } """ .
+
+<sportalDistinctRDFNodes.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -322,59 +356,65 @@
                 prov:wasDerivedFrom $endpoint ;
                 kgi:curated $datasetDescription .
             $datasetDescription voidex:distinctRDFNodes ?x }
-        WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } """ ;
+        WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } """ .
+
+<sportalPropertyPartition.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ] } WHERE { ?s ?p ?o }""" ;
+        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ] } WHERE { ?s ?p ?o }""" .
+
+<sportalPropertyPartitionTriples.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:triples ?x ] } WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }""" ;
+        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:triples ?x ] } WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }""" .
+
+<sportalPropertyPartitionDistinctSubject.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }""" ;
+        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }""" .
+
+<sportalPropertyPartitionDistinctObject.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:distinctObjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }""" ;
+        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:distinctObjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }""" .
+
+<sportalClassPartition.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
     PREFIX void: <http://rdfs.org/ns/void#>
         CONSTRUCT {
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpoint ;
-                kgi:curated $datasetDescription .
             $datasetDescription void:classPartition [ void:class ?c ] }
         WHERE { ?s a ?c }
-    """ ;
+    """ .
+
+<sportalClassPartitionTriples.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
     PREFIX void: <http://rdfs.org/ns/void#>
         CONSTRUCT {
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpoint ;
-                kgi:curated $datasetDescription .
             $datasetDescription void:classPartition [ void:class ?c ; void:triples ?x ] }
         WHERE { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
-    """ ;
+    """ .
+
+<sportalClassPartitionClasses.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
     PREFIX void: <http://rdfs.org/ns/void#>
         CONSTRUCT {
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpoint ;
-                kgi:curated $datasetDescription .
             $datasetDescription void:classPartition [ void:class ?c ; void:classes ?x ] }
         WHERE { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }
-    """ ;
+    """ .
+
+<sportalClassPartitionProperties.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
     PREFIX void: <http://rdfs.org/ns/void#>
         CONSTRUCT {
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpoint ;
-                kgi:curated $datasetDescription .
             $datasetDescription void:classPartition [ void:class ?c ; void:properties ?x ] }
         WHERE { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
-    """ ;
+    """ .
+
+<sportalClassPartitionDistinctSubjects.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -385,7 +425,9 @@
                 kgi:curated $datasetDescription .
             $datasetDescription void:classPartition [ void:class ?c ; void:distinctSubjects ?x ] }
         WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }
-    """ ;
+    """ .
+
+<sportalClassPartitionDistinctObjects.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -396,7 +438,9 @@
                 kgi:curated $datasetDescription .
             $datasetDescription void:classPartition [ void:class ?c ; void:distinctObjects ?x ] }
         WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
-    """ ;
+    """ .
+
+<sportalClassPartitionPropertyPartition.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -407,7 +451,9 @@
                 kgi:curated $datasetDescription .
             $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }
         WHERE { ?s a ?c ; ?p ?o }
-    """ ;
+    """ .
+
+<sportalClassPartitionPropertyPartitionTriples.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -418,7 +464,9 @@
                 kgi:curated $datasetDescription .
             $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:triples ?x ] ] }
         WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
-    """ ;
+    """ .
+
+<sportalClassPartitionPropertyPartitionDistinctSubjects.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX earl: <http://www.w3.org/ns/earl#>
     PREFIX kgi: <http://ns.inria.fr/kgindex#>
