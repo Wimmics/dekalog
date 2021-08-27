@@ -1,5 +1,6 @@
 
 *.class
+code/target/
 
 code/.idea/
 code/.run/
