@@ -123,7 +123,7 @@
     }
     WHERE {
         ?s a ?elem .
-        BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
+        BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
     }
     """ ;
     mf:action """PREFIX void: <http://rdfs.org/ns/void#>
@@ -138,7 +138,7 @@
     }
     WHERE {
         ?s ?elem ?o .
-        BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
+        BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
     }
     """ .
 
