@@ -141,6 +141,14 @@ public class MainClass {
 				e.printStackTrace();
 			}
 
+			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+				try {
+					OutputStream outputStream = new FileOutputStream("kbMetadata"+ datasetName +".ttl");
+					datasetDescription.write(outputStream, "TURTLE");
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}));
 			manifestModel.close();
 			datasetDescription.close();
 		} catch (ParseException e1) {
