@@ -126,10 +126,30 @@
         WHERE {
             SELECT DISTINCT ?graph WHERE {
                 GRAPH ?graph { ?s ?p ?o }
-                FILTER( STRSTARTS( str(?graph), $namespace) )
             }
         }
         """ .
+
+<graphListCorese.ttl> a mf:ManifestEntry ;
+    kgi:endpoint <http://localhost:8080/sparql> ;
+    mf:action """PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        CONSTRUCT {
+            $endpointDescription sd:availableGraphs $graphList .
+            $graphList sd:namedGraph [
+                    a sd:NamedGraph ;
+                    sd:name ?graph
+                ] .
+        }
+        WHERE {
+            SELECT DISTINCT ?graph WHERE {
+                SERVICE $endpoint {
+                    GRAPH ?graph { ?s ?p ?o . }
+                }
+                FILTER(STRSTARTS(str(?graph), $namespace))
+            }
+        }""" .
 
 <vocabularyList.ttl> a mf:ManifestEntry ;
     mf:action """PREFIX void: <http://rdfs.org/ns/void#>
@@ -159,6 +179,47 @@
     }
     WHERE {
         ?s ?elem ?o .
+        BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+    }
+    """ .
+
+<vocabularyListCorese.ttl> a mf:ManifestEntry ;
+    kgi:endpoint <http://localhost:8080/sparql> ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        CONSTRUCT {
+        $metadataDescription a prov:Entity , earl:TestSubject ;
+            prov:wasDerivedFrom $endpoint ;
+            kgi:curated $datasetDescription .
+        $datasetDescription void:vocabulary ?ns .
+    }
+    WHERE {
+        SERVICE $endpoint {
+            SELECT DISTINCT ?elem WHERE {
+                ?s a ?elem .
+            }
+        }
+        BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+    }
+    """ ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        CONSTRUCT {
+        $metadataDescription a prov:Entity , earl:TestSubject ;
+            prov:wasDerivedFrom $endpoint ;
+            kgi:curated $datasetDescription .
+        $datasetDescription void:vocabulary ?ns .
+    }
+    WHERE {
+        SERVICE $endpoint {
+            SELECT DISTINCT ?elem WHERE {
+                ?s ?elem ?o .
+            }
+        }
         BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
     }
     """ .

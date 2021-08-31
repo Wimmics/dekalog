@@ -19,9 +19,8 @@
         CONSTRUCT {
             $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
             $endpointDescription sd:endpoint $endpoint ;
-                a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                sd:availableGraphs $graphList .
-            $graphList a sd:Dataset .
+                dcat:servesDataset $datasetDescription ;
+                a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
                 kgi:curated $datasetDescription , $endpointDescription ;

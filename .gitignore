@@ -6,3 +6,5 @@ code/.idea/
 code/.run/
 
 code/.run/
+
+*.iml

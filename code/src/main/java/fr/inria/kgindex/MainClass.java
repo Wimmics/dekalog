@@ -103,6 +103,7 @@ public class MainClass {
 				includedManifestModel.close();
 			});
 
+			// Application des règles pour chaque ManifestEntry, triés en fonction de leurs pré-requis
 			sortedTestList.forEach(testEntry -> {
 				InteractionApplication application = InteractionFactory.create(testEntry, describedDataset, datasetDescription);
 				Model testResult = application.apply();
@@ -141,14 +142,6 @@ public class MainClass {
 				e.printStackTrace();
 			}
 
-			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-				try {
-					OutputStream outputStream = new FileOutputStream("kbMetadata"+ datasetName +".ttl");
-					datasetDescription.write(outputStream, "TURTLE");
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
-			}));
 			manifestModel.close();
 			datasetDescription.close();
 		} catch (ParseException e1) {
