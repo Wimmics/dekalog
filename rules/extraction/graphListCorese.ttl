@@ -5,9 +5,9 @@
 @prefix kgi: <http://ns.inria.fr/kgindex#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-kgi:graphListExtractionTest rdf:type kgi:TestQuery , earl:TestCase ;
+kgi:graphListCoreseExtractionTest rdf:type kgi:TestQuery ;
     dcterms:title "Extraction of the list of graphs in the endpoint"@en ;
-    dcterms:requires kgi:reachableEndpointTest ;
+    dcterms:requires kgi:graphListExtractionTest ;
     kgi:query """ASK
         WHERE {
             GRAPH ?graph { ?s ?p ?o }

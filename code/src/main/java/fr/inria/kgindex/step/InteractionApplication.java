@@ -79,7 +79,7 @@ public class InteractionApplication {
         logger.trace("Test END " + this._entry.getTestResource() + " " + testPassed );
         // Génération des triplets à ajouter à la description
         if((testPassed && (this.getType() == TYPE.SHACL))
-                || !testPassed && this.getType() == TYPE.SPARQL) {
+                || (!testPassed && this.getType() == TYPE.SPARQL)) {
             logger.trace("Action START " + this._entry.getFileResource() );
             this._actions.getActions().forEach(queryStringRaw -> {
                 Set<String> queryStringSet = Utils.rewriteQueryPlaceholders(queryStringRaw, this._describedDataset);

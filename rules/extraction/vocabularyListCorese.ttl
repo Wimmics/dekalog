@@ -3,12 +3,13 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix kgi: <http://ns.inria.fr/kgindex#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-kgi:graphListExtractionTest rdf:type kgi:TestQuery , earl:TestCase ;
-    dcterms:title "Extraction of the list of graphs in the endpoint"@en ;
+kgi:vocabularyListCoreseExtractionTest rdf:type kgi:TestQuery ;
+    dcterms:title "Extraction of the namespaces of properties and classes."@en ;
     dcterms:requires kgi:reachableEndpointTest ;
     kgi:query """ASK
         WHERE {
-            GRAPH ?graph { ?s ?p ?o }
+            { ?s ?elem ?o . }
+            UNION { ?s ?p ?elem . }
+            BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
         }""" .

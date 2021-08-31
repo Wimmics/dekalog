@@ -103,6 +103,7 @@ public class MainClass {
 				includedManifestModel.close();
 			});
 
+			// Application des règles pour chaque ManifestEntry, triés en fonction de leurs pré-requis
 			sortedTestList.forEach(testEntry -> {
 				InteractionApplication application = InteractionFactory.create(testEntry, describedDataset, datasetDescription);
 				Model testResult = application.apply();
