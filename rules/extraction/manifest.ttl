@@ -9,7 +9,9 @@
             <endpointDescResource.ttl>
             <datasetDescResource.ttl>
             <graphList.ttl>
+            <graphListCorese.ttl>
             <vocabularyList.ttl>
+            <vocabularyListCorese.ttl>
             <tripleCount.ttl>
             <classCount.ttl>
             <classPopulation.ttl>
