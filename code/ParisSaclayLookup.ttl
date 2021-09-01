@@ -1,0 +1,13 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix kgi: <http://ns.inria.fr/kgindex#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+kgi:ParisSaclayTest rdf:type kgi:TestQuery ;
+    dcterms:title "Testing the reachability of the Paris Saclay endpoint" ;
+    kgi:endpoint <https://io.datascience-paris-saclay.fr/sparql> ;
+    kgi:query """SELECT ?s ?p ?o WHERE {
+        ?s ?p ?o .
+    } LIMIT 1"""  .

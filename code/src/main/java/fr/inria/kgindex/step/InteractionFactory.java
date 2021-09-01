@@ -40,7 +40,7 @@ public class InteractionFactory {
                     testActionStringList.add(node.asLiteral().getString());
                 });
 
-                // Identifier le type d'interaction: dkg/SHACL
+                // Identifier le type d'interaction: kgi/SHACL
                 Model testModel = ModelFactory.createDefaultModel();
                 testModel.read(testFileResource.getURI(), "TTL");
                 List<Resource> resTestQueryList = testModel.listSubjectsWithProperty(RDF.type, KGIndex.TestQuery).toList();
@@ -52,7 +52,7 @@ public class InteractionFactory {
                 } else if (!resTestQueryList.isEmpty() && resShapeList.isEmpty()) {
                     interactionType = InteractionApplication.TYPE.SHACL;
                 } else {
-                    interactionType = InteractionApplication.TYPE.SHACL;
+                    interactionType = InteractionApplication.TYPE.UNKNOWN;
                 }
 
                 // Identifier l'endpoint visé
@@ -83,7 +83,7 @@ public class InteractionFactory {
         } else if(interactionType.equals(InteractionApplication.TYPE.SHACL)) {
             testExec = new QueryTestExecution(tests, testEndpointUrl);
         } else {
-            testExec = new QueryTestExecution(tests, testEndpointUrl);
+            throw new Error("Test type unknown");
         }
 
         InteractionApplication result =  new InteractionApplication(entry, testExec, actions, describedDataset, datasetDescription);

@@ -97,9 +97,7 @@ public class ManifestEntry {
 		ArrayList<RDFNode> tmpList = new ArrayList<RDFNode>();
 
 		ResIterator manifestIterator = manifest.listSubjectsWithProperty(RDF.type, Manifest.Manifest);
-		manifestIterator.forEach(res -> {
-			tmpList.add(res);
-		});
+		manifestIterator.forEach(tmpList::add);
 
 		NodeIterator included = manifest.listObjectsOfProperty(Manifest.include);
 		while(included.hasNext()) {

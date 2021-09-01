@@ -8,8 +8,107 @@
 
 <> a mf:Manifest ;
     mf:entries  (
-            <file:///home/pmaillot/git/kgindex/LDScriptRule.ttl>
+            <file:///user/pmaillot/home/git/dekalog/code/ParisSaclayLookup.ttl>
         ) .
+
+<file:///user/pmaillot/home/git/dekalog/code/ParisSaclayLookup.ttl> a mf:ManifestEntry ;
+    kgi:endpoint <https://io.datascience-paris-saclay.fr/sparql> ;
+    mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#>
+    PREFIX dct: <http://purl.org/dc/terms/>
+    CONSTRUCT {
+        ?dataset a dcat:Dataset ;
+            ?p ?o ;
+            dcat:distribution ?distribution .
+        ?distribution dcat:mediaType "application/sparql-results+xml" ;
+            dcat:accessURL $endpoint .
+    }
+    where {
+        ?dataset a dcat:Dataset ;
+            ?p ?o ;
+            dcat:distribution ?distribution .
+        ?distribution dcat:mediaType "application/sparql-results+xml" ;
+            dcat:accessURL $endpoint .
+    }""" ;
+    mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#>
+    PREFIX dct: <http://purl.org/dc/terms/>
+    CONSTRUCT {
+        ?dataset a dcat:Dataset .
+        ?s ?p ?dataset .
+        ?dataset dcat:distribution ?distribution .
+        ?distribution dcat:mediaType "application/sparql-results+xml" ;
+            dcat:accessURL $endpoint .
+    }
+    where {
+        ?dataset a dcat:Dataset .
+        ?s ?p ?dataset .
+        ?dataset dcat:distribution ?distribution .
+        ?distribution dcat:mediaType "application/sparql-results+xml" ;
+            dcat:accessURL $endpoint .
+    }""" .
+
+<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/graphListCorese.ttl> a mf:ManifestEntry ;
+    kgi:endpoint <http://localhost:8080/sparql> ;
+    mf:action """PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        CONSTRUCT {
+            $endpointDescription sd:availableGraphs $graphList .
+            $graphList sd:namedGraph [
+                    a sd:NamedGraph ;
+                    sd:name ?graph
+                ] .
+        }
+        WHERE {
+            SELECT DISTINCT ?graph WHERE {
+                SERVICE $endpoint {
+                    GRAPH ?graph { ?s ?p ?o . }
+                }
+                FILTER(STRSTARTS(str(?graph), $namespace))
+            }
+        }""" .
+
+
+
+<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl> a mf:ManifestEntry ;
+    kgi:endpoint <http://localhost:8080/sparql> ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        CONSTRUCT {
+        $metadataDescription a prov:Entity , earl:TestSubject ;
+            prov:wasDerivedFrom $endpoint ;
+            kgi:curated $datasetDescription .
+        $datasetDescription void:vocabulary ?ns .
+    }
+    WHERE {
+        SERVICE $endpoint {
+            SELECT DISTINCT ?elem WHERE {
+                ?s a ?elem .
+            }
+        }
+        BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+    }
+    """ ;
+    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        CONSTRUCT {
+        $metadataDescription a prov:Entity , earl:TestSubject ;
+            prov:wasDerivedFrom $endpoint ;
+            kgi:curated $datasetDescription .
+        $datasetDescription void:vocabulary ?ns .
+    }
+    WHERE {
+        SERVICE $endpoint {
+            SELECT DISTINCT ?elem WHERE {
+                ?s ?elem ?o .
+            }
+        }
+        BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+    }
+    """ .
 
 <file:///home/pmaillot/git/kgindex/LDScriptRule.ttl> a mf:ManifestEntry ;
     kgi:endpoint <http://corese.inria.fr/sparql> ;
