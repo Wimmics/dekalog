@@ -8,10 +8,10 @@
 
 <> a mf:Manifest ;
     mf:entries  (
-            <https://raw.githubusercontent.com/Wimmics/dekalog/master/test/extraction/vocabularyList.ttl>
+            <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl>
         ) .
 
-<https://raw.githubusercontent.com/Wimmics/dekalog/master/test/extraction/vocabularyList.ttl> a mf:ManifestEntry ;
+<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -47,12 +47,12 @@
     kgi:onFailure (
         [
             mf:entries (
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/test/extraction/vocabularyListCorese.ttl>
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl>
              )
         ]
     ) .
 
-<https://raw.githubusercontent.com/Wimmics/dekalog/master/test/extraction/vocabularyListCorese.ttl> a mf:ManifestEntry ;
+<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl> a mf:ManifestEntry ;
     kgi:endpoint <http://localhost:8080/sparql> ;
         kgi:onSuccess (
             [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
@@ -94,46 +94,3 @@
         }
         """ ]
     ) .
-
-<https://raw.githubusercontent.com/Wimmics/dekalog/master/test/extraction/classCount.ttl> a mf:ManifestEntry ;
-    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
-        PREFIX owl: <http://www.w3.org/2002/07/owl#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        CONSTRUCT {
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpoint ;
-                kgi:curated $datasetDescription .
-            $datasetDescription void:classes ?count .
-        }
-        WHERE {
-            SELECT (count(?class) AS ?count)
-            WHERE {
-                SELECT DISTINCT ?class
-                $FROM
-                WHERE {
-                    { ?class a owl:Class }
-                    UNION { ?class a rdfs:Class }
-                    UNION { ?whatever a ?class }
-                }
-            }
-        }
-    """ .
-
-<https://raw.githubusercontent.com/Wimmics/dekalog/master/test/check/provenance.ttl> a mf:ManifestEntry ;
-    mf:actions """PREFIX dqv: <http://www.w3.org/ns/dqv#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX kgi: <http://ns.inria.fr/kgindex#>
-    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    CONSTRUCT {
-        $metadataDescription dqv:hasQualityMeasurement [
-            a dqv:QualityMeasurement ;
-            rdfs:label "Provenance information are present in the metadata"@en ;
-            dqv:computedOn $endpointDescription ;
-            dqv:isMeasurementOf kgi:provenanceExtractionShape ;
-            dqv:value "true"^^xsd:boolean
-        ] .
-    }
-    """ .

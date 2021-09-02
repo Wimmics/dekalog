@@ -97,9 +97,7 @@ public class ManifestEntry {
 		ArrayList<RDFNode> tmpList = new ArrayList<RDFNode>();
 
 		ResIterator manifestIterator = manifest.listSubjectsWithProperty(RDF.type, Manifest.Manifest);
-		manifestIterator.forEach(res -> {
-			tmpList.add(res);
-		});
+    	manifestIterator.forEach(tmpList::add);
 
 		NodeIterator included = manifest.listObjectsOfProperty(Manifest.include);
 		while(included.hasNext()) {
@@ -130,12 +128,17 @@ public class ManifestEntry {
 	public static Set<fr.inria.kgindex.data.ManifestEntry> extractEntriesFromManifest(Model manifest) {
 		HashSet<ManifestEntry> result = new HashSet<ManifestEntry>();
 
-		NodeIterator entries = manifest.listObjectsOfProperty(Manifest.entries);
 		List<RDFNode> includedManifestList = new ArrayList<>();
-		while(entries.hasNext()) {
-			RDFNode testEntriesList = entries.next();
+		ResIterator manifestEntries = manifest.listSubjectsWithProperty(RDF.type, Manifest.Manifest);
+		while(manifestEntries.hasNext()) {
+			Resource manifestEntry = manifestEntries.nextResource();
+			NodeIterator entries = manifest.listObjectsOfProperty(manifestEntry, Manifest.entries);
+			while(entries.hasNext()) {
+				RDFNode testEntriesList = entries.next();
 
-			includedManifestList.addAll(testEntriesList.as(RDFList.class).asJavaList());
+				includedManifestList.addAll(testEntriesList.as(RDFList.class).asJavaList());
+				logger.debug(includedManifestList);
+			}
 		}
 
 		includedManifestList.forEach(testEntry -> {
