@@ -137,7 +137,6 @@ public class ManifestEntry {
 				RDFNode testEntriesList = entries.next();
 
 				includedManifestList.addAll(testEntriesList.as(RDFList.class).asJavaList());
-				logger.debug(includedManifestList);
 			}
 		}
 
