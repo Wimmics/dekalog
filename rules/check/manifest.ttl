@@ -8,47 +8,102 @@
         ) .
 
 <reachability.ttl> a mf:ManifestEntry ;
-    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        PREFIX dcat: <http://www.w3.org/ns/dcat#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
-        PREFIX dqv: <http://www.w3.org/ns/dqv#>
-        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-        CONSTRUCT {
-            $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
-            $endpointDescription sd:endpoint $endpoint ;
-                dcat:servesDataset $datasetDescription ;
-                a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpoint ;
-                kgi:curated $datasetDescription , $endpointDescription ;
-                dqv:hasQualityMeasurement [
-                    a dqv:QualityMeasurement ;
-                    dqv:computedOn $endpointDescription ;
-                    dqv:isMeasurementOf kgi:reachableEndpointTest ;
-                    dqv:value "true"^^xsd:boolean
-                ] .
+    kgi:onSuccess (
+        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX dqv: <http://www.w3.org/ns/dqv#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            CONSTRUCT {
+                $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
+                $endpointDescription sd:endpoint $endpoint ;
+                    dcat:servesDataset $datasetDescription ;
+                    a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
+                $metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasDerivedFrom $endpoint ;
+                    kgi:curated $datasetDescription , $endpointDescription ;
+                    dqv:hasQualityMeasurement [
+                        a dqv:QualityMeasurement ;
+                        dqv:computedOn $endpointDescription ;
+                        dqv:isMeasurementOf kgi:reachableEndpointTest ;
+                        dqv:value "true"^^xsd:boolean
+                    ] .
 
-        }
-        WHERE {
-        }
-        """ .
+            }
+            WHERE {
+            }
+            """
+        ]
+    ) ;
+    kgi:onFailure (
+        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX dqv: <http://www.w3.org/ns/dqv#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            CONSTRUCT {
+                $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
+                $endpointDescription sd:endpoint $endpoint ;
+                    dcat:servesDataset $datasetDescription ;
+                    a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
+                $metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasDerivedFrom $endpoint ;
+                    kgi:curated $datasetDescription , $endpointDescription ;
+                    dqv:hasQualityMeasurement [
+                        a dqv:QualityMeasurement ;
+                        rdfs:label "Could not reach the endpoint"@en ;
+                        dqv:computedOn $endpointDescription ;
+                        dqv:isMeasurementOf kgi:reachableEndpointTest ;
+                        dqv:value "false"^^xsd:boolean
+                    ] .
+
+            }
+            WHERE {
+            }
+            """
+        ]
+    ) .
 
 <provenance.ttl> a mf:ManifestEntry ;
-    mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX kgi: <http://ns.inria.fr/kgindex#>
-    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    CONSTRUCT {
-        $metadataDescription dqv:hasQualityMeasurement [
-            a dqv:QualityMeasurement ;
-            rdfs:label "Provenance information are present in the metadata"@en ;
-            dqv:computedOn $endpointDescription ;
-            dqv:isMeasurementOf kgi:provenanceExtractionShape ;
-            dqv:value "true"^^xsd:boolean
-        ] .
-    } WHERE {
-    }
-    """ .
+    kgi:onSuccess (
+        [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            CONSTRUCT {
+                $metadataDescription dqv:hasQualityMeasurement [
+                    a dqv:QualityMeasurement ;
+                    rdfs:label "Provenance information are present in the metadata"@en ;
+                    dqv:computedOn $endpointDescription ;
+                    dqv:isMeasurementOf kgi:provenanceExtractionShape ;
+                    dqv:value "true"^^xsd:boolean
+                ] .
+            } WHERE {
+            }
+            """
+        ]
+    ) ;
+    kgi:onFailure (
+        [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            CONSTRUCT {
+                $metadataDescription dqv:hasQualityMeasurement [
+                    a dqv:QualityMeasurement ;
+                    rdfs:label "Provenance information are absent from the metadata"@en ;
+                    dqv:computedOn $endpointDescription ;
+                    dqv:isMeasurementOf kgi:provenanceExtractionShape ;
+                    dqv:value "false"^^xsd:boolean
+                ] .
+            } WHERE {
+            }
+            """
+        ]
+    ) .

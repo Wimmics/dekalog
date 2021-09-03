@@ -14,27 +14,24 @@
             <classCount.ttl>
             <classPopulation.ttl>
             <propertyCount.ttl>
-            <sportalClassPartitionClasses.ttl>
-            <sportalClassPartitionTriples.ttl>
             <sportalDistinctRDFNodes.ttl>
-            <sportalClassPartitionDistinctObjects.ttl>
-            <sportalClassPartition.ttl>
             <sportalDistinctUrisObjects.ttl>
-            <sportalClassPartitionDistinctSubjects.ttl>
             <sportalDistinctBlankNodeObjects.ttl>
             <sportalDistinctUrisSubjects.ttl>
-            <sportalClassPartitionProperties.ttl>
             <sportalDistinctBlankNodes.ttl>
-            <sportalPropertyPartitionDistinctObject.ttl>
-            <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl>
             <sportalDistinctBlankNodeSubjects.ttl>
-            <sportalPropertyPartitionDistinctSubject.ttl>
-            <sportalClassPartitionPropertyPartitionTriples.ttl>
             <sportalDistinctIRIReferences.ttl>
-            <sportalPropertyPartitionTriples.ttl>
-            <sportalClassPartitionPropertyPartition.ttl>
             <sportalDistinctLiterals.ttl>
-            <sportalPropertyPartition.ttl>
+            <sportalClassPartitionClasses.ttl>
+            <sportalClassPartitionTriples.ttl>
+            <sportalClassPartitionDistinctObjects.ttl>
+            <sportalClassPartitionDistinctSubjects.ttl>
+            <sportalClassPartitionProperties.ttl>
+            <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl>
+            <sportalClassPartitionPropertyPartitionTriples.ttl>
+            <sportalPropertyPartitionDistinctObject.ttl>
+            <sportalPropertyPartitionDistinctSubject.ttl>
+            <sportalPropertyPartitionTriples.ttl>
         ) .
 
 <endpointDescResource.ttl> a mf:ManifestEntry ;
@@ -144,9 +141,9 @@
     ) .
 
 <graphListCorese.ttl> a mf:ManifestEntry ;
-    kgi:endpoint <http://localhost:8080/sparql> ;
     kgi:onSuccess (
-        [ mf:action """PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        [ kgi:endpoint <http://localhost:8080/sparql> ;
+        mf:action """PREFIX kgi: <http://ns.inria.fr/kgindex#>
         PREFIX void: <http://rdfs.org/ns/void#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         CONSTRUCT {
@@ -208,9 +205,9 @@
     ) .
 
 <vocabularyListCorese.ttl> a mf:ManifestEntry ;
-    kgi:endpoint <http://localhost:8080/sparql> ;
         kgi:onSuccess (
-            [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            [ kgi:endpoint <http://localhost:8080/sparql> ;
+                mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
             PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -229,7 +226,8 @@
             BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
         }
         """ ]
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        [ kgi:endpoint <http://localhost:8080/sparql> ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
             PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -480,6 +478,13 @@
     kgi:onSuccess (
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
         CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:triples ?x ] } WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }"""  ]
+    ) ;
+    kgi:onFailure (
+        [ a mf:Manifest ;
+            mf:entries (
+                <sportalPropertyPartition.ttl>
+            )
+        ]
     ) .
 
 <sportalPropertyPartitionDistinctSubject.ttl> a mf:ManifestEntry ;
@@ -516,6 +521,13 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:triples ?x ] }
             WHERE { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
         """ ]
+    ) ;
+    kgi:onFailure (
+        [ a mf:Manifest ;
+            mf:entries (
+                <sportalClassPartition.ttl>
+            )
+        ]
     ) .
 
 <sportalClassPartitionClasses.ttl> a mf:ManifestEntry ;
@@ -600,6 +612,13 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:triples ?x ] ] }
             WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
         """  ]
+    ) ;
+    kgi:onFailure (
+        [ a mf:Manifest ;
+            mf:entries (
+                <sportalClassPartitionPropertyPartition.ttl>
+            )
+        ]
     ) .
 
 <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl> a mf:ManifestEntry ;
@@ -615,6 +634,13 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:distinctSubjects ?x ] ] }
             WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
         """ ]
+    ) ;
+    kgi:onFailure (
+        [ a mf:Manifest ;
+            mf:entries (
+                <sportalClassPartitionPropertyPartition.ttl>
+            )
+        ]
     ) .
 
 # Miscanellous statistics from SPORTAL using a vocabulary created for SPORTAL only
