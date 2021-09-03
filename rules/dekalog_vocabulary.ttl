@@ -8,6 +8,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix sp: <http://spinrdf.org/sp> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 
 kgi:original rdf:type rdf:Property ;
     rdfs:label "Original description resources." ;
@@ -65,3 +66,15 @@ kgi:query rdf:type rdf:Property ;
     rdfs:isDefinedBy kgi: ;
     rdfs:domain kgi:TestQuery ;
     rdfs:range xsd:string .
+
+kgi:onSuccess rdf:type rdf:Property ;
+    rdfs:label "List of actions triggered by the success of the test present at the URI of the entry." ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain mf:ManifestEntry ;
+    rdfs:range rdf:List .
+
+kgi:onFailure rdf:type rdf:Property ;
+    rdfs:label "List of actions triggered by the failure of the test present at the URI of the entry." ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain mf:ManifestEntry ;
+    rdfs:range rdf:List .
