@@ -8,10 +8,10 @@
 
 <> a mf:Manifest ;
     mf:entries  (
-            <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl>
+            <file:///user/pmaillot/home/git/dekalog/code/LDScriptRule.ttl>
         ) .
 
-<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl> a mf:ManifestEntry ;
+<file:///user/pmaillot/home/git/dekalog/code/LDScriptRule.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -28,27 +28,27 @@
             BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
         }
         """ ]
-    [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
             PREFIX kgi: <http://ns.inria.fr/kgindex#>
             CONSTRUCT {
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpoint ;
-                kgi:curated $datasetDescription .
-            $datasetDescription void:vocabulary ?ns .
-        }
-        WHERE {
-            ?s ?elem ?o .
-            BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
-        }
+                $metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasDerivedFrom $endpoint ;
+                    kgi:curated $datasetDescription .
+                $datasetDescription void:vocabulary ?ns .
+            }
+            WHERE {
+                ?s ?elem ?o .
+                BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+            }
         """ ]
     ) ;
     kgi:onFailure (
         [
             mf:entries (
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl>
-             )
+            )
         ]
     ) .
 

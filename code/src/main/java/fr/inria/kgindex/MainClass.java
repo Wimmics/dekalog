@@ -86,8 +86,8 @@ public class MainClass {
 					return -1;
 				} else if (o1.getRequirements().size() != o2.getRequirements().size()) {
 					return o1.getRequirements().size() - o2.getRequirements().size();
-				} else if (o1.getActions().size() != o2.getActions().size()) {
-					return o1.getActions().size() - o2.getActions().size();
+				} else if ((o1.getActionsOnSuccess().size() + o1.getActionsOnFailure().size()) != (o2.getActionsOnSuccess().size() + o2.getActionsOnFailure().size())) {
+					return (o1.getActionsOnSuccess().size() + o1.getActionsOnFailure().size()) - (o2.getActionsOnSuccess().size() + o2.getActionsOnFailure().size());
 				} else {
 					return o1.getFileResource().getURI().compareTo(o2.getFileResource().getURI());
 				}

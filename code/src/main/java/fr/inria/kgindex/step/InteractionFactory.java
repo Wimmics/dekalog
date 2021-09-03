@@ -4,10 +4,7 @@ import fr.inria.kgindex.data.Dataset;
 import fr.inria.kgindex.data.ManifestEntry;
 import fr.inria.kgindex.util.KGIndex;
 import fr.inria.kgindex.util.Manifest;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.logging.log4j.LogManager;
@@ -23,44 +20,65 @@ public class InteractionFactory {
 
     public static InteractionApplication create(ManifestEntry entry, Dataset describedDataset, Model datasetDescription) {
 
-        List<String> testActionStringList = new ArrayList<String>();
+        List<Action> testActionListSuccess = new ArrayList<Action>();
+        List<Action> testActionListFailure = new ArrayList<Action>();
         InteractionApplication.TYPE interactionType = InteractionApplication.TYPE.SPARQL;
+        // Récuperer l'URI de l'interaction
+        Resource testFileResource = entry.getFileResource();
 
-        String actionEndpointUrl = describedDataset.getEndpointUrl();
-        for (Model entryModel : entry.getActions()) {
-            // Récuperer l'URI de l'interaction
-            List<Resource> typeEntryList = entryModel.listSubjectsWithProperty(RDF.type, Manifest.ManifestEntry).toList();
-            if (typeEntryList.size() > 0) { // Si il n'y a pas de manifestEntry, on ne fait rien
+        // Identifier le type d'interaction: dkg/SHACL
+        Model testModel = ModelFactory.createDefaultModel();
+        testModel.read(testFileResource.getURI(), "TTL");
+        List<Resource> resTestQueryList = testModel.listSubjectsWithProperty(RDF.type, KGIndex.TestQuery).toList();
+        List<Resource> resShapeList = testModel.listSubjectsWithProperty(RDF.type, testModel.createProperty(SHACL.NodeShape.getURI())).toList();
 
-                Resource testFileResource = typeEntryList.get(0);
-
+        // Fonction d'application adaptée
+        if (resTestQueryList.isEmpty() && !resShapeList.isEmpty()) {
+            interactionType = InteractionApplication.TYPE.SPARQL;
+        } else if (!resTestQueryList.isEmpty() && resShapeList.isEmpty()) {
+            interactionType = InteractionApplication.TYPE.SHACL;
+        } else {
+            interactionType = InteractionApplication.TYPE.SHACL;
+        }
+        for (Model entryModel : entry.getActionsOnSuccess()) {
                 // Récupérer les actions
-                List<RDFNode> testActionNodes = entryModel.listObjectsOfProperty(testFileResource, Manifest.action).toList();
+                List<Resource> testActionNodes = entryModel.listSubjectsWithProperty(Manifest.action).toList();
                 testActionNodes.forEach(node -> {
-                    testActionStringList.add(node.asLiteral().getString());
+                    String actionEndpointUrl = describedDataset.getEndpointUrl();
+
+                    // Identifier l'endpoint visé
+                    List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(node, KGIndex.endpoint).toList();
+                    if (!actionEndpointUrlList.isEmpty()) {
+                        actionEndpointUrl = actionEndpointUrlList.get(0).toString();
+                    }
+
+                    NodeIterator actionStrings = entryModel.listObjectsOfProperty(node, Manifest.action);
+                    String finalActionEndpointUrl = actionEndpointUrl;
+                    actionStrings.forEach(actionString -> {
+                        Action currentAction = new Action(actionString.asLiteral().getString(), finalActionEndpointUrl, Action.TYPE.SPARQL);
+                        testActionListSuccess.add(currentAction);
+                    });
                 });
-
-                // Identifier le type d'interaction: dkg/SHACL
-                Model testModel = ModelFactory.createDefaultModel();
-                testModel.read(testFileResource.getURI(), "TTL");
-                List<Resource> resTestQueryList = testModel.listSubjectsWithProperty(RDF.type, KGIndex.TestQuery).toList();
-                List<Resource> resShapeList = testModel.listSubjectsWithProperty(RDF.type, testModel.createProperty(SHACL.NodeShape.getURI())).toList();
-
-                // Fonction d'application adaptée
-                if (resTestQueryList.isEmpty() && !resShapeList.isEmpty()) {
-                    interactionType = InteractionApplication.TYPE.SPARQL;
-                } else if (!resTestQueryList.isEmpty() && resShapeList.isEmpty()) {
-                    interactionType = InteractionApplication.TYPE.SHACL;
-                } else {
-                    interactionType = InteractionApplication.TYPE.SHACL;
-                }
+        }
+        for (Model entryModel : entry.getActionsOnFailure()) {
+            // Récupérer les actions
+            List<Resource> testActionNodes = entryModel.listSubjectsWithProperty(Manifest.action).toList();
+            testActionNodes.forEach(node -> {
+                String actionEndpointUrl = describedDataset.getEndpointUrl();
 
                 // Identifier l'endpoint visé
-                List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(testFileResource, KGIndex.endpoint).toList();
+                List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(node, KGIndex.endpoint).toList();
                 if (!actionEndpointUrlList.isEmpty()) {
                     actionEndpointUrl = actionEndpointUrlList.get(0).toString();
                 }
-            }
+
+                NodeIterator actionStrings = entryModel.listObjectsOfProperty(node, Manifest.action);
+                String finalActionEndpointUrl = actionEndpointUrl;
+                actionStrings.forEach(actionString -> {
+                    Action currentAction = new Action(actionString.asLiteral().getString(), finalActionEndpointUrl, Action.TYPE.SPARQL);
+                    testActionListFailure.add(currentAction);
+                });
+            });
         }
 
         Tests tests = new Tests(entry);
@@ -75,7 +93,8 @@ public class InteractionFactory {
             testEndpointUrl = testEndpointNodeList.get(0).toString();
         }
 
-        Actions actions = new Actions(testActionStringList, actionEndpointUrl);
+        Actions actionsSuccess = new Actions(testActionListSuccess);
+        Actions actionsFailure = new Actions(testActionListFailure);
 
         TestExecution testExec = null;
         if(interactionType.equals(InteractionApplication.TYPE.SPARQL)) {
@@ -86,7 +105,7 @@ public class InteractionFactory {
             testExec = new QueryTestExecution(tests, testEndpointUrl);
         }
 
-        InteractionApplication result =  new InteractionApplication(entry, testExec, actions, describedDataset, datasetDescription);
+        InteractionApplication result =  new InteractionApplication(entry, testExec, actionsSuccess, actionsFailure, describedDataset, datasetDescription);
         result.setType(interactionType);
 
         return result;

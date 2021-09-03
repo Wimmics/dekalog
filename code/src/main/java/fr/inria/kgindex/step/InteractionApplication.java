@@ -32,16 +32,18 @@ public class InteractionApplication {
 
     private final ManifestEntry _entry;
     private final Dataset _describedDataset;
+    private Actions _actionsSuccess = null;
+    private Actions _actionsFailure = null;
     private Model _datasetDescription;
-    private Actions _actions = null;
     private TestExecution _tests = null;
     private TYPE _type = TYPE.SHACL;
 
-    public InteractionApplication(ManifestEntry entry, TestExecution tests, Actions actions, Dataset describedDataset, Model datasetDescription) {
+    public InteractionApplication(ManifestEntry entry, TestExecution tests, Actions actionsSuccess, Actions actionsFailure, Dataset describedDataset, Model datasetDescription) {
         this._entry = entry;
         this._describedDataset = describedDataset;
         this._datasetDescription = datasetDescription;
-        this._actions = actions;
+        this._actionsSuccess = actionsSuccess;
+        this._actionsFailure = actionsFailure;
         this._tests = tests;
     }
 
@@ -77,52 +79,55 @@ public class InteractionApplication {
         }
 
         logger.trace("Test END " + this._entry.getTestResource() + " " + testPassed );
-        // Génération des triplets à ajouter à la description
-        if((testPassed && (this.getType() == TYPE.SHACL))
-                || (!testPassed && this.getType() == TYPE.SPARQL)) {
-            logger.trace("Action START " + this._entry.getFileResource() );
-            this._actions.getActions().forEach(queryStringRaw -> {
-                Set<String> queryStringSet = Utils.rewriteQueryPlaceholders(queryStringRaw, this._describedDataset);
-                queryStringSet.forEach(queryString -> {
-                    Date startDate = new Date();
-                    Literal startDateLiteral =  result.createLiteral(dateFormatter.format(startDate));
-                    try {
-                        if(queryString.contains("CONSTRUCT")) {
-                            QueryExecution actionExecution = QueryExecutionFactory.sparqlService(this._actions.getEndpointUrl(), queryString);
-                            actionExecution.setTimeout(Utils.queryTimeout);
+        Actions actionsToApply = null;
+        // Application des actions selon le resultat du test
+        if(testPassed){
+            actionsToApply = this._actionsSuccess;
+        } else {
+            actionsToApply = this._actionsFailure;
+        }
+        logger.trace("Action START " + this._entry.getFileResource() );
+        actionsToApply.getActions().forEach(action -> {
+            String queryStringRaw = action.getQuery();
+            Set<String> queryStringSet = Utils.rewriteQueryPlaceholders(queryStringRaw, this._describedDataset);
+            queryStringSet.forEach(queryString -> {
+                Date startDate = new Date();
+                Literal startDateLiteral =  result.createLiteral(dateFormatter.format(startDate));
+                try {
+                    if(queryString.contains("CONSTRUCT")) {
+                        QueryExecution actionExecution = QueryExecutionFactory.sparqlService(action.getEndpointUrl(), queryString);
+                        actionExecution.setTimeout(Utils.queryTimeout);
 
-                            try {
-                                Model actionResult = actionExecution.execConstruct();
-                                result.add(actionResult);
-                            } catch(RiotException e) {
-                                logger.error(e);
-                                logger.trace(this._entry.getTestResource() + " action could not be added because of RiotException");
-                            }
-                            actionExecution.close();
-                        } else if(queryString.contains("INSERT")) {
-                            UpdateRequest insertUpdate = UpdateFactory.create(queryString);
-                            UpdateAction.execute(insertUpdate, this._datasetDescription);
-                        } else if(queryString.contains("DELETE")) {
-                            UpdateRequest deleteUpdate = UpdateFactory.create(queryString);
-                            UpdateAction.execute(deleteUpdate, this._datasetDescription);
+                        try {
+                            Model actionResult = actionExecution.execConstruct();
+                            result.add(actionResult);
+                        } catch(RiotException e) {
+                            logger.error(e);
+                            logger.trace(this._entry.getTestResource() + " action could not be added because of RiotException");
                         }
-                    } catch(QueryExceptionHTTP e) {
-                        logger.info(e);
-                        logger.trace(this._entry.getTestResource() + " : " + e.getMessage());
-                        Date endDate = new Date();
-                        Literal endDateLiteral =  result.createLiteral(dateFormatter.format(endDate));
-                        result.add(EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral));
-                    } catch(QueryParseException e) {
-                        logger.debug(queryString);
-                        throw e;
+                        actionExecution.close();
+                    } else if(queryString.contains("INSERT")) {
+                        UpdateRequest insertUpdate = UpdateFactory.create(queryString);
+                        UpdateAction.execute(insertUpdate, this._datasetDescription);
+                    } else if(queryString.contains("DELETE")) {
+                        UpdateRequest deleteUpdate = UpdateFactory.create(queryString);
+                        UpdateAction.execute(deleteUpdate, this._datasetDescription);
                     }
-
-                });
+                } catch(QueryExceptionHTTP e) {
+                    logger.info(e);
+                    logger.trace(this._entry.getTestResource() + " : " + e.getMessage());
+                    Date endDate = new Date();
+                    Literal endDateLiteral =  result.createLiteral(dateFormatter.format(endDate));
+                    result.add(EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral));
+                } catch(QueryParseException e) {
+                    logger.debug(queryString);
+                    throw e;
+                }
 
             });
 
-            logger.trace("Action END " + this._entry.getFileResource() );
-        }
+        });
+        logger.trace("Action END " + this._entry.getFileResource() );
 
         return result;
     }

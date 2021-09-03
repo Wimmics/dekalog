@@ -1,6 +1,7 @@
 package fr.inria.kgindex.data;
 
 import fr.inria.kgindex.step.QueryTestExecution;
+import fr.inria.kgindex.util.KGIndex;
 import fr.inria.kgindex.util.Manifest;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.vocabulary.EARL;
@@ -17,15 +18,17 @@ public class ManifestEntry {
 	private static Logger logger = LogManager.getLogger(ManifestEntry.class);
 
 	private Resource _fileResource = null;
-	private Set<Model> _actions = null;
+	private Set<Model> _actionsSuccess = null;
+	private Set<Model> _actionsFailure = null;
 	private Set<Model> _tests = null;
 	private Resource _testResource = null;
 	private String _title = "";
 	private Set<Resource> _requirements = null;
 
-	public ManifestEntry(Resource fileResource, Model action, Resource testResource, Model test) {
+	public ManifestEntry(Resource fileResource, Set<Model> successActions, Set<Model> failureActions, Resource testResource, Model test) {
 		this._fileResource = fileResource;
-		this._actions = new HashSet<Model>(Collections.singleton(action));
+		this._actionsSuccess = successActions;
+		this._actionsFailure = failureActions;
 		this._tests = new HashSet<Model>(Collections.singleton(test));
 		this._testResource = testResource;
 		this._requirements = new HashSet<Resource>();
@@ -55,12 +58,20 @@ public class ManifestEntry {
 		this._testResource = testResource;
 	}
 
-	public Set<Model> getActions() {
-		return this._actions;
+	public Set<Model> getActionsOnSuccess() {
+		return this._actionsSuccess;
 	}
 
-	public void addAction(Model action) {
-		this._actions.add(action);
+	public Set<Model> getActionsOnFailure() {
+		return this._actionsFailure;
+	}
+
+	public void addActionOnSuccess(Model action) {
+		this._actionsSuccess.add(action);
+	}
+
+	public void addActionOnFailure(Model action) {
+		this._actionsFailure.add(action);
 	}
 
 	public Set<Model> getTests() {
@@ -143,8 +154,28 @@ public class ManifestEntry {
 		includedManifestList.forEach(testEntry -> {
 			StmtIterator testStmtIterator = manifest.listStatements(testEntry.asResource(), (Property)null, (RDFNode)null);
 			List<Statement> testStatement = testStmtIterator.toList();
-			Model actionModel = ModelFactory.createDefaultModel();
-			actionModel.add(testStatement);
+
+			// Extraction des action onSuccess/onFailure pour l'entrée courante
+			HashSet<Model> successActionModelSet = new HashSet<>();
+			NodeIterator successActionResources = manifest.listObjectsOfProperty(testEntry.asResource(), KGIndex.onSuccess);
+			successActionResources.forEach(successActionResource -> {
+				List<RDFNode> actionBNList = successActionResource.as(RDFList.class).asJavaList();
+				actionBNList.forEach(actionBN -> {
+					Model successActionModel = ModelFactory.createDefaultModel();
+					successActionModel.add(manifest.listStatements(actionBN.asResource(), (Property)null, (RDFNode)null).toList());
+					successActionModelSet.add(successActionModel);
+				});
+			});
+			HashSet<Model> failureActionModelSet = new HashSet<>();
+			NodeIterator failureActionResources = manifest.listObjectsOfProperty(testEntry.asResource(), KGIndex.onFailure);
+			failureActionResources.forEach(failureActionResource -> {
+				List<RDFNode> actionBNList = failureActionResource.as(RDFList.class).asJavaList();
+				actionBNList.forEach(actionBN -> {
+					Model failureActionModel = ModelFactory.createDefaultModel();
+					failureActionModel.add(manifest.listStatements(actionBN.asResource(), (Property)null, (RDFNode)null).toList());
+					failureActionModelSet.add(failureActionModel);
+				});
+			});
 
 			Model kgiVocabulary = ModelFactory.createDefaultModel();
 			kgiVocabulary.read("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/dekalog_vocabulary.ttl", "TTL");
@@ -157,7 +188,7 @@ public class ManifestEntry {
 			testResourceIterator.forEach(testResource -> {
 				Model tmpTestModel = ModelFactory.createDefaultModel();
 				tmpTestModel.add(testModel);
-				ManifestEntry resultEntry = new ManifestEntry(testEntry.asResource(), actionModel, testResource, tmpTestModel);
+				ManifestEntry resultEntry = new ManifestEntry(testEntry.asResource(), successActionModelSet, failureActionModelSet, testResource, tmpTestModel);
 
 				NodeIterator requiresIterator = testModelWithInference.listObjectsOfProperty(DCTerms.requires);
 				requiresIterator.forEach(requiredTest -> {
