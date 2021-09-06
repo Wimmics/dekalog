@@ -4,6 +4,7 @@ import fr.inria.kgindex.data.Dataset;
 import fr.inria.kgindex.data.ManifestEntry;
 import fr.inria.kgindex.util.KGIndex;
 import fr.inria.kgindex.util.Manifest;
+import fr.inria.kgindex.util.Utils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
@@ -58,7 +59,7 @@ public class InteractionFactory {
                 // Identifier l'endpoint visé
                 List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(testFileResource, KGIndex.endpoint).toList();
                 if (!actionEndpointUrlList.isEmpty()) {
-                    actionEndpointUrl = actionEndpointUrlList.get(0).toString();
+                    actionEndpointUrl = Utils.rewriteUrlWithPlaceholders(actionEndpointUrlList.get(0).toString(), describedDataset);
                 }
             }
         }
