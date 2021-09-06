@@ -38,6 +38,11 @@ public class MainClass {
 				.hasArg()
 				.desc("Timeout for all queries in milliseconds. Default is 30000.")
 				.build());
+		options.addOption(Option.builder("output")
+				.required(false)
+				.hasArg()
+				.desc("Output filename. Default is 'kbMetadata[name].ttl'.")
+				.build());
 		options.addOption(Option.builder("manifest")
 				.required(false)
 				.hasArg()
@@ -70,6 +75,12 @@ public class MainClass {
 			 */
 			String endpointUrl = cmd.getOptionValue("endpoint");
 			String datasetName = cmd.getOptionValue("name");
+
+			String outputFilename = "kbMetadata"+ datasetName +".ttl";
+			if(cmd.hasOption("output")) {
+				outputFilename = cmd.getOptionValue("output", "kbMetadata"+ datasetName +".ttl");
+			}
+
 			Dataset describedDataset = new Dataset(endpointUrl, datasetName);
 
 			Model manifestModel = ModelFactory.createDefaultModel();
@@ -136,7 +147,7 @@ public class MainClass {
 			});
 
 			try {
-				OutputStream outputStream = new FileOutputStream("kbMetadata"+ datasetName +".ttl");
+				OutputStream outputStream = new FileOutputStream(outputFilename);
 				datasetDescription.write(outputStream, "TURTLE");
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
