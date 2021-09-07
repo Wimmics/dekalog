@@ -20,9 +20,9 @@ public class InteractionFactory {
 
     public static InteractionApplication create(ManifestEntry entry, Dataset describedDataset, Model datasetDescription) {
 
-        List<Action> testActionListSuccess = new ArrayList<Action>();
-        List<Action> testActionListFailure = new ArrayList<Action>();
-        InteractionApplication.TYPE interactionType = InteractionApplication.TYPE.SPARQL;
+        Actions testActionListSuccess = new Actions();
+        Actions testActionListFailure = new Actions();
+        InteractionApplication.TYPE interactionType;
         // Récuperer l'URI de l'interaction
         Resource testFileResource = entry.getFileResource();
 
@@ -38,29 +38,9 @@ public class InteractionFactory {
         } else if (!resTestQueryList.isEmpty() && resShapeList.isEmpty()) {
             interactionType = InteractionApplication.TYPE.SHACL;
         } else {
-            interactionType = InteractionApplication.TYPE.SHACL;
+            interactionType = InteractionApplication.TYPE.UNKNOWN;
         }
         for (Model entryModel : entry.getActionsOnSuccess()) {
-                // Récupérer les actions
-                List<Resource> testActionNodes = entryModel.listSubjectsWithProperty(Manifest.action).toList();
-                testActionNodes.forEach(node -> {
-                    String actionEndpointUrl = describedDataset.getEndpointUrl();
-
-                    // Identifier l'endpoint visé
-                    List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(node, KGIndex.endpoint).toList();
-                    if (!actionEndpointUrlList.isEmpty()) {
-                        actionEndpointUrl = actionEndpointUrlList.get(0).toString();
-                    }
-
-                    NodeIterator actionStrings = entryModel.listObjectsOfProperty(node, Manifest.action);
-                    String finalActionEndpointUrl = actionEndpointUrl;
-                    actionStrings.forEach(actionString -> {
-                        Action currentAction = new Action(actionString.asLiteral().getString(), finalActionEndpointUrl, Action.TYPE.SPARQL);
-                        testActionListSuccess.add(currentAction);
-                    });
-                });
-        }
-        for (Model entryModel : entry.getActionsOnFailure()) {
             // Récupérer les actions
             List<Resource> testActionNodes = entryModel.listSubjectsWithProperty(Manifest.action).toList();
             testActionNodes.forEach(node -> {
@@ -75,9 +55,46 @@ public class InteractionFactory {
                 NodeIterator actionStrings = entryModel.listObjectsOfProperty(node, Manifest.action);
                 String finalActionEndpointUrl = actionEndpointUrl;
                 actionStrings.forEach(actionString -> {
-                    Action currentAction = new Action(actionString.asLiteral().getString(), finalActionEndpointUrl, Action.TYPE.SPARQL);
+                    Action currentAction = new Action(actionString, finalActionEndpointUrl, Action.TYPE.SPARQL);
+                    testActionListSuccess.add(currentAction);
+                });
+            });
+        }
+        for (Model entryModel : entry.getActionsOnFailure()) {
+            // Récupérer les actions standard
+            List<Resource> testActionNodes = entryModel.listSubjectsWithProperty(Manifest.action).toList();
+            testActionNodes.forEach(node -> {
+                String actionEndpointUrl = describedDataset.getEndpointUrl();
+
+                // Identifier l'endpoint visé
+                List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(node, KGIndex.endpoint).toList();
+                if (!actionEndpointUrlList.isEmpty()) {
+                    actionEndpointUrl = actionEndpointUrlList.get(0).toString();
+                }
+
+                NodeIterator actionStrings = entryModel.listObjectsOfProperty(node, Manifest.action);
+                String finalActionEndpointUrl = actionEndpointUrl;
+                actionStrings.forEach(actionString -> {
+                    Action currentAction = new Action(actionString, finalActionEndpointUrl, Action.TYPE.SPARQL);
                     testActionListFailure.add(currentAction);
                 });
+            });
+
+            // récupérer les renvois vers d'autres tests
+            String actionEndpointUrl = describedDataset.getEndpointUrl();
+
+            NodeIterator entriesLists = entryModel.listObjectsOfProperty(Manifest.entries);
+            entriesLists.forEach(entriesList -> {
+                try {
+                    List<RDFNode> entriesNodeList = entriesList.as(RDFList.class).asJavaList();
+                    entriesNodeList.forEach(entryNode -> {
+                        Action currentAction = new Action(entryNode, actionEndpointUrl, Action.TYPE.Manifest);
+                        testActionListFailure.add(currentAction);
+                    });
+                } catch(Exception e) {
+                    entryModel.write(System.err, "TTL");
+                    throw e;
+                }
             });
         }
 
@@ -93,9 +110,6 @@ public class InteractionFactory {
             testEndpointUrl = testEndpointNodeList.get(0).toString();
         }
 
-        Actions actionsSuccess = new Actions(testActionListSuccess);
-        Actions actionsFailure = new Actions(testActionListFailure);
-
         TestExecution testExec = null;
         if(interactionType.equals(InteractionApplication.TYPE.SPARQL)) {
             testExec = new SHACLTestExecution(tests, testEndpointUrl);
@@ -105,7 +119,7 @@ public class InteractionFactory {
             testExec = new QueryTestExecution(tests, testEndpointUrl);
         }
 
-        InteractionApplication result =  new InteractionApplication(entry, testExec, actionsSuccess, actionsFailure, describedDataset, datasetDescription);
+        InteractionApplication result =  new InteractionApplication(entry, testExec, testActionListSuccess, testActionListFailure, describedDataset, datasetDescription);
         result.setType(interactionType);
 
         return result;

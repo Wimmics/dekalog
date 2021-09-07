@@ -78,20 +78,6 @@ public class MainClass {
 			Model datasetDescription = ModelFactory.createDefaultModel();
 
 			List<RDFNode> manifestList = ManifestEntry.extractIncludedFromManifest(manifestModel);
-			// Ordonnancement des tests par requirements, nombre de requirements, nombre d'actions et noms
-			TreeSet<ManifestEntry> sortedTestList = new TreeSet<>((o1, o2) -> {
-				if (o1.requires(o2.getTestResource())) {
-					return 1;
-				} else if (o2.requires(o1.getTestResource())) {
-					return -1;
-				} else if (o1.getRequirements().size() != o2.getRequirements().size()) {
-					return o1.getRequirements().size() - o2.getRequirements().size();
-				} else if ((o1.getActionsOnSuccess().size() + o1.getActionsOnFailure().size()) != (o2.getActionsOnSuccess().size() + o2.getActionsOnFailure().size())) {
-					return (o1.getActionsOnSuccess().size() + o1.getActionsOnFailure().size()) - (o2.getActionsOnSuccess().size() + o2.getActionsOnFailure().size());
-				} else {
-					return o1.getFileResource().getURI().compareTo(o2.getFileResource().getURI());
-				}
-			});
 
 			Model includedManifestModel = ModelFactory.createDefaultModel();
 			manifestList.forEach( included -> {
@@ -101,39 +87,43 @@ public class MainClass {
 				tmpManifestModel.close();
 			});
 
-			Set<ManifestEntry> testList = ManifestEntry.extractEntriesFromManifest(includedManifestModel);
-			sortedTestList.addAll(testList);
+			Map<RDFNode, Set<ManifestEntry> > testMap = ManifestEntry.extractEntriesFromManifest(includedManifestModel);
+			List<RDFNode> testList = ManifestEntry.extractEntriesList(includedManifestModel);
 
-			// Application des règles pour chaque ManifestEntry, triés en fonction de leurs pré-requis
-			sortedTestList.forEach(testEntry -> {
-				InteractionApplication application = InteractionFactory.create(testEntry, describedDataset, datasetDescription);
-				Model testResult = application.apply();
-				datasetDescription.add(testResult);
+			// Application des règles pour chaque ManifestEntry
+			testList.forEach(testNode -> {
+				Set<ManifestEntry> testEntrySet = testMap.get(testNode);
 
-				// Keeping the list of the dataset namespaces up to date
-				if(describedDataset.getNamespaces().isEmpty()
-						&& (datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
-						|| datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
-					NodeIterator namespaceIt = null;
-					if(datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
-						namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
+				testEntrySet.forEach(testEntry -> {
+					InteractionApplication application = InteractionFactory.create(testEntry, describedDataset, datasetDescription);
+					Model testResult = application.apply();
+					datasetDescription.add(testResult);
+
+					// Keeping the list of the dataset namespaces up to date
+					if (describedDataset.getNamespaces().isEmpty()
+							&& (datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
+							|| datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
+						NodeIterator namespaceIt = null;
+						if (datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
+							namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
+						}
+						if (datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
+							namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
+						}
+
+						assert namespaceIt != null;
+						describedDataset.addNamespaces(namespaceIt.toList()
+								.stream()
+								.map(RDFNode::toString)
+								.collect(Collectors.toList()));
 					}
-					if(datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
-						namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
+
+					// Checking if the graph list is necessary according to the endpoint description
+					if (!datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
+							&& datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
+						describedDataset.setGraphsAreRequired(true);
 					}
-
-					assert namespaceIt != null;
-					describedDataset.addNamespaces( namespaceIt.toList()
-							.stream()
-							.map(RDFNode::toString)
-							.collect(Collectors.toList()));
-				}
-
-				// Checking if the graph list is necessary according to the endpoint description
-				if(! datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
-						&& datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
-					describedDataset.setGraphsAreRequired(true);
-				}
+				});
 			});
 
 			try {

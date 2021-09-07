@@ -131,13 +131,28 @@ public class ManifestEntry {
 		return new ArrayList<>(result);
 	}
 
+	public static List<RDFNode> extractEntriesList(Model manifest) {
+		ArrayList<RDFNode> result = new ArrayList<>();
+
+		ResIterator explicitManifestIt = manifest.listResourcesWithProperty(RDF.type, Manifest.Manifest);
+		explicitManifestIt.forEach(rootManifest -> {
+			StmtIterator manifestRootEntryStatement = manifest.listStatements(rootManifest, Manifest.entries, (RDFNode) null);
+			manifestRootEntryStatement.forEach(statement -> {
+				List<RDFNode> entryList = statement.getObject().as(RDFList.class).asJavaList();
+				result.addAll(entryList);
+			});
+		});
+
+		return result;
+	}
+
 	/**
 	 * Extract manifest entries (action from the manifest file and test from the test file) described in a manifest.
 	 * @param manifest
 	 * @return
 	 */
-	public static Set<fr.inria.kgindex.data.ManifestEntry> extractEntriesFromManifest(Model manifest) {
-		HashSet<ManifestEntry> result = new HashSet<>();
+	public static Map<RDFNode, Set<ManifestEntry> > extractEntriesFromManifest(Model manifest) {
+		Map<RDFNode, Set<ManifestEntry> > result = new HashMap<>();
 
 		List<RDFNode> includedManifestList = new ArrayList<>();
 		ResIterator manifestEntries = manifest.listSubjectsWithProperty(RDF.type, Manifest.Manifest);
@@ -151,24 +166,54 @@ public class ManifestEntry {
 			}
 		}
 
-		includedManifestList.forEach(testEntry -> result.addAll(extractEntryFromManifest(testEntry.asResource(), manifest)));
+		includedManifestList.forEach(testEntry -> result.putAll(extractEntryFromManifest(testEntry.asResource(), manifest)));
 		return result;
 	}
 
-	private static Set<ManifestEntry> extractEntryFromManifest(Resource entryName, Model manifest) {
-		HashSet<ManifestEntry> result = new HashSet<>();
+	private static Map<RDFNode, Set<ManifestEntry> > extractEntryFromManifest(Resource entryName, Model manifest) {
+		HashMap<RDFNode, Set<ManifestEntry> > result = new HashMap<>();
 
 		// Extraction des action onSuccess pour l'entrée courante
 		HashSet<Model> successActionModelSet = new HashSet<>();
 		NodeIterator successActionResources = manifest.listObjectsOfProperty(entryName, KGIndex.onSuccess);
 		successActionResources.forEach(successActionResource -> {
-				successActionModelSet.addAll(extractActionModel(successActionResource, manifest));
+			Set<Model> tmpSuccessActionSet = extractActionModel(successActionResource, manifest);
+
+			// On ajoute les renvois d'entrées à la liste des manifest extraits
+			tmpSuccessActionSet.forEach(tmpModel -> {
+				if(tmpModel.contains(null, Manifest.entries, (RDFNode)null)) {
+					NodeIterator itEntries = tmpModel.listObjectsOfProperty(Manifest.entries);
+					itEntries.forEach(entryListNode ->{
+						List<RDFNode> entryFollowupActionList = entryListNode.as(RDFList.class).asJavaList();
+						entryFollowupActionList.forEach(node -> {
+							result.putAll(extractEntryFromManifest(node.asResource(), manifest));
+						});
+					});
+				}
+			});
+
+			successActionModelSet.addAll(extractActionModel(successActionResource, manifest));
 		});
 		// Extraction des action onFailure pour l'entrée courante
 		HashSet<Model> failureActionModelSet = new HashSet<>();
 		NodeIterator failureActionResources = manifest.listObjectsOfProperty(entryName, KGIndex.onFailure);
 		failureActionResources.forEach(failureActionResource -> {
-				failureActionModelSet.addAll(extractActionModel(failureActionResource, manifest));
+			Set<Model> tmpFailureActionSet = extractActionModel(failureActionResource, manifest);
+
+			// On ajoute les renvois d'entrées à la liste des manifest extraits
+			tmpFailureActionSet.forEach(tmpModel -> {
+				if(tmpModel.contains(null, Manifest.entries, (RDFNode)null)) {
+					NodeIterator itEntries = tmpModel.listObjectsOfProperty(Manifest.entries);
+					itEntries.forEach(entryListNode ->{
+						List<RDFNode> entryfollowupActionList = entryListNode.as(RDFList.class).asJavaList();
+						entryfollowupActionList.forEach(node -> {
+							result.putAll(extractEntryFromManifest(node.asResource(), manifest));
+						});
+					});
+				}
+			});
+
+			failureActionModelSet.addAll(tmpFailureActionSet);
 		});
 
 		// Traitement du fichier du test associé à l'entrée
@@ -180,6 +225,7 @@ public class ManifestEntry {
 		testModelWithInference.add(testModel);
 
 		ResIterator testResourceIterator = testModelWithInference.listSubjectsWithProperty(RDF.type, EARL.TestCase);
+		HashSet<ManifestEntry> entrySet = new HashSet<>();
 		testResourceIterator.forEach(testResource -> {
 			Model tmpTestModel = ModelFactory.createDefaultModel();
 			tmpTestModel.add(testModel);
@@ -190,8 +236,9 @@ public class ManifestEntry {
 				Resource required = requiredTest.asResource();
 				resultEntry.addRequirement(required);
 			});
-			result.add(resultEntry);
+			entrySet.add(resultEntry);
 		});
+		result.put(entryName, entrySet);
 
 		return result;
 	}
@@ -208,7 +255,6 @@ public class ManifestEntry {
 			actionStatementList.forEach(stmt -> {
 				if((! stmt.getObject().isLiteral())) {
 					actionModel.add(manifest.listStatements(stmt.getObject().asResource(), null, (RDFNode)null));
-					actionModel.write(System.out, "TTL");
 				}
 			});
 			actionModelSet.add(actionModel);

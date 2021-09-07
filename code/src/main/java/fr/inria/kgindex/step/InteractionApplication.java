@@ -27,7 +27,8 @@ public class InteractionApplication {
 
     public enum TYPE {
         SPARQL,
-        SHACL
+        SHACL,
+        UNKNOWN
     }
 
     private final ManifestEntry _entry;
