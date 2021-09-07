@@ -1,5 +1,7 @@
 package fr.inria.kgindex.step;
 
+import org.apache.jena.rdf.model.RDFNode;
+
 public class Action {
 
     public enum TYPE {
@@ -9,12 +11,12 @@ public class Action {
     }
 
     private String _endpointUrl = "";
-    private String _query = "";
+    private RDFNode _actionNode = null;
     private TYPE _type = TYPE.UNKNOWN;
 
-    public Action(String query, String url, TYPE type) {
+    public Action(RDFNode actionNode, String url, TYPE type) {
         this._endpointUrl = url;
-        this._query = query;
+        this._actionNode = actionNode;
         this._type = type;
     }
 
@@ -26,8 +28,8 @@ public class Action {
         this._endpointUrl = url;
     }
 
-    public String getQuery() {
-        return _query;
+    public RDFNode getActionNode() {
+        return _actionNode;
     }
 
     public TYPE getType() {
@@ -36,5 +38,16 @@ public class Action {
 
     public void setType(TYPE _type) {
         this._type = _type;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.getType());
+        builder.append(" ");
+        builder.append(this.getEndpointUrl());
+        builder.append(" ");
+        builder.append(this.getActionNode().toString());
+        return builder.toString();
     }
 }

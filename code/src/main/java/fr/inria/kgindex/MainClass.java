@@ -92,16 +92,17 @@ public class MainClass {
 					return o1.getFileResource().getURI().compareTo(o2.getFileResource().getURI());
 				}
 			});
-			
+
+			Model includedManifestModel = ModelFactory.createDefaultModel();
 			manifestList.forEach( included -> {
-				Model includedManifestModel = ModelFactory.createDefaultModel();
-				includedManifestModel.read(included.toString(), "TTL");
-
-				Set<ManifestEntry> testList = ManifestEntry.extractEntriesFromManifest(includedManifestModel);
-				sortedTestList.addAll(testList);
-
-				includedManifestModel.close();
+				Model tmpManifestModel = ModelFactory.createDefaultModel();
+				tmpManifestModel.read(included.toString(), "TTL");
+				includedManifestModel.add(tmpManifestModel);
+				tmpManifestModel.close();
 			});
+
+			Set<ManifestEntry> testList = ManifestEntry.extractEntriesFromManifest(includedManifestModel);
+			sortedTestList.addAll(testList);
 
 			// Application des règles pour chaque ManifestEntry, triés en fonction de leurs pré-requis
 			sortedTestList.forEach(testEntry -> {
