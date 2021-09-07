@@ -480,8 +480,7 @@
         CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:triples ?x ] } WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }"""  ]
     ) ;
     kgi:onFailure (
-        [ a mf:Manifest ;
-            mf:entries (
+        [ mf:entries (
                 <sportalPropertyPartition.ttl>
             )
         ]
@@ -523,8 +522,7 @@
         """ ]
     ) ;
     kgi:onFailure (
-        [ a mf:Manifest ;
-            mf:entries (
+        [ mf:entries (
                 <sportalClassPartition.ttl>
             )
         ]
@@ -614,8 +612,7 @@
         """  ]
     ) ;
     kgi:onFailure (
-        [ a mf:Manifest ;
-            mf:entries (
+        [ mf:entries (
                 <sportalClassPartitionPropertyPartition.ttl>
             )
         ]
@@ -636,8 +633,7 @@
         """ ]
     ) ;
     kgi:onFailure (
-        [ a mf:Manifest ;
-            mf:entries (
+        [ mf:entries (
                 <sportalClassPartitionPropertyPartition.ttl>
             )
         ]
