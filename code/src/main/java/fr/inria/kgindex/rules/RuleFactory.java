@@ -1,4 +1,4 @@
-package fr.inria.kgindex.step;
+package fr.inria.kgindex.rules;
 
 import fr.inria.kgindex.data.Dataset;
 import fr.inria.kgindex.data.ManifestEntry;
@@ -10,19 +10,17 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-public class InteractionFactory {
+public class RuleFactory {
 
-    private static final Logger logger = LogManager.getLogger(InteractionFactory.class);
+    private static final Logger logger = LogManager.getLogger(RuleFactory.class);
 
-    public static InteractionApplication create(ManifestEntry entry, Dataset describedDataset, Model datasetDescription) {
+    public static RuleApplication create(ManifestEntry entry, Dataset describedDataset, Model datasetDescription) {
 
         Actions testActionListSuccess = new Actions();
         Actions testActionListFailure = new Actions();
-        InteractionApplication.TYPE interactionType;
+        RuleApplication.TYPE interactionType;
         // Récuperer l'URI de l'interaction
         Resource testFileResource = entry.getFileResource();
 
@@ -34,11 +32,11 @@ public class InteractionFactory {
 
         // Fonction d'application adaptée
         if (resTestQueryList.isEmpty() && !resShapeList.isEmpty()) {
-            interactionType = InteractionApplication.TYPE.SPARQL;
+            interactionType = RuleApplication.TYPE.SPARQL;
         } else if (!resTestQueryList.isEmpty() && resShapeList.isEmpty()) {
-            interactionType = InteractionApplication.TYPE.SHACL;
+            interactionType = RuleApplication.TYPE.SHACL;
         } else {
-            interactionType = InteractionApplication.TYPE.UNKNOWN;
+            interactionType = RuleApplication.TYPE.UNKNOWN;
         }
         for (Model entryModel : entry.getActionsOnSuccess()) {
             // Récupérer les actions
@@ -111,15 +109,15 @@ public class InteractionFactory {
         }
 
         TestExecution testExec = null;
-        if(interactionType.equals(InteractionApplication.TYPE.SPARQL)) {
+        if(interactionType.equals(RuleApplication.TYPE.SPARQL)) {
             testExec = new SHACLTestExecution(tests, testEndpointUrl);
-        } else if(interactionType.equals(InteractionApplication.TYPE.SHACL)) {
+        } else if(interactionType.equals(RuleApplication.TYPE.SHACL)) {
             testExec = new QueryTestExecution(tests, testEndpointUrl);
         } else {
-            testExec = new QueryTestExecution(tests, testEndpointUrl);
+            throw new Error("Unexpected interaction type");
         }
 
-        InteractionApplication result =  new InteractionApplication(entry, testExec, testActionListSuccess, testActionListFailure, describedDataset, datasetDescription);
+        RuleApplication result =  new RuleApplication(entry, testExec, testActionListSuccess, testActionListFailure, describedDataset, datasetDescription);
         result.setType(interactionType);
 
         return result;

@@ -2,8 +2,9 @@ package fr.inria.kgindex;
 
 import fr.inria.kgindex.data.Dataset;
 import fr.inria.kgindex.data.ManifestEntry;
-import fr.inria.kgindex.step.InteractionApplication;
-import fr.inria.kgindex.step.InteractionFactory;
+import fr.inria.kgindex.data.RuleLibrary;
+import fr.inria.kgindex.rules.RuleApplication;
+import fr.inria.kgindex.rules.RuleFactory;
 import fr.inria.kgindex.util.*;
 import org.apache.commons.cli.*;
 import org.apache.jena.rdf.model.*;
@@ -87,15 +88,15 @@ public class MainClass {
 				tmpManifestModel.close();
 			});
 
-			Map<RDFNode, Set<ManifestEntry> > testMap = ManifestEntry.extractEntriesFromManifest(includedManifestModel);
+			RuleLibrary.getLibrary().putAll(ManifestEntry.extractEntriesFromManifest(includedManifestModel));
 			List<RDFNode> testList = ManifestEntry.extractEntriesList(includedManifestModel);
 
 			// Application des règles pour chaque ManifestEntry
 			testList.forEach(testNode -> {
-				Set<ManifestEntry> testEntrySet = testMap.get(testNode);
+				Set<ManifestEntry> testEntrySet = RuleLibrary.getLibrary().get(testNode);
 
 				testEntrySet.forEach(testEntry -> {
-					InteractionApplication application = InteractionFactory.create(testEntry, describedDataset, datasetDescription);
+					RuleApplication application = RuleFactory.create(testEntry, describedDataset, datasetDescription);
 					Model testResult = application.apply();
 					datasetDescription.add(testResult);
 

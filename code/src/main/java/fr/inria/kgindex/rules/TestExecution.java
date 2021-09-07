@@ -1,4 +1,4 @@
-package fr.inria.kgindex.step;
+package fr.inria.kgindex.rules;
 
 import fr.inria.kgindex.data.Dataset;
 import org.apache.jena.rdf.model.Model;

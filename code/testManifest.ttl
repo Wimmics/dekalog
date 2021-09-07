@@ -45,11 +45,19 @@
         """ ]
     ) ;
     kgi:onFailure (
-        [
-            mf:entries (
+        [ mf:entries (
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl>
-            )
-        ]
+            ) ]
+        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            CONSTRUCT {
+                $metadataDescription kgi:test "TESTTESTTEST"
+            }
+            WHERE {
+            }
+        """ ]
     ) .
 
 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl> a mf:ManifestEntry ;

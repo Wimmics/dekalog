@@ -1,7 +1,6 @@
-package fr.inria.kgindex.step;
+package fr.inria.kgindex.rules;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Actions extends ArrayList<Action> {
 }

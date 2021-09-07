@@ -1,6 +1,5 @@
 package fr.inria.kgindex.data;
 
-import fr.inria.kgindex.step.QueryTestExecution;
 import fr.inria.kgindex.util.KGIndex;
 import fr.inria.kgindex.util.Manifest;
 import org.apache.jena.rdf.model.*;
