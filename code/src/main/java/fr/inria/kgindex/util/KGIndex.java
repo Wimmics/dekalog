@@ -15,4 +15,6 @@ public class KGIndex {
 	public static final Property sentQuery = model.createProperty(kgindexNamespace + "sentQuery");
 	public static final Property trace = model.createProperty(kgindexNamespace + "trace");
 	public static final Property endpoint = model.createProperty(kgindexNamespace + "endpoint");
+	public static final Property onSuccess = model.createProperty(kgindexNamespace + "onSuccess");
+	public static final Property onFailure = model.createProperty(kgindexNamespace + "onFailure");
 }

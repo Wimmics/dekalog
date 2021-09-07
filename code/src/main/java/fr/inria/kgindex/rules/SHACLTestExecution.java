@@ -1,4 +1,4 @@
-package fr.inria.kgindex.step;
+package fr.inria.kgindex.rules;
 
 import fr.inria.kgindex.data.Dataset;
 import fr.inria.kgindex.data.FakeSHACLValidationReport;
@@ -8,12 +8,9 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
-import org.apache.jena.shacl.parser.ShaclParseException;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

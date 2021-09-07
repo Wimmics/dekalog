@@ -8,98 +8,97 @@
 
 <> a mf:Manifest ;
     mf:entries  (
-            <file:///home/pmaillot/git/kgindex/LDScriptRule.ttl>
+            <file:///user/pmaillot/home/git/dekalog/code/LDScriptRule.ttl>
         ) .
 
-<file:///home/pmaillot/git/kgindex/LDScriptRule.ttl> a mf:ManifestEntry ;
-    kgi:endpoint <http://corese.inria.fr/sparql> ;
-    mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
-        PREFIX dqv: <http://www.w3.org/ns/dqv#>
-        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-        CONSTRUCT {
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                dqv:hasQualityMeasurement [
-                    a dqv:QualityMeasurement ;
-                    dqv:computedOn $endpointDescription ;
-                    dqv:isMeasurementOf kgi:ldscriptTest ;
-                    dqv:value "true"^^xsd:boolean
-                ] .
-
-        }
-        WHERE {
-        }""" .
-
-<https://raw.githubusercontent.com/Wimmics/dekalog/master/test/extraction/propertyCount.ttl> a mf:ManifestEntry ;
-    mf:actions """PREFIX void: <http://rdfs.org/ns/void#>
-        DELETE {
-            $datasetDescription void:properties ?propCount .
-        }
-    """ ;
-    mf:actions """PREFIX void: <http://rdfs.org/ns/void#>
-        PREFIX dcat: <http://www.w3.org/ns/dcat#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX owl: <http://www.w3.org/2002/07/owl#>
-        CONSTRUCT {
-            $datasetDescription void:properties ?count .
-        }
-        WHERE {
-            SELECT (count(?p) AS ?count)
-            WHERE {
-                SELECT DISTINCT ?p
-                $FROM
-                WHERE {
-                    ?s ?p ?o
-                }
-            }
-        }
-    """ .
-
-<https://raw.githubusercontent.com/Wimmics/dekalog/master/test/extraction/classCount.ttl> a mf:ManifestEntry ;
-    mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
-        PREFIX owl: <http://www.w3.org/2002/07/owl#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        CONSTRUCT {
+<file:///user/pmaillot/home/git/dekalog/code/LDScriptRule.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            CONSTRUCT {
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
                 kgi:curated $datasetDescription .
-            $datasetDescription void:classes ?count .
+            $datasetDescription void:vocabulary ?ns .
         }
         WHERE {
-            SELECT (count(?class) AS ?count)
+            ?s a ?elem .
+            BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+        }
+        """ ]
+        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            CONSTRUCT {
+                $metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasDerivedFrom $endpoint ;
+                    kgi:curated $datasetDescription .
+                $datasetDescription void:vocabulary ?ns .
+            }
             WHERE {
-                SELECT DISTINCT ?class
-                $FROM
-                WHERE {
-                    { ?class a owl:Class }
-                    UNION { ?class a rdfs:Class }
-                    UNION { ?whatever a ?class }
+                ?s ?elem ?o .
+                BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+            }
+        """ ]
+    ) ;
+    kgi:onFailure (
+        [ mf:entries (
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl>
+            ) ]
+        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            CONSTRUCT {
+                $metadataDescription kgi:test "TESTTESTTEST"
+            }
+            WHERE {
+            }
+        """ ]
+    ) .
+
+<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl> a mf:ManifestEntry ;
+    kgi:endpoint <http://localhost:8080/sparql> ;
+        kgi:onSuccess (
+            [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            CONSTRUCT {
+            $metadataDescription a prov:Entity , earl:TestSubject ;
+                prov:wasDerivedFrom $endpoint ;
+                kgi:curated $datasetDescription .
+            $datasetDescription void:vocabulary ?ns .
+        }
+        WHERE {
+            SERVICE $endpoint {
+                SELECT DISTINCT ?elem WHERE {
+                    ?s a ?elem .
                 }
             }
+            BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
         }
-    """ .
-
-<https://raw.githubusercontent.com/Wimmics/dekalog/master/test/check/provenance.ttl> a mf:ManifestEntry ;
-    mf:actions """PREFIX dqv: <http://www.w3.org/ns/dqv#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX kgi: <http://ns.inria.fr/kgindex#>
-    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    CONSTRUCT {
-        $metadataDescription dqv:hasQualityMeasurement [
-            a dqv:QualityMeasurement ;
-            rdfs:label "Provenance information are present in the metadata"@en ;
-            dqv:computedOn $endpointDescription ;
-            dqv:isMeasurementOf kgi:provenanceExtractionShape ;
-            dqv:value "true"^^xsd:boolean
-        ] .
-    }
-    """ .
+        """ ]
+        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            CONSTRUCT {
+            $metadataDescription a prov:Entity , earl:TestSubject ;
+                prov:wasDerivedFrom $endpoint ;
+                kgi:curated $datasetDescription .
+            $datasetDescription void:vocabulary ?ns .
+        }
+        WHERE {
+            SERVICE $endpoint {
+                SELECT DISTINCT ?elem WHERE {
+                    ?s ?elem ?o .
+                }
+            }
+            BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+        }
+        """ ]
+    ) .
