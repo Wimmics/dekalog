@@ -13,49 +13,21 @@
 
 <file:///user/pmaillot/home/git/dekalog/code/LDScriptRule.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        [
+        kgi:endpoint <http://localhost:8080/sparql> ;
+        mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
             PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX us:  <http://ns.inria.fr/sparql-extension/user/>
+            PREFIX xt:  <http://ns.inria.fr/sparql-extension/>
             CONSTRUCT {
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpoint ;
-                kgi:curated $datasetDescription .
-            $datasetDescription void:vocabulary ?ns .
-        }
-        WHERE {
-            ?s a ?elem .
-            BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
-        }
-        """ ]
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
-            CONSTRUCT {
-                $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
-                    kgi:curated $datasetDescription .
-                $datasetDescription void:vocabulary ?ns .
-            }
-            WHERE {
-                ?s ?elem ?o .
-                BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
-            }
-        """ ]
-    ) ;
-    kgi:onFailure (
-        [ mf:entries (
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl>
-            ) ]
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
-            CONSTRUCT {
-                $metadataDescription kgi:test "TESTTESTTEST"
-            }
-            WHERE {
+                ?s ?p ?o
+            } where {
+                 bind (xt:load(<https://lod-cloud.net/rdf/linked-tcga?format=rdf>) as ?g)
+                 graph ?g { ?s ?p ?o .
+                 ?s void:sparqlEndpoint ?endpoint . }
             }
         """ ]
     ) .

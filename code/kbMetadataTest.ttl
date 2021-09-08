@@ -1,45 +1,22 @@
-@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
-@prefix ns1: <https://io.datascience-paris-saclay.fr/dataset/> .
-@prefix ns2: <http://www.w3.org/ns/dcat#> .
-@prefix ns4: <http://www.wikidata.org/entity/> .
-@prefix ns5: <http://purl.org/dc/terms/> .
-@prefix ns6: <https://io.datascience-paris-saclay.fr/dataset/DBPedia#> .
-@prefix ns7: <http://dbpedia.org/> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-
-ns1:DBPedia  rdf:type     geo:Point , ns2:Dataset ;
-        ns5:description   "A knowledge base extracted from Wikipedia" ;
-        ns5:title         "DBPedia" ;
-        geo:lat           48.712409 ;
-        geo:long          2.167427 ;
-        ns2:contactPoint  <mailto:karima.rafes@gmail.com> ;
-        ns2:distribution  ns6:distribution57 ;
-        ns2:keyword       "DBpedia" , "Wikipedia" ;
-        ns2:landingPage   <http://wiki.dbpedia.org/> ;
-        ns2:theme         ns4:Q1930471 .
-
 <http://ns.inria.fr/kgindex#TestMetadata>
         <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
                   <http://www.w3.org/ns/earl#result>
                           [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "prefix kgi: <http://ns.inria.fr/kgindex#>\n    ASK WHERE {\n        ?s kgi:test ?o .\n    }" ;
+                                    "prefix kgi: <http://ns.inria.fr/kgindex#>\n    ASK WHERE {\n        ?s ?p ?o .\n    }" ;
                             <http://www.w3.org/ns/earl#info>
                                     "" ;
                             <http://www.w3.org/ns/earl#outcome>
                                     <http://www.w3.org/ns/earl#passed> ;
                             <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "03-09-2021T15:11:36"
+                                    "08-09-2021T14:59:54"
                           ] ;
                   <http://www.w3.org/ns/earl#subject>
                           <http://ns.inria.fr/kgindex#TestMetadata> ;
                   <http://www.w3.org/ns/earl#test>
                           <http://ns.inria.fr/kgindex#ldscriptTest> ;
                   <http://www.w3.org/ns/prov#endedAtTime>
-                          "03-09-2021T15:11:36" ;
+                          "08-09-2021T14:59:54" ;
                   <http://www.w3.org/ns/prov#startedAtTime>
-                          "03-09-2021T15:11:36"
+                          "08-09-2021T14:59:54"
                 ] .
-
-ns6:distribution57  ns2:accessURL  ns7:sparql ;
-        ns2:mediaType  "application/sparql-results+xml" .
