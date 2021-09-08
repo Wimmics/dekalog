@@ -8,7 +8,7 @@
             <basicFederatedQuery.ttl>
         ) .
 
-<basicFederatedQuery.ttl> a mf:ManifestEntry
+<basicFederatedQuery.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
             mf:action """
