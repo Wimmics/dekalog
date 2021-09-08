@@ -5,7 +5,23 @@
     mf:entries (
             <reachability.ttl>
             <provenance.ttl>
+            <basicFederatedQuery.ttl>
         ) .
+
+<basicFederatedQuery.ttl> a mf:ManifestEntry
+    kgi:onSuccess (
+        [
+            mf:action """
+                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                CONSTRUCT {
+                    $endpointDescription sd:endpoint $endpoint ;
+                        sd:feature sd:basicFederatedQuery .
+                }
+                WHERE {
+                }
+            """
+        ]
+    ) .
 
 <reachability.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
