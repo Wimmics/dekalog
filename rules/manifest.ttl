@@ -2,6 +2,6 @@
 
 <> a mf:Manifest ;
     mf:include (
-            <extraction/manifest.ttl>
             <check/manifest.ttl>
+            <extraction/manifest.ttl>
         ) .

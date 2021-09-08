@@ -5,9 +5,7 @@
 @prefix kgi: <http://ns.inria.fr/kgindex#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
-kgi:ldscriptTest rdf:type kgi:TestQuery ;
-    dcterms:title "Testing the usability of LDScript constraint" ;
-    kgi:query """prefix kgi: <http://ns.inria.fr/kgindex#>
-    ASK WHERE {
-        ?s kgi:test ?o .
-    }"""  .
+kgi:basicFederatedQueryTest rdf:type kgi:TestQuery ;
+    dcterms:title "Basic federation test" ;
+    dcterms:description "Basic federation is supported" ;
+    kgi:query """SELECT * WHERE { SERVICE <https://dbpedia.org/sparql> { ?s ?p ?o . } } LIMIT 1"""  .

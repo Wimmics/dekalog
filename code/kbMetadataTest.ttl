@@ -23,22 +23,22 @@ ns1:DBPedia  rdf:type     geo:Point , ns2:Dataset ;
                 [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
                   <http://www.w3.org/ns/earl#result>
                           [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "SELECT ?s ?p ?o WHERE {\n        ?s ?p ?o .\n    } LIMIT 1" ;
+                                    "prefix kgi: <http://ns.inria.fr/kgindex#>\n    ASK WHERE {\n        ?s kgi:test ?o .\n    }" ;
                             <http://www.w3.org/ns/earl#info>
                                     "" ;
                             <http://www.w3.org/ns/earl#outcome>
                                     <http://www.w3.org/ns/earl#passed> ;
                             <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "01-09-2021T17:44:55"
+                                    "03-09-2021T15:11:36"
                           ] ;
                   <http://www.w3.org/ns/earl#subject>
                           <http://ns.inria.fr/kgindex#TestMetadata> ;
                   <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#ParisSaclayTest> ;
+                          <http://ns.inria.fr/kgindex#ldscriptTest> ;
                   <http://www.w3.org/ns/prov#endedAtTime>
-                          "01-09-2021T17:44:55" ;
+                          "03-09-2021T15:11:36" ;
                   <http://www.w3.org/ns/prov#startedAtTime>
-                          "01-09-2021T17:44:55"
+                          "03-09-2021T15:11:36"
                 ] .
 
 ns6:distribution57  ns2:accessURL  ns7:sparql ;
