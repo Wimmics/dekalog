@@ -6,12 +6,14 @@ import fr.inria.kgindex.util.Utils;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryParseException;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
+import org.apache.jena.sparql.resultset.RDFInput;
 import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
@@ -19,6 +21,7 @@ import org.apache.jena.update.UpdateRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -137,28 +140,26 @@ public class RuleApplication {
                         HttpClient client = HttpClient.newHttpClient();
                         HttpRequest request = null;
                         try {
-                            URI queryURL = URI.create(action.getEndpointUrl()+"?query="+ URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString())+"&format=application/rdf+xml&transform=st:rdfxml");
+                            URI queryURL = URI.create(action.getEndpointUrl()+"?query="+ URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
                             logger.debug(queryURL);
                             request = HttpRequest.newBuilder()
                                     .uri(queryURL)
                                     .GET()
-                                    .header("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
-                                    .header("Accept-Encoding","gzip, deflate, br")
-                                    .header("Accept-Language", "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7")
-                                    .header("Cache-Control","max-age=0")
-                                    .header("Sec-Fetch-Dest", "document")
-                                    .header("Sec-Fetch-Mode","navigate")
-                                    .header("Sec-Fetch-Site","none")
-                                    .header("Sec-Fetch-User", "?1")
-                                    .header("Upgrade-Insecure-Requests","1")
-                                    .header("User-Agent","Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36")
+                                    .header("Accept","application/rdf+xml")
                                     .build();
                         } catch (UnsupportedEncodingException e1) {
                             e1.printStackTrace();
                         }
                         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                                 .thenApply(HttpResponse::body)
-                                .thenAccept(logger::debug)
+                                .thenAccept(bodyString -> {
+                                    Model bodyModel = ModelFactory.createDefaultModel();
+                                    StringReader bodyReader = new StringReader(bodyString);
+                                    bodyModel.read(bodyReader,"");
+                                    if (queryString.contains("CONSTRUCT")) {
+                                        result.add(bodyModel);
+                                    }
+                                })
                                 .join();
                     }
 
