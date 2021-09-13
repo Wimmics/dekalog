@@ -1,0 +1,11 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix kgi: <http://ns.inria.fr/kgindex#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+kgi:SPARQLESCon rdf:type kgi:TestQuery ;
+    dcterms:title "CONSTRUCT query" ;
+    dcterms:description "SPARQL CONSTRUCT query with a single-triple pattern returning an RDF graph of resources and their types." ;
+    kgi:query """PREFIX nonsensical: <http://nonsensic.al> PREFIX ex: <http://e.g> CONSTRUCT { ?x ex:type ?o } WHERE { nonsensical:1 ex:type ?o . } LIMIT 10"""  .

@@ -7,9 +7,59 @@
 @prefix void: <http://rdfs.org/ns/void#> .
 
 <> a mf:Manifest ;
-    mf:entries  (
-            <file:///user/pmaillot/home/git/dekalog/code/LDScriptRule.ttl>
+    mf:entries (
+            <file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESFilRegex.ttl>
+            <file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESSelEmpty.ttl>
+            <file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESSelFilBool.ttl>
+            <file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESSelDist.ttl>
+            <file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESConOpt.ttl>
+            <file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESCon.ttl>
         ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESConOpt.ttl> a mf:ManifestEntry ;
+   kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            CONSTRUCT {
+                $endpointDescription sd:endpoint $endpoint ;
+                    sd:feature lsq:Optional .
+            } WHERE {
+            }"""
+        ]
+   ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESFilRegex.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            CONSTRUCT {
+                $endpointDescription sd:endpoint $endpoint ;
+                    sd:feature lsq:Regex .
+            } WHERE {
+            }
+            """
+        ]
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESSelFilBool.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            CONSTRUCT {
+                $endpointDescription sd:endpoint $endpoint ;
+                    sd:feature kgi:BooleanInPattern .
+            } WHERE {
+            }
+            """
+        ]
+    ) .
 
 <file:///user/pmaillot/home/git/dekalog/code/LDScriptRule.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
