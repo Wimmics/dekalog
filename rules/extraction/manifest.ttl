@@ -14,24 +14,6 @@
             <classCount.ttl>
             <classPopulation.ttl>
             <propertyCount.ttl>
-            <sportalDistinctRDFNodes.ttl>
-            <sportalDistinctUrisObjects.ttl>
-            <sportalDistinctBlankNodeObjects.ttl>
-            <sportalDistinctUrisSubjects.ttl>
-            <sportalDistinctBlankNodes.ttl>
-            <sportalDistinctBlankNodeSubjects.ttl>
-            <sportalDistinctIRIReferences.ttl>
-            <sportalDistinctLiterals.ttl>
-            <sportalClassPartitionClasses.ttl>
-            <sportalClassPartitionTriples.ttl>
-            <sportalClassPartitionDistinctObjects.ttl>
-            <sportalClassPartitionDistinctSubjects.ttl>
-            <sportalClassPartitionProperties.ttl>
-            <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl>
-            <sportalClassPartitionPropertyPartitionTriples.ttl>
-            <sportalPropertyPartitionDistinctObject.ttl>
-            <sportalPropertyPartitionDistinctSubject.ttl>
-            <sportalPropertyPartitionTriples.ttl>
         ) .
 
 <endpointDescResource.ttl> a mf:ManifestEntry ;

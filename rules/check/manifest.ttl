@@ -5,7 +5,6 @@
     mf:entries (
             <reachability.ttl>
             <provenance.ttl>
-            <basicFederatedQuery.ttl>
         ) .
 
 <basicFederatedQuery.ttl> a mf:ManifestEntry ;
