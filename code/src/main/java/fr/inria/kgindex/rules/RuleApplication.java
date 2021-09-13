@@ -4,6 +4,7 @@ import fr.inria.kgindex.data.Dataset;
 import fr.inria.kgindex.data.ManifestEntry;
 import fr.inria.kgindex.data.RuleLibrary;
 import fr.inria.kgindex.util.EarlReport;
+import fr.inria.kgindex.util.KGIndex;
 import fr.inria.kgindex.util.Utils;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -31,6 +32,8 @@ public class RuleApplication {
         SHACL,
         UNKNOWN
     }
+
+    public static String federationserver = null;
 
     private final ManifestEntry _entry;
     private final Dataset _describedDataset;
@@ -94,39 +97,44 @@ public class RuleApplication {
                 String queryStringRaw = action.getActionNode().asLiteral().getString();
                 Set<String> queryStringSet = Utils.rewriteQueryPlaceholders(queryStringRaw, this._describedDataset);
                 queryStringSet.forEach(queryString -> {
-                    Date startDate = new Date();
-                    Literal startDateLiteral = result.createLiteral(dateFormatter.format(startDate));
-                    try {
-                        if (queryString.contains("CONSTRUCT")) {
-                            QueryExecution actionExecution = QueryExecutionFactory.sparqlService(action.getEndpointUrl(), queryString);
-                            actionExecution.setTimeout(Utils.queryTimeout);
-
-                            try {
-                                Model actionResult = actionExecution.execConstruct();
-                                result.add(actionResult);
-                            } catch (RiotException e) {
-                                logger.error(e);
-                                logger.trace(this._entry.getTestResource() + " action could not be added because of RiotException");
-                            }
-                            actionExecution.close();
-                        } else if (queryString.contains("INSERT")) {
-                            UpdateRequest insertUpdate = UpdateFactory.create(queryString);
-                            UpdateAction.execute(insertUpdate, this._datasetDescription);
-                        } else if (queryString.contains("DELETE")) {
-                            UpdateRequest deleteUpdate = UpdateFactory.create(queryString);
-                            UpdateAction.execute(deleteUpdate, this._datasetDescription);
+                    if((action.getEndpointUrl().equals(KGIndex.federation.getURI()) && (RuleApplication.federationserver != null))
+                            || (! action.getEndpointUrl().equals(KGIndex.federation.getURI()))) {
+                        if(action.getEndpointUrl().equals(KGIndex.federation.getURI())) {
+                            action.setEndpointUrl(RuleApplication.federationserver);
                         }
-                    } catch (QueryExceptionHTTP e) {
-                        logger.info(e);
-                        logger.trace(this._entry.getTestResource() + " : " + e.getMessage());
-                        Date endDate = new Date();
-                        Literal endDateLiteral = result.createLiteral(dateFormatter.format(endDate));
-                        result.add(EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral));
-                    } catch (QueryParseException e) {
-                        logger.debug(queryString);
-                        throw e;
-                    }
+                        Date startDate = new Date();
+                        Literal startDateLiteral = result.createLiteral(dateFormatter.format(startDate));
+                        try {
+                            if (queryString.contains("CONSTRUCT")) {
+                                QueryExecution actionExecution = QueryExecutionFactory.sparqlService(action.getEndpointUrl(), queryString);
+                                actionExecution.setTimeout(Utils.queryTimeout);
 
+                                try {
+                                    Model actionResult = actionExecution.execConstruct();
+                                    result.add(actionResult);
+                                } catch (RiotException e) {
+                                    logger.error(e);
+                                    logger.trace(this._entry.getTestResource() + " action could not be added because of RiotException");
+                                }
+                                actionExecution.close();
+                            } else if (queryString.contains("INSERT")) {
+                                UpdateRequest insertUpdate = UpdateFactory.create(queryString);
+                                UpdateAction.execute(insertUpdate, this._datasetDescription);
+                            } else if (queryString.contains("DELETE")) {
+                                UpdateRequest deleteUpdate = UpdateFactory.create(queryString);
+                                UpdateAction.execute(deleteUpdate, this._datasetDescription);
+                            }
+                        } catch (QueryExceptionHTTP e) {
+                            logger.info(e);
+                            logger.trace(this._entry.getTestResource() + " : " + e.getMessage());
+                            Date endDate = new Date();
+                            Literal endDateLiteral = result.createLiteral(dateFormatter.format(endDate));
+                            result.add(EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral));
+                        } catch (QueryParseException e) {
+                            logger.debug(queryString);
+                            throw e;
+                        }
+                    }
                 });
             } else if(action.getType() == Action.TYPE.Manifest) {
                 Set<ManifestEntry> entrySet = RuleLibrary.getLibrary().get(action.getActionNode());

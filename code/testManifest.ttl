@@ -111,7 +111,7 @@
     ) .
 
 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl> a mf:ManifestEntry ;
-    kgi:endpoint <http://localhost:8080/sparql> ;
+    kgi:endpoint kgi:federation ;
         kgi:onSuccess (
             [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX prov: <http://www.w3.org/ns/prov#>

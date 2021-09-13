@@ -124,7 +124,7 @@
 
 <graphListCorese.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ kgi:endpoint <http://localhost:8080/sparql> ;
+        [ kgi:endpoint kgi:federation ;
         mf:action """PREFIX kgi: <http://ns.inria.fr/kgindex#>
         PREFIX void: <http://rdfs.org/ns/void#>
         PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
@@ -188,7 +188,7 @@
 
 <vocabularyListCorese.ttl> a mf:ManifestEntry ;
         kgi:onSuccess (
-            [ kgi:endpoint <http://localhost:8080/sparql> ;
+            [ kgi:endpoint kgi:federation ;
                 mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
@@ -208,7 +208,7 @@
             BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
         }
         """ ]
-        [ kgi:endpoint <http://localhost:8080/sparql> ;
+        [ kgi:endpoint kgi:federation ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
