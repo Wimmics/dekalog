@@ -15,15 +15,12 @@
             <sportalDistinctIRIReferences.ttl>
             <sportalDistinctLiterals.ttl>
             <sportalClassPartitionClasses.ttl>
-            <sportalClassPartitionTriples.ttl>
             <sportalClassPartitionDistinctObjects.ttl>
             <sportalClassPartitionDistinctSubjects.ttl>
             <sportalClassPartitionProperties.ttl>
             <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl>
-            <sportalClassPartitionPropertyPartitionTriples.ttl>
             <sportalPropertyPartitionDistinctObject.ttl>
             <sportalPropertyPartitionDistinctSubject.ttl>
-            <sportalPropertyPartitionTriples.ttl>
         ) .
 
 <sportalDistinctUrisSubjects.ttl> a mf:ManifestEntry ;
@@ -140,8 +137,6 @@
 
 <sportalPropertyPartition.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ] } WHERE { ?s ?p ?o }""" ]
         [ mf:entries (
                 <sportalPropertyPartitionTriples.ttl>
             )
@@ -150,9 +145,12 @@
 
 <sportalPropertyPartitionTriples.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#> DELETE { $datasetDescription void:propertyPartition ?propPartition . ?propPartition void:property ?p  } WHERE { $datasetDescription void:propertyPartition ?propPartition . ?propPartition void:property ?p  }""" ]
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
         CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:triples ?x ] } WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }""" ]
+    ) ;
+    kgi:onFailure (
+        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ] } WHERE { ?s ?p ?o }""" ]
     ) .
 
 <sportalPropertyPartitionDistinctSubject.ttl> a mf:ManifestEntry ;
@@ -169,14 +167,6 @@
 
 <sportalClassPartition.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
-        PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT {
-                $datasetDescription void:classPartition [ void:class ?c ] }
-            WHERE { ?s a ?c }
-        """ ]
         [ mf:entries (
                 <sportalClassPartitionTriples.ttl>
             )
@@ -185,11 +175,20 @@
 
 <sportalClassPartitionTriples.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#> DELETE { $datasetDescription void:classPartition ?classPart . ?classPart void:class ?c . } WHERE { $datasetDescription void:classPartition ?classPart . ?classPart void:class ?c . }""" ]
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $datasetDescription void:classPartition [ void:class ?c ; void:triples ?x ] }
             WHERE { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+        """ ]
+    ) ;
+    kgi:onFailure (
+        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX void: <http://rdfs.org/ns/void#>
+            CONSTRUCT {
+                $datasetDescription void:classPartition [ void:class ?c ] }
+            WHERE { ?s a ?c }
         """ ]
     ) .
 
@@ -249,17 +248,6 @@
 
 <sportalClassPartitionPropertyPartition.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
-        PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT {
-                $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
-                    kgi:curated $datasetDescription .
-                $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }
-            WHERE { ?s a ?c ; ?p ?o }
-        """  ]
         [ mf:entries (
                 <sportalClassPartitionPropertyPartitionTriples.ttl>
                 <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl>
@@ -269,7 +257,6 @@
 
 <sportalClassPartitionPropertyPartitionTriples.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#> DELETE { $datasetDescription void:classPartition ?classPart . ?classPart void:class ?c . ?classPart void:propertyPartition ?propPart . ?propPart void:property ?p . } WHERE { $datasetDescription void:classPartition ?classPart . ?classPart void:class ?c . ?classPart void:propertyPartition ?propPart . ?propPart void:property ?p . }""" ]
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
         PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -281,11 +268,23 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:triples ?x ] ] }
             WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
         """  ]
+    ) ;
+    kgi:onFailure (
+        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX void: <http://rdfs.org/ns/void#>
+            CONSTRUCT {
+                $metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasDerivedFrom $endpoint ;
+                    kgi:curated $datasetDescription .
+                $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }
+            WHERE { ?s a ?c ; ?p ?o }
+        """  ]
     ) .
 
 <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#> DELETE { $datasetDescription void:classPartition ?classPart . ?classPart void:class ?c . ?classPart void:propertyPartition ?propPart . ?propPart void:property ?p . } WHERE { $datasetDescription void:classPartition ?classPart . ?classPart void:class ?c . ?classPart void:propertyPartition ?propPart . ?propPart void:property ?p . }""" ]
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
         PREFIX kgi: <http://ns.inria.fr/kgindex#>
@@ -297,7 +296,20 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] ] }
             WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
         """ ]
-    ).
+    ) ;
+    kgi:onFailure (
+        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX earl: <http://www.w3.org/ns/earl#>
+        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX void: <http://rdfs.org/ns/void#>
+            CONSTRUCT {
+                $metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasDerivedFrom $endpoint ;
+                    kgi:curated $datasetDescription .
+                $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }
+            WHERE { ?s a ?c ; ?p ?o }
+        """  ]
+    ) .
 
 # Miscanellous statistics from SPORTAL using a vocabulary created for SPORTAL only
 #    mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
