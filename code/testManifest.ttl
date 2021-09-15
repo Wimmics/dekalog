@@ -8,92 +8,29 @@
 
 <> a mf:Manifest ;
     mf:entries (
-            <file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESFilRegex.ttl>
-            <file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESSelEmpty.ttl>
-            <file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESSelFilBool.ttl>
-            <file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESSelDist.ttl>
-            <file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESConOpt.ttl>
-            <file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESCon.ttl>
+            <file:///user/pmaillot/home/git/dekalog/rules/extraction/vocabularyListCoreseLOV.ttl>
         ) .
 
-<file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESConOpt.ttl> a mf:ManifestEntry ;
-   kgi:onSuccess (
-        [
-            mf:action """
-            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-            PREFIX lsq: <http://lsq.aksw.org/vocab#>
-            CONSTRUCT {
-                $endpointDescription sd:endpoint $endpoint ;
-                    sd:feature lsq:Optional .
-            } WHERE {
-            }"""
-        ]
-   ) .
 
-<file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESFilRegex.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """
-            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-            PREFIX lsq: <http://lsq.aksw.org/vocab#>
-            CONSTRUCT {
-                $endpointDescription sd:endpoint $endpoint ;
-                    sd:feature lsq:Regex .
-            } WHERE {
-            }
-            """
-        ]
-    ) .
-
-<file:///user/pmaillot/home/git/dekalog/rules/check/SPARQLESSelFilBool.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """
-            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
-            PREFIX lsq: <http://lsq.aksw.org/vocab#>
-            CONSTRUCT {
-                $endpointDescription sd:endpoint $endpoint ;
-                    sd:feature kgi:BooleanInPattern .
-            } WHERE {
-            }
-            """
-        ]
-    ) .
-
-<file:///user/pmaillot/home/git/dekalog/code/LDScriptRule.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-        kgi:endpoint <http://localhost:8080/sparql> ;
-        mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
-            PREFIX us:  <http://ns.inria.fr/sparql-extension/user/>
-            PREFIX xt:  <http://ns.inria.fr/sparql-extension/>
-            CONSTRUCT {
-                ?s ?p ?o
-            } where {
-                 bind (xt:load(<https://lod-cloud.net/rdf/linked-tcga?format=rdf>) as ?g)
-                 graph ?g { ?s ?p ?o .
-                 ?s void:sparqlEndpoint ?endpoint . }
-            }
-        """ ]
-    ) .
-
-<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl> a mf:ManifestEntry ;
-    kgi:endpoint <http://localhost:8080/sparql> ;
+<file:///user/pmaillot/home/git/dekalog/rules/extraction/vocabularyListCoreseLOV.ttl> a mf:ManifestEntry ;
         kgi:onSuccess (
-            [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            [ kgi:endpoint kgi:federation ;
+                mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
             PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX vann: <http://purl.org/vocab/vann/>
+            PREFIX voaf: <http://purl.org/vocommons/voaf#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
             CONSTRUCT {
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
                 kgi:curated $datasetDescription .
-            $datasetDescription void:vocabulary ?ns .
+            $datasetDescription void:vocabulary ?vocabURI .
+            ?vocabURI a voaf:Vocabulary ;
+                vann:preferredNamespaceUri ?uri ;
+                vann:preferredNamespacePrefix ?prefix ;
+                dcterms:title ?title .
         }
         WHERE {
             SERVICE $endpoint {
@@ -101,18 +38,32 @@
                     ?s a ?elem .
                 }
             }
-            BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+            BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?vocabURI ) .
+            SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> {
+                GRAPH <https://lov.linkeddata.es/dataset/lov>{
+                    ?vocabURI a voaf:Vocabulary ;
+                        vann:preferredNamespaceUri ?uri ;
+                        vann:preferredNamespacePrefix ?prefix ;
+                        dcterms:title ?title .
+                }
+            }
         }
         """ ]
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+        [ kgi:endpoint kgi:federation ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
             PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
             CONSTRUCT {
             $metadataDescription a prov:Entity , earl:TestSubject ;
                 prov:wasDerivedFrom $endpoint ;
                 kgi:curated $datasetDescription .
-            $datasetDescription void:vocabulary ?ns .
+            $datasetDescription void:vocabulary ?vocabURI .
+                ?vocabURI a voaf:Vocabulary ;
+                    vann:preferredNamespaceUri ?uri ;
+                    vann:preferredNamespacePrefix ?prefix ;
+                    dcterms:title ?title .
         }
         WHERE {
             SERVICE $endpoint {
@@ -120,7 +71,15 @@
                     ?s ?elem ?o .
                 }
             }
-            BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+            BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?vocabURI ) .
+            SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> {
+                GRAPH <https://lov.linkeddata.es/dataset/lov>{
+                    ?vocabURI a voaf:Vocabulary ;
+                        vann:preferredNamespaceUri ?uri ;
+                        vann:preferredNamespacePrefix ?prefix ;
+                        dcterms:title ?title .
+                }
+            }
         }
         """ ]
     ) .

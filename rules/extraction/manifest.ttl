@@ -186,50 +186,6 @@
         ]
     ) .
 
-<vocabularyListCorese.ttl> a mf:ManifestEntry ;
-        kgi:onSuccess (
-            [ kgi:endpoint kgi:federation ;
-                mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
-            CONSTRUCT {
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpoint ;
-                kgi:curated $datasetDescription .
-            $datasetDescription void:vocabulary ?ns .
-        }
-        WHERE {
-            SERVICE $endpoint {
-                SELECT DISTINCT ?elem WHERE {
-                    ?s a ?elem .
-                }
-            }
-            BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
-        }
-        """ ]
-        [ kgi:endpoint kgi:federation ;
-            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
-            CONSTRUCT {
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpoint ;
-                kgi:curated $datasetDescription .
-            $datasetDescription void:vocabulary ?ns .
-        }
-        WHERE {
-            SERVICE $endpoint {
-                SELECT DISTINCT ?elem WHERE {
-                    ?s ?elem ?o .
-                }
-            }
-            BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
-        }
-        """ ]
-    ) .
-
 <classPopulation.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>

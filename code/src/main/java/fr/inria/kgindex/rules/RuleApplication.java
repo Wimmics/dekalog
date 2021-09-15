@@ -110,9 +110,9 @@ public class RuleApplication {
                 String queryStringRaw = action.getActionNode().asLiteral().getString();
                 Set<String> queryStringSet = Utils.rewriteQueryPlaceholders(queryStringRaw, this._describedDataset);
                 queryStringSet.forEach(queryString -> {
-                    if((action.getEndpointUrl().equals(KGIndex.federation.getURI()) && (RuleApplication.federationserver != null))
-                            || (! action.getEndpointUrl().equals(KGIndex.federation.getURI()))) {
-                        if(action.getEndpointUrl().equals(KGIndex.federation.getURI())) {
+                    if ((action.getEndpointUrl().equals(KGIndex.federation.getURI()) && (RuleApplication.federationserver != null))
+                            || (!action.getEndpointUrl().equals(KGIndex.federation.getURI()))) {
+                        if (action.getEndpointUrl().equals(KGIndex.federation.getURI())) {
                             action.setEndpointUrl(RuleApplication.federationserver);
                         }
                         Date startDate = new Date();
@@ -144,41 +144,37 @@ public class RuleApplication {
                             Literal endDateLiteral = result.createLiteral(dateFormatter.format(endDate));
                             result.add(EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral));
                         } catch (QueryParseException e) {
-                            logger.debug(queryString);
-                            throw e;
+                            // Tentative d'envoyer la requête sans passer par Jena
+                            HttpClient client = HttpClient.newHttpClient();
+                            HttpRequest request = null;
+                            try {
+                                URI queryURL = URI.create(action.getEndpointUrl() + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
+                                logger.debug(queryURL);
+                                request = HttpRequest.newBuilder()
+                                        .uri(queryURL)
+                                        .GET()
+                                        .header("Accept", "application/rdf+xml")
+                                        .build();
+                            } catch (UnsupportedEncodingException e1) {
+                                e1.printStackTrace();
+                            }
+                            client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                                    .thenApply(HttpResponse::body)
+                                    .thenAccept(bodyString -> {
+                                        if (queryString.contains("CONSTRUCT")) {
+                                            Model bodyModel = ModelFactory.createDefaultModel();
+                                            StringReader bodyReader = new StringReader(bodyString);
+                                            try {
+                                                bodyModel.read(bodyReader, "");
+                                                result.add(bodyModel);
+                                            } catch(RiotException er) {
+                                                logger.error(bodyString);
+                                                throw e;
+                                            }
+                                        }
+                                    })
+                                    .join();
                         }
-                    } catch (QueryExceptionHTTP e) {
-                        logger.info(e);
-                        logger.trace(this._entry.getTestResource() + " : " + e.getMessage());
-                        Date endDate = new Date();
-                        Literal endDateLiteral = result.createLiteral(dateFormatter.format(endDate));
-                        result.add(EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral));
-                    } catch (QueryParseException e) {
-                        // Tentative d'envoyer la requête sans passer par Jena
-                        HttpClient client = HttpClient.newHttpClient();
-                        HttpRequest request = null;
-                        try {
-                            URI queryURL = URI.create(action.getEndpointUrl()+"?query="+ URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
-                            logger.debug(queryURL);
-                            request = HttpRequest.newBuilder()
-                                    .uri(queryURL)
-                                    .GET()
-                                    .header("Accept","application/rdf+xml")
-                                    .build();
-                        } catch (UnsupportedEncodingException e1) {
-                            e1.printStackTrace();
-                        }
-                        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                                .thenApply(HttpResponse::body)
-                                .thenAccept(bodyString -> {
-                                    Model bodyModel = ModelFactory.createDefaultModel();
-                                    StringReader bodyReader = new StringReader(bodyString);
-                                    bodyModel.read(bodyReader,"");
-                                    if (queryString.contains("CONSTRUCT")) {
-                                        result.add(bodyModel);
-                                    }
-                                })
-                                .join();
                     }
                 });
             } else if(action.getType() == Action.TYPE.Manifest) {
