@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RuleFactory {
 
@@ -38,62 +39,66 @@ public class RuleFactory {
         } else {
             interactionType = RuleApplication.TYPE.UNKNOWN;
         }
-        for (Model entryModel : entry.getActionsOnSuccess()) {
+
+        AtomicInteger successPriorityCount = new AtomicInteger();
+        for (RDFNode entryNode : entry.getActionsOnSuccess().keySet()) {
+            Model entryModel = entry.getActionsOnSuccess().get(entryNode);
+
             // Récupérer les actions
-            List<Resource> testActionNodes = entryModel.listSubjectsWithProperty(Manifest.action).toList();
-            testActionNodes.forEach(node -> {
-                String actionEndpointUrl = describedDataset.getEndpointUrl();
-
-                // Identifier l'endpoint visé
-                List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(node, KGIndex.endpoint).toList();
-                if (!actionEndpointUrlList.isEmpty()) {
-                    actionEndpointUrl = actionEndpointUrlList.get(0).toString();
-                }
-
-                NodeIterator actionStrings = entryModel.listObjectsOfProperty(node, Manifest.action);
-                String finalActionEndpointUrl = actionEndpointUrl;
-                actionStrings.forEach(actionString -> {
-                    Action currentAction = new Action(actionString, finalActionEndpointUrl, Action.TYPE.SPARQL);
-                    testActionListSuccess.add(currentAction);
-                });
-            });
-        }
-        for (Model entryModel : entry.getActionsOnFailure()) {
-            // Récupérer les actions standard
-            List<Resource> testActionNodes = entryModel.listSubjectsWithProperty(Manifest.action).toList();
-            testActionNodes.forEach(node -> {
-                String actionEndpointUrl = describedDataset.getEndpointUrl();
-
-                // Identifier l'endpoint visé
-                List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(node, KGIndex.endpoint).toList();
-                if (!actionEndpointUrlList.isEmpty()) {
-                    actionEndpointUrl = actionEndpointUrlList.get(0).toString();
-                }
-
-                NodeIterator actionStrings = entryModel.listObjectsOfProperty(node, Manifest.action);
-                String finalActionEndpointUrl = actionEndpointUrl;
-                actionStrings.forEach(actionString -> {
-                    Action currentAction = new Action(actionString, finalActionEndpointUrl, Action.TYPE.SPARQL);
-                    testActionListFailure.add(currentAction);
-                });
-            });
-
-            // récupérer les renvois vers d'autres tests
             String actionEndpointUrl = describedDataset.getEndpointUrl();
 
-            NodeIterator entriesLists = entryModel.listObjectsOfProperty(Manifest.entries);
-            entriesLists.forEach(entriesList -> {
-                try {
-                    List<RDFNode> entriesNodeList = entriesList.as(RDFList.class).asJavaList();
-                    entriesNodeList.forEach(entryNode -> {
-                        Action currentAction = new Action(entryNode, actionEndpointUrl, Action.TYPE.Manifest);
-                        testActionListFailure.add(currentAction);
-                    });
-                } catch(Exception e) {
-                    entryModel.write(System.err, "TTL");
-                    throw e;
+            if(entryNode.isAnon() && entryModel.contains(entryNode.asResource(), Manifest.action)) {
+                // Identifier l'endpoint visé
+                List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(entryNode.asResource(), KGIndex.endpoint).toList();
+                if (!actionEndpointUrlList.isEmpty()) {
+                    actionEndpointUrl = actionEndpointUrlList.get(0).toString();
                 }
-            });
+
+                NodeIterator actionStrings = entryModel.listObjectsOfProperty(entryNode.asResource(), Manifest.action);
+                String finalActionEndpointUrl = actionEndpointUrl;
+                actionStrings.forEach(actionString -> {
+                    Action currentAction = new Action(actionString, finalActionEndpointUrl, Action.TYPE.SPARQL);
+                    currentAction.setPriority(successPriorityCount.getAndIncrement());
+                    testActionListSuccess.add(currentAction);
+                });
+            } else if(! entryNode.isAnon() && entryNode.isResource() && entryModel.isEmpty()) {
+                Action currentAction = new Action(entryNode, actionEndpointUrl, Action.TYPE.Manifest);
+                currentAction.setPriority(successPriorityCount.getAndIncrement());
+                testActionListSuccess.add(currentAction);
+            }
+
+        }
+
+
+        AtomicInteger failurePriorityCount = new AtomicInteger();
+        for (RDFNode entryNode : entry.getActionsOnFailure().keySet()) {
+            Model entryModel = entry.getActionsOnFailure().get(entryNode);
+
+            // Récupérer les actions
+            String actionEndpointUrl = describedDataset.getEndpointUrl();
+
+            if(entryNode.isAnon() && entryModel.contains(entryNode.asResource(), Manifest.action)) { // C'est une requête
+                // Identifier l'endpoint visé
+                List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(entryNode.asResource(), KGIndex.endpoint).toList();
+                if (!actionEndpointUrlList.isEmpty()) {
+                    actionEndpointUrl = actionEndpointUrlList.get(0).toString();
+                }
+
+                NodeIterator actionStrings = entryModel.listObjectsOfProperty(entryNode.asResource(), Manifest.action);
+                String finalActionEndpointUrl = actionEndpointUrl;
+                actionStrings.forEach(actionString -> {
+                    Action currentAction = new Action(actionString, finalActionEndpointUrl, Action.TYPE.SPARQL);
+                    currentAction.setPriority(failurePriorityCount.getAndIncrement());
+                    testActionListFailure.add(currentAction);
+                });
+            } else if(! entryNode.isAnon() && entryNode.isResource() ) { // C'est un test à faire suivre
+                Action currentAction = new Action(entryNode, actionEndpointUrl, Action.TYPE.Manifest);
+                currentAction.setPriority(failurePriorityCount.getAndIncrement());
+                testActionListFailure.add(currentAction);
+            } else {
+                throw new Error("Unexcepted action");
+            }
+
         }
 
         Tests tests = new Tests(entry);

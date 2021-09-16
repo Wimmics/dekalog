@@ -137,10 +137,7 @@
 
 <sportalPropertyPartition.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:entries (
-                <sportalPropertyPartitionTriples.ttl>
-            )
-        ]
+        <sportalPropertyPartitionTriples.ttl>
     ) .
 
 <sportalPropertyPartitionTriples.ttl> a mf:ManifestEntry ;
@@ -167,10 +164,7 @@
 
 <sportalClassPartition.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:entries (
-                <sportalClassPartitionTriples.ttl>
-            )
-        ]
+        <sportalClassPartitionTriples.ttl>
     ) .
 
 <sportalClassPartitionTriples.ttl> a mf:ManifestEntry ;
@@ -248,11 +242,8 @@
 
 <sportalClassPartitionPropertyPartition.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:entries (
-                <sportalClassPartitionPropertyPartitionTriples.ttl>
-                <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl>
-            )
-        ]
+        <sportalClassPartitionPropertyPartitionTriples.ttl>
+        <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl>
     ) .
 
 <sportalClassPartitionPropertyPartitionTriples.ttl> a mf:ManifestEntry ;

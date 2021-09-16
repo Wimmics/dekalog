@@ -1,0 +1,112 @@
+@prefix dct:    <http://purl.org/dc/terms/> .
+@prefix ns0:    <http://www.w3.org/ns/dcat#> .
+@prefix ns1:    <http://ns.inria.fr/kgindex#> .
+@prefix ns10:   <http://ns.inria.fr/wasabi/> .
+@prefix ns11:   <http://www.w3.org/ns/earl#> .
+@prefix ns2:    <http://ns.inria.fr/kgindex#> .
+@prefix ns3:    <http://www.w3.org/ns/dcat#> .
+@prefix ns4:    <http://www.w3.org/ns/earl#> .
+@prefix ns5:    <http://www.w3.org/ns/earl#> .
+@prefix ns6:    <http://wasabi.inria.fr/> .
+@prefix ns7:    <http://wasabi.inria.fr/> .
+@prefix ns8:    <http://ns.inria.fr/wasabi/> .
+@prefix ns9:    <http://wasabi.inria.fr/> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix prov:   <http://www.w3.org/ns/prov#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sd:     <http://www.w3.org/ns/sparql-service-description#> .
+@prefix void:   <http://rdfs.org/ns/void#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+ns1:TestMetadata  rdf:type   prov:Entity , ns11:TestSubject ;
+        ns1:curated          ns1:TestEndpoint , ns1:TestDataset ;
+        ns1:original         ns10:sparql-service , ns10:wasabi-1-0 ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <https://wasabi.inria.fr/sparql> .\n        }\n        " ;
+                                                     ns11:info             "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "16-09-2021T18:29:59"
+                                                   ] ;
+                               ns11:subject        ns1:TestMetadata ;
+                               ns11:test           ns1:connectedEndpointDescResourceTest ;
+                               prov:endedAtTime    "16-09-2021T18:29:59" ;
+                               prov:startedAtTime  "16-09-2021T18:29:59"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <http://wasabi.inria.fr/sparql> .\n        }" ;
+                                                     ns11:info             "" ;
+                                                     ns11:outcome          ns11:passed ;
+                                                     prov:generatedAtTime  "16-09-2021T18:29:59"
+                                                   ] ;
+                               ns11:subject        ns1:TestMetadata ;
+                               ns11:test           ns1:datasetDescResourceConnectedTest ;
+                               prov:endedAtTime    "16-09-2021T18:29:59" ;
+                               prov:startedAtTime  "16-09-2021T18:29:59"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <https://wasabi.inria.fr/sparql> .\n        }" ;
+                                                     ns11:info             "" ;
+                                                     ns11:outcome          ns11:failed ;
+                                                     prov:generatedAtTime  "16-09-2021T18:29:59"
+                                                   ] ;
+                               ns11:subject        ns1:TestMetadata ;
+                               ns11:test           ns1:datasetDescResourceConnectedTest ;
+                               prov:endedAtTime    "16-09-2021T18:29:59" ;
+                               prov:startedAtTime  "16-09-2021T18:29:59"
+                             ] ;
+        ns1:trace            [ rdf:type            ns11:Assertion , prov:Activity ;
+                               ns11:result         [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://wasabi.inria.fr/sparql> .\n        }\n        " ;
+                                                     ns11:info             "" ;
+                                                     ns11:outcome          ns11:passed ;
+                                                     prov:generatedAtTime  "16-09-2021T18:29:59"
+                                                   ] ;
+                               ns11:subject        ns1:TestMetadata ;
+                               ns11:test           ns1:connectedEndpointDescResourceTest ;
+                               prov:endedAtTime    "16-09-2021T18:29:59" ;
+                               prov:startedAtTime  "16-09-2021T18:29:59"
+                             ] ;
+        prov:wasDerivedFrom  ns9:sparql .
+
+ns10:sparql-service  ns3:servesDataset  ns1:TestDataset .
+
+ns1:TestEndpoint  rdf:type    ns11:TestSubject , ns3:DataService , prov:Entity , sd:Service ;
+        rdfs:label            "SPARQL endpoint serving the WASABI RDF Knowledge Graph" ;
+        dct:title             "SPARQL endpoint serving the WASABI RDF Knowledge Graph" ;
+        schema:name           "SPARQL endpoint serving the WASABI RDF Knowledge Graph" ;
+        <http://www.w3.org/2004/02/skos/core#prefLabel>
+                "SPARQL endpoint serving the WASABI RDF Knowledge Graph" ;
+        ns3:endpointURL       ns9:sparql ;
+        ns3:servesDataset     ns10:wasabi-1-0 ;
+        sd:availableGraphs    []  ;
+        sd:endpoint           ns9:sparql ;
+        sd:supportedLanguage  sd:SPARQL10Query , sd:SPARQL11Query ;
+        <http://xmlns.com/foaf/0.1/name>
+                "SPARQL endpoint serving the WASABI RDF Knowledge Graph" .
+
+ns1:TestDataset  rdf:type        void:Dataset , schema:Dataset , ns3:Dataset , prov:Entity ;
+        dct:creator              "Maroua Tikat" , "Johan Pauwels" , "Guillaume Pellerin" , "Michel Buffa" , "Elmahdi Korfed" , "Michael Fell" , "Fabrice Jauvat" , "Elena Cabrio" ;
+        dct:creator              <https://orcid.org/0000-0001-8158-5562> , <https://orcid.org/0000-0003-0543-1232> , <https://team.inria.fr/wimmics/> , <https://orcid.org/0000-0003-1007-0101> , <https://orcid.org/0000-0002-0756-6934> , <https://orcid.org/0000-0001-9064-0463> ;
+        dct:description          "The WASABI Dataset is a large corpus of songs enriched with metadata extracted from music databases on the Web, and resulting from the processing of song lyrics and from audio analysis. This dataset is the RDF representation of the original WASABI dataset." ;
+        dct:issued               "2020-12-09"^^xsd:date ;
+        dct:licence              <https://creativecommons.org/licenses/by-nc/4.0/> ;
+        dct:publisher            <https://ror.org/02feahw73> , <https://ror.org/0496p8026> , <https://ror.org/02kvxyf05> ;
+        dct:subject              "lyrics" , "music" , "song" , "chord" , "metadata" , "audio analysis" ;
+        dct:title                "The WASABI RDF Knowledge Graph" ;
+        void:dataDump            <https://doi.org/10.5281/zenodo.4312641> ;
+        void:sparqlEndpoint      ns9:sparql ;
+        void:triples             55542555 ;
+        void:uriSpace            "http://ns.inria.fr/wasabi/" ;
+        void:vocabulary          <http://purl.org/dc/elements/1.1/> , schema: , <http://dbpedia.org/ontology/> , <http://purl.org/vocab/frbr/core#> , ns3: , void: , <http://purl.org/ontology/af/> , <http://www.wikidata.org/entity/> , <http://xmlns.com/foaf/0.1/> , <http://purl.org/ontology/chord/> , dct: , <http://purl.org/ontology/mo/> , prov: , <http://purl.org/ontology/bibo/> ;
+        schema:author            "Michael Fell" , "Fabrice Jauvat" , "Maroua Tikat" , "Elmahdi Korfed" , "Michel Buffa" , "Guillaume Pellerin" , "Elena Cabrio" , "Johan Pauwels" ;
+        schema:author            <https://orcid.org/0000-0003-0543-1232> , <https://orcid.org/0000-0001-8158-5562> , <https://team.inria.fr/wimmics/> , <https://orcid.org/0000-0002-0756-6934> , <https://orcid.org/0000-0003-1007-0101> , <https://orcid.org/0000-0001-9064-0463> ;
+        schema:datePublished     "2020-12-09"^^xsd:date ;
+        schema:keywords          "chord" , "audio analysis" , "music" , "metadata" , "lyrics" , "song" ;
+        schema:licence           <https://creativecommons.org/licenses/by-nc/4.0/> ;
+        schema:name              "The WASABI RDF Knowledge Graph" ;
+        schema:publisher         <https://ror.org/02feahw73> , <https://ror.org/02kvxyf05> , <https://ror.org/0496p8026> ;
+        schema:subjectOf         ns10:fell2019love ;
+        owl:versionInfo          "1.0" ;
+        prov:wasGeneratedAtTime  "2020-12-09"^^xsd:date ;
+        prov:wasGeneratedBy      ns10:RdfGeneration .
