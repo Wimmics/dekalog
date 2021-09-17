@@ -242,7 +242,7 @@
 
 <classCount.ttl> a mf:ManifestEntry ;
     kgi:onFailure (
-        [ mf:actions """PREFIX void: <http://rdfs.org/ns/void#>
+        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             DELETE WHERE {
                 $datasetDescription void:classes ?classCount .
             }
@@ -280,7 +280,7 @@
                 $datasetDescription void:properties ?propCount .
             }
         """ ]
-        [ mf:actions """PREFIX void: <http://rdfs.org/ns/void#>
+        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX dcat: <http://www.w3.org/ns/dcat#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
