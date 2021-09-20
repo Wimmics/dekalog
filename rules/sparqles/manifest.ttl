@@ -1,5 +1,5 @@
 @prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
-@prefix kgi: <http://ns.inria.fr/kgindex#> .
+@prefix kgi: <http://ns.inria.fr/kg/index#> .
 
 <> a mf:Manifest ;
     mf:entries (
@@ -27,7 +27,7 @@
         [
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
             CONSTRUCT {
                 $endpointDescription sd:endpoint $endpoint ;
