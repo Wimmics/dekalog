@@ -1,0 +1,732 @@
+@prefix bif:     <bif:> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix kgi:     <http://ns.inria.fr/kgindex#> .
+@prefix ns0:     <http://www.w3.org/ns/dqv#> .
+@prefix ns1:     <http://ns.inria.fr/kgindex#> .
+@prefix ns2:     <http://ns.inria.fr/kgindex#> .
+@prefix ns3:     <http://www.w3.org/ns/earl#> .
+@prefix ns4:     <https://dbpedia.org/> .
+@prefix ns5:     <http://ldf.fi/void-ext#> .
+@prefix ns6:     <https://dbpedia.org/> .
+@prefix ns7:     <http://www.w3.org/ns/dcat#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix sql:     <sql:> .
+@prefix virtrdf: <http://www.openlinksw.com/schemas/virtrdf#> .
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+ns1:DBpediaMetadata  rdf:type      prov:Entity , earl:TestSubject ;
+        ns1:curated                ns1:DBpediaDataset , ns1:DBpediaEndpoint ;
+        ns1:original               <http://dbpedia.org/sparql-sd> , <http://dbpedia.org/void/Dataset> ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:09:15"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:reachableEndpointTest ;
+                                     prov:endedAtTime    "20-09-2021T11:09:15" ;
+                                     prov:startedAtTime  "20-09-2021T11:09:15"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:00:41"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctIRIReferencesTest ;
+                                     prov:endedAtTime    "20-09-2021T11:00:41" ;
+                                     prov:startedAtTime  "20-09-2021T11:00:41"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <https://dbpedia.org/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                <http://ns.inria.fr/kgindex#DBpediaDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] ] }\n            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }\n        " ;
+                                                           earl:info             "SPARQL Request Failed" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:07:30"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertyPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T11:07:30" ;
+                                     prov:startedAtTime  "20-09-2021T11:07:22"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctRDFNodes ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:53:07"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctRDFNodesTest ;
+                                     prov:endedAtTime    "20-09-2021T10:53:07" ;
+                                     prov:startedAtTime  "20-09-2021T10:52:17"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctLiterals ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:04:01"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctLiteralsTest ;
+                                     prov:endedAtTime    "20-09-2021T11:04:01" ;
+                                     prov:startedAtTime  "20-09-2021T11:03:11"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:58:58"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodesTest ;
+                                     prov:endedAtTime    "20-09-2021T10:58:58" ;
+                                     prov:startedAtTime  "20-09-2021T10:58:58"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctBlankNodes ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:00:38"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodesTest ;
+                                     prov:endedAtTime    "20-09-2021T11:00:38" ;
+                                     prov:startedAtTime  "20-09-2021T10:59:48"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctBlankNodeObjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:56:27"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodeObjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T10:56:27" ;
+                                     prov:startedAtTime  "20-09-2021T10:55:37"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT { <http://ns.inria.fr/kgindex#DBpediaDataset> void:propertyPartition [ void:property ?p ; void:distinctObjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }" ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:08:25"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalPropertyPartitionDistinctObjectTest ;
+                                     prov:endedAtTime    "20-09-2021T11:08:25" ;
+                                     prov:startedAtTime  "20-09-2021T11:07:35"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX voidex: <http://ldf.fi/void-ext#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctIRIReferenceSubjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:58:08"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisTest ;
+                                     prov:endedAtTime    "20-09-2021T10:58:08" ;
+                                     prov:startedAtTime  "20-09-2021T10:57:18"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:52:17"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctRDFNodesTest ;
+                                     prov:endedAtTime    "20-09-2021T10:52:17" ;
+                                     prov:startedAtTime  "20-09-2021T10:52:17"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctIRIReferences ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:02:21"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctIRIReferencesTest ;
+                                     prov:endedAtTime    "20-09-2021T11:02:21" ;
+                                     prov:startedAtTime  "20-09-2021T11:01:31"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#DBpediaDataset> void:classPartition [ void:class ?c ; void:classes ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }\n        " ;
+                                                           earl:info             "SPARQL Request Failed" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:04:22"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalClassPartitionClassesTest ;
+                                     prov:endedAtTime    "20-09-2021T11:04:22" ;
+                                     prov:startedAtTime  "20-09-2021T11:04:02"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:08:25"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalPropertyPartitionDistinctSubjectTest ;
+                                     prov:endedAtTime    "20-09-2021T11:08:25" ;
+                                     prov:startedAtTime  "20-09-2021T11:08:25"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://dbpedia.org/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#DBpediaEndpoint> .\n            <http://ns.inria.fr/kgindex#DBpediaEndpoint> sd:availableGraphs <http://ns.inria.fr/kgindex#DBpediaGraphList> .\n            <http://ns.inria.fr/kgindex#DBpediaGraphList> sd:namedGraph [\n                    a sd:NamedGraph ;\n                    sd:name ?graph\n                ] .\n        }\n        WHERE {\n            SELECT DISTINCT ?graph WHERE {\n                GRAPH ?graph { ?s ?p ?o }\n            }\n        }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:44:35"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:graphListExtractionTest ;
+                                     prov:endedAtTime    "20-09-2021T10:44:35" ;
+                                     prov:startedAtTime  "20-09-2021T10:43:45"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctBlankNodes ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:59:48"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodesTest ;
+                                     prov:endedAtTime    "20-09-2021T10:59:48" ;
+                                     prov:startedAtTime  "20-09-2021T10:58:58"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctIRIReferences ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:01:31"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctIRIReferencesTest ;
+                                     prov:endedAtTime    "20-09-2021T11:01:31" ;
+                                     prov:startedAtTime  "20-09-2021T11:00:41"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <http://dbpedia.org/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                <http://ns.inria.fr/kgindex#DBpediaDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] ] }\n            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }\n        " ;
+                                                           earl:info             "SPARQL Request Failed" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:07:35"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertyPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T11:07:35" ;
+                                     prov:startedAtTime  "20-09-2021T11:07:30"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctIRIReferenceObjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:54:47"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisObjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T10:54:47" ;
+                                     prov:startedAtTime  "20-09-2021T10:53:57"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:04:02"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalClassPartitionClassesTest ;
+                                     prov:endedAtTime    "20-09-2021T11:04:02" ;
+                                     prov:startedAtTime  "20-09-2021T11:04:01"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:52:17"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:equivalenceTest ;
+                                     prov:endedAtTime    "20-09-2021T10:52:17" ;
+                                     prov:startedAtTime  "20-09-2021T10:52:16"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <https://dbpedia.org/sparql> .\n        }\n        " ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:43:19"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:connectedEndpointDescResourceTest ;
+                                     prov:endedAtTime    "20-09-2021T10:43:19" ;
+                                     prov:startedAtTime  "20-09-2021T10:43:18"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX owl: <http://www.w3.org/2002/07/owl#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#DBpediaDataset> void:properties ?count .\n            }\n            WHERE {\n                SELECT (count(?p) AS ?count)\n                WHERE {\n                    SELECT DISTINCT ?p\n                    \n                    WHERE {\n                        ?s ?p ?o\n                    }\n                }\n            }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:52:16"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:countPropertyShape ;
+                                     prov:endedAtTime    "20-09-2021T10:52:16" ;
+                                     prov:startedAtTime  "20-09-2021T10:51:26"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "\n            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n            PREFIX lsq: <http://lsq.aksw.org/vocab#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#DBpediaEndpoint> sd:endpoint <https://dbpedia.org/sparql> ;\n                    sd:feature lsq:Regex .\n            } WHERE {\n            }\n            " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:43:17"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:filterRegexTest ;
+                                     prov:endedAtTime    "20-09-2021T10:43:17" ;
+                                     prov:startedAtTime  "20-09-2021T10:42:27"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:05:30"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T11:05:30" ;
+                                     prov:startedAtTime  "20-09-2021T11:05:30"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:04:22"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctObjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T11:04:22" ;
+                                     prov:startedAtTime  "20-09-2021T11:04:22"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:55:37"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodeObjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T10:55:37" ;
+                                     prov:startedAtTime  "20-09-2021T10:55:37"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://dbpedia.org/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#DBpediaEndpoint> .\n            <http://ns.inria.fr/kgindex#DBpediaEndpoint> sd:availableGraphs <http://ns.inria.fr/kgindex#DBpediaGraphList> .\n            <http://ns.inria.fr/kgindex#DBpediaGraphList> sd:namedGraph [\n                    a sd:NamedGraph ;\n                    sd:name ?graph\n                ] .\n        }\n        WHERE {\n            SELECT DISTINCT ?graph WHERE {\n                GRAPH ?graph { ?s ?p ?o }\n            }\n        }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:45:25"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:graphListExtractionTest ;
+                                     prov:endedAtTime    "20-09-2021T10:45:25" ;
+                                     prov:startedAtTime  "20-09-2021T10:44:35"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:07:22"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertyPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T11:07:22" ;
+                                     prov:startedAtTime  "20-09-2021T11:07:22"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <http://dbpedia.org/sparql> .\n        }" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:43:25"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:datasetDescResourceConnectedTest ;
+                                     prov:endedAtTime    "20-09-2021T10:43:25" ;
+                                     prov:startedAtTime  "20-09-2021T10:43:24"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctLiterals ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:03:11"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctLiteralsTest ;
+                                     prov:endedAtTime    "20-09-2021T11:03:11" ;
+                                     prov:startedAtTime  "20-09-2021T11:02:21"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <https://dbpedia.org/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                <http://ns.inria.fr/kgindex#DBpediaDataset> void:classPartition [ void:class ?c ; void:distinctObjects ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n        " ;
+                                                           earl:info             "SPARQL Request Failed" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:04:58"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctObjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T11:04:58" ;
+                                     prov:startedAtTime  "20-09-2021T11:04:22"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX owl: <http://www.w3.org/2002/07/owl#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#DBpediaDataset> void:classes ?count .\n            }\n            WHERE {\n                SELECT (count(?class) AS ?count)\n                WHERE {\n                    SELECT DISTINCT ?class\n                    \n                    WHERE {\n                        { ?class a owl:Class }\n                        UNION { ?class a rdfs:Class }\n                        UNION { ?whatever a ?class }\n                    }\n                }\n            }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:49:46"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:countClassShape ;
+                                     prov:endedAtTime    "20-09-2021T10:49:46" ;
+                                     prov:startedAtTime  "20-09-2021T10:48:56"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:00:39"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalBlankNodeSubjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T11:00:39" ;
+                                     prov:startedAtTime  "20-09-2021T11:00:38"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctBlankNodeObjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:57:18"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodeObjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T10:57:18" ;
+                                     prov:startedAtTime  "20-09-2021T10:56:27"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#DBpediaDataset> void:classPartition [ void:class ?c ; void:properties ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n        " ;
+                                                           earl:info             "SPARQL Request Failed" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:07:22"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertiesTest ;
+                                     prov:endedAtTime    "20-09-2021T11:07:22" ;
+                                     prov:startedAtTime  "20-09-2021T11:07:10"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:53:57"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisObjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T10:53:57" ;
+                                     prov:startedAtTime  "20-09-2021T10:53:57"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX nonsensical: <http://nonsensic.al> PREFIX ex: <http://e.g>  SELECT * WHERE { nonsensical:1 ex:type ?val . FILTER regex(?val, \"thi\") } LIMIT 10" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:42:27"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:filterRegexTest ;
+                                     prov:endedAtTime    "20-09-2021T10:42:27" ;
+                                     prov:startedAtTime  "20-09-2021T10:42:12"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <http://dbpedia.org/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                <http://ns.inria.fr/kgindex#DBpediaDataset> void:classPartition [ void:class ?c ; void:distinctSubjects ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:07:10"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T11:07:10" ;
+                                     prov:startedAtTime  "20-09-2021T11:06:20"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ earl:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:51:26"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:countPropertyShape ;
+                                     prov:endedAtTime    "20-09-2021T10:51:26" ;
+                                     prov:startedAtTime  "20-09-2021T10:50:36"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ earl:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:48:56"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:countClassShape ;
+                                     prov:endedAtTime    "20-09-2021T10:48:56" ;
+                                     prov:startedAtTime  "20-09-2021T10:48:06"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            ASK\n            WHERE {\n                {\n                    SELECT (count(*) AS ?value) WHERE {\n                        ?s ?p ?o .\n                    }\n                }\n            } " ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:48:06"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:countTripleShape ;
+                                     prov:endedAtTime    "20-09-2021T10:48:06" ;
+                                     prov:startedAtTime  "20-09-2021T10:48:04"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:02:21"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctLiteralsTest ;
+                                     prov:endedAtTime    "20-09-2021T11:02:21" ;
+                                     prov:startedAtTime  "20-09-2021T11:02:21"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <http://dbpedia.org/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                <http://ns.inria.fr/kgindex#DBpediaDataset> void:classPartition [ void:class ?c ; void:distinctObjects ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n        " ;
+                                                           earl:info             "SPARQL Request Failed" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:05:30"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctObjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T11:05:30" ;
+                                     prov:startedAtTime  "20-09-2021T11:04:58"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:07:10"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertiesTest ;
+                                     prov:endedAtTime    "20-09-2021T11:07:10" ;
+                                     prov:startedAtTime  "20-09-2021T11:07:10"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT { <http://ns.inria.fr/kgindex#DBpediaDataset> void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }" ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:09:15"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalPropertyPartitionDistinctSubjectTest ;
+                                     prov:endedAtTime    "20-09-2021T11:09:15" ;
+                                     prov:startedAtTime  "20-09-2021T11:08:25"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctRDFNodes ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:53:57"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctRDFNodesTest ;
+                                     prov:endedAtTime    "20-09-2021T10:53:57" ;
+                                     prov:startedAtTime  "20-09-2021T10:53:07"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctIRIReferenceObjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:55:37"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisObjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T10:55:37" ;
+                                     prov:startedAtTime  "20-09-2021T10:54:47"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT ?class (count(?instance) AS ?count) WHERE {\n        SELECT DISTINCT ?class ?instance\n        \n        WHERE {\n            ?instance a ?class .\n        }\n    }\n    GROUP BY ?class" ;
+                                                           earl:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:50:36"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:classPopCountTest ;
+                                     prov:endedAtTime    "20-09-2021T10:50:36" ;
+                                     prov:startedAtTime  "20-09-2021T10:49:46"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ earl:info             "" ;
+                                                           earl:info             [ rdf:type     sh:ValidationReport ;
+                                                                                   sh:conforms  false ;
+                                                                                   sh:result    [ rdf:type                      sh:ValidationResult ;
+                                                                                                  sh:focusNode                  ns1:DBpediaDataset ;
+                                                                                                  sh:resultMessage              "Or at focusNode <http://ns.inria.fr/kgindex#DBpediaDataset>" ;
+                                                                                                  sh:resultSeverity             sh:Violation ;
+                                                                                                  sh:sourceConstraintComponent  sh:OrConstraintComponent ;
+                                                                                                  sh:sourceShape                ns1:provenanceExtractionShape ;
+                                                                                                  sh:value                      ns1:DBpediaDataset
+                                                                                                ] ;
+                                                                                   sh:result    [ rdf:type                      sh:ValidationResult ;
+                                                                                                  sh:focusNode                  ns1:DBpediaDataset ;
+                                                                                                  sh:resultMessage              "Or at focusNode <http://ns.inria.fr/kgindex#DBpediaDataset>" ;
+                                                                                                  sh:resultSeverity             sh:Violation ;
+                                                                                                  sh:sourceConstraintComponent  sh:OrConstraintComponent ;
+                                                                                                  sh:sourceShape                ns1:provenanceExtractionShape ;
+                                                                                                  sh:value                      ns1:DBpediaDataset
+                                                                                                ] ;
+                                                                                   sh:result    [ rdf:type                      sh:ValidationResult ;
+                                                                                                  sh:focusNode                  ns1:DBpediaDataset ;
+                                                                                                  sh:resultMessage              "Or at focusNode <http://ns.inria.fr/kgindex#DBpediaDataset>" ;
+                                                                                                  sh:resultSeverity             sh:Violation ;
+                                                                                                  sh:sourceConstraintComponent  sh:OrConstraintComponent ;
+                                                                                                  sh:sourceShape                ns1:provenanceExtractionShape ;
+                                                                                                  sh:value                      ns1:DBpediaDataset
+                                                                                                ]
+                                                                                 ] ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:09:15"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:provenanceExtractionShape ;
+                                     prov:endedAtTime    "20-09-2021T11:09:15" ;
+                                     prov:startedAtTime  "20-09-2021T11:09:15"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:07:35"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalPropertyPartitionDistinctObjectTest ;
+                                     prov:endedAtTime    "20-09-2021T11:07:35" ;
+                                     prov:startedAtTime  "20-09-2021T11:07:35"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <https://dbpedia.org/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                <http://ns.inria.fr/kgindex#DBpediaDataset> void:classPartition [ void:class ?c ; void:distinctSubjects ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T11:06:20"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "20-09-2021T11:06:20" ;
+                                     prov:startedAtTime  "20-09-2021T11:05:30"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <https://dbpedia.org/sparql> .\n        }" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:43:24"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:datasetDescResourceConnectedTest ;
+                                     prov:endedAtTime    "20-09-2021T10:43:24" ;
+                                     prov:startedAtTime  "20-09-2021T10:43:24"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT DISTINCT ?ns\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
+                                                           earl:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:46:16"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:vocabularyListExtractionTest ;
+                                     prov:endedAtTime    "20-09-2021T10:46:16" ;
+                                     prov:startedAtTime  "20-09-2021T10:45:25"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?o false } LIMIT 10" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:43:18"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:filterBoolTest ;
+                                     prov:endedAtTime    "20-09-2021T10:43:18" ;
+                                     prov:startedAtTime  "20-09-2021T10:43:17"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX voidex: <http://ldf.fi/void-ext#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#DBpediaMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://dbpedia.org/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#DBpediaDataset> .\n                    <http://ns.inria.fr/kgindex#DBpediaDataset> voidex:distinctIRIReferenceSubjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:58:58"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisTest ;
+                                     prov:endedAtTime    "20-09-2021T10:58:58" ;
+                                     prov:startedAtTime  "20-09-2021T10:58:08"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n        }" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:43:45"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:graphListExtractionTest ;
+                                     prov:endedAtTime    "20-09-2021T10:43:45" ;
+                                     prov:startedAtTime  "20-09-2021T10:43:30"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://dbpedia.org/sparql> .\n        }\n        " ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:43:18"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:connectedEndpointDescResourceTest ;
+                                     prov:endedAtTime    "20-09-2021T10:43:18" ;
+                                     prov:startedAtTime  "20-09-2021T10:43:18"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "20-09-2021T10:57:18"
+                                                         ] ;
+                                     earl:subject        ns1:DBpediaMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisTest ;
+                                     prov:endedAtTime    "20-09-2021T10:57:18" ;
+                                     prov:startedAtTime  "20-09-2021T10:57:18"
+                                   ] ;
+        ns0:hasQualityMeasurement  [ rdf:type             ns0:QualityMeasurement ;
+                                     rdfs:label           "Provenance information are absent from the metadata"@en ;
+                                     ns0:computedOn       ns1:DBpediaEndpoint ;
+                                     ns0:isMeasurementOf  ns1:provenanceExtractionShape ;
+                                     ns0:value            false
+                                   ] ;
+        prov:wasDerivedFrom        <http://dbpedia.org/sparql> , ns6:sparql .
+
+ns1:DBpediaEndpoint  rdf:type        prov:Entity , ns7:DataService , sd:Service , earl:TestSubject ;
+        virtrdf:graph-crud-endpoint  <http://dbpedia.org/sparql-graph-crud> , <http://dbpedia.org/sparql-graph-crud-auth> ;
+        sd:endpoint                  <http://dbpedia.org/sparql-auth> , ns6:sparql , <http://dbpedia.org/sparql> ;
+        sd:extensionAggregate        sql:STDDEV ;
+        sd:extensionFunction         bif:abs ;
+        sd:feature                   sd:BasicFederatedQuery , sd:UnionDefaultGraph , sd:EmptyGraphs , sd:RequiresDataset , ns1:BooleanInPattern , <http://lsq.aksw.org/vocab#Regex> ;
+        sd:inputFormat               <http://www.w3.org/ns/formats/N-triples> , virtrdf:FileFormat_Triples_CXML , <http://www.w3.org/ns/formats/RDFa> , <http://www.w3.org/ns/formats/N3> , <http://www.w3.org/ns/formats/RDF_XML> , virtrdf:FileFormat_Triples_CXML_QR , virtrdf:FileFormat_Triples_CSV , virtrdf:FileFormat_Triples_XHTML_RDFa , virtrdf:FileFormat_Quads_TriG ;
+        sd:languageExtension         virtrdf:SSG_SD_OPTION , virtrdf:SSG_SD_QUAD_MAP , virtrdf:SSG_SD_LIKE , virtrdf:SSG_SD_SPARQL11_DRAFT , virtrdf:SSG_SD_BI , virtrdf:SSG_SD_GLOBALS , virtrdf:SSG_SD_IN , virtrdf:SSG_SD_VIRTSPECIFIC , virtrdf:SSG_SD_SERVICE , virtrdf:SSG_SD_TRANSIT , virtrdf:SSG_SD_SPARQL11_MORE ;
+        sd:propertyFeature           bif:contains ;
+        sd:resultFormat              virtrdf:FileFormat_Triples_Microdata_JSON , virtrdf:FileFormat_Triples_RDF_JSON , virtrdf:FileFormat_SPARQL_Results_CXML , virtrdf:FileFormat_SPARQL_Results_HTML , <http://www.w3.org/ns/formats/RDFa> , virtrdf:FileFormat_Triples_XHTML_RDFa , virtrdf:FileFormat_Triples_CXML_QR , virtrdf:FileFormat_Triples_CSV , <http://www.w3.org/ns/formats/Turtle> , virtrdf:FileFormat_Triples_HTML_table , virtrdf:FileFormat_Triples_CXML , virtrdf:FileFormat_SPARQL_Results_CXML_QR , virtrdf:FileFormat_Quads_TriG , <http://www.w3.org/ns/formats/RDF_XML> , virtrdf:FileFormat_SPARQL_Results_Javascript , <http://www.w3.org/ns/formats/N3> , virtrdf:FileFormat_Triples_ODATA_JSON , <http://www.w3.org/ns/formats/SPARQL_Results_CSV> , virtrdf:FileFormat_Triples_HTML_Microdata , virtrdf:FileFormat_Triples_HTML_list , virtrdf:FileFormat_SPARQL_Results_Spreadsheet , <http://www.w3.org/ns/formats/N-triples> , virtrdf:FileFormat_Triples_ATOM_XML , <http://www.w3.org/ns/formats/SPARQL_Results_XML> , <http://www.w3.org/ns/formats/SPARQL_Results_JSON> ;
+        sd:supportedLanguage         sd:SPARQL10Query , sd:SPARQL11Update , sd:SPARQL11Query .
+
+<http://dbpedia.org/void/sameAsLinks>
+        void:inDataset  ns1:DBpediaDataset .
+
+ns1:DBpediaDataset  rdf:type           void:Dataset , prov:Entity , ns7:Dataset ;
+        rdfs:seeAlso                   <http://dbpedia.org> ;
+        ns5:distinctBlankNodeSubjects  86823 ;
+        void:distinctObjects           234443926 ;
+        void:distinctSubjects          44065577 ;
+        void:entities                  31146585 ;
+        void:sparqlEndpoint            ns6:sparql , <http://dbpedia.org/sparql> , <http://dbpedia.org/sparql-auth> ;
+        void:triples                   919962071 .
+
+<http://dbpedia.org/void/seeAlsoLinks>
+        void:inDataset  ns1:DBpediaDataset .
