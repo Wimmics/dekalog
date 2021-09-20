@@ -42,4 +42,6 @@
         [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s schema:licence ?o . } WHERE { ?s dcterms:licence ?o . } """ ]
         [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $endpointDescription sd:endpoint ?o . } WHERE { $datasetDescription void:sparqlEndpoint ?o . } """ ]
         [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $datasetDescription void:sparqlEndpoint ?o . } WHERE { $endpointDescription sd:endpoint ?o . } """ ]
+        [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s rdfs:comment ?o . } WHERE { ?s skos:definition ?o . } """ ]
+        [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s skos:definition ?o . } WHERE { ?s rdfs:comment ?o . } """ ]
     ) .
