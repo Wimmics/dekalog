@@ -65,6 +65,9 @@ public class RuleFactory {
                 Action currentAction = new Action(entryNode, actionEndpointUrl, Action.TYPE.Manifest);
                 currentAction.setPriority(successPriorityCount.getAndIncrement());
                 testActionListSuccess.add(currentAction);
+            } else {
+                logger.error(entry.getFileResource());
+                throw new Error("Unexcepted action");
             }
 
         }
@@ -96,6 +99,7 @@ public class RuleFactory {
                 currentAction.setPriority(failurePriorityCount.getAndIncrement());
                 testActionListFailure.add(currentAction);
             } else {
+                logger.error(entry.getFileResource());
                 throw new Error("Unexcepted action");
             }
 
