@@ -60,6 +60,7 @@
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
             PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX dqv: <http://www.w3.org/ns/dqv#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             CONSTRUCT {
