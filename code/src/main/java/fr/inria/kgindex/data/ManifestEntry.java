@@ -23,7 +23,6 @@ public class ManifestEntry {
 	private Set<Model> _tests = null;
 	private Resource _testResource = null;
 	private String _title = "";
-	private Set<Resource> _requirements = null;
 
 	public ManifestEntry(Resource fileResource, HashMap<RDFNode, Model> successActions, HashMap<RDFNode, Model> failureActions, Resource testResource, Model test) {
 		this._fileResource = fileResource;
@@ -31,7 +30,6 @@ public class ManifestEntry {
 		this._actionsFailure = failureActions;
 		this._tests = new HashSet<>(Collections.singleton(test));
 		this._testResource = testResource;
-		this._requirements = new HashSet<Resource>();
 	}
 
 	public String getTitle() {
@@ -80,16 +78,6 @@ public class ManifestEntry {
 
 	public void addTest(Model test) {
 		this._tests.add(test);
-	}
-
-	public Set<Resource> getRequirements() { return this._requirements; }
-
-	public void addRequirement(Resource res) { this._requirements.add(res); }
-
-	public void addRequirements(Collection<Resource> resColl) { this._requirements.addAll(resColl); }
-
-	public boolean requires(Resource testRes) {
-		return this._requirements.contains(testRes);
 	}
 
 	@Override
@@ -219,12 +207,6 @@ public class ManifestEntry {
 			Model tmpTestModel = ModelFactory.createDefaultModel();
 			tmpTestModel.add(testModel);
 			ManifestEntry resultEntry = new ManifestEntry(entryName, successActionModelSet, failureActionModelSet, testResource, tmpTestModel);
-
-			NodeIterator requiresIterator = testModelWithInference.listObjectsOfProperty(DCTerms.requires);
-			requiresIterator.forEach(requiredTest -> {
-				Resource required = requiredTest.asResource();
-				resultEntry.addRequirement(required);
-			});
 			entrySet.add(resultEntry);
 		});
 		result.put(entryName, entrySet);
