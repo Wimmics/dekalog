@@ -1,4 +1,4 @@
-@prefix kgi: <http://ns.inria.fr/kgindex#> .
+@prefix kgi: <http://ns.inria.fr/kg/index#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
@@ -9,7 +9,6 @@
 kgi:countClassShape a sh:NodeShape  ,
         earl:TestCase ;
     sh:targetNode kgi:dummyTarget ;
-    dcterms:requires kgi:reachableEndpointTest ;
     sh:sparql [
     		rdf:type sh:SPARQLConstraint ;
     		sh:message "There are as many classes as expected." ;

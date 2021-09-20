@@ -13,6 +13,7 @@ public class Action {
     private String _endpointUrl = "";
     private RDFNode _actionNode = null;
     private TYPE _type = TYPE.UNKNOWN;
+    private int _priority = 0;
 
     public Action(RDFNode actionNode, String url, TYPE type) {
         this._endpointUrl = url;
@@ -38,6 +39,14 @@ public class Action {
 
     public void setType(TYPE _type) {
         this._type = _type;
+    }
+
+    public int getPriority() {
+        return _priority;
+    }
+
+    public void setPriority(int priority) {
+        this._priority = priority;
     }
 
     @Override

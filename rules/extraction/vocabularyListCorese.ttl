@@ -2,11 +2,11 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
-@prefix kgi: <http://ns.inria.fr/kgindex#> .
+@prefix kgi: <http://ns.inria.fr/kg/index#> .
 
 kgi:vocabularyListCoreseExtractionTest rdf:type kgi:TestQuery ;
     dcterms:title "Extraction of the namespaces of properties and classes."@en ;
-    dcterms:requires kgi:reachableEndpointTest ;
+    kgi:endpoint kgi:federation ;
     kgi:query """ASK
         WHERE {
             { ?s ?elem ?o . }

@@ -8,7 +8,7 @@ import org.apache.jena.rdf.model.Resource;
 public class KGIndex {
 	
 	private static final Model model = ModelFactory.createDefaultModel();
-	public static final String kgindexNamespace = "http://ns.inria.fr/kgindex#";
+	public static final String kgindexNamespace = "http://ns.inria.fr/kg/index#";
 
 	public static final Resource TestQuery = model.createResource(kgindexNamespace + "TestQuery");
 	public static final Resource federation = model.createResource(kgindexNamespace + "federation");

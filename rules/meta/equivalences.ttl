@@ -5,7 +5,7 @@
 @prefix kgi: <http://ns.inria.fr/kg/index#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
-kgi:sportalPropertyPartitionDistinctObjectTest rdf:type kgi:TestQuery , earl:TestCase ;
-    dcterms:title "Reachability test used as a placeholder for SPORTAL actions trigger." ;
+kgi:equivalenceTest rdf:type kgi:TestQuery ;
+    dcterms:title "Placeholder reachability test for the equivalences rule" ;
     dcterms:description "Reachability is tested with a simple query" ;
     kgi:query """SELECT * WHERE { ?s ?p ?o . } LIMIT 1"""  .

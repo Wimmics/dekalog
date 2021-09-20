@@ -1,0 +1,691 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix kgi:     <http://ns.inria.fr/kgindex#> .
+@prefix ns0:     <http://www.w3.org/ns/dqv#> .
+@prefix ns1:     <http://ns.inria.fr/kgindex#> .
+@prefix ns2:     <http://www.w3.org/ns/prov#> .
+@prefix ns3:     <http://www.w3.org/ns/earl#> .
+@prefix ns4:     <http://www.w3.org/ns/dqv#> .
+@prefix ns5:     <https://agrold.southgreen.fr/> .
+@prefix ns6:     <http://www.w3.org/ns/dcat#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+ns1:AgroLDMetadata  rdf:type       prov:Entity , earl:TestSubject ;
+        ns1:curated                ns1:AgroLDDataset , ns1:AgroLDEndpoint ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <http://agrold.southgreen.fr/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                <http://ns.inria.fr/kgindex#AgroLDDataset> void:classPartition [ void:class ?c ; void:distinctObjects ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:17:18"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:17:18" ;
+                                     prov:startedAtTime  "17-09-2021T10:16:48"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <https://agrold.southgreen.fr/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                <http://ns.inria.fr/kgindex#AgroLDDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] ] }\n            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:19:49"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertyPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:19:49" ;
+                                     prov:startedAtTime  "17-09-2021T10:19:19"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctLiterals ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:15:48"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctLiteralsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:15:48" ;
+                                     prov:startedAtTime  "17-09-2021T10:15:18"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX voidex: <http://ldf.fi/void-ext#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctIRIReferenceSubjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:12:15"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisTest ;
+                                     prov:endedAtTime    "17-09-2021T10:12:15" ;
+                                     prov:startedAtTime  "17-09-2021T10:11:45"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT { <http://ns.inria.fr/kgindex#AgroLDDataset> void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }" ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:20:49"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalPropertyPartitionDistinctSubjectTest ;
+                                     prov:endedAtTime    "17-09-2021T10:20:49" ;
+                                     prov:startedAtTime  "17-09-2021T10:20:19"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:08:15"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctRDFNodesTest ;
+                                     prov:endedAtTime    "17-09-2021T10:08:15" ;
+                                     prov:startedAtTime  "17-09-2021T10:08:15"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctBlankNodeObjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:10:45"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodeObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:10:45" ;
+                                     prov:startedAtTime  "17-09-2021T10:10:15"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            ASK\n            WHERE {\n                {\n                    SELECT (count(*) AS ?value) WHERE {\n                        ?s ?p ?o .\n                    }\n                }\n            } " ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:07:44"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:countTripleShape ;
+                                     prov:endedAtTime    "17-09-2021T10:07:44" ;
+                                     prov:startedAtTime  "17-09-2021T10:07:43"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://agrold.southgreen.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#AgroLDEndpoint> .\n            <http://ns.inria.fr/kgindex#AgroLDEndpoint> sd:availableGraphs <http://ns.inria.fr/kgindex#AgroLDGraphList> .\n            <http://ns.inria.fr/kgindex#AgroLDGraphList> sd:namedGraph [\n                    a sd:NamedGraph ;\n                    sd:name ?graph\n                ] .\n        }\n        WHERE {\n            SELECT DISTINCT ?graph WHERE {\n                GRAPH ?graph { ?s ?p ?o }\n            }\n        }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:07:13"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:graphListExtractionTest ;
+                                     prov:endedAtTime    "17-09-2021T10:07:13" ;
+                                     prov:startedAtTime  "17-09-2021T10:06:43"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:13:48"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctIRIReferencesTest ;
+                                     prov:endedAtTime    "17-09-2021T10:13:48" ;
+                                     prov:startedAtTime  "17-09-2021T10:13:46"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ earl:info             "" ;
+                                                           earl:info             [ rdf:type     sh:ValidationReport ;
+                                                                                   sh:conforms  true
+                                                                                 ] ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:07:44"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:countClassShape ;
+                                     prov:endedAtTime    "17-09-2021T10:07:44" ;
+                                     prov:startedAtTime  "17-09-2021T10:07:44"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroLDDataset> void:classPartition [ void:class ?c ; void:classes ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:16:18"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalClassPartitionClassesTest ;
+                                     prov:endedAtTime    "17-09-2021T10:16:18" ;
+                                     prov:startedAtTime  "17-09-2021T10:15:48"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:08:15"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:equivalenceTest ;
+                                     prov:endedAtTime    "17-09-2021T10:08:15" ;
+                                     prov:startedAtTime  "17-09-2021T10:08:15"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroLDDataset> void:classPartition [ void:class ?c ; void:properties ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:18:49"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertiesTest ;
+                                     prov:endedAtTime    "17-09-2021T10:18:49" ;
+                                     prov:startedAtTime  "17-09-2021T10:18:19"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ earl:info             "" ;
+                                                           earl:info             [ rdf:type     sh:ValidationReport ;
+                                                                                   sh:conforms  false ;
+                                                                                   sh:result    [ rdf:type                      sh:ValidationResult ;
+                                                                                                  sh:focusNode                  ns1:AgroLDDataset ;
+                                                                                                  sh:resultMessage              "Or at focusNode <http://ns.inria.fr/kgindex#AgroLDDataset>" ;
+                                                                                                  sh:resultSeverity             sh:Violation ;
+                                                                                                  sh:sourceConstraintComponent  sh:OrConstraintComponent ;
+                                                                                                  sh:sourceShape                ns1:provenanceExtractionShape ;
+                                                                                                  sh:value                      ns1:AgroLDDataset
+                                                                                                ] ;
+                                                                                   sh:result    [ rdf:type                      sh:ValidationResult ;
+                                                                                                  sh:focusNode                  ns1:AgroLDDataset ;
+                                                                                                  sh:resultMessage              "Or at focusNode <http://ns.inria.fr/kgindex#AgroLDDataset>" ;
+                                                                                                  sh:resultSeverity             sh:Violation ;
+                                                                                                  sh:sourceConstraintComponent  sh:OrConstraintComponent ;
+                                                                                                  sh:sourceShape                ns1:provenanceExtractionShape ;
+                                                                                                  sh:value                      ns1:AgroLDDataset
+                                                                                                ] ;
+                                                                                   sh:result    [ rdf:type                      sh:ValidationResult ;
+                                                                                                  sh:focusNode                  ns1:AgroLDDataset ;
+                                                                                                  sh:resultMessage              "Or at focusNode <http://ns.inria.fr/kgindex#AgroLDDataset>" ;
+                                                                                                  sh:resultSeverity             sh:Violation ;
+                                                                                                  sh:sourceConstraintComponent  sh:OrConstraintComponent ;
+                                                                                                  sh:sourceShape                ns1:provenanceExtractionShape ;
+                                                                                                  sh:value                      ns1:AgroLDDataset
+                                                                                                ]
+                                                                                 ] ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:20:49"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:provenanceExtractionShape ;
+                                     prov:endedAtTime    "17-09-2021T10:20:49" ;
+                                     prov:startedAtTime  "17-09-2021T10:20:49"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <http://agrold.southgreen.fr/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                <http://ns.inria.fr/kgindex#AgroLDDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] ] }\n            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:19:19"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertyPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:19:19" ;
+                                     prov:startedAtTime  "17-09-2021T10:18:49"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://agrold.southgreen.fr/sparql> .\n        }\n        " ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:06:42"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:connectedEndpointDescResourceTest ;
+                                     prov:endedAtTime    "17-09-2021T10:06:42" ;
+                                     prov:startedAtTime  "17-09-2021T10:06:42"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:18:19"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertiesTest ;
+                                     prov:endedAtTime    "17-09-2021T10:18:19" ;
+                                     prov:startedAtTime  "17-09-2021T10:18:18"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:16:18"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:16:18" ;
+                                     prov:startedAtTime  "17-09-2021T10:16:18"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <https://agrold.southgreen.fr/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                <http://ns.inria.fr/kgindex#AgroLDDataset> void:classPartition [ void:class ?c ; void:distinctSubjects ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:17:48"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:17:48" ;
+                                     prov:startedAtTime  "17-09-2021T10:17:18"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?o false } LIMIT 10" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:06:42"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:filterBoolTest ;
+                                     prov:endedAtTime    "17-09-2021T10:06:42" ;
+                                     prov:startedAtTime  "17-09-2021T10:06:42"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <https://agrold.southgreen.fr/sparql> .\n        }" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:06:42"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:datasetDescResourceConnectedTest ;
+                                     prov:endedAtTime    "17-09-2021T10:06:42" ;
+                                     prov:startedAtTime  "17-09-2021T10:06:42"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:14:48"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctLiteralsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:14:48" ;
+                                     prov:startedAtTime  "17-09-2021T10:14:48"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:18:49"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertyPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:18:49" ;
+                                     prov:startedAtTime  "17-09-2021T10:18:49"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctBlankNodeObjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:11:15"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodeObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:11:15" ;
+                                     prov:startedAtTime  "17-09-2021T10:10:45"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n        }" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:06:43"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:graphListExtractionTest ;
+                                     prov:endedAtTime    "17-09-2021T10:06:43" ;
+                                     prov:startedAtTime  "17-09-2021T10:06:43"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:17:18"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:17:18" ;
+                                     prov:startedAtTime  "17-09-2021T10:17:18"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <https://agrold.southgreen.fr/sparql> .\n        }\n        " ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:06:42"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:connectedEndpointDescResourceTest ;
+                                     prov:endedAtTime    "17-09-2021T10:06:42" ;
+                                     prov:startedAtTime  "17-09-2021T10:06:42"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:15:48"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalClassPartitionClassesTest ;
+                                     prov:endedAtTime    "17-09-2021T10:15:48" ;
+                                     prov:startedAtTime  "17-09-2021T10:15:48"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctBlankNodes ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:12:46"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodesTest ;
+                                     prov:endedAtTime    "17-09-2021T10:12:46" ;
+                                     prov:startedAtTime  "17-09-2021T10:12:16"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctIRIReferences ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:14:18"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctIRIReferencesTest ;
+                                     prov:endedAtTime    "17-09-2021T10:14:18" ;
+                                     prov:startedAtTime  "17-09-2021T10:13:48"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <https://agrold.southgreen.fr/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                <http://ns.inria.fr/kgindex#AgroLDDataset> void:classPartition [ void:class ?c ; void:distinctObjects ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:16:48"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:16:48" ;
+                                     prov:startedAtTime  "17-09-2021T10:16:18"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:20:19"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalPropertyPartitionDistinctSubjectTest ;
+                                     prov:endedAtTime    "17-09-2021T10:20:19" ;
+                                     prov:startedAtTime  "17-09-2021T10:20:19"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <http://agrold.southgreen.fr/sparql> .\n        }" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:06:42"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:datasetDescResourceConnectedTest ;
+                                     prov:endedAtTime    "17-09-2021T10:06:42" ;
+                                     prov:startedAtTime  "17-09-2021T10:06:42"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctIRIReferenceObjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:10:15"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:10:15" ;
+                                     prov:startedAtTime  "17-09-2021T10:09:45"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctLiterals ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:15:18"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctLiteralsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:15:18" ;
+                                     prov:startedAtTime  "17-09-2021T10:14:48"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <http://agrold.southgreen.fr/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                <http://ns.inria.fr/kgindex#AgroLDDataset> void:classPartition [ void:class ?c ; void:distinctSubjects ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:18:18"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:18:18" ;
+                                     prov:startedAtTime  "17-09-2021T10:17:48"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:09:15"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:09:15" ;
+                                     prov:startedAtTime  "17-09-2021T10:09:15"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctBlankNodes ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:13:16"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodesTest ;
+                                     prov:endedAtTime    "17-09-2021T10:13:16" ;
+                                     prov:startedAtTime  "17-09-2021T10:12:46"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctIRIReferences ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:14:48"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctIRIReferencesTest ;
+                                     prov:endedAtTime    "17-09-2021T10:14:48" ;
+                                     prov:startedAtTime  "17-09-2021T10:14:18"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX nonsensical: <http://nonsensic.al> PREFIX ex: <http://e.g>  SELECT * WHERE { nonsensical:1 ex:type ?val . FILTER regex(?val, \"thi\") } LIMIT 10" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:06:42"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:filterRegexTest ;
+                                     prov:endedAtTime    "17-09-2021T10:06:42" ;
+                                     prov:startedAtTime  "17-09-2021T10:06:42"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:13:46"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalBlankNodeSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:13:46" ;
+                                     prov:startedAtTime  "17-09-2021T10:13:16"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:19:49"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalPropertyPartitionDistinctObjectTest ;
+                                     prov:endedAtTime    "17-09-2021T10:19:49" ;
+                                     prov:startedAtTime  "17-09-2021T10:19:49"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT ?class (count(?instance) AS ?count) WHERE {\n        SELECT DISTINCT ?class ?instance\n        \n        WHERE {\n            ?instance a ?class .\n        }\n    }\n    GROUP BY ?class" ;
+                                                           earl:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:08:14"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:classPopCountTest ;
+                                     prov:endedAtTime    "17-09-2021T10:08:14" ;
+                                     prov:startedAtTime  "17-09-2021T10:07:44"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctIRIReferenceObjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:09:45"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:09:45" ;
+                                     prov:startedAtTime  "17-09-2021T10:09:15"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:12:16"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodesTest ;
+                                     prov:endedAtTime    "17-09-2021T10:12:16" ;
+                                     prov:startedAtTime  "17-09-2021T10:12:15"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT DISTINCT ?ns\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
+                                                           earl:info             "" , "Not Found" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:07:43"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:vocabularyListExtractionTest ;
+                                     prov:endedAtTime    "17-09-2021T10:07:43" ;
+                                     prov:startedAtTime  "17-09-2021T10:07:43"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctRDFNodes ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:09:15"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctRDFNodesTest ;
+                                     prov:endedAtTime    "17-09-2021T10:09:15" ;
+                                     prov:startedAtTime  "17-09-2021T10:08:45"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctRDFNodes ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:08:45"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctRDFNodesTest ;
+                                     prov:endedAtTime    "17-09-2021T10:08:45" ;
+                                     prov:startedAtTime  "17-09-2021T10:08:15"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:20:49"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:reachableEndpointTest ;
+                                     prov:endedAtTime    "17-09-2021T10:20:49" ;
+                                     prov:startedAtTime  "17-09-2021T10:20:49"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ earl:info             "" ;
+                                                           earl:info             [ rdf:type     sh:ValidationReport ;
+                                                                                   sh:conforms  true
+                                                                                 ] ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:08:15"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:countPropertyShape ;
+                                     prov:endedAtTime    "17-09-2021T10:08:15" ;
+                                     prov:startedAtTime  "17-09-2021T10:08:14"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:11:15"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisTest ;
+                                     prov:endedAtTime    "17-09-2021T10:11:15" ;
+                                     prov:startedAtTime  "17-09-2021T10:11:15"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:10:15"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodeObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T10:10:15" ;
+                                     prov:startedAtTime  "17-09-2021T10:10:15"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT { <http://ns.inria.fr/kgindex#AgroLDDataset> void:propertyPartition [ void:property ?p ; void:distinctObjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }" ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:20:19"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalPropertyPartitionDistinctObjectTest ;
+                                     prov:endedAtTime    "17-09-2021T10:20:19" ;
+                                     prov:startedAtTime  "17-09-2021T10:19:49"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX voidex: <http://ldf.fi/void-ext#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://agrold.southgreen.fr/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroLDDataset> .\n                    <http://ns.inria.fr/kgindex#AgroLDDataset> voidex:distinctIRIReferenceSubjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:11:45"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisTest ;
+                                     prov:endedAtTime    "17-09-2021T10:11:45" ;
+                                     prov:startedAtTime  "17-09-2021T10:11:15"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#AgroLDMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://agrold.southgreen.fr/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#AgroLDEndpoint> .\n            <http://ns.inria.fr/kgindex#AgroLDEndpoint> sd:availableGraphs <http://ns.inria.fr/kgindex#AgroLDGraphList> .\n            <http://ns.inria.fr/kgindex#AgroLDGraphList> sd:namedGraph [\n                    a sd:NamedGraph ;\n                    sd:name ?graph\n                ] .\n        }\n        WHERE {\n            SELECT DISTINCT ?graph WHERE {\n                GRAPH ?graph { ?s ?p ?o }\n            }\n        }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T10:07:43"
+                                                         ] ;
+                                     earl:subject        ns1:AgroLDMetadata ;
+                                     earl:test           ns1:graphListExtractionTest ;
+                                     prov:endedAtTime    "17-09-2021T10:07:43" ;
+                                     prov:startedAtTime  "17-09-2021T10:07:13"
+                                   ] ;
+        ns4:hasQualityMeasurement  [ rdf:type             ns4:QualityMeasurement ;
+                                     ns4:computedOn       ns1:AgroLDEndpoint ;
+                                     ns4:isMeasurementOf  ns1:reachableEndpointTest ;
+                                     ns4:value            true
+                                   ] ;
+        ns4:hasQualityMeasurement  [ rdf:type             ns4:QualityMeasurement ;
+                                     rdfs:label           "Provenance information are absent from the metadata"@en ;
+                                     ns4:computedOn       ns1:AgroLDEndpoint ;
+                                     ns4:isMeasurementOf  ns1:provenanceExtractionShape ;
+                                     ns4:value            false
+                                   ] ;
+        ns4:hasQualityMeasurement  [ rdf:type             ns4:QualityMeasurement ;
+                                     ns4:computedOn       ns1:AgroLDEndpoint ;
+                                     ns4:isMeasurementOf  ns1:reachableEndpointTest ;
+                                     ns4:value            true
+                                   ] ;
+        prov:wasDerivedFrom        <http://agrold.southgreen.fr/sparql> , ns5:sparql .
+
+ns1:AgroLDDataset  rdf:type  earl:TestSubject , void:Dataset , prov:Entity , ns6:Dataset ;
+        void:sparqlEndpoint  ns5:sparql , <http://agrold.southgreen.fr/sparql> .
+
+ns1:AgroLDEndpoint  rdf:type  sd:Service , ns6:DataService , earl:TestSubject , prov:Entity ;
+        ns6:servesDataset  ns1:AgroLDDataset ;
+        sd:endpoint        <http://agrold.southgreen.fr/sparql> , ns5:sparql ;
+        sd:feature         ns1:BooleanInPattern , <http://lsq.aksw.org/vocab#Regex> .

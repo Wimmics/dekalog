@@ -6,4 +6,5 @@
             <extraction/manifest.ttl>
             <sportal/manifest.ttl>
             <sparqles/manifest.ttl>
+            <meta/manifest.ttl>
         ) .
