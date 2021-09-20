@@ -1,5 +1,5 @@
 @prefix earl: <http://www.w3.org/ns/earl#> .
-@prefix kgi: <http://ns.inria.fr/kgindex#> .
+@prefix kgi: <http://ns.inria.fr/kg/index#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix void: <http://rdfs.org/ns/void#> .

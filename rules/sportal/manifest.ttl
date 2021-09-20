@@ -1,6 +1,6 @@
 @prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
-@prefix kgi: <http://ns.inria.fr/kgindex#> .
+@prefix kgi: <http://ns.inria.fr/kg/index#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
@@ -28,7 +28,7 @@
         [ mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
             CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                         prov:wasDerivedFrom $endpoint ;
@@ -41,7 +41,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX voidex: <http://ldf.fi/void-ext#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
@@ -55,7 +55,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX voidex: <http://ldf.fi/void-ext#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
@@ -69,7 +69,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX voidex: <http://ldf.fi/void-ext#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
@@ -83,7 +83,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX voidex: <http://ldf.fi/void-ext#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
@@ -97,7 +97,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX voidex: <http://ldf.fi/void-ext#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
@@ -111,7 +111,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX voidex: <http://ldf.fi/void-ext#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
@@ -125,7 +125,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX voidex: <http://ldf.fi/void-ext#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
@@ -178,7 +178,7 @@
     kgi:onFailure (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $datasetDescription void:classPartition [ void:class ?c ] }
@@ -190,7 +190,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $datasetDescription void:classPartition [ void:class ?c ; void:classes ?x ] }
@@ -202,7 +202,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $datasetDescription void:classPartition [ void:class ?c ; void:properties ?x ] }
@@ -214,7 +214,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
@@ -229,7 +229,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
@@ -250,7 +250,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
@@ -263,7 +263,7 @@
     kgi:onFailure (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
@@ -278,7 +278,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
@@ -291,7 +291,7 @@
     kgi:onFailure (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kgindex#>
+        PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
