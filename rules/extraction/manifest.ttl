@@ -57,7 +57,8 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kgindex#>
                 CONSTRUCT {
-                    $datasetDescription ?pp ?o .
+                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
+                        ?pp ?o .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                         prov:wasDerivedFrom $endpoint ;
                         kgi:curated $datasetDescription ;
@@ -80,6 +81,7 @@
                         prov:wasDerivedFrom $endpoint ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
+                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
                     ?s ?pp $datasetDescription .
                 }
                 WHERE {
