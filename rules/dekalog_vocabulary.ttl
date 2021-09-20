@@ -70,3 +70,13 @@ kgi:federation rdf:type rdfs:Resource ;
     rdfs:label "Placeholder endpoint URL to indicate that the query of a rule must be sent to a federation server choosen by the user." ;
     rdfs:comment "Some rules use the federation server to unload some computation from the described endpoint. The user responsbile for the generation of the description must give a federation server endpoint URL. If no URL is given, the rule is not applied." ;
     rdfs:domain mf:ManifestEntry .
+
+kgi:SPARQL10QueryPartial rdf:type sd:Language ;
+    rdfs:label "Represents the partial support of the SPARQL1.0 language by the endpoint." ;
+    rdfs:comment "This resource is defined to complement sd:SPARQL10Query for an endpoint that does not support one of more SPARQL1.0 features. Should be used as object of sd:features in the endpoint description of a KB." ;
+    rdfs:isDefinedBy kgi: .
+
+kgi:SPARQL11QueryPartial rdf:type sd:Language ;
+    rdfs:label "Represents the partial support of the SPARQL1.1 language by the endpoint." ;
+    rdfs:comment "This resource is defined to complement sd:SPARQL11Query for an endpoint that does not support one of more SPARQL1.1 features. Should be used as object of sd:features in the endpoint description of a KB." ;
+    rdfs:isDefinedBy kgi: .
