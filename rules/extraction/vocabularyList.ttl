@@ -6,7 +6,6 @@
 
 kgi:vocabularyListExtractionTest rdf:type kgi:TestQuery ;
     dcterms:title "Extraction of the namespace of properties and classes."@en ;
-    dcterms:requires kgi:reachableEndpointTest ;
     kgi:query """SELECT DISTINCT ?ns
         WHERE {
             { ?s ?elem ?o . }

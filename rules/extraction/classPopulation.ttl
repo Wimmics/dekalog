@@ -6,7 +6,6 @@
 
 kgi:classPopCountTest rdf:type kgi:TestQuery , earl:TestCase ;
     dcterms:title "Extraction of the counts of instances for each classes."@en ;
-    dcterms:requires kgi:reachableEndpointTest ;
     kgi:query """SELECT ?class (count(?instance) AS ?count) WHERE {
         SELECT DISTINCT ?class ?instance
         $FROM

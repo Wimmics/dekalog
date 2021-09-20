@@ -9,7 +9,6 @@
 kgi:countClassShape a sh:NodeShape  ,
         earl:TestCase ;
     sh:targetNode kgi:dummyTarget ;
-    dcterms:requires kgi:reachableEndpointTest ;
     sh:sparql [
     		rdf:type sh:SPARQLConstraint ;
     		sh:message "There are as many classes as expected." ;
