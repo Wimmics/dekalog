@@ -5,9 +5,9 @@
 @prefix kgi: <http://ns.inria.fr/kgindex#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
-kgi:ldscriptTest rdf:type kgi:TestQuery ;
-    dcterms:title "Testing the usability of LDScript constraint" ;
-    kgi:query """prefix kgi: <http://ns.inria.fr/kgindex#>
-    ASK WHERE {
+kgi:ParisSaclayTest rdf:type kgi:TestQuery ;
+    dcterms:title "Testing the reachability of the Paris Saclay endpoint" ;
+    kgi:endpoint <https://io.datascience-paris-saclay.fr/sparql> ;
+    kgi:query """SELECT ?s ?p ?o WHERE {
         ?s ?p ?o .
-    }"""  .
+    } LIMIT 1"""  .

@@ -8,6 +8,7 @@ import fr.inria.kgindex.rules.RuleFactory;
 import fr.inria.kgindex.util.*;
 import org.apache.commons.cli.*;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.util.FileUtils;
 import org.apache.jena.vocabulary.VOID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -156,7 +157,7 @@ public class MainClass {
 
 			try {
 				OutputStream outputStream = new FileOutputStream(outputFilename);
-				datasetDescription.write(outputStream, "TURTLE");
+				datasetDescription.write(outputStream, FileUtils.guessLang(outputFilename, "TTL"));
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
