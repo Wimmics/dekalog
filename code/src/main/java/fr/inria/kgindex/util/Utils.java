@@ -29,6 +29,11 @@ public class Utils {
         queryString = queryString.replaceAll(Pattern.quote("$metadataDescription"), "<"+describedDataset.getMetadataDescriptionResource().getURI()+">");
         queryString = queryString.replaceAll(Pattern.quote("$graphList"), "<"+describedDataset.getGraphListResource().getURI()+">");
         queryString = queryString.replaceAll(Pattern.quote("$LIMIT"), "");
+        queryString = queryString.replaceAll(Pattern.quote("$name$"), describedDataset.getName());
+        Date date = new Date();
+        Model tmpModel = ModelFactory.createDefaultModel();
+        queryString = queryString.replaceAll(Pattern.quote("$dateLiteral"),"\"" + dateFormatter.format(date) + "\"^^<http://www.w3.org/2001/XMLSchema#datetime>");
+        tmpModel.close();
 
         if(queryString.contains("$FROM") && describedDataset.areGraphsRequired()) {
             String fromString = "";
