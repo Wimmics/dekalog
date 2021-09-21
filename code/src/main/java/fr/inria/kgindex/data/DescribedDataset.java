@@ -8,7 +8,7 @@ import org.apache.jena.rdf.model.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Dataset {
+public class DescribedDataset {
 
 	private String _endpointUrl = "";
 	private String _name = "";
@@ -21,7 +21,7 @@ public class Dataset {
 	private Resource _graphListResource = null;
 	private boolean _graphsAreRequiredFlag = false;
 	
-	public Dataset(String endpoint, String name) {
+	public DescribedDataset(String endpoint, String name) {
 		this._endpointUrl = endpoint;
 		this._name = name;
 
