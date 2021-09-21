@@ -7,6 +7,5 @@
 
 kgi:vocabularyListCoreseLOVExtractionTest rdf:type kgi:TestQuery ;
     dcterms:title "Test of the Linked Open Vocabulary endpoint reachability"@en ;
-    dcterms:requires kgi:vocabularyListCoreseExtractionTest ;
     kgi:endpoint <https://lov.linkeddata.es/dataset/lov/sparql> ;
     kgi:query """ASK WHERE { ?s ?p ?o }""" .
