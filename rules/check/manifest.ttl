@@ -20,6 +20,20 @@
                 }
             """
         ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) .
 
 <reachability.ttl> a mf:ManifestEntry ;
@@ -50,6 +64,20 @@
             }
             WHERE {
             }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
             """
         ]
     ) ;
@@ -84,6 +112,20 @@
             }
             """
         ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) .
 
 <provenance.ttl> a mf:ManifestEntry ;
@@ -104,6 +146,20 @@
             }
             """
         ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
@@ -120,6 +176,20 @@
                 ] .
             } WHERE {
             }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
             """
         ]
     ) .

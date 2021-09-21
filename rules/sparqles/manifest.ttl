@@ -13,11 +13,26 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
             CONSTRUCT {
                 $endpointDescription sd:endpoint $endpoint ;
                     sd:feature lsq:Regex .
             } WHERE {
             }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
             """
         ]
     ) .
@@ -28,12 +43,27 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
             CONSTRUCT {
                 $endpointDescription sd:endpoint $endpoint ;
                     sd:feature kgi:BooleanInPattern .
             } WHERE {
             }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
             """
         ]
     ) .

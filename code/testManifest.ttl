@@ -1,9 +1,9 @@
 @prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
-@prefix dkg: <http://ns.inria.fr/kgindex#> .
+@prefix dkg: <http://ns.inria.fr/kg/index#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix kgi: <http://ns.inria.fr/kgindex#>
+@prefix kgi: <http://ns.inria.fr/kg/index#>
 @prefix void: <http://rdfs.org/ns/void#> .
 
 <> a mf:Manifest ;
@@ -14,33 +14,51 @@
 
 <file:///user/pmaillot/home/git/dekalog/rules/extraction/endpointDescResource.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """
-            PREFIX dcat: <http://www.w3.org/ns/dcat#>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
-            CONSTRUCT {
-                $endpointDescription ?p ?o .
-                $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                    sd:endpoint $endpoint .
-                $metadataDescription a prov:Entity , earl:TestSubject ;
-                     prov:wasDerivedFrom $endpoint ;
-                     kgi:curated $endpointDescription ;
-                     kgi:original ?res .
-            } WHERE {
-                ?res sd:endpoint $endpoint .
-                ?res ?p ?o .
-            }""" ;
-        mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
-            CONSTRUCT {
-               ?s ?p $endpointDescription .
-               $metadataDescription kgi:original ?res .
-            } WHERE {
-               ?res sd:endpoint $endpoint .
-               ?s ?p ?res .
-            }"""  ]
+        [
+            mf:action """
+                PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    $endpointDescription ?p ?o .
+                    $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
+                        sd:endpoint $endpoint .
+                    $metadataDescription a prov:Entity , earl:TestSubject ;
+                         prov:wasDerivedFrom $endpoint ;
+                         kgi:curated $endpointDescription ;
+                         kgi:original ?res .
+                } WHERE {
+                    ?res sd:endpoint $endpoint .
+                    ?res ?p ?o .
+                }"""
+        ]
+        [
+            mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                   ?s ?p $endpointDescription .
+                   $metadataDescription kgi:original ?res .
+                } WHERE {
+                   ?res sd:endpoint $endpoint .
+                   ?s ?p ?res .
+                }"""
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
             <file:///user/pmaillot/home/git/dekalog/rules/meta/equivalences.ttl>
     ) .
 
@@ -51,9 +69,10 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
-                PREFIX kgi: <http://ns.inria.fr/kgindex#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                    $datasetDescription ?pp ?o .
+                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
+                        ?pp ?o .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                         prov:wasDerivedFrom $endpoint ;
                         kgi:curated $datasetDescription ;
@@ -64,18 +83,21 @@
                     UNION { ?res a void:Dataset }
                     ?res ?p $endpoint .
                     ?res ?pp ?o .
-                 }""" ;
+                 }"""
+        ]
+        [
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
-                PREFIX kgi: <http://ns.inria.fr/kgindex#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                         prov:wasDerivedFrom $endpoint ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
+                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
                     ?s ?pp $datasetDescription .
                 }
                 WHERE {
@@ -83,7 +105,22 @@
                     UNION { ?res a void:Dataset }
                     ?res ?p $endpoint .
                     ?s ?pp ?res .
-                 }""" ]
+                 }"""
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
             <file:///user/pmaillot/home/git/dekalog/rules/meta/equivalences.ttl>
         ) .
 

@@ -25,49 +25,98 @@
 
 <sportalDistinctUrisSubjects.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kg/index#>
-            CONSTRUCT {
-                    $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpoint ;
-                        kgi:curated $datasetDescription .
-                    $datasetDescription voidex:distinctIRIReferenceSubjects ?x }
-                WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } """ ]
-        ) .
+        [
+            mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                        $metadataDescription a prov:Entity , earl:TestSubject ;
+                            prov:wasDerivedFrom $endpoint ;
+                            kgi:curated $datasetDescription .
+                        $datasetDescription voidex:distinctIRIReferenceSubjects ?x }
+                    WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
+    ) .
 
 <sportalDistinctBlankNodeSubjects.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kg/index#>
-            PREFIX voidex: <http://ldf.fi/void-ext#>
-                CONSTRUCT {
-                    $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpoint ;
-                        kgi:curated $datasetDescription .
-                    $datasetDescription voidex:distinctBlankNodeSubjects ?x }
-                WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} } """ ]
-        ) .
+        [
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX voidex: <http://ldf.fi/void-ext#>
+                    CONSTRUCT {
+                        $metadataDescription a prov:Entity , earl:TestSubject ;
+                            prov:wasDerivedFrom $endpoint ;
+                            kgi:curated $datasetDescription .
+                        $datasetDescription voidex:distinctBlankNodeSubjects ?x }
+                    WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} } """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
+    ) .
 
 <sportalDistinctUrisObjects.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kg/index#>
-            PREFIX voidex: <http://ldf.fi/void-ext#>
-                CONSTRUCT {
-                    $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpoint ;
-                        kgi:curated $datasetDescription .
-                    $datasetDescription voidex:distinctIRIReferenceObjects ?x }
-                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } """ ]
-        ) .
+        [
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX voidex: <http://ldf.fi/void-ext#>
+                    CONSTRUCT {
+                        $metadataDescription a prov:Entity , earl:TestSubject ;
+                            prov:wasDerivedFrom $endpoint ;
+                            kgi:curated $datasetDescription .
+                        $datasetDescription voidex:distinctIRIReferenceObjects ?x }
+                    WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
+    ) .
 
 <sportalDistinctLiterals.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+        [
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX voidex: <http://ldf.fi/void-ext#>
@@ -76,41 +125,90 @@
                         prov:wasDerivedFrom $endpoint ;
                         kgi:curated $datasetDescription .
                     $datasetDescription voidex:distinctLiterals ?x }
-                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } """ ]
-        ) .
+                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
+    ) .
 
 <sportalDistinctBlankNodeObjects.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kg/index#>
-            PREFIX voidex: <http://ldf.fi/void-ext#>
-                CONSTRUCT {
-                    $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpoint ;
-                        kgi:curated $datasetDescription .
-                    $datasetDescription voidex:distinctBlankNodeObjects ?x }
-                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} } """ ]
-        ) .
+        [
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX voidex: <http://ldf.fi/void-ext#>
+                    CONSTRUCT {
+                        $metadataDescription a prov:Entity , earl:TestSubject ;
+                            prov:wasDerivedFrom $endpoint ;
+                            kgi:curated $datasetDescription .
+                        $datasetDescription voidex:distinctBlankNodeObjects ?x }
+                    WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} } """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
+    ) .
 
 <sportalDistinctBlankNodes.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kg/index#>
-            PREFIX voidex: <http://ldf.fi/void-ext#>
-                CONSTRUCT {
-                    $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpoint ;
-                        kgi:curated $datasetDescription .
-                    $datasetDescription voidex:distinctBlankNodes ?x }
-                WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } """ ]
-        ) .
+        [
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX voidex: <http://ldf.fi/void-ext#>
+                    CONSTRUCT {
+                        $metadataDescription a prov:Entity , earl:TestSubject ;
+                            prov:wasDerivedFrom $endpoint ;
+                            kgi:curated $datasetDescription .
+                        $datasetDescription voidex:distinctBlankNodes ?x }
+                    WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
+    ) .
 
 <sportalDistinctIRIReferences.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+        [
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX voidex: <http://ldf.fi/void-ext#>
                 CONSTRUCT {
@@ -118,12 +216,28 @@
                         prov:wasDerivedFrom $endpoint ;
                         kgi:curated $datasetDescription .
                     $datasetDescription voidex:distinctIRIReferences ?x }
-                WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } """ ]
-        ) .
+                WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
+    ) .
 
 <sportalDistinctRDFNodes.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+        [
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX voidex: <http://ldf.fi/void-ext#>
@@ -132,8 +246,23 @@
                         prov:wasDerivedFrom $endpoint ;
                         kgi:curated $datasetDescription .
                     $datasetDescription voidex:distinctRDFNodes ?x }
-                WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } """ ]
-        ) .
+                WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
+    ) .
 
 <sportalPropertyPartition.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
@@ -143,23 +272,79 @@
 <sportalPropertyPartitionTriples.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:triples ?x ] } WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }""" ]
+        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:triples ?x ] . } WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }""" ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ] } WHERE { ?s ?p ?o }""" ]
+            CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ] . } WHERE { ?s ?p ?o }""" ]
+            [
+                mf:action """
+                    PREFIX dcterms: <http://purl.org/dc/terms/>
+                    DELETE {
+                        $metadataDescription dcterms:modified ?mod .
+                    }
+                    INSERT {
+                        $metadataDescription dcterms:modified $dateLiteral .
+                    }
+                    WHERE {
+                        $metadataDescription dcterms:modified ?mod .
+                    }
+                """
+            ]
     ) .
 
 <sportalPropertyPartitionDistinctSubject.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }"""  ]
+        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] . } WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }"""  ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) .
 
 <sportalPropertyPartitionDistinctObject.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:distinctObjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }"""  ]
+        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:distinctObjects ?x ] . } WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }"""  ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) .
 
 <sportalClassPartition.ttl> a mf:ManifestEntry ;
@@ -174,6 +359,20 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:triples ?x ] }
             WHERE { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
         """ ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -184,6 +383,20 @@
                 $datasetDescription void:classPartition [ void:class ?c ] }
             WHERE { ?s a ?c }
         """ ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) .
 
 <sportalClassPartitionClasses.ttl> a mf:ManifestEntry ;
@@ -196,6 +409,20 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:classes ?x ] }
             WHERE { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }
         """ ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) .
 
 <sportalClassPartitionProperties.ttl> a mf:ManifestEntry ;
@@ -208,6 +435,20 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:properties ?x ] }
             WHERE { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
         """ ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) .
 
 <sportalClassPartitionDistinctSubjects.ttl> a mf:ManifestEntry ;
@@ -223,6 +464,20 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:distinctSubjects ?x ] }
             WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }
         """ ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) .
 
 <sportalClassPartitionDistinctObjects.ttl> a mf:ManifestEntry ;
@@ -238,6 +493,20 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:distinctObjects ?x ] }
             WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
         """  ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) .
 
 <sportalClassPartitionPropertyPartition.ttl> a mf:ManifestEntry ;
@@ -259,6 +528,20 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:triples ?x ] ] }
             WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
         """  ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -272,6 +555,20 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }
             WHERE { ?s a ?c ; ?p ?o }
         """  ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) .
 
 <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl> a mf:ManifestEntry ;
@@ -287,6 +584,20 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] ] }
             WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
         """ ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -300,6 +611,20 @@
                 $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }
             WHERE { ?s a ?c ; ?p ?o }
         """  ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
     ) .
 
 # Miscanellous statistics from SPORTAL using a vocabulary created for SPORTAL only
