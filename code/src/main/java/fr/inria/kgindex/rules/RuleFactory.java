@@ -1,9 +1,10 @@
 package fr.inria.kgindex.rules;
 
-import fr.inria.kgindex.data.Dataset;
+import fr.inria.kgindex.data.DescribedDataset;
 import fr.inria.kgindex.data.ManifestEntry;
 import fr.inria.kgindex.util.KGIndex;
 import fr.inria.kgindex.util.Manifest;
+import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.vocabulary.RDF;
@@ -17,7 +18,7 @@ public class RuleFactory {
 
     private static final Logger logger = LogManager.getLogger(RuleFactory.class);
 
-    public static RuleApplication create(ManifestEntry entry, Dataset describedDataset, Model datasetDescription) {
+    public static RuleApplication create(ManifestEntry entry, DescribedDataset describedDataset, Dataset datasetDescription) {
 
         Actions testActionListSuccess = new Actions();
         Actions testActionListFailure = new Actions();

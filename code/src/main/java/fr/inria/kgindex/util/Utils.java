@@ -69,23 +69,23 @@ public class Utils {
                 namespaceString += "|" + namespace;
             }
             namespaceString += "\"";
-            queryString = queryString.replaceAll(Pattern.quote("$namespace"), namespaceString);
+            queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_NAMESPACE), namespaceString);
         }
 
         // URL de l'endpoint avec generation de variantes HTTP HTTPS
-        if(queryString.contains("$endpoint")) {
+        if(queryString.contains(PLACEHOLDER_ENDPOINTURL)) {
             String queryVariant = queryString;
             String endpointUrlVariant = describedDataset.getEndpointUrl();
             if(describedDataset.getEndpointUrl().startsWith("http:")) {
                 endpointUrlVariant = endpointUrlVariant.replace("http://", "https://");
-                queryString = queryString.replaceAll(Pattern.quote("$endpoint"), "<"+describedDataset.getEndpointUrl()+">");
-                queryVariant = queryVariant.replaceAll(Pattern.quote("$endpoint"), "<"+endpointUrlVariant+">");
+                queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_ENDPOINTURL), "<"+describedDataset.getEndpointUrl()+">");
+                queryVariant = queryVariant.replaceAll(Pattern.quote(PLACEHOLDER_ENDPOINTURL), "<"+endpointUrlVariant+">");
             } else if(describedDataset.getEndpointUrl().startsWith("https:")) {
                 endpointUrlVariant = endpointUrlVariant.replace("https://", "http://");
-                queryString = queryString.replaceAll(Pattern.quote("$endpoint"), "<"+describedDataset.getEndpointUrl()+">");
-                queryVariant = queryVariant.replaceAll(Pattern.quote("$endpoint"), "<"+endpointUrlVariant+">");
+                queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_ENDPOINTURL), "<"+describedDataset.getEndpointUrl()+">");
+                queryVariant = queryVariant.replaceAll(Pattern.quote(PLACEHOLDER_ENDPOINTURL), "<"+endpointUrlVariant+">");
             } else {
-                queryString = queryString.replaceAll(Pattern.quote("$endpoint"), "<"+describedDataset.getEndpointUrl()+">");
+                queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_ENDPOINTURL), "<"+describedDataset.getEndpointUrl()+">");
             }
             result.add(queryVariant);
         }

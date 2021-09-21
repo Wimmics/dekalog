@@ -1,21 +1,23 @@
 package fr.inria.kgindex.rules;
 
-import fr.inria.kgindex.data.Dataset;
+import fr.inria.kgindex.data.DescribedDataset;
 import fr.inria.kgindex.data.ManifestEntry;
 import fr.inria.kgindex.data.RuleLibrary;
+import fr.inria.kgindex.util.DatasetUtils;
 import fr.inria.kgindex.util.EarlReport;
 import fr.inria.kgindex.util.KGIndex;
 import fr.inria.kgindex.util.Utils;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryParseException;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.vocabulary.DCTerms;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,14 +38,14 @@ public class RuleApplication {
     public static String federationserver = null;
 
     private final ManifestEntry _entry;
-    private final Dataset _describedDataset;
+    private final DescribedDataset _describedDataset;
     private Actions _actionsSuccess = null;
     private Actions _actionsFailure = null;
-    private Model _datasetDescription;
+    private Dataset _datasetDescription;
     private TestExecution _tests = null;
     private TYPE _type = TYPE.SHACL;
 
-    public RuleApplication(ManifestEntry entry, TestExecution tests, Actions actionsSuccess, Actions actionsFailure, Dataset describedDataset, Model datasetDescription) {
+    public RuleApplication(ManifestEntry entry, TestExecution tests, Actions actionsSuccess, Actions actionsFailure, DescribedDataset describedDataset, Dataset datasetDescription) {
         this._entry = entry;
         this._describedDataset = describedDataset;
         this._datasetDescription = datasetDescription;
@@ -60,17 +62,19 @@ public class RuleApplication {
         this._type = type;
     }
 
-    public Model apply() {
+    public Dataset apply() {
         logger.trace("Test START " + this._entry.getTestResource() );
-        Model result = ModelFactory.createDefaultModel();
+        Dataset result = DatasetFactory.create();
 
         // Lancer fonction d'application
-        Model testResult = this._tests.execute( this._describedDataset, this._datasetDescription);
-        result.add(testResult);
+        Dataset testResult = this._tests.execute( this._describedDataset, this._datasetDescription);
+        result = DatasetUtils.addDataset(result, testResult);
 
         // Récupérer rapport d'application
         boolean testPassed = false;
-        List<RDFNode> testResultList = testResult.listObjectsOfProperty(EARL.outcome).toList();
+        List<RDFNode> testResultList = testResult.getDefaultModel().listObjectsOfProperty(EARL.outcome).toList();
+        testResult.getDefaultModel().write(System.err, "TTL");
+        logger.debug(testResultList);
 
         // Vérification du résultat
         if(testResultList.size() > 0){
@@ -91,59 +95,68 @@ public class RuleApplication {
         } else {
             actionsToApply = this._actionsFailure;
         }
-        logger.trace("Action START " + this._entry.getFileResource() );
-        actionsToApply.forEach(action -> {
+        logger.trace("Action START " + actionsToApply.size() + " actions : " + this._entry.getFileResource() );
+        for(Action action : actionsToApply) {
             if(action.getType() == Action.TYPE.SPARQL) {
                 String queryStringRaw = action.getActionNode().asLiteral().getString();
                 Set<String> queryStringSet = Utils.rewriteQueryPlaceholders(queryStringRaw, this._describedDataset);
-                queryStringSet.forEach(queryString -> {
+                for(String queryString : queryStringSet) {
                     if((action.getEndpointUrl().equals(KGIndex.federation.getURI()) && (RuleApplication.federationserver != null))
                             || (! action.getEndpointUrl().equals(KGIndex.federation.getURI()))) {
                         if(action.getEndpointUrl().equals(KGIndex.federation.getURI())) {
                             action.setEndpointUrl(RuleApplication.federationserver);
                         }
                         Date startDate = new Date();
-                        Literal startDateLiteral = result.createLiteral(dateFormatter.format(startDate));
+                        Model tmpModel = ModelFactory.createDefaultModel();
+                        Literal startDateLiteral = tmpModel.createLiteral(dateFormatter.format(startDate));
+                        tmpModel.close();
                         try {
                             if (queryString.contains("CONSTRUCT")) {
-                                QueryExecution actionExecution = QueryExecutionFactory.sparqlService(action.getEndpointUrl(), queryString);
+                                Query constructQuery = QueryFactory.create(queryString);
+                                logger.debug(constructQuery);
+                                QueryExecution actionExecution = QueryExecutionFactory.sparqlService(action.getEndpointUrl(), constructQuery);
                                 actionExecution.setTimeout(Utils.queryTimeout);
 
                                 try {
-                                    Model actionResult = actionExecution.execConstruct();
-                                    result.add(actionResult);
+                                    Dataset constructData = actionExecution.execConstructDataset();
+                                    RDFDataMgr.write(System.err, constructData, Lang.TRIG);
+                                    result = DatasetUtils.addDataset(result, constructData);
                                 } catch (RiotException e) {
                                     logger.error(e);
-                                    logger.trace(this._entry.getTestResource() + " action could not be added because of RiotException");
+                                    logger.trace(this._entry.getFileResource() + " action could not be added because of RiotException");
+                                } catch(QueryException e) {
+                                    logger.error(e);
+                                    logger.trace(this._entry.getFileResource() + " action could not be added because of QueryException");
                                 }
                                 actionExecution.close();
-                            } else if (queryString.contains("INSERT")) {
+                            } else if (queryString.contains("INSERT") || queryString.contains("DELETE")) {
                                 UpdateRequest insertUpdate = UpdateFactory.create(queryString);
                                 UpdateAction.execute(insertUpdate, this._datasetDescription);
-                            } else if (queryString.contains("DELETE")) {
-                                UpdateRequest deleteUpdate = UpdateFactory.create(queryString);
-                                UpdateAction.execute(deleteUpdate, this._datasetDescription);
+                                this._datasetDescription.commit();
                             }
                         } catch (QueryExceptionHTTP e) {
                             logger.info(e);
                             logger.trace(this._entry.getTestResource() + " : " + e.getMessage());
                             Date endDate = new Date();
-                            Literal endDateLiteral = result.createLiteral(dateFormatter.format(endDate));
-                            result.add(EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral));
+                            Model tmpModel1 = ModelFactory.createDefaultModel();
+                            Literal endDateLiteral = tmpModel1.createLiteral(dateFormatter.format(endDate));
+                            tmpModel1.close();
+                            Model earlReport = EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral);
+                            result = DatasetUtils.addDataset(result, DatasetFactory.create(earlReport));
                         } catch (QueryParseException e) {
                             logger.debug(queryString);
                             throw e;
                         }
                     }
-                });
+                };
             } else if(action.getType() == Action.TYPE.Manifest) {
                 Set<ManifestEntry> entrySet = RuleLibrary.getLibrary().get(action.getActionNode());
-                entrySet.forEach(entry -> {
+                for(ManifestEntry entry : entrySet) {
                     RuleApplication application = RuleFactory.create(entry, this._describedDataset, this._datasetDescription);
                     application.apply();
-                });
+                };
             }
-        });
+        };
         logger.trace("Action END " + this._entry.getFileResource() );
 
         return result;
