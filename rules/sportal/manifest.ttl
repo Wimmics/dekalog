@@ -32,7 +32,7 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                         $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $endpoint ;
+                            prov:wasDerivedFrom $endpointUrl ;
                             kgi:curated $datasetDescription .
                         $datasetDescription voidex:distinctIRIReferenceSubjects ?x }
                     WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } """
@@ -62,7 +62,7 @@
                 PREFIX voidex: <http://ldf.fi/void-ext#>
                     CONSTRUCT {
                         $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $endpoint ;
+                            prov:wasDerivedFrom $endpointUrl ;
                             kgi:curated $datasetDescription .
                         $datasetDescription voidex:distinctBlankNodeSubjects ?x }
                     WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} } """
@@ -92,7 +92,7 @@
                 PREFIX voidex: <http://ldf.fi/void-ext#>
                     CONSTRUCT {
                         $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $endpoint ;
+                            prov:wasDerivedFrom $endpointUrl ;
                             kgi:curated $datasetDescription .
                         $datasetDescription voidex:distinctIRIReferenceObjects ?x }
                     WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } """
@@ -122,7 +122,7 @@
             PREFIX voidex: <http://ldf.fi/void-ext#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpoint ;
+                        prov:wasDerivedFrom $endpointUrl ;
                         kgi:curated $datasetDescription .
                     $datasetDescription voidex:distinctLiterals ?x }
                 WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } """
@@ -152,7 +152,7 @@
                 PREFIX voidex: <http://ldf.fi/void-ext#>
                     CONSTRUCT {
                         $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $endpoint ;
+                            prov:wasDerivedFrom $endpointUrl ;
                             kgi:curated $datasetDescription .
                         $datasetDescription voidex:distinctBlankNodeObjects ?x }
                     WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} } """
@@ -182,7 +182,7 @@
                 PREFIX voidex: <http://ldf.fi/void-ext#>
                     CONSTRUCT {
                         $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $endpoint ;
+                            prov:wasDerivedFrom $endpointUrl ;
                             kgi:curated $datasetDescription .
                         $datasetDescription voidex:distinctBlankNodes ?x }
                     WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } """
@@ -213,7 +213,7 @@
             PREFIX voidex: <http://ldf.fi/void-ext#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpoint ;
+                        prov:wasDerivedFrom $endpointUrl ;
                         kgi:curated $datasetDescription .
                     $datasetDescription voidex:distinctIRIReferences ?x }
                 WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } """
@@ -243,7 +243,7 @@
             PREFIX voidex: <http://ldf.fi/void-ext#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpoint ;
+                        prov:wasDerivedFrom $endpointUrl ;
                         kgi:curated $datasetDescription .
                     $datasetDescription voidex:distinctRDFNodes ?x }
                 WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } """
@@ -459,7 +459,7 @@
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
+                    prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:classPartition [ void:class ?c ; void:distinctSubjects ?x ] }
             WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }
@@ -488,7 +488,7 @@
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
+                    prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:classPartition [ void:class ?c ; void:distinctObjects ?x ] }
             WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
@@ -523,7 +523,7 @@
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
+                    prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:triples ?x ] ] }
             WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
@@ -550,7 +550,7 @@
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
+                    prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }
             WHERE { ?s a ?c ; ?p ?o }
@@ -579,7 +579,7 @@
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
+                    prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] ] }
             WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
@@ -606,7 +606,7 @@
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
+                    prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }
             WHERE { ?s a ?c ; ?p ?o }

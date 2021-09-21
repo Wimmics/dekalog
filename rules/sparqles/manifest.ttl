@@ -15,7 +15,7 @@
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             CONSTRUCT {
-                $endpointDescription sd:endpoint $endpoint ;
+                $endpointDescription sd:endpoint $endpointUrl ;
                     sd:feature lsq:Regex .
             } WHERE {
             }
@@ -46,7 +46,7 @@
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
             CONSTRUCT {
-                $endpointDescription sd:endpoint $endpoint ;
+                $endpointDescription sd:endpoint $endpointUrl ;
                     sd:feature kgi:BooleanInPattern .
             } WHERE {
             }

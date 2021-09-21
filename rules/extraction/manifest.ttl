@@ -28,13 +28,17 @@
                 CONSTRUCT {
                     $endpointDescription ?p ?o .
                     $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                        sd:endpoint $endpoint .
+                        sd:endpoint $endpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                         prov:wasDerivedFrom $endpoint ;
+                         prov:wasDerivedFrom $endpointUrl ;
                          kgi:curated $endpointDescription ;
                          kgi:original ?res .
+                    GRAPH $endpointUrl {
+                        ?res sd:endpoint $endpointUrl .
+                        ?res ?p ?o .
+                    }
                 } WHERE {
-                    ?res sd:endpoint $endpoint .
+                    ?res sd:endpoint $endpointUrl .
                     ?res ?p ?o .
                 }"""
         ]
@@ -44,8 +48,11 @@
                 CONSTRUCT {
                    ?s ?p $endpointDescription .
                    $metadataDescription kgi:original ?res .
+                   GRAPH $endpointUrl {
+                        ?s ?p ?res .
+                   }
                 } WHERE {
-                   ?res sd:endpoint $endpoint .
+                   ?res sd:endpoint $endpointUrl .
                    ?s ?p ?res .
                 }"""
         ]
@@ -78,14 +85,17 @@
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
                         ?pp ?o .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpoint ;
+                        prov:wasDerivedFrom $endpointUrl ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
+                    GRAPH $endpointUrl {
+                        ?res ?pp ?o .
+                    }
                 }
                 WHERE {
                     { ?res a dcat:Dataset }
                     UNION { ?res a void:Dataset }
-                    ?res ?p $endpoint .
+                    ?res ?p $endpointUrl .
                     ?res ?pp ?o .
                  }"""
         ]
@@ -98,16 +108,19 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpoint ;
+                        prov:wasDerivedFrom $endpointUrl ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
                     ?s ?pp $datasetDescription .
+                    GRAPH $endpointUrl {
+                        ?s ?pp ?res .
+                    }
                 }
                 WHERE {
                     { ?res a dcat:Dataset }
                     UNION { ?res a void:Dataset }
-                    ?res ?p $endpoint .
+                    ?res ?p $endpointUrl .
                     ?s ?pp ?res .
                  }"""
         ]
@@ -139,7 +152,7 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         CONSTRUCT {
             $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpoint ;
+                prov:wasDerivedFrom $endpointUrl ;
                 kgi:curated $endpointDescription .
             $endpointDescription sd:availableGraphs $graphList .
             $graphList sd:namedGraph [
@@ -189,7 +202,7 @@
             }
             WHERE {
                 SELECT DISTINCT ?graph WHERE {
-                    SERVICE $endpoint {
+                    SERVICE $endpointUrl {
                         GRAPH ?graph { ?s ?p ?o . }
                     }
                     FILTER(STRSTARTS(str(?graph), $namespace))
@@ -221,7 +234,7 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
+                    prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:vocabulary ?ns .
             }
@@ -239,7 +252,7 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
+                    prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:vocabulary ?ns .
             }
@@ -278,12 +291,12 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
+                    prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:vocabulary ?ns .
             }
             WHERE {
-                SERVICE $endpoint {
+                SERVICE $endpointUrl {
                     SELECT DISTINCT ?elem WHERE {
                         ?s a ?elem .
                     }
@@ -300,12 +313,12 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
+                    prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:vocabulary ?ns .
             }
             WHERE {
-                SERVICE $endpoint {
+                SERVICE $endpointUrl {
                     SELECT DISTINCT ?elem WHERE {
                         ?s ?elem ?o .
                     }
@@ -339,7 +352,7 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpoint ;
+                        prov:wasDerivedFrom $endpointUrl ;
                         kgi:curated $datasetDescription .
                     $datasetDescription void:classPartition [ void:class ?class ; void:entities ?count ] . }
                 WHERE { SELECT ?class (count(?instance) AS ?count) WHERE { SELECT DISTINCT ?class ?instance $FROM WHERE { ?instance a ?class } } GROUP BY ?class }

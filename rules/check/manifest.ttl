@@ -13,7 +13,7 @@
             mf:action """
                 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
                 CONSTRUCT {
-                    $endpointDescription sd:endpoint $endpoint ;
+                    $endpointDescription sd:endpoint $endpointUrl ;
                         sd:feature sd:basicFederatedQuery .
                 }
                 WHERE {
@@ -48,11 +48,11 @@
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             CONSTRUCT {
                 $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
-                $endpointDescription sd:endpoint $endpoint ;
+                $endpointDescription sd:endpoint $endpointUrl ;
                     dcat:servesDataset $datasetDescription ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
+                    prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription , $endpointDescription ;
                     dqv:hasQualityMeasurement [
                         a dqv:QualityMeasurement ;
@@ -93,11 +93,11 @@
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             CONSTRUCT {
                 $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
-                $endpointDescription sd:endpoint $endpoint ;
+                $endpointDescription sd:endpoint $endpointUrl ;
                     dcat:servesDataset $datasetDescription ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpoint ;
+                    prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription , $endpointDescription ;
                     dqv:hasQualityMeasurement [
                         a dqv:QualityMeasurement ;
