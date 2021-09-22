@@ -14,6 +14,7 @@
             <classCount.ttl>
             <classPopulation.ttl>
             <propertyCount.ttl>
+            <languages.ttl>
         ) .
 
 <endpointDescResource.ttl> a mf:ManifestEntry ;
@@ -140,6 +141,21 @@
         ]
             <../meta/equivalences.ttl>
         ) .
+
+<languages.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX schema: <http://schema.org/>
+                CONSTRUCT {
+                    $datasetDescription schema:availableLanguage lang(?o) .
+                }
+                WHERE {
+                    ?s ?p ?o
+                    FILTER( isLiteral(?o) && (lang(?o) != "") )
+                }
+            """
+        ]
+    ) .
 
 <graphList.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
