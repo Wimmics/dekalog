@@ -16,7 +16,7 @@ public class Utils {
     public static long queryTimeout = 30000;
 
     /**
-     * Replace the placeholders in tests and queries. Placeholders include "$datasetDescription", "$endpointDescription", "$metadataDescription", "$graphList", "$LIMIT", "FROM", "$namespace", "$endpoint". To take into account the usage of HTTP or HTTPS in endpoint URL, the result can be two different strings with endoint url variants instead of one.
+     * Replace the placeholders in tests and queries. Placeholders include "$datasetDescription", "$endpointDescription", "$metadataDescription", "$graphList", "$LIMIT", "FROM", "$namespace", "$endpoint", "$name$". To take into account the usage of HTTP or HTTPS in endpoint URL, the result can be two different strings with endoint url variants instead of one.
      * @param queryString
      * @param describedDataset
      * @return a set of transformed strings.
@@ -29,6 +29,7 @@ public class Utils {
         queryString = queryString.replaceAll(Pattern.quote("$metadataDescription"), "<"+describedDataset.getMetadataDescriptionResource().getURI()+">");
         queryString = queryString.replaceAll(Pattern.quote("$graphList"), "<"+describedDataset.getGraphListResource().getURI()+">");
         queryString = queryString.replaceAll(Pattern.quote("$LIMIT"), "");
+        queryString = queryString.replaceAll(Pattern.quote("$name$"), describedDataset.getName());
 
         if(queryString.contains("$FROM") && describedDataset.areGraphsRequired()) {
             String fromString = "";
@@ -77,5 +78,12 @@ public class Utils {
         result.add(queryString);
 
         return result;
+    }
+
+    public static String rewriteUrlWithPlaceholders(String url, Dataset describedDataset) {
+
+        String urlWithLowerCaseName = url.replaceAll(Pattern.quote("$name$"), describedDataset.getName().toLowerCase());
+
+        return urlWithLowerCaseName;
     }
 }

@@ -1,447 +1,690 @@
-@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix sh:   <http://www.w3.org/ns/shacl#> .
-@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix kgi:     <http://ns.inria.fr/kgindex#> .
+@prefix ns0:     <http://www.w3.org/ns/dqv#> .
+@prefix ns1:     <http://ns.inria.fr/kgindex#> .
+@prefix ns10:    <http://bnb.data.bl.uk/id/series/> .
+@prefix ns11:    <http:www.w3.org/ns/formats/> .
+@prefix ns12:    <http://bnb.data.bl.uk/> .
+@prefix ns14:    <http://www.w3.org/ns/prov#> .
+@prefix ns15:    <http://www.w3.org/ns/earl#> .
+@prefix ns2:     <http://ns.inria.fr/kgindex#> .
+@prefix ns3:     <http://www.w3.org/ns/prov#> .
+@prefix ns4:     <http://www.w3.org/ns/dcat#> .
+@prefix ns5:     <http://www.w3.org/ns/earl#> .
+@prefix ns6:     <https://bnb.data.bl.uk/> .
+@prefix ns7:     <http://bnb.data.bl.uk/id/agent/> .
+@prefix ns8:     <http://www.w3.org/ns/dqv#> .
+@prefix ns9:     <http://bnb.data.bl.uk/id/person/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
-<http://ns.inria.fr/kgindex#BNBMetadata>
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#BNBDataset> void:triples ?count .\n        }\n        WHERE {\n            SELECT (count(*) AS ?count) WHERE {\n                SELECT DISTINCT ?s ?p ?o\n                \n                WHERE {\n                   ?s ?p ?o .\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Proxy Error" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countTripleShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:40"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#BNBDataset> void:classes ?count .\n        }\n        WHERE {\n            SELECT (count(?class) AS ?count)\n            WHERE {\n                SELECT DISTINCT ?class\n                \n                WHERE {\n                    { ?class a owl:Class }\n                    UNION { ?class a rdfs:Class }\n                    UNION { ?whatever a ?class }\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Service Unavailable" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countClassShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://www.w3.org/ns/earl#info>
-                                    "" , "Service Unavailable" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countClassShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "" , "Service Unavailable" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:44"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#reachableEndpointTest> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:44" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:44"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n        }\n        " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "" , "Service Unavailable" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#datasetDescResourceTest> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n            <http://ns.inria.fr/kgindex#BNBDataset> void:classes ?count .\n        }\n        WHERE {\n            SELECT (count(?class) AS ?count)\n            WHERE {\n                SELECT DISTINCT ?class\n                \n                WHERE {\n                    { ?class a owl:Class }\n                    UNION { ?class a rdfs:Class }\n                    UNION { ?whatever a ?class }\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Service Unavailable" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countClassShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://bnb.data.bl.uk/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n            <http://ns.inria.fr/kgindex#BNBDataset> void:properties ?count .\n        }\n        WHERE {\n            SELECT (count(?p) AS ?count)\n            WHERE {\n                SELECT DISTINCT ?p\n                \n                WHERE {\n                    ?s ?p ?o\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Service Unavailable" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countPropertyShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n        }\n        " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "" , "Service Unavailable" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#datasetDescResourceConnectedTest> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n            <http://ns.inria.fr/kgindex#BNBDataset> void:triples ?count .\n        }\n        WHERE {\n            SELECT (count(*) AS ?count) WHERE {\n                SELECT DISTINCT ?s ?p ?o\n                \n                WHERE {\n                   ?s ?p ?o .\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:35"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countTripleShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:35" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:30"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://bnb.data.bl.uk/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n            <http://ns.inria.fr/kgindex#BNBDataset> void:classes ?count .\n        }\n        WHERE {\n            SELECT (count(?class) AS ?count)\n            WHERE {\n                SELECT DISTINCT ?class\n                \n                WHERE {\n                    { ?class a owl:Class }\n                    UNION { ?class a rdfs:Class }\n                    UNION { ?whatever a ?class }\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Service Unavailable" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countClassShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "" , "Service Unavailable" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#sportalTest> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "ASK\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "" , "Service Unavailable" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#vocabularyListExtractionTest> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://bnb.data.bl.uk/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n            <http://ns.inria.fr/kgindex#BNBDataset> void:triples ?count .\n        }\n        WHERE {\n            SELECT (count(*) AS ?count) WHERE {\n                SELECT DISTINCT ?s ?p ?o\n                \n                WHERE {\n                   ?s ?p ?o .\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:40"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countTripleShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:40" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:35"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <https://bnb.data.bl.uk/sparql> .\n        }\n        " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "" , "Service Unavailable" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#connectedEndpointDescResourceTest> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;\n                kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n            <http://ns.inria.fr/kgindex#BNBDataset> void:properties ?count .\n        }\n        WHERE {\n            SELECT (count(?p) AS ?count)\n            WHERE {\n                SELECT DISTINCT ?p\n                \n                WHERE {\n                    ?s ?p ?o\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Service Unavailable" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countPropertyShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "SELECT ?class (count(?instance) AS ?count) WHERE {\n        SELECT DISTINCT ?class ?instance\n        \n        WHERE {\n            ?instance a ?class .\n        }\n    }\n    GROUP BY ?class" ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "" , "Service Unavailable" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#classPopCountTest> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://www.w3.org/ns/earl#info>
-                                    "" , "Service Unavailable" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countPropertyShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n            FILTER( CONTAINS( str(?graph), \"\") )\n        }" ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:27"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#graphListExtractionTest> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:27" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:22"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://www.w3.org/ns/earl#info>
-                                    "" ;
-                            <http://www.w3.org/ns/earl#info>
-                                    [ rdf:type     sh:ValidationReport ;
-                                      sh:conforms  true
-                                    ] ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#passed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:44"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#provenanceExtractionShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:44" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:44"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://www.w3.org/ns/earl#info>
-                                    "" ;
-                            <http://www.w3.org/ns/earl#info>
-                                    [ rdf:type     sh:ValidationReport ;
-                                      sh:conforms  false
-                                    ] ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:30"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countTripleShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:30" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:27"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://bnb.data.bl.uk/sparql> .\n        }\n        " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "" , "Service Unavailable" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T14:58:43"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#BNBMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#connectedEndpointDescResourceTest> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T14:58:43" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T14:58:43"
-                ] .
+<http://bnb.data.bl.uk/id/data/BNB>
+        void:subset  ns1:BNBDataset .
+
+ns1:BNBDataset  rdf:type               void:Dataset , earl:TestSubject , ns4:Dataset , prov:Entity ;
+        rdfs:label                     "The British National Bibliography as Linked Open Data - Books"@en , "The British National Bibliography as Linked Open Data"@en , "The British National Bibliography as Linked Open Data - Serials"@en , "The British National Bibliography as Linked Open Data - Porthcoming publications"@en ;
+        <http://ldf.fi/void-ext#distinctBlankNodeObjects>
+                0 ;
+        <http://ldf.fi/void-ext#distinctBlankNodeSubjects>
+                0 ;
+        <http://ldf.fi/void-ext#distinctBlankNodes>
+                0 ;
+        dcterms:alternative            "BNBCIP"@en , "BNB"@en , "BNBBooks"@en , "BNBSerials"@en ;
+        dcterms:contributor            <http://bnb.data.bl.uk/id/organization/BritishLibraryMetadataServices> ;
+        dcterms:created                "2017-03-01"^^xsd:date , "2012-09-10"^^xsd:date , "2011-07-26"^^xsd:date ;
+        dcterms:creator                <http://bnb.data.bl.uk/id/organization/BritishLibrary> ;
+        dcterms:description            "This dataset is a release of the BNB as linked open data.  It includes descriptions of published monographs (including monographs published over time), i.e. BNBBooks; serials publications, i.e. BNBSerials and forthcoming publications, i.e. BNBCIP. Further information about the dataset is available at: https://www.bl.uk/bibliographic/natbib.html." , "This dataset is a subset of the release of the BNB as linked open data.  It includes descriptions of published monographs, including monographs published over time." , "This dataset is a subset of the release of the BNB as linked open data.  It includes descriptions of forthcoming monographs. Further details about the dataset are available at: https://www.bl.uk/bibliographic/cip.html. " , "This dataset is a subset of the release of the BNB as linked open data.  It includes descriptions of serials, i.e. journals, periodicals, magazines, newspapers, etc." ;
+        dcterms:license                <http://creativecommons.org/publicdomain/zero/1.0/> ;
+        dcterms:modified               "2021-09-01"^^xsd:date ;
+        dcterms:publisher              <http://bnb.data.bl.uk/id/organization/BritishLibrary> ;
+        dcterms:source                 <http://bnb.bl.uk/> ;
+        dcterms:title                  "The British National Bibliography as Linked Open Data - Books"@en , "The British National Bibliography as Linked Open Data"@en , "The British National Bibliography as Linked Open Data - Porthcoming publications"@en , "The British National Bibliography as Linked Open Data - Serials"@en ;
+        void:exampleResource           <http://bnb.data.bl.uk/id/resource/016941046> , <http://bnb.data.bl.uk/id/resource/018131495/projectedpublicationevent/LondonKyleBooks201702> , ns7:BristolUnitedPress , ns9:ChipmanJohnSomerset1926- , <http://bnb.data.bl.uk/id/resource/005653026> , <http://bnb.data.bl.uk/id/resource/005571580> , ns10:Solidmechanicsanditsapplications , <http://bnb.data.bl.uk/id/concept/lcsh/Structuralanalysis%28Engineering%29> , <http://bnb.data.bl.uk/id/resource/013130126> , <http://bnb.data.bl.uk/id/resource/005406115> , ns7:DunedinAcademic , <http://bnb.data.bl.uk/id/resource/012938091> , <http://bnb.data.bl.uk/id/resource/007063524> , <http://bnb.data.bl.uk/id/resource/018122767> , <http://bnb.data.bl.uk/id/resource/016941108> , <http://bnb.data.bl.uk/id/resource/007740079> ;
+        void:feature                   ns11:Turtle , ns11:RDF_XML ;
+        void:sparqlEndpoint            ns6:sparql , ns12:sparql ;
+        void:subset                    <http://bnb.data.bl.uk/id/data/BNBBooks> , <http://bnb.data.bl.uk/id/data/BNBCIP> , <http://bnb.data.bl.uk/id/data/BNBSerials> ;
+        void:triples                   26119516 , 179118518 , 5231885 , 210469919 ;
+        void:vocabulary                <http://rdaregistry.info/Elements/u/> , <http://www.w3.org/2003/01/geo/wgs84_pos#> , <http://purl.org/vocab/bio/0.1/> , dcterms: , <http://www.w3.org/2004/02/skos/core#> , <http://www.w3.org/ns/02/org#> , foaf: , <http://purl.org/NET/c4dm/event.owl#> , void: , <http://iflastandards.info/ns/isbd/elements/> , <http://www.w3.org/2002/07/owl#> , <http://www.bl.uk/schemas/bibliographic/blterms#> , <http://schema.org/> , rdfs: , <http://purl.org/ontology/bibo/> ;
+        <http://schema.org/author>     <http://bnb.data.bl.uk/id/organization/BritishLibrary> ;
+        <http://schema.org/name>       "The British National Bibliography as Linked Open Data - Books"@en , "The British National Bibliography as Linked Open Data - Serials"@en , "The British National Bibliography as Linked Open Data"@en , "The British National Bibliography as Linked Open Data - Porthcoming publications"@en ;
+        <http://schema.org/publisher>  <http://bnb.data.bl.uk/id/organization/BritishLibrary> ;
+        <http://www.w3.org/2004/02/skos/core#prefLabel>
+                "The British National Bibliography as Linked Open Data - Books"@en , "The British National Bibliography as Linked Open Data"@en , "The British National Bibliography as Linked Open Data - Serials"@en , "The British National Bibliography as Linked Open Data - Porthcoming publications"@en ;
+        prov:wasAttributedTo           <http://bnb.data.bl.uk/id/organization/BritishLibrary> ;
+        foaf:homepage                  <http://bnb.data.bl.uk> ;
+        foaf:name                      "The British National Bibliography as Linked Open Data - Books"@en , "The British National Bibliography as Linked Open Data - Serials"@en , "The British National Bibliography as Linked Open Data - Porthcoming publications"@en , "The British National Bibliography as Linked Open Data"@en .
+
+ns1:BNBGraphList  sd:namedGraph  [ rdf:type  sd:NamedGraph ;
+                                   sd:name   <http://www.openlinksw.com/schemas/virtrdf#>
+                                 ] ;
+        sd:namedGraph  [ rdf:type  sd:NamedGraph ;
+                         sd:name   <http://bnb.data.bl.uk/id/graph/Void>
+                       ] ;
+        sd:namedGraph  [ rdf:type  sd:NamedGraph ;
+                         sd:name   <http://www.w3.org/ns/ldp#>
+                       ] ;
+        sd:namedGraph  [ rdf:type  sd:NamedGraph ;
+                         sd:name   <http://www.w3.org/ns/ldp#>
+                       ] ;
+        sd:namedGraph  [ rdf:type  sd:NamedGraph ;
+                         sd:name   <http://bnb.data.bl.uk/id/graph/BNBCIP>
+                       ] ;
+        sd:namedGraph  [ rdf:type  sd:NamedGraph ;
+                         sd:name   <http://bnb.data.bl.uk/id/graph/BNBBooks>
+                       ] ;
+        sd:namedGraph  [ rdf:type  sd:NamedGraph ;
+                         sd:name   <http://bnb.data.bl.uk/id/graph/BNBCIP>
+                       ] ;
+        sd:namedGraph  [ rdf:type  sd:NamedGraph ;
+                         sd:name   <http://www.openlinksw.com/schemas/virtrdf#>
+                       ] ;
+        sd:namedGraph  [ rdf:type  sd:NamedGraph ;
+                         sd:name   <http://bnb.data.bl.uk/id/graph/Void>
+                       ] ;
+        sd:namedGraph  [ rdf:type  sd:NamedGraph ;
+                         sd:name   <http://bnb.data.bl.uk/id/graph/BNBSerials>
+                       ] ;
+        sd:namedGraph  [ rdf:type  sd:NamedGraph ;
+                         sd:name   <http://bnb.data.bl.uk/id/graph/BNBSerials>
+                       ] ;
+        sd:namedGraph  [ rdf:type  sd:NamedGraph ;
+                         sd:name   <http://bnb.data.bl.uk/id/graph/BNBBooks>
+                       ] .
+
+ns1:BNBMetadata  rdf:type          prov:Entity , earl:TestSubject ;
+        ns1:curated                ns1:BNBEndpoint , ns1:BNBDataset ;
+        ns1:original               <http://bnb.data.bl.uk/id/data/BNBBooks> , <http://bnb.data.bl.uk/id/data/BNB> , <http://bnb.data.bl.uk/id/data/BNBCIP> , <http://bnb.data.bl.uk/id/data/BNBSerials> ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:36:30"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctIRIReferencesTest ;
+                                     prov:endedAtTime    "17-09-2021T09:36:30" ;
+                                     prov:startedAtTime  "17-09-2021T09:36:30"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:36:30"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalBlankNodeSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:36:30" ;
+                                     prov:startedAtTime  "17-09-2021T09:36:30"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://bnb.data.bl.uk/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                    <http://ns.inria.fr/kgindex#BNBDataset> voidex:distinctIRIReferenceObjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:34:17"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:34:17" ;
+                                     prov:startedAtTime  "17-09-2021T09:33:47"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#BNBDataset> void:classPartition [ void:class ?c ; void:classes ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:39:00"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalClassPartitionClassesTest ;
+                                     prov:endedAtTime    "17-09-2021T09:39:00" ;
+                                     prov:startedAtTime  "17-09-2021T09:38:30"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                    <http://ns.inria.fr/kgindex#BNBDataset> voidex:distinctIRIReferences ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:37:30"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctIRIReferencesTest ;
+                                     prov:endedAtTime    "17-09-2021T09:37:30" ;
+                                     prov:startedAtTime  "17-09-2021T09:37:00"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:42:32"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalPropertyPartitionDistinctObjectTest ;
+                                     prov:endedAtTime    "17-09-2021T09:42:32" ;
+                                     prov:startedAtTime  "17-09-2021T09:42:32"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:40:01"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:40:01" ;
+                                     prov:startedAtTime  "17-09-2021T09:40:01"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT { <http://ns.inria.fr/kgindex#BNBDataset> void:propertyPartition [ void:property ?p ; void:distinctObjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }" ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:43:02"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalPropertyPartitionDistinctObjectTest ;
+                                     prov:endedAtTime    "17-09-2021T09:43:02" ;
+                                     prov:startedAtTime  "17-09-2021T09:42:32"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:41:01"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertiesTest ;
+                                     prov:endedAtTime    "17-09-2021T09:41:01" ;
+                                     prov:startedAtTime  "17-09-2021T09:41:01"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <http://bnb.data.bl.uk/sparql> .\n        }" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:31:23"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:datasetDescResourceConnectedTest ;
+                                     prov:endedAtTime    "17-09-2021T09:31:23" ;
+                                     prov:startedAtTime  "17-09-2021T09:31:22"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://bnb.data.bl.uk/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                    <http://ns.inria.fr/kgindex#BNBDataset> voidex:distinctLiterals ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:38:30"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctLiteralsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:38:30" ;
+                                     prov:startedAtTime  "17-09-2021T09:38:00"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <https://bnb.data.bl.uk/sparql> .\n        }\n        " ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:31:22"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:connectedEndpointDescResourceTest ;
+                                     prov:endedAtTime    "17-09-2021T09:31:22" ;
+                                     prov:startedAtTime  "17-09-2021T09:31:22"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ earl:info             "" ;
+                                                           earl:info             [ rdf:type     sh:ValidationReport ;
+                                                                                   sh:conforms  true
+                                                                                 ] ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:32:16"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:countClassShape ;
+                                     prov:endedAtTime    "17-09-2021T09:32:16" ;
+                                     prov:startedAtTime  "17-09-2021T09:32:16"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:32:47"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:equivalenceTest ;
+                                     prov:endedAtTime    "17-09-2021T09:32:47" ;
+                                     prov:startedAtTime  "17-09-2021T09:32:47"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?o false } LIMIT 10" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:31:22"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:filterBoolTest ;
+                                     prov:endedAtTime    "17-09-2021T09:31:22" ;
+                                     prov:startedAtTime  "17-09-2021T09:31:22"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT ?class (count(?instance) AS ?count) WHERE {\n        SELECT DISTINCT ?class ?instance\n        \n        WHERE {\n            ?instance a ?class .\n        }\n    }\n    GROUP BY ?class" ;
+                                                           earl:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:32:46"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:classPopCountTest ;
+                                     prov:endedAtTime    "17-09-2021T09:32:46" ;
+                                     prov:startedAtTime  "17-09-2021T09:32:16"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <https://bnb.data.bl.uk/sparql> .\n        }" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:31:22"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:datasetDescResourceConnectedTest ;
+                                     prov:endedAtTime    "17-09-2021T09:31:22" ;
+                                     prov:startedAtTime  "17-09-2021T09:31:22"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                    <http://ns.inria.fr/kgindex#BNBDataset> voidex:distinctRDFNodes ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:33:47"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctRDFNodesTest ;
+                                     prov:endedAtTime    "17-09-2021T09:33:47" ;
+                                     prov:startedAtTime  "17-09-2021T09:33:17"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                    <http://ns.inria.fr/kgindex#BNBDataset> voidex:distinctIRIReferenceObjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:34:47"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:34:47" ;
+                                     prov:startedAtTime  "17-09-2021T09:34:17"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                <http://ns.inria.fr/kgindex#BNBDataset> void:classPartition [ void:class ?c ; void:distinctSubjects ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:41:01"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:41:01" ;
+                                     prov:startedAtTime  "17-09-2021T09:40:31"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                <http://ns.inria.fr/kgindex#BNBDataset> void:classPartition [ void:class ?c ; void:distinctObjects ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:40:01"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:40:01" ;
+                                     prov:startedAtTime  "17-09-2021T09:39:31"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:37:30"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctLiteralsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:37:30" ;
+                                     prov:startedAtTime  "17-09-2021T09:37:30"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            ASK\n            WHERE {\n                {\n                    SELECT (count(*) AS ?value) WHERE {\n                        ?s ?p ?o .\n                    }\n                }\n            } " ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:32:16"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:countTripleShape ;
+                                     prov:endedAtTime    "17-09-2021T09:32:16" ;
+                                     prov:startedAtTime  "17-09-2021T09:32:15"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX void: <http://rdfs.org/ns/void#>\n        CONSTRUCT { <http://ns.inria.fr/kgindex#BNBDataset> void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] } WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }" ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:43:32"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalPropertyPartitionDistinctSubjectTest ;
+                                     prov:endedAtTime    "17-09-2021T09:43:32" ;
+                                     prov:startedAtTime  "17-09-2021T09:43:02"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                <http://ns.inria.fr/kgindex#BNBDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] ] }\n            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:42:01"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertyPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:42:01" ;
+                                     prov:startedAtTime  "17-09-2021T09:41:31"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://bnb.data.bl.uk/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                    <http://ns.inria.fr/kgindex#BNBDataset> voidex:distinctRDFNodes ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:33:17"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctRDFNodesTest ;
+                                     prov:endedAtTime    "17-09-2021T09:33:17" ;
+                                     prov:startedAtTime  "17-09-2021T09:32:47"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX voidex: <http://ldf.fi/void-ext#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                    <http://ns.inria.fr/kgindex#BNBDataset> voidex:distinctIRIReferenceSubjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:35:39"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisTest ;
+                                     prov:endedAtTime    "17-09-2021T09:35:39" ;
+                                     prov:startedAtTime  "17-09-2021T09:35:09"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <https://bnb.data.bl.uk/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                <http://ns.inria.fr/kgindex#BNBDataset> void:classPartition [ void:class ?c ; void:distinctObjects ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:39:31"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:39:31" ;
+                                     prov:startedAtTime  "17-09-2021T09:39:01"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:36:09"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodesTest ;
+                                     prov:endedAtTime    "17-09-2021T09:36:09" ;
+                                     prov:startedAtTime  "17-09-2021T09:36:09"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:38:30"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalClassPartitionClassesTest ;
+                                     prov:endedAtTime    "17-09-2021T09:38:30" ;
+                                     prov:startedAtTime  "17-09-2021T09:38:30"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://bnb.data.bl.uk/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                    <http://ns.inria.fr/kgindex#BNBDataset> voidex:distinctLiterals ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:38:00"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctLiteralsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:38:00" ;
+                                     prov:startedAtTime  "17-09-2021T09:37:30"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX voidex: <http://ldf.fi/void-ext#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://bnb.data.bl.uk/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                    <http://ns.inria.fr/kgindex#BNBDataset> voidex:distinctIRIReferenceSubjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:36:09"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisTest ;
+                                     prov:endedAtTime    "17-09-2021T09:36:09" ;
+                                     prov:startedAtTime  "17-09-2021T09:35:39"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:43:39"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:reachableEndpointTest ;
+                                     prov:endedAtTime    "17-09-2021T09:43:39" ;
+                                     prov:startedAtTime  "17-09-2021T09:43:32"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#BNBDataset> void:classPartition [ void:class ?c ; void:properties ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:41:31"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertiesTest ;
+                                     prov:endedAtTime    "17-09-2021T09:41:31" ;
+                                     prov:startedAtTime  "17-09-2021T09:41:01"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://bnb.data.bl.uk/sparql> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                    <http://ns.inria.fr/kgindex#BNBDataset> voidex:distinctIRIReferences ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:37:00"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctIRIReferencesTest ;
+                                     prov:endedAtTime    "17-09-2021T09:37:00" ;
+                                     prov:startedAtTime  "17-09-2021T09:36:30"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:32:47"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctRDFNodesTest ;
+                                     prov:endedAtTime    "17-09-2021T09:32:47" ;
+                                     prov:startedAtTime  "17-09-2021T09:32:47"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX nonsensical: <http://nonsensic.al> PREFIX ex: <http://e.g>  SELECT * WHERE { nonsensical:1 ex:type ?val . FILTER regex(?val, \"thi\") } LIMIT 10" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:31:22"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:filterRegexTest ;
+                                     prov:endedAtTime    "17-09-2021T09:31:22" ;
+                                     prov:startedAtTime  "17-09-2021T09:31:22"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n        }" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:31:23"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:graphListExtractionTest ;
+                                     prov:endedAtTime    "17-09-2021T09:31:23" ;
+                                     prov:startedAtTime  "17-09-2021T09:31:23"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:41:31"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertyPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:41:31" ;
+                                     prov:startedAtTime  "17-09-2021T09:41:31"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:43:02"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalPropertyPartitionDistinctSubjectTest ;
+                                     prov:endedAtTime    "17-09-2021T09:43:02" ;
+                                     prov:startedAtTime  "17-09-2021T09:43:02"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:33:47"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:33:47" ;
+                                     prov:startedAtTime  "17-09-2021T09:33:47"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <https://bnb.data.bl.uk/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                <http://ns.inria.fr/kgindex#BNBDataset> void:classPartition [ void:class ?c ; void:distinctSubjects ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:40:31"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:40:31" ;
+                                     prov:startedAtTime  "17-09-2021T09:40:01"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT DISTINCT ?ns\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
+                                                           earl:info             "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:32:05"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:vocabularyListExtractionTest ;
+                                     prov:endedAtTime    "17-09-2021T09:32:05" ;
+                                     prov:startedAtTime  "17-09-2021T09:31:35"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ earl:info             "" ;
+                                                           earl:info             [ rdf:type     sh:ValidationReport ;
+                                                                                   sh:conforms  false ;
+                                                                                   sh:result    [ rdf:type                      sh:ValidationResult ;
+                                                                                                  sh:focusNode                  ns1:BNBDataset ;
+                                                                                                  sh:resultMessage              "Or at focusNode <http://ns.inria.fr/kgindex#BNBDataset>" ;
+                                                                                                  sh:resultSeverity             sh:Violation ;
+                                                                                                  sh:sourceConstraintComponent  sh:OrConstraintComponent ;
+                                                                                                  sh:sourceShape                ns1:provenanceExtractionShape ;
+                                                                                                  sh:value                      ns1:BNBDataset
+                                                                                                ]
+                                                                                 ] ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:43:40"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:provenanceExtractionShape ;
+                                     prov:endedAtTime    "17-09-2021T09:43:40" ;
+                                     prov:startedAtTime  "17-09-2021T09:43:40"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:34:48"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctBlankNodeObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:34:48" ;
+                                     prov:startedAtTime  "17-09-2021T09:34:47"
+                                   ] ;
+        ns1:trace                  [ rdf:type            prov:Activity , earl:Assertion ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#BNBMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <https://bnb.data.bl.uk/sparql> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#BNBDataset> .\n                <http://ns.inria.fr/kgindex#BNBDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] ] }\n            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }\n        " ;
+                                                           earl:info             "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:42:32"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalClassPartitionPropertyPartitionDistinctSubjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:42:32" ;
+                                     prov:startedAtTime  "17-09-2021T09:42:01"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ earl:info             "" ;
+                                                           earl:info             [ rdf:type     sh:ValidationReport ;
+                                                                                   sh:conforms  true
+                                                                                 ] ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:32:47"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:countPropertyShape ;
+                                     prov:endedAtTime    "17-09-2021T09:32:47" ;
+                                     prov:startedAtTime  "17-09-2021T09:32:46"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:35:09"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalDistinctUrisTest ;
+                                     prov:endedAtTime    "17-09-2021T09:35:09" ;
+                                     prov:startedAtTime  "17-09-2021T09:35:09"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:passed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:39:01"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:sportalClassPartitionDistinctObjectsTest ;
+                                     prov:endedAtTime    "17-09-2021T09:39:01" ;
+                                     prov:startedAtTime  "17-09-2021T09:39:00"
+                                   ] ;
+        ns1:trace                  [ rdf:type            earl:Assertion , prov:Activity ;
+                                     earl:result         [ ns1:sentQuery         "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://bnb.data.bl.uk/sparql> .\n        }\n        " ;
+                                                           earl:info             "" ;
+                                                           earl:outcome          earl:failed ;
+                                                           prov:generatedAtTime  "17-09-2021T09:31:22"
+                                                         ] ;
+                                     earl:subject        ns1:BNBMetadata ;
+                                     earl:test           ns1:connectedEndpointDescResourceTest ;
+                                     prov:endedAtTime    "17-09-2021T09:31:22" ;
+                                     prov:startedAtTime  "17-09-2021T09:31:22"
+                                   ] ;
+        ns8:hasQualityMeasurement  [ rdf:type             ns8:QualityMeasurement ;
+                                     rdfs:label           "Provenance information are absent from the metadata"@en ;
+                                     ns8:computedOn       ns1:BNBEndpoint ;
+                                     ns8:isMeasurementOf  ns1:provenanceExtractionShape ;
+                                     ns8:value            false
+                                   ] ;
+        ns8:hasQualityMeasurement  [ rdf:type             ns8:QualityMeasurement ;
+                                     ns8:computedOn       ns1:BNBEndpoint ;
+                                     ns8:isMeasurementOf  ns1:reachableEndpointTest ;
+                                     ns8:value            true
+                                   ] ;
+        ns8:hasQualityMeasurement  [ rdf:type             ns8:QualityMeasurement ;
+                                     ns8:computedOn       ns1:BNBEndpoint ;
+                                     ns8:isMeasurementOf  ns1:reachableEndpointTest ;
+                                     ns8:value            true
+                                   ] ;
+        prov:wasDerivedFrom        ns6:sparql , ns12:sparql .
+
+ns1:BNBEndpoint  rdf:type   sd:Service , ns4:DataService , prov:Entity , earl:TestSubject ;
+        ns4:servesDataset   ns1:BNBDataset ;
+        sd:availableGraphs  ns1:BNBGraphList ;
+        sd:endpoint         ns12:sparql , ns6:sparql ;
+        sd:feature          <http://lsq.aksw.org/vocab#Regex> , ns1:BooleanInPattern .

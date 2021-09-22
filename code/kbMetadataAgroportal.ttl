@@ -8,142 +8,125 @@
                 [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
                   <http://www.w3.org/ns/earl#result>
                           [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <https://sparql.agroportal.lirmm.fr/sparql/> .\n        }\n        " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:48:50"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#connectedEndpointDescResourceTest> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:48:50" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:48:20"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://www.w3.org/ns/earl#info>
-                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:42:49"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countClassShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:42:49" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:42:19"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://sparql.agroportal.lirmm.fr/sparql/> ;\n                kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n            <http://ns.inria.fr/kgindex#AgroportalDataset> void:classes ?count .\n        }\n        WHERE {\n            SELECT (count(?class) AS ?count)\n            WHERE {\n                SELECT DISTINCT ?class\n                \n                WHERE {\n                    { ?class a owl:Class }\n                    UNION { ?class a rdfs:Class }\n                    UNION { ?whatever a ?class }\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:43:19"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countClassShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:43:19" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:42:49"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://www.w3.org/ns/earl#info>
-                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:45:50"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countPropertyShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:45:50" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:45:19"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://www.w3.org/ns/earl#info>
-                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:40:49"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countTripleShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:40:49" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:40:19"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#AgroportalDataset> void:classes ?count .\n        }\n        WHERE {\n            SELECT (count(?class) AS ?count)\n            WHERE {\n                SELECT DISTINCT ?class\n                \n                WHERE {\n                    { ?class a owl:Class }\n                    UNION { ?class a rdfs:Class }\n                    UNION { ?whatever a ?class }\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:44:19"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countClassShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:44:19" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:43:49"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
                                     "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
                             <http://www.w3.org/ns/earl#info>
                                     "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
                             <http://www.w3.org/ns/earl#outcome>
                                     <http://www.w3.org/ns/earl#failed> ;
                             <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:49:52"
+                                    "20-09-2021T11:49:20"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalDistinctIRIReferencesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:49:20" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:48:50"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://www.w3.org/ns/earl#info>
+                                    "" , "Parser error" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:41:28"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#countPropertyShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:41:28" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:41:28"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <https://sparql.agroportal.lirmm.fr/sparql/> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n                <http://ns.inria.fr/kgindex#AgroportalDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }\n            WHERE { ?s a ?c ; ?p ?o }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:53:18"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalClassPartitionPropertyPartitionDistinctSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:53:18" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:52:48"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX nonsensical: <http://nonsensic.al> PREFIX ex: <http://e.g>  SELECT * WHERE { nonsensical:1 ex:type ?val . FILTER regex(?val, \"thi\") } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:40:08"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#filterRegexTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:40:08" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:40:08"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX dqv: <http://www.w3.org/ns/dqv#>\n            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroportalDataset> a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .\n                <http://ns.inria.fr/kgindex#AgroportalEndpoint> sd:endpoint <https://sparql.agroportal.lirmm.fr/sparql/> ;\n                    dcat:servesDataset <http://ns.inria.fr/kgindex#AgroportalDataset> ;\n                    a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .\n                <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <https://sparql.agroportal.lirmm.fr/sparql/> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> , <http://ns.inria.fr/kgindex#AgroportalEndpoint> ;\n                    dqv:hasQualityMeasurement [\n                        a dqv:QualityMeasurement ;\n                        rdfs:label \"Could not reach the endpoint\"@en ;\n                        dqv:computedOn <http://ns.inria.fr/kgindex#AgroportalEndpoint> ;\n                        dqv:isMeasurementOf kgi:reachableEndpointTest ;\n                        dqv:value \"false\"^^xsd:boolean\n                    ] .\n\n            }\n            WHERE {\n            }\n            " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:56:19"
                           ] ;
                   <http://www.w3.org/ns/earl#subject>
                           <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
                   <http://www.w3.org/ns/earl#test>
                           <http://ns.inria.fr/kgindex#reachableEndpointTest> ;
                   <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:49:52" ;
+                          "20-09-2021T11:56:19" ;
                   <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:49:22"
+                          "20-09-2021T11:55:48"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <https://sparql.agroportal.lirmm.fr/sparql/> .\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:40:09"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#datasetDescResourceConnectedTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:40:09" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:40:08"
                 ] ;
         <http://ns.inria.fr/kgindex#trace>
                 [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
@@ -155,163 +138,226 @@
                             <http://www.w3.org/ns/earl#outcome>
                                     <http://www.w3.org/ns/earl#failed> ;
                             <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:48:20"
+                                    "20-09-2021T11:51:20"
                           ] ;
                   <http://www.w3.org/ns/earl#subject>
                           <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
                   <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#sportalTest> ;
+                          <http://ns.inria.fr/kgindex#sportalClassPartitionDistinctSubjectsTest> ;
                   <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:48:20" ;
+                          "20-09-2021T11:51:20" ;
                   <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:47:50"
+                          "20-09-2021T11:50:50"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://sparql.agroportal.lirmm.fr/sparql/> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n                    <http://ns.inria.fr/kgindex#AgroportalDataset> voidex:distinctBlankNodes ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:47:23"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalDistinctBlankNodesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:47:23" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:46:53"
                 ] ;
         <http://ns.inria.fr/kgindex#trace>
                 [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
                   <http://www.w3.org/ns/earl#result>
                           [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "ASK\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:44:54"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalDistinctUrisTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:44:54" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:44:28"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:47:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalBlankNodeSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:47:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:47:23"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://sparql.agroportal.lirmm.fr/sparql/> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n                    <http://ns.inria.fr/kgindex#AgroportalDataset> voidex:distinctBlankNodeSubjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} } " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:48:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalBlankNodeSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:48:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:48:20"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
                             <http://www.w3.org/ns/earl#info>
                                     "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
                             <http://www.w3.org/ns/earl#outcome>
                                     <http://www.w3.org/ns/earl#failed> ;
                             <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:47:50"
+                                    "20-09-2021T11:54:18"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalPropertyPartitionDistinctObjectTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:54:18" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:53:48"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://sparql.agroportal.lirmm.fr/sparql/> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n                    <http://ns.inria.fr/kgindex#AgroportalDataset> voidex:distinctBlankNodes ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:46:53"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalDistinctBlankNodesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:46:53" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:46:23"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT DISTINCT ?ns\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:40:39"
                           ] ;
                   <http://www.w3.org/ns/earl#subject>
                           <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
                   <http://www.w3.org/ns/earl#test>
                           <http://ns.inria.fr/kgindex#vocabularyListExtractionTest> ;
                   <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:47:50" ;
+                          "20-09-2021T11:40:39" ;
                   <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:47:20"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://sparql.agroportal.lirmm.fr/sparql/> ;\n                kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n            <http://ns.inria.fr/kgindex#AgroportalDataset> void:properties ?count .\n        }\n        WHERE {\n            SELECT (count(?p) AS ?count)\n            WHERE {\n                SELECT DISTINCT ?p\n                \n                WHERE {\n                    ?s ?p ?o\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:46:20"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countPropertyShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:46:20" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:45:50"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://sparql.agroportal.lirmm.fr/sparql/> ;\n                kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n            <http://ns.inria.fr/kgindex#AgroportalDataset> void:triples ?count .\n        }\n        WHERE {\n            SELECT (count(*) AS ?count) WHERE {\n                SELECT DISTINCT ?s ?p ?o\n                \n                WHERE {\n                   ?s ?p ?o .\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:41:19"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countTripleShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:41:19" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:40:49"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://sparql.agroportal.lirmm.fr/sparql/> ;\n                kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n            <http://ns.inria.fr/kgindex#AgroportalDataset> void:triples ?count .\n        }\n        WHERE {\n            SELECT (count(*) AS ?count) WHERE {\n                SELECT DISTINCT ?s ?p ?o\n                \n                WHERE {\n                   ?s ?p ?o .\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:41:49"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countTripleShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:41:49" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:41:19"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://sparql.agroportal.lirmm.fr/sparql/> ;\n                kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n            <http://ns.inria.fr/kgindex#AgroportalDataset> void:classes ?count .\n        }\n        WHERE {\n            SELECT (count(?class) AS ?count)\n            WHERE {\n                SELECT DISTINCT ?class\n                \n                WHERE {\n                    { ?class a owl:Class }\n                    UNION { ?class a rdfs:Class }\n                    UNION { ?whatever a ?class }\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:43:49"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countClassShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:43:49" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:43:19"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://sparql.agroportal.lirmm.fr/sparql/> ;\n                kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n            <http://ns.inria.fr/kgindex#AgroportalDataset> void:properties ?count .\n        }\n        WHERE {\n            SELECT (count(?p) AS ?count)\n            WHERE {\n                SELECT DISTINCT ?p\n                \n                WHERE {\n                    ?s ?p ?o\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:46:50"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#countPropertyShape> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:46:50" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:46:20"
+                          "20-09-2021T11:40:09"
                 ] ;
         <http://ns.inria.fr/kgindex#trace>
                 [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
                   <http://www.w3.org/ns/earl#result>
                           [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n        }\n        " ;
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
                             <http://www.w3.org/ns/earl#info>
                                     "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
                             <http://www.w3.org/ns/earl#outcome>
                                     <http://www.w3.org/ns/earl#failed> ;
                             <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:47:20"
+                                    "20-09-2021T11:44:28"
                           ] ;
                   <http://www.w3.org/ns/earl#subject>
                           <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
                   <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#datasetDescResourceConnectedTest> ;
+                          <http://ns.inria.fr/kgindex#sportalDistinctBlankNodeObjectsTest> ;
                   <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:47:20" ;
+                          "20-09-2021T11:44:28" ;
                   <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:46:50"
+                          "20-09-2021T11:43:58"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:51:48"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalClassPartitionPropertiesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:51:48" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:51:20"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:41:58"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#equivalenceTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:41:58" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:41:28"
                 ] ;
         <http://ns.inria.fr/kgindex#trace>
                 [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
@@ -319,62 +365,41 @@
                           [ <http://ns.inria.fr/kgindex#sentQuery>
                                     "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://sparql.agroportal.lirmm.fr/sparql/> .\n        }\n        " ;
                             <http://www.w3.org/ns/earl#info>
-                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                    "" ;
                             <http://www.w3.org/ns/earl#outcome>
                                     <http://www.w3.org/ns/earl#failed> ;
                             <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:49:21"
+                                    "20-09-2021T11:40:08"
                           ] ;
                   <http://www.w3.org/ns/earl#subject>
                           <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
                   <http://www.w3.org/ns/earl#test>
                           <http://ns.inria.fr/kgindex#connectedEndpointDescResourceTest> ;
                   <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:49:21" ;
+                          "20-09-2021T11:40:08" ;
                   <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:48:20"
+                          "20-09-2021T11:40:08"
                 ] ;
         <http://ns.inria.fr/kgindex#trace>
                 [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
                   <http://www.w3.org/ns/earl#result>
                           [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n            FILTER( CONTAINS( str(?graph), \"\") )\n        }" ;
+                                    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            ASK\n            WHERE {\n                {\n                    SELECT (count(*) AS ?value) WHERE {\n                        ?s ?p ?o .\n                    }\n                }\n            } " ;
                             <http://www.w3.org/ns/earl#info>
-                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                    "" , "Parser error" ;
                             <http://www.w3.org/ns/earl#outcome>
                                     <http://www.w3.org/ns/earl#failed> ;
                             <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:40:19"
-                          ] ;
-                  <http://www.w3.org/ns/earl#subject>
-                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
-                  <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#graphListExtractionTest> ;
-                  <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:40:19" ;
-                  <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:39:49"
-                ] ;
-        <http://ns.inria.fr/kgindex#trace>
-                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
-                  <http://www.w3.org/ns/earl#result>
-                          [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#AgroportalDataset> void:triples ?count .\n        }\n        WHERE {\n            SELECT (count(*) AS ?count) WHERE {\n                SELECT DISTINCT ?s ?p ?o\n                \n                WHERE {\n                   ?s ?p ?o .\n                }\n            }\n        }\n    " ;
-                            <http://www.w3.org/ns/earl#info>
-                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
-                            <http://www.w3.org/ns/earl#outcome>
-                                    <http://www.w3.org/ns/earl#failed> ;
-                            <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:42:19"
+                                    "20-09-2021T11:40:39"
                           ] ;
                   <http://www.w3.org/ns/earl#subject>
                           <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
                   <http://www.w3.org/ns/earl#test>
                           <http://ns.inria.fr/kgindex#countTripleShape> ;
                   <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:42:19" ;
+                          "20-09-2021T11:40:39" ;
                   <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:41:49"
+                          "20-09-2021T11:40:39"
                 ] ;
         <http://ns.inria.fr/kgindex#trace>
                 [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
@@ -388,16 +413,413 @@
                             <http://www.w3.org/ns/earl#outcome>
                                     <http://www.w3.org/ns/earl#passed> ;
                             <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:49:22"
+                                    "20-09-2021T11:56:19"
                           ] ;
                   <http://www.w3.org/ns/earl#subject>
                           <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
                   <http://www.w3.org/ns/earl#test>
                           <http://ns.inria.fr/kgindex#provenanceExtractionShape> ;
                   <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:49:22" ;
+                          "20-09-2021T11:56:19" ;
                   <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:49:22"
+                          "20-09-2021T11:56:19"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:42:28"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalDistinctRDFNodesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:42:28" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:41:58"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX voidex: <http://ldf.fi/void-ext#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://sparql.agroportal.lirmm.fr/sparql/> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n                    <http://ns.inria.fr/kgindex#AgroportalDataset> voidex:distinctIRIReferenceSubjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:45:24"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalDistinctUrisTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:45:24" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:44:54"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroportalDataset> void:triples ?count .\n            }\n            WHERE {\n                SELECT (count(*) AS ?count) WHERE {\n                    SELECT DISTINCT ?s ?p ?o\n                    \n                    WHERE {\n                       ?s ?p ?o .\n                    }\n                }\n            }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:41:09"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#countTripleShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:41:09" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:40:39"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT * WHERE { ?s ?o false } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:40:08"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#filterBoolTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:40:08" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:40:08"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://sparql.agroportal.lirmm.fr/sparql/> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n                    <http://ns.inria.fr/kgindex#AgroportalDataset> voidex:distinctBlankNodeSubjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} } " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:48:20"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalBlankNodeSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:48:20" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:47:50"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX dqv: <http://www.w3.org/ns/dqv#>\n            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroportalDataset> a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .\n                <http://ns.inria.fr/kgindex#AgroportalEndpoint> sd:endpoint <http://sparql.agroportal.lirmm.fr/sparql/> ;\n                    dcat:servesDataset <http://ns.inria.fr/kgindex#AgroportalDataset> ;\n                    a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .\n                <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <http://sparql.agroportal.lirmm.fr/sparql/> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> , <http://ns.inria.fr/kgindex#AgroportalEndpoint> ;\n                    dqv:hasQualityMeasurement [\n                        a dqv:QualityMeasurement ;\n                        rdfs:label \"Could not reach the endpoint\"@en ;\n                        dqv:computedOn <http://ns.inria.fr/kgindex#AgroportalEndpoint> ;\n                        dqv:isMeasurementOf kgi:reachableEndpointTest ;\n                        dqv:value \"false\"^^xsd:boolean\n                    ] .\n\n            }\n            WHERE {\n            }\n            " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:55:48"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#reachableEndpointTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:55:48" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:55:18"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <https://sparql.agroportal.lirmm.fr/sparql/> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n                    <http://ns.inria.fr/kgindex#AgroportalDataset> voidex:distinctIRIReferenceObjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:43:58"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalDistinctUrisObjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:43:58" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:43:28"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX voidex: <http://ldf.fi/void-ext#>\n                CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://sparql.agroportal.lirmm.fr/sparql/> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n                    <http://ns.inria.fr/kgindex#AgroportalDataset> voidex:distinctIRIReferenceObjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:43:28"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalDistinctUrisObjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:43:28" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:42:58"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX dqv: <http://www.w3.org/ns/dqv#>\n            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroportalMetadata> dqv:hasQualityMeasurement [\n                    a dqv:QualityMeasurement ;\n                    rdfs:label \"Provenance information are present in the metadata\"@en ;\n                    dqv:computedOn <http://ns.inria.fr/kgindex#AgroportalEndpoint> ;\n                    dqv:isMeasurementOf kgi:provenanceExtractionShape ;\n                    dqv:value \"true\"^^xsd:boolean\n                ] .\n            } WHERE {\n            }\n            " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:56:49"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#provenanceExtractionShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:56:49" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:56:19"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalClassPartitionDistinctObjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:50:20"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:55:18"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#reachableEndpointTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:55:18" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:54:48"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <http://sparql.agroportal.lirmm.fr/sparql/> ;\n                kgi:curated <http://ns.inria.fr/kgindex#AgroportalEndpoint> .\n            <http://ns.inria.fr/kgindex#AgroportalEndpoint> sd:availableGraphs <http://ns.inria.fr/kgindex#AgroportalGraphList> .\n            <http://ns.inria.fr/kgindex#AgroportalGraphList> sd:namedGraph [\n                    a sd:NamedGraph ;\n                    sd:name ?graph\n                ] .\n        }\n        WHERE {\n            SELECT DISTINCT ?graph WHERE {\n                GRAPH ?graph { ?s ?p ?o }\n            }\n        }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Parser error" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:40:09"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#graphListExtractionTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:40:09" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:40:09"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <http://sparql.agroportal.lirmm.fr/sparql/> .\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:40:09"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#datasetDescResourceConnectedTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:40:09" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:40:08"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                    prov:wasDerivedFrom <http://sparql.agroportal.lirmm.fr/sparql/> ;\n                    kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n                <http://ns.inria.fr/kgindex#AgroportalDataset> void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }\n            WHERE { ?s a ?c ; ?p ?o }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:53:48"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalClassPartitionPropertyPartitionDistinctSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:53:48" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:53:18"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX owl: <http://www.w3.org/2002/07/owl#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroportalDataset> void:properties ?count .\n            }\n            WHERE {\n                SELECT (count(?p) AS ?count)\n                WHERE {\n                    SELECT DISTINCT ?p\n                    \n                    WHERE {\n                        ?s ?p ?o\n                    }\n                }\n            }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Parser error" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:41:28"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#countPropertyShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:41:28" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:41:28"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:40:09"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#graphListExtractionTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:40:09" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:40:09"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:46:23"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalDistinctBlankNodesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:46:23" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:45:54"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:54:48"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalPropertyPartitionDistinctSubjectTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:54:48" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:54:18"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://www.w3.org/ns/earl#info>
+                                    "" , "Parser error" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:41:09"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#countClassShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:41:09" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:41:09"
                 ] ;
         <http://ns.inria.fr/kgindex#trace>
                 [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
@@ -405,39 +827,207 @@
                           [ <http://ns.inria.fr/kgindex#sentQuery>
                                     "SELECT ?class (count(?instance) AS ?count) WHERE {\n        SELECT DISTINCT ?class ?instance\n        \n        WHERE {\n            ?instance a ?class .\n        }\n    }\n    GROUP BY ?class" ;
                             <http://www.w3.org/ns/earl#info>
-                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                                    "" , "Parser error" ;
                             <http://www.w3.org/ns/earl#outcome>
                                     <http://www.w3.org/ns/earl#failed> ;
                             <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:45:19"
+                                    "20-09-2021T11:41:28"
                           ] ;
                   <http://www.w3.org/ns/earl#subject>
                           <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
                   <http://www.w3.org/ns/earl#test>
                           <http://ns.inria.fr/kgindex#classPopCountTest> ;
                   <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:45:19" ;
+                          "20-09-2021T11:41:28" ;
                   <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:44:49"
+                          "20-09-2021T11:41:12"
                 ] ;
         <http://ns.inria.fr/kgindex#trace>
                 [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
                   <http://www.w3.org/ns/earl#result>
                           [ <http://ns.inria.fr/kgindex#sentQuery>
-                                    "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n        }\n        " ;
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:42:58"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalDistinctUrisObjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:42:58" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:42:28"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX voidex: <http://ldf.fi/void-ext#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            CONSTRUCT {\n                    <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                        prov:wasDerivedFrom <http://sparql.agroportal.lirmm.fr/sparql/> ;\n                        kgi:curated <http://ns.inria.fr/kgindex#AgroportalDataset> .\n                    <http://ns.inria.fr/kgindex#AgroportalDataset> voidex:distinctIRIReferenceSubjects ?x }\n                WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:45:54"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalDistinctUrisTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:45:54" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:45:24"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <https://sparql.agroportal.lirmm.fr/sparql/> .\n        }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:40:08"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#connectedEndpointDescResourceTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:40:08" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:40:08"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            PREFIX prov: <http://www.w3.org/ns/prov#>\n            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n            PREFIX earl: <http://www.w3.org/ns/earl#>\n            PREFIX kgi: <http://ns.inria.fr/kgindex#>\n            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX owl: <http://www.w3.org/2002/07/owl#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroportalDataset> void:classes ?count .\n            }\n            WHERE {\n                SELECT (count(?class) AS ?count)\n                WHERE {\n                    SELECT DISTINCT ?class\n                    \n                    WHERE {\n                        { ?class a owl:Class }\n                        UNION { ?class a rdfs:Class }\n                        UNION { ?whatever a ?class }\n                    }\n                }\n            }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Parser error" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:41:12"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#countClassShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:41:12" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:41:09"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
                             <http://www.w3.org/ns/earl#info>
                                     "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
                             <http://www.w3.org/ns/earl#outcome>
                                     <http://www.w3.org/ns/earl#failed> ;
                             <http://www.w3.org/ns/prov#generatedAtTime>
-                                    "29-07-2021T15:44:49"
+                                    "20-09-2021T11:52:48"
                           ] ;
                   <http://www.w3.org/ns/earl#subject>
                           <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
                   <http://www.w3.org/ns/earl#test>
-                          <http://ns.inria.fr/kgindex#datasetDescResourceTest> ;
+                          <http://ns.inria.fr/kgindex#sportalClassPartitionPropertyPartitionDistinctSubjectsTest> ;
                   <http://www.w3.org/ns/prov#endedAtTime>
-                          "29-07-2021T15:44:49" ;
+                          "20-09-2021T11:52:48" ;
                   <http://www.w3.org/ns/prov#startedAtTime>
-                          "29-07-2021T15:44:19"
+                          "20-09-2021T11:52:18"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n            CONSTRUCT {\n                <http://ns.inria.fr/kgindex#AgroportalDataset> void:classPartition [ void:class ?c ; void:properties ?x ] }\n            WHERE { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:52:18"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalClassPartitionPropertiesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:52:18" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:51:48"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/earl#Assertion> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "PREFIX void: <http://rdfs.org/ns/void#>\n        PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        PREFIX earl: <http://www.w3.org/ns/earl#>\n        PREFIX kgi: <http://ns.inria.fr/kgindex#>\n        CONSTRUCT {\n            <http://ns.inria.fr/kgindex#AgroportalMetadata> a prov:Entity , earl:TestSubject ;\n                prov:wasDerivedFrom <https://sparql.agroportal.lirmm.fr/sparql/> ;\n                kgi:curated <http://ns.inria.fr/kgindex#AgroportalEndpoint> .\n            <http://ns.inria.fr/kgindex#AgroportalEndpoint> sd:availableGraphs <http://ns.inria.fr/kgindex#AgroportalGraphList> .\n            <http://ns.inria.fr/kgindex#AgroportalGraphList> sd:namedGraph [\n                    a sd:NamedGraph ;\n                    sd:name ?graph\n                ] .\n        }\n        WHERE {\n            SELECT DISTINCT ?graph WHERE {\n                GRAPH ?graph { ?s ?p ?o }\n            }\n        }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Parser error" , "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:40:09"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#graphListExtractionTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:40:09" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:40:09"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:49:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalDistinctLiteralsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:49:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:49:20"
+                ] ;
+        <http://ns.inria.fr/kgindex#trace>
+                [ rdf:type  <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kgindex#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "20-09-2021T11:50:20"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kgindex#AgroportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kgindex#sportalClassPartitionClassesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "20-09-2021T11:50:20" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "20-09-2021T11:49:50"
                 ] .

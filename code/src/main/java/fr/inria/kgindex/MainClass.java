@@ -8,6 +8,7 @@ import fr.inria.kgindex.rules.RuleFactory;
 import fr.inria.kgindex.util.*;
 import org.apache.commons.cli.*;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.util.FileUtils;
 import org.apache.jena.vocabulary.VOID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,34 +23,47 @@ public class MainClass {
 
 	private static final Logger logger = LogManager.getLogger(MainClass.class);
 
+	private static final String OPT_NAME = "name";
+	private static final String OPT_ENDPOINT = "endpoint";
+	private static final String OPT_TIMEOUT = "timeout";
+	private static final String OPT_OUTPUT = "output";
+	private static final String OPT_FEDERATION = "federation";
+	private static final String OPT_MANIFEST = "manifest";
+	private static final String OPT_HELP = "help";
+
 	public static void main(String[] args) {
 		Options options = new Options();
-		options.addOption(Option.builder("name")
+		options.addOption(Option.builder(OPT_NAME)
 				.required(true)
 				.hasArg()
 				.desc("Name of the KB. Used for filenames and resources prefixing.")
 				.build());
-		options.addOption(Option.builder("endpoint")
+		options.addOption(Option.builder(OPT_ENDPOINT)
 				.required(true)
 				.hasArg()
 				.desc("URL of the endpoint of the KB.")
 				.build());
-		options.addOption(Option.builder("timeout")
+		options.addOption(Option.builder(OPT_TIMEOUT)
 				.required(false)
 				.hasArg()
 				.desc("Timeout for all queries in milliseconds. Default is 30000.")
 				.build());
-		options.addOption(Option.builder("output")
+		options.addOption(Option.builder(OPT_OUTPUT)
 				.required(false)
 				.hasArg()
 				.desc("Output filename. Default is 'kbMetadata[name].ttl'.")
 				.build());
-		options.addOption(Option.builder("manifest")
+		options.addOption(Option.builder(OPT_FEDERATION)
+				.required(false)
+				.hasArg()
+				.desc("SPARQL endpoint URL to a federation server used in rules for the generation. If none is given, rules using the kgi:federated endpoint will not be executed.")
+				.build());
+		options.addOption(Option.builder(OPT_MANIFEST)
 				.required(false)
 				.hasArg()
 				.desc("Root manifest file of the generation rules. Default is https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl")
 				.build());
-		options.addOption(Option.builder("help")
+		options.addOption(Option.builder(OPT_HELP)
 				.required(false)
 				.desc("Print this message.")
 				.build());
@@ -57,29 +71,32 @@ public class MainClass {
 		CommandLineParser parser = new DefaultParser();
 		try {
 			CommandLine cmd = parser.parse( options, args);
-			if(cmd.hasOption("help")) {
+			if(cmd.hasOption(OPT_HELP)) {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp( "kgindex", options );
 				return ;
 			}
-			if(cmd.hasOption("timeout")) {
-				String queryTimeoutString = cmd.getOptionValue("timeout", "30000");
+			if(cmd.hasOption(OPT_TIMEOUT)) {
+				String queryTimeoutString = cmd.getOptionValue(OPT_TIMEOUT, "30000");
 				Utils.queryTimeout = Long.parseLong(queryTimeoutString);
 			}
 			String manifestRootFile = "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl";
-			if(cmd.hasOption("manifest")) {
-				manifestRootFile = cmd.getOptionValue("manifest", "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl");
+			if(cmd.hasOption(OPT_MANIFEST)) {
+				manifestRootFile = cmd.getOptionValue(OPT_MANIFEST, "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl");
 			}
 
-			/*
-			 * On a besoin d'un nom de dataset en plus de l'URL pour préfixer les fichiers et URLs générés
-			 */
-			String endpointUrl = cmd.getOptionValue("endpoint");
-			String datasetName = cmd.getOptionValue("name");
+			if(cmd.hasOption(OPT_FEDERATION)) {
+				RuleApplication.federationserver = cmd.getOptionValue(OPT_FEDERATION, null);
+			}
+
+			 // On a besoin d'un nom de dataset en plus de l'URL pour préfixer les fichiers et URLs générés
+
+			String endpointUrl = cmd.getOptionValue(OPT_ENDPOINT);
+			String datasetName = cmd.getOptionValue(OPT_NAME);
 
 			String outputFilename = "kbMetadata"+ datasetName +".ttl";
-			if(cmd.hasOption("output")) {
-				outputFilename = cmd.getOptionValue("output", "kbMetadata"+ datasetName +".ttl");
+			if(cmd.hasOption(OPT_OUTPUT)) {
+				outputFilename = cmd.getOptionValue(OPT_OUTPUT, "kbMetadata"+ datasetName +".ttl");
 			}
 
 			Dataset describedDataset = new Dataset(endpointUrl, datasetName);
@@ -140,7 +157,7 @@ public class MainClass {
 
 			try {
 				OutputStream outputStream = new FileOutputStream(outputFilename);
-				datasetDescription.write(outputStream, "TURTLE");
+				datasetDescription.write(outputStream, FileUtils.guessLang(outputFilename, "TTL"));
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}

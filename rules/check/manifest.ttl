@@ -1,11 +1,10 @@
 @prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
-@prefix kgi: <http://ns.inria.fr/kgindex#> .
+@prefix kgi: <http://ns.inria.fr/kg/index#> .
 
 <> a mf:Manifest ;
     mf:entries (
             <reachability.ttl>
             <provenance.ttl>
-            <basicFederatedQuery.ttl>
         ) .
 
 <basicFederatedQuery.ttl> a mf:ManifestEntry ;
@@ -30,7 +29,7 @@
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX dqv: <http://www.w3.org/ns/dqv#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             CONSTRUCT {
@@ -60,7 +59,8 @@
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX dqv: <http://www.w3.org/ns/dqv#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             CONSTRUCT {
@@ -90,7 +90,7 @@
     kgi:onSuccess (
         [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             CONSTRUCT {
                 $metadataDescription dqv:hasQualityMeasurement [
@@ -108,7 +108,7 @@
     kgi:onFailure (
         [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             CONSTRUCT {
                 $metadataDescription dqv:hasQualityMeasurement [

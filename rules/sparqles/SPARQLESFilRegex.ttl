@@ -1,0 +1,11 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix kgi: <http://ns.inria.fr/kg/index#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+kgi:filterRegexTest rdf:type kgi:TestQuery ;
+    dcterms:title "Filter with regex" ;
+    dcterms:description "SPARQL SELECT query with a single-triple pattern and a FILTER operator filtering variables containing the \"thi\" string, case sensitive." ;
+    kgi:query """PREFIX nonsensical: <http://nonsensic.al> PREFIX ex: <http://e.g>  SELECT * WHERE { nonsensical:1 ex:type ?val . FILTER regex(?val, \"thi\") } LIMIT 10"""  .

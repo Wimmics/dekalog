@@ -2,11 +2,10 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
-@prefix kgi: <http://ns.inria.fr/kgindex#> .
+@prefix kgi: <http://ns.inria.fr/kg/index#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
-kgi:sportalClassPartitionPropertyPartitionDistinctSubjectsTest rdf:type kgi:TestQuery , earl:TestCase ;
-    dcterms:title "Reachability test used as a placeholder for SPORTAL actions trigger." ;
+kgi:equivalenceTest rdf:type kgi:TestQuery ;
+    dcterms:title "Placeholder reachability test for the equivalences rule" ;
     dcterms:description "Reachability is tested with a simple query" ;
-    dcterms:requires kgi:reachableEndpointTest ;
     kgi:query """SELECT * WHERE { ?s ?p ?o . } LIMIT 1"""  .
