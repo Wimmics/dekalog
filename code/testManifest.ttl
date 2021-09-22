@@ -7,9 +7,30 @@
 @prefix void: <http://rdfs.org/ns/void#> .
 
 <> a mf:Manifest ;
+<<<<<<< Updated upstream
     mf:entries (
             <file:///user/pmaillot/home/git/dekalog/rules/extraction/vocabularyListCoreseLOV.ttl>
+            <file:///user/pmaillot/home/git/dekalog/rules/extraction/endpointDescResource.ttl>
+            <file:///user/pmaillot/home/git/dekalog/rules/extraction/datasetDescResource.ttl>
+            <file:///user/pmaillot/home/git/dekalog/rules/extraction/languages.ttl>
         ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/extraction/languages.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX schema: <http://schema.org/>
+                CONSTRUCT {
+                    $datasetDescription schema:availableLanguage ?lang .
+                }
+                WHERE {
+                    SELECT DISTINCT (lang(?o) as ?lang)  WHERE {
+                        ?s ?p ?o
+                        FILTER( isLiteral(?o) )
+                    }
+                }
+            """
+        ]
+    ) .
 
 <file:///user/pmaillot/home/git/dekalog/rules/extraction/endpointDescResource.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
@@ -28,6 +49,9 @@
                          prov:wasDerivedFrom $endpointUrl ;
                          kgi:curated $endpointDescription ;
                          kgi:original ?res .
+                    GRAPH $endpointUrl {
+                        ?res ?p ?o .
+                    }
                 } WHERE {
                     ?res sd:endpoint $endpointUrl .
                     ?res ?p ?o .
@@ -37,8 +61,11 @@
             mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                   ?s ?p $endpointDescription .
-                   $metadataDescription kgi:original ?res .
+                    ?s ?p $endpointDescription .
+                    $metadataDescription kgi:original ?res .
+                    GRAPH $endpointUrl {
+                        ?s ?p ?res .
+                    }
                 } WHERE {
                    ?res sd:endpoint $endpointUrl .
                    ?s ?p ?res .
@@ -76,6 +103,9 @@
                         prov:wasDerivedFrom $endpointUrl ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
+                    GRAPH $endpointUrl {
+                        ?res ?pp ?o .
+                    }
                 }
                 WHERE {
                     { ?res a dcat:Dataset }
@@ -98,6 +128,9 @@
                         kgi:original ?res .
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
                     ?s ?pp $datasetDescription .
+                    GRAPH $endpointUrl {
+                        ?s ?pp ?res .
+                    }
                 }
                 WHERE {
                     { ?res a dcat:Dataset }
@@ -190,10 +223,12 @@
                 prov:wasDerivedFrom $endpoint ;
                 kgi:curated $datasetDescription .
             $datasetDescription void:vocabulary ?vocabURI .
-            ?vocabURI a voaf:Vocabulary ;
-                vann:preferredNamespaceUri ?uri ;
-                vann:preferredNamespacePrefix ?prefix ;
-                dcterms:title ?title .
+            GRAPH <https://lov.linkeddata.es/dataset/lov/sparql> {
+                ?vocabURI a voaf:Vocabulary ;
+                    vann:preferredNamespaceUri ?uri ;
+                    vann:preferredNamespacePrefix ?prefix ;
+                    dcterms:title ?title .
+            }
         }
         WHERE {
             SERVICE $endpoint {

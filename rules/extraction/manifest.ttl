@@ -340,7 +340,8 @@
                     }
                 }
                 BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
-            }
+            }"""
+        ]
         [
             mf:action """
                 PREFIX dcterms: <http://purl.org/dc/terms/>

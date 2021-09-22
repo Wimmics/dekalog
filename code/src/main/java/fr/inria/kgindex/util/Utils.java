@@ -31,7 +31,7 @@ public class Utils {
      * @param describedDataset
      * @return a set of transformed strings.
      */
-    public static Set<String> rewriteQueryPlaceholders(String queryString, DescribedDataset describedDataset) {
+    public static Set<String> rewriteQueryPlaceholders(String queryString, final DescribedDataset describedDataset) {
         HashSet<String> result = new HashSet<String>();
 
         queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_DATASETDESCRIPTION), "<"+describedDataset.getDatasetDescriptionResource().getURI()+">");
@@ -92,12 +92,5 @@ public class Utils {
         result.add(queryString);
 
         return result;
-    }
-
-    public static String rewriteUrlWithPlaceholders(String url, Dataset describedDataset) {
-
-        String urlWithLowerCaseName = url.replaceAll(Pattern.quote("$name$"), describedDataset.getName().toLowerCase());
-
-        return urlWithLowerCaseName;
     }
 }

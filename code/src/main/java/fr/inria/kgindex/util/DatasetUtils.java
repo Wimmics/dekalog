@@ -12,7 +12,7 @@ public class DatasetUtils {
      * @param d2
      * @return d1 after addition
      */
-    public static Dataset addDataset(Dataset d1, Dataset d2) {
+    public static Dataset addDataset(Dataset d1, final Dataset d2) {
         RDFConnection connect = RDFConnectionFactory.connect(d1);
         connect.loadDataset(d2);
         connect.close();

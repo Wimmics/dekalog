@@ -123,15 +123,41 @@ public class RuleApplication {
                         tmpModel.close();
                         try {
                             if (queryString.contains("CONSTRUCT")) {
-                                Query constructQuery = QueryFactory.create(queryString);
-                                logger.debug(constructQuery);
-                                QueryExecution actionExecution = QueryExecutionFactory.sparqlService(action.getEndpointUrl(), constructQuery);
-                                actionExecution.setTimeout(Utils.queryTimeout);
+                                logger.debug(queryString);
 
                                 try {
-                                    Dataset constructData = actionExecution.execConstructDataset();
-                                    RDFDataMgr.write(System.err, constructData, Lang.TRIG);
-                                    result = DatasetUtils.addDataset(result, constructData);
+                                    // Tentative d'envoyer la requête sans passer par Jena
+                                    HttpClient client = HttpClient.newHttpClient();
+                                    HttpRequest request = null;
+                                    try {
+                                        URI queryURL = URI.create(action.getEndpointUrl() + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()) + "&timeout=" + Utils.queryTimeout);
+                                        logger.debug(queryURL);
+                                        request = HttpRequest.newBuilder()
+                                                .uri(queryURL)
+                                                .GET()
+                                                .header("Accept", "application/x-trig")
+                                                .build();
+                                    } catch (UnsupportedEncodingException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                    Dataset bodyData = DatasetFactory.create();
+                                    client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                                            .thenApply(HttpResponse::body)
+                                            .thenAccept(bodyString -> {
+                                                if (queryString.contains("CONSTRUCT")) {
+                                                    bodyString = bodyString.replace("= {", " {"); // SPARADRA pour enlever l'erreur de format qui met un "=" entre le nom d'un graphe et son contenu
+                                                    StringReader bodyReader = new StringReader(bodyString);
+                                                    logger.debug(bodyString);
+                                                    try {
+                                                        RDFDataMgr.read(bodyData, bodyReader, "", Lang.TRIG);
+                                                    } catch (RiotException e) {
+                                                        logger.error(e);
+                                                    }
+                                                }
+                                            })
+                                            .join();
+                                    RDFDataMgr.write(System.err, bodyData, Lang.TRIG);
+                                    DatasetUtils.addDataset(result, bodyData);
                                 } catch (RiotException e) {
                                     logger.error(e);
                                     logger.trace(this._entry.getFileResource() + " action could not be added because of RiotException");
@@ -139,7 +165,6 @@ public class RuleApplication {
                                     logger.error(e);
                                     logger.trace(this._entry.getFileResource() + " action could not be added because of QueryException");
                                 }
-                                actionExecution.close();
                             } else if (queryString.contains("INSERT") || queryString.contains("DELETE")) {
                                 UpdateRequest insertUpdate = UpdateFactory.create(queryString);
                                 UpdateAction.execute(insertUpdate, this._datasetDescription);
@@ -169,15 +194,15 @@ public class RuleApplication {
                             } catch (UnsupportedEncodingException e1) {
                                 e1.printStackTrace();
                             }
+                            Dataset bodyData = DatasetFactory.create();
                             client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                                     .thenApply(HttpResponse::body)
                                     .thenAccept(bodyString -> {
                                         if (queryString.contains("CONSTRUCT")) {
-                                            Model bodyModel = ModelFactory.createDefaultModel();
+                                            Dataset bodyModel = DatasetFactory.create();
                                             StringReader bodyReader = new StringReader(bodyString);
                                             try {
-                                                bodyModel.read(bodyReader, "");
-                                                result.add(bodyModel);
+                                                RDFDataMgr.read(bodyData, bodyReader, "", Lang.TRIG);
                                             } catch(RiotException er) {
                                                 logger.error(bodyString);
                                                 throw e;
@@ -185,6 +210,7 @@ public class RuleApplication {
                                         }
                                     })
                                     .join();
+                            DatasetUtils.addDataset(result, bodyData);
                         }
                     }
                 };
