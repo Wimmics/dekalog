@@ -7,9 +7,8 @@
 @prefix void: <http://rdfs.org/ns/void#> .
 
 <> a mf:Manifest ;
-   mf:entries (
-            <file:///user/pmaillot/home/git/dekalog/rules/extraction/endpointDescResource.ttl>
-            <file:///user/pmaillot/home/git/dekalog/rules/extraction/datasetDescResource.ttl>
+    mf:entries (
+            <file:///user/pmaillot/home/git/dekalog/rules/extraction/vocabularyListCoreseLOV.ttl>
         ) .
 
 <file:///user/pmaillot/home/git/dekalog/rules/extraction/endpointDescResource.ttl> a mf:ManifestEntry ;
@@ -174,4 +173,76 @@
                 }
             """
         ]
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/extraction/vocabularyListCoreseLOV.ttl> a mf:ManifestEntry ;
+        kgi:onSuccess (
+            [ kgi:endpoint kgi:federation ;
+                mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX vann: <http://purl.org/vocab/vann/>
+            PREFIX voaf: <http://purl.org/vocommons/voaf#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            CONSTRUCT {
+            $metadataDescription a prov:Entity , earl:TestSubject ;
+                prov:wasDerivedFrom $endpoint ;
+                kgi:curated $datasetDescription .
+            $datasetDescription void:vocabulary ?vocabURI .
+            ?vocabURI a voaf:Vocabulary ;
+                vann:preferredNamespaceUri ?uri ;
+                vann:preferredNamespacePrefix ?prefix ;
+                dcterms:title ?title .
+        }
+        WHERE {
+            SERVICE $endpoint {
+                SELECT DISTINCT ?elem WHERE {
+                    ?s a ?elem .
+                }
+            }
+            BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?vocabURI ) .
+            SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> {
+                GRAPH <https://lov.linkeddata.es/dataset/lov>{
+                    ?vocabURI a voaf:Vocabulary ;
+                        vann:preferredNamespaceUri ?uri ;
+                        vann:preferredNamespacePrefix ?prefix ;
+                        dcterms:title ?title .
+                }
+            }
+        }
+        """ ]
+        [ kgi:endpoint kgi:federation ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kgindex#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            CONSTRUCT {
+            $metadataDescription a prov:Entity , earl:TestSubject ;
+                prov:wasDerivedFrom $endpoint ;
+                kgi:curated $datasetDescription .
+            $datasetDescription void:vocabulary ?vocabURI .
+                ?vocabURI a voaf:Vocabulary ;
+                    vann:preferredNamespaceUri ?uri ;
+                    vann:preferredNamespacePrefix ?prefix ;
+                    dcterms:title ?title .
+        }
+        WHERE {
+            SERVICE $endpoint {
+                SELECT DISTINCT ?elem WHERE {
+                    ?s ?elem ?o .
+                }
+            }
+            BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?vocabURI ) .
+            SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> {
+                GRAPH <https://lov.linkeddata.es/dataset/lov>{
+                    ?vocabURI a voaf:Vocabulary ;
+                        vann:preferredNamespaceUri ?uri ;
+                        vann:preferredNamespacePrefix ?prefix ;
+                        dcterms:title ?title .
+                }
+            }
+        }
+        """ ]
     ) .

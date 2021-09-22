@@ -93,4 +93,11 @@ public class Utils {
 
         return result;
     }
+
+    public static String rewriteUrlWithPlaceholders(String url, Dataset describedDataset) {
+
+        String urlWithLowerCaseName = url.replaceAll(Pattern.quote("$name$"), describedDataset.getName().toLowerCase());
+
+        return urlWithLowerCaseName;
+    }
 }

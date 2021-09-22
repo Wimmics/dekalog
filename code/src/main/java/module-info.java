@@ -5,4 +5,5 @@ module fr.inria.kgindex {
 	requires org.apache.jena.shacl;
 	requires commons.cli;
     requires org.apache.jena.rdfconnection;
+    requires java.net.http;
 }

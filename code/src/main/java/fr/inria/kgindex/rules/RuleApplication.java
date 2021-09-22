@@ -13,6 +13,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
+import org.apache.jena.sparql.resultset.RDFInput;
 import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
@@ -21,7 +22,17 @@ import org.apache.jena.vocabulary.DCTerms;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.net.http.HttpRequest;
 
 import static fr.inria.kgindex.util.Utils.dateFormatter;
 
@@ -144,8 +155,36 @@ public class RuleApplication {
                             Model earlReport = EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral);
                             result = DatasetUtils.addDataset(result, DatasetFactory.create(earlReport));
                         } catch (QueryParseException e) {
-                            logger.debug(queryString);
-                            throw e;
+                            // Tentative d'envoyer la requête sans passer par Jena
+                            HttpClient client = HttpClient.newHttpClient();
+                            HttpRequest request = null;
+                            try {
+                                URI queryURL = URI.create(action.getEndpointUrl() + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
+                                logger.debug(queryURL);
+                                request = HttpRequest.newBuilder()
+                                        .uri(queryURL)
+                                        .GET()
+                                        .header("Accept", "application/rdf+xml")
+                                        .build();
+                            } catch (UnsupportedEncodingException e1) {
+                                e1.printStackTrace();
+                            }
+                            client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                                    .thenApply(HttpResponse::body)
+                                    .thenAccept(bodyString -> {
+                                        if (queryString.contains("CONSTRUCT")) {
+                                            Model bodyModel = ModelFactory.createDefaultModel();
+                                            StringReader bodyReader = new StringReader(bodyString);
+                                            try {
+                                                bodyModel.read(bodyReader, "");
+                                                result.add(bodyModel);
+                                            } catch(RiotException er) {
+                                                logger.error(bodyString);
+                                                throw e;
+                                            }
+                                        }
+                                    })
+                                    .join();
                         }
                     }
                 };
