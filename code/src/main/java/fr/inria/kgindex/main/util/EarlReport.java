@@ -1,8 +1,8 @@
-package fr.inria.kgindex.util;
+package fr.inria.kgindex.main.util;
 
-import fr.inria.kgindex.data.Dataset;
-import fr.inria.kgindex.data.FakeSHACLValidationReport;
-import fr.inria.kgindex.data.ManifestEntry;
+import fr.inria.kgindex.main.data.Dataset;
+import fr.inria.kgindex.main.data.FakeSHACLValidationReport;
+import fr.inria.kgindex.main.data.ManifestEntry;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -10,9 +10,8 @@ import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.vocabulary.RDF;
 
 import java.util.Date;
-import java.util.Map;
 
-import static fr.inria.kgindex.util.Utils.dateFormatter;
+import static fr.inria.kgindex.main.util.Utils.dateFormatter;
 
 public class EarlReport {
 

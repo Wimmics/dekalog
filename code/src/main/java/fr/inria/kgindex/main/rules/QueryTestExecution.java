@@ -1,9 +1,9 @@
-package fr.inria.kgindex.rules;
+package fr.inria.kgindex.main.rules;
 
-import fr.inria.kgindex.data.Dataset;
-import fr.inria.kgindex.util.EarlReport;
-import fr.inria.kgindex.util.KGIndex;
-import fr.inria.kgindex.util.Utils;
+import fr.inria.kgindex.main.data.Dataset;
+import fr.inria.kgindex.main.util.EarlReport;
+import fr.inria.kgindex.main.util.KGIndex;
+import fr.inria.kgindex.main.util.Utils;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import static fr.inria.kgindex.util.Utils.dateFormatter;
+import static fr.inria.kgindex.main.util.Utils.dateFormatter;
 
 public class QueryTestExecution extends TestExecution {
 

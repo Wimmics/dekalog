@@ -1,20 +1,21 @@
-package fr.inria.kgindex.rules;
+package fr.inria.kgindex.main.rules;
 
-import fr.inria.kgindex.data.*;
-import fr.inria.kgindex.util.EarlReport;
-import fr.inria.kgindex.util.KGIndex;
-import fr.inria.kgindex.util.Utils;
+import fr.inria.kgindex.main.data.Dataset;
+import fr.inria.kgindex.main.data.ManifestEntry;
+import fr.inria.kgindex.main.data.RuleLibrary;
+import fr.inria.kgindex.main.util.EarlReport;
+import fr.inria.kgindex.main.util.KGIndex;
+import fr.inria.kgindex.main.util.data.*;
+import fr.inria.kgindex.main.util.Utils;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryParseException;
-import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.apache.jena.sparql.resultset.RDFInput;
 import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
@@ -34,7 +35,7 @@ import java.util.List;
 import java.util.Set;
 import java.net.http.HttpRequest;
 
-import static fr.inria.kgindex.util.Utils.dateFormatter;
+import static fr.inria.kgindex.main.util.Utils.dateFormatter;
 
 public class RuleApplication {
 

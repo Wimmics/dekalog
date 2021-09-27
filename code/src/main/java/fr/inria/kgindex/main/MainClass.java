@@ -1,11 +1,12 @@
-package fr.inria.kgindex;
+package fr.inria.kgindex.main;
 
-import fr.inria.kgindex.data.Dataset;
-import fr.inria.kgindex.data.ManifestEntry;
-import fr.inria.kgindex.data.RuleLibrary;
-import fr.inria.kgindex.rules.RuleApplication;
-import fr.inria.kgindex.rules.RuleFactory;
-import fr.inria.kgindex.util.*;
+import fr.inria.kgindex.main.data.Dataset;
+import fr.inria.kgindex.main.data.ManifestEntry;
+import fr.inria.kgindex.main.data.RuleLibrary;
+import fr.inria.kgindex.main.rules.RuleApplication;
+import fr.inria.kgindex.main.rules.RuleFactory;
+import fr.inria.kgindex.main.util.SPARQL_SD;
+import fr.inria.kgindex.main.util.Utils;
 import org.apache.commons.cli.*;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.util.FileUtils;

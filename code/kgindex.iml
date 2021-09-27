@@ -19,6 +19,12 @@
     <orderEntry type="library" name="Maven: org.apache.jena:jena-dboe-base:4.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-dboe-index:4.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-rdfconnection:4.1.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.4" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.14.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.14.1" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.30" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.14.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-arq:4.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-core:4.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-base:4.1.0" level="project" />
@@ -39,11 +45,9 @@
     <orderEntry type="library" name="Maven: org.apache.thrift:libthrift:0.14.1" level="project" />
     <orderEntry type="library" name="Maven: javax.annotation:javax.annotation-api:1.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.12.0" level="project" />
-    <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.4" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.14.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.14.1" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.30" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.14.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-api:5.8.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.opentest4j:opentest4j:1.2.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-commons:1.8.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apiguardian:apiguardian-api:1.1.2" level="project" />
   </component>
 </module>

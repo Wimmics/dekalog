@@ -1,4 +1,4 @@
-package fr.inria.kgindex.data;
+package fr.inria.kgindex.main.data;
 
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shacl.vocabulary.SHACL;

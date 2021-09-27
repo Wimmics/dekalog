@@ -1,6 +1,6 @@
-package fr.inria.kgindex.util;
+package fr.inria.kgindex.main.util;
 
-import fr.inria.kgindex.data.Dataset;
+import fr.inria.kgindex.main.data.Dataset;
 import org.apache.jena.rdf.model.Resource;
 
 import java.text.SimpleDateFormat;

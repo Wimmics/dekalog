@@ -1,9 +1,8 @@
-package fr.inria.kgindex.data;
+package fr.inria.kgindex.main.data;
 
 import org.apache.jena.rdf.model.RDFNode;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 public class RuleLibrary {

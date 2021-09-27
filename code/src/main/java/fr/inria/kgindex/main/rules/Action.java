@@ -1,4 +1,4 @@
-package fr.inria.kgindex.rules;
+package fr.inria.kgindex.main.rules;
 
 import org.apache.jena.rdf.model.RDFNode;
 

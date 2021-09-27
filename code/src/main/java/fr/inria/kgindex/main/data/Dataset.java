@@ -1,6 +1,6 @@
-package fr.inria.kgindex.data;
+package fr.inria.kgindex.main.data;
 
-import fr.inria.kgindex.util.KGIndex;
+import fr.inria.kgindex.main.util.KGIndex;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
