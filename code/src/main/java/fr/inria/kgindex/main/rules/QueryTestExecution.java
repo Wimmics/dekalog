@@ -1,21 +1,11 @@
 package fr.inria.kgindex.main.rules;
 
-<<<<<<< HEAD:code/src/main/java/fr/inria/kgindex/main/rules/QueryTestExecution.java
-import fr.inria.kgindex.main.data.Dataset;
+import fr.inria.kgindex.main.data.DescribedDataset;
+import fr.inria.kgindex.main.util.DatasetUtils;
 import fr.inria.kgindex.main.util.EarlReport;
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Utils;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.ResultSet;
-=======
-import fr.inria.kgindex.data.DescribedDataset;
-import fr.inria.kgindex.util.DatasetUtils;
-import fr.inria.kgindex.util.EarlReport;
-import fr.inria.kgindex.util.KGIndex;
-import fr.inria.kgindex.util.Utils;
 import org.apache.jena.query.*;
->>>>>>> ModelToDataset:code/src/main/java/fr/inria/kgindex/rules/QueryTestExecution.java
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.vocabulary.DCTerms;

@@ -1,28 +1,13 @@
-<<<<<<< HEAD:code/src/main/java/fr/inria/kgindex/main/rules/RuleApplication.java
 package fr.inria.kgindex.main.rules;
 
-import fr.inria.kgindex.main.data.Dataset;
+import fr.inria.kgindex.main.data.DescribedDataset;
 import fr.inria.kgindex.main.data.ManifestEntry;
 import fr.inria.kgindex.main.data.RuleLibrary;
+import fr.inria.kgindex.main.util.DatasetUtils;
 import fr.inria.kgindex.main.util.EarlReport;
 import fr.inria.kgindex.main.util.KGIndex;
-import fr.inria.kgindex.main.util.data.*;
 import fr.inria.kgindex.main.util.Utils;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryParseException;
-=======
-package fr.inria.kgindex.rules;
-
-import fr.inria.kgindex.data.DescribedDataset;
-import fr.inria.kgindex.data.ManifestEntry;
-import fr.inria.kgindex.data.RuleLibrary;
-import fr.inria.kgindex.util.DatasetUtils;
-import fr.inria.kgindex.util.EarlReport;
-import fr.inria.kgindex.util.KGIndex;
-import fr.inria.kgindex.util.Utils;
 import org.apache.jena.query.*;
->>>>>>> ModelToDataset:code/src/main/java/fr/inria/kgindex/rules/RuleApplication.java
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;

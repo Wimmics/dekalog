@@ -1,9 +1,8 @@
 package fr.inria.kgindex.main.util;
 
 <<<<<<< HEAD:code/src/main/java/fr/inria/kgindex/main/util/Utils.java
-import fr.inria.kgindex.main.data.Dataset;
 =======
-import fr.inria.kgindex.data.DescribedDataset;
+import fr.inria.kgindex.main.data.DescribedDataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 >>>>>>> ModelToDataset:code/src/main/java/fr/inria/kgindex/util/Utils.java

@@ -1,4 +1,4 @@
-package fr.inria.kgindex.util;
+package fr.inria.kgindex.main.util;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdfconnection.RDFConnection;

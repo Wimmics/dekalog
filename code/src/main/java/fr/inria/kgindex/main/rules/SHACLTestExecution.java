@@ -1,7 +1,6 @@
 package fr.inria.kgindex.main.rules;
 
 <<<<<<< HEAD:code/src/main/java/fr/inria/kgindex/main/rules/SHACLTestExecution.java
-import fr.inria.kgindex.main.data.Dataset;
 import fr.inria.kgindex.main.util.EarlReport;
 import fr.inria.kgindex.main.data.FakeSHACLValidationReport;
 import fr.inria.kgindex.main.util.Utils;
@@ -9,9 +8,9 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
 =======
-import fr.inria.kgindex.data.DescribedDataset;
+import fr.inria.kgindex.main.data.DescribedDataset;
 import fr.inria.kgindex.data.FakeSHACLValidationReport;
-import fr.inria.kgindex.util.DatasetUtils;
+import fr.inria.kgindex.main.util.DatasetUtils;
 import fr.inria.kgindex.util.EarlReport;
 import fr.inria.kgindex.util.Utils;
 import org.apache.jena.query.*;

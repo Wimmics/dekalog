@@ -1,11 +1,10 @@
 package fr.inria.kgindex.main.util;
 
 <<<<<<< HEAD:code/src/main/java/fr/inria/kgindex/main/util/EarlReport.java
-import fr.inria.kgindex.main.data.Dataset;
 import fr.inria.kgindex.main.data.FakeSHACLValidationReport;
 import fr.inria.kgindex.main.data.ManifestEntry;
 =======
-import fr.inria.kgindex.data.DescribedDataset;
+import fr.inria.kgindex.main.data.DescribedDataset;
 import fr.inria.kgindex.data.FakeSHACLValidationReport;
 import fr.inria.kgindex.data.ManifestEntry;
 >>>>>>> ModelToDataset:code/src/main/java/fr/inria/kgindex/util/EarlReport.java

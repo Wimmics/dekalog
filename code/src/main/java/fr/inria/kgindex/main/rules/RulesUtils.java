@@ -1,6 +1,6 @@
-package fr.inria.kgindex.rules;
+package fr.inria.kgindex.main.rules;
 
-import fr.inria.kgindex.util.Utils;
+import fr.inria.kgindex.main.util.Utils;
 
 import java.net.Authenticator;
 import java.net.http.HttpClient;

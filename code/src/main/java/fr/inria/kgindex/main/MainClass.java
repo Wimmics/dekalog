@@ -1,25 +1,13 @@
-<<<<<<< HEAD:code/src/main/java/fr/inria/kgindex/main/MainClass.java
 package fr.inria.kgindex.main;
 
-import fr.inria.kgindex.main.data.Dataset;
+import fr.inria.kgindex.main.data.DescribedDataset;
 import fr.inria.kgindex.main.data.ManifestEntry;
 import fr.inria.kgindex.main.data.RuleLibrary;
 import fr.inria.kgindex.main.rules.RuleApplication;
 import fr.inria.kgindex.main.rules.RuleFactory;
+import fr.inria.kgindex.main.util.DatasetUtils;
 import fr.inria.kgindex.main.util.SPARQL_SD;
 import fr.inria.kgindex.main.util.Utils;
-=======
-package fr.inria.kgindex;
-
-import fr.inria.kgindex.data.DescribedDataset;
-import fr.inria.kgindex.data.ManifestEntry;
-import fr.inria.kgindex.data.RuleLibrary;
-import fr.inria.kgindex.rules.RuleApplication;
-import fr.inria.kgindex.rules.RuleFactory;
-import fr.inria.kgindex.util.DatasetUtils;
-import fr.inria.kgindex.util.SPARQL_SD;
-import fr.inria.kgindex.util.Utils;
->>>>>>> ModelToDataset:code/src/main/java/fr/inria/kgindex/MainClass.java
 import org.apache.commons.cli.*;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
