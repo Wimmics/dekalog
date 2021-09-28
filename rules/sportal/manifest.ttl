@@ -23,174 +23,6 @@
             <sportalPropertyPartitionDistinctSubject.ttl>
         ) .
 
-<sportalDistinctUrisSubjects.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX earl: <http://www.w3.org/ns/earl#>
-                PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                CONSTRUCT {
-                        $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $endpointUrl ;
-                            kgi:curated $datasetDescription .
-                        $datasetDescription voidex:distinctIRIReferenceSubjects ?x }
-                    WHERE { SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))} } """
-        ]
-        <../meta/modifiedUpdate.ttl>
-    ) .
-
-<sportalDistinctBlankNodeSubjects.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX earl: <http://www.w3.org/ns/earl#>
-                PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                PREFIX voidex: <http://ldf.fi/void-ext#>
-                    CONSTRUCT {
-                        $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $endpointUrl ;
-                            kgi:curated $datasetDescription .
-                        $datasetDescription voidex:distinctBlankNodeSubjects ?x }
-                    WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} } """
-        ]
-        <../meta/modifiedUpdate.ttl>
-    ) .
-
-<sportalDistinctUrisObjects.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX earl: <http://www.w3.org/ns/earl#>
-                PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                PREFIX voidex: <http://ldf.fi/void-ext#>
-                    CONSTRUCT {
-                        $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $endpointUrl ;
-                            kgi:curated $datasetDescription .
-                        $datasetDescription voidex:distinctIRIReferenceObjects ?x }
-                    WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?o))} } """
-        ]
-        <../meta/modifiedUpdate.ttl>
-    ) .
-
-<sportalDistinctLiterals.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kg/index#>
-            PREFIX voidex: <http://ldf.fi/void-ext#>
-                CONSTRUCT {
-                    $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpointUrl ;
-                        kgi:curated $datasetDescription .
-                    $datasetDescription voidex:distinctLiterals ?x }
-                WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} } """
-        ]
-        <../meta/modifiedUpdate.ttl>
-    ) .
-
-<sportalDistinctBlankNodeObjects.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX earl: <http://www.w3.org/ns/earl#>
-                PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                PREFIX voidex: <http://ldf.fi/void-ext#>
-                    CONSTRUCT {
-                        $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $endpointUrl ;
-                            kgi:curated $datasetDescription .
-                        $datasetDescription voidex:distinctBlankNodeObjects ?x }
-                    WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} } """
-        ]
-        <../meta/modifiedUpdate.ttl>
-    ) .
-
-<sportalDistinctBlankNodes.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX earl: <http://www.w3.org/ns/earl#>
-                PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                PREFIX voidex: <http://ldf.fi/void-ext#>
-                    CONSTRUCT {
-                        $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $endpointUrl ;
-                            kgi:curated $datasetDescription .
-                        $datasetDescription voidex:distinctBlankNodes ?x }
-                    WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x) WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } } """
-        ]
-        <../meta/modifiedUpdate.ttl>
-    ) .
-
-<sportalDistinctIRIReferences.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX dcterms: <http://purl.org/dc/terms/>
-            PREFIX kgi: <http://ns.inria.fr/kg/index#>
-            PREFIX voidex: <http://ldf.fi/void-ext#>
-                CONSTRUCT {
-                    $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpointUrl ;
-                        kgi:curated $datasetDescription .
-                    $datasetDescription voidex:distinctIRIReferences ?x }
-                WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x) WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u) ) } } """
-        ]
-        <../meta/modifiedUpdate.ttl>
-    ) .
-
-<sportalDistinctRDFNodes.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kg/index#>
-            PREFIX voidex: <http://ldf.fi/void-ext#>
-                CONSTRUCT {
-                    $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpointUrl ;
-                        kgi:curated $datasetDescription .
-                    $datasetDescription voidex:distinctRDFNodes ?x }
-                WHERE { SELECT (COUNT(DISTINCT ?n ) AS ?x) WHERE { { ?n ?p ?o } UNION { ?s ?n ?o } UNION { ?s ?p ?n } } } """
-        ]
-        <../meta/modifiedUpdate.ttl>
-    ) .
-
-<sportalPropertyPartition.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        <sportalPropertyPartitionTriples.ttl>
-    ) .
-
-<sportalPropertyPartitionTriples.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:triples ?x ] . } WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }""" ]
-        <../meta/modifiedUpdate.ttl>
-    ) ;
-    kgi:onFailure (
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ] . } WHERE { ?s ?p ?o }""" ]
-            <../meta/modifiedUpdate.ttl>
-    ) .
-
-<sportalPropertyPartitionDistinctSubject.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] . } WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }"""  ]
-        <../meta/modifiedUpdate.ttl>
-    ) .
-
-<sportalPropertyPartitionDistinctObject.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        CONSTRUCT { $datasetDescription void:propertyPartition [ void:property ?p ; void:distinctObjects ?x ] . } WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }"""  ]
-        <../meta/modifiedUpdate.ttl>
-    ) .
-
 <sportalClassPartition.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         <sportalClassPartitionTriples.ttl>
@@ -199,12 +31,21 @@
 <sportalClassPartitionTriples.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
             CONSTRUCT {
-                $datasetDescription void:classPartition [ void:class ?c ; void:triples ?x ] }
-            WHERE { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+                $datasetDescription void:classPartition ?classPartition .
+                GRAPH ?sportalGraph {
+                    ?classPartition void:class ?c ;
+                        void:triples ?x.
+                }
+            }
+            WHERE {
+                { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+                BIND( IRI( CONCAT( str(kgi:), str(?c) ) ) AS ?classPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }
         """ ]
         <../meta/modifiedUpdate.ttl>
-        <../meta/classPartitionAggregation.ttl>
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -212,11 +53,18 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $datasetDescription void:classPartition [ void:class ?c ] }
-            WHERE { ?s a ?c }
+                $datasetDescription void:classPartition ?classPartition .
+                GRAPH ?sportalGraph {
+                    ?classPartition void:class ?c .
+                }
+            }
+            WHERE {
+                { ?s a ?c . }
+                BIND( IRI( CONCAT( str(kgi:), str(?c) ) ) AS ?classPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }
         """ ]
         <../meta/modifiedUpdate.ttl>
-        <../meta/classPartitionAggregation.ttl>
     ) .
 
 <sportalClassPartitionClasses.ttl> a mf:ManifestEntry ;
@@ -226,11 +74,19 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $datasetDescription void:classPartition [ void:class ?c ; void:classes ?x ] }
-            WHERE { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }
+                $datasetDescription void:classPartition ?classPartition .
+                GRAPH ?sportalGraph {
+                    ?classPartition void:class ?c ;
+                        void:classes ?x .
+                }
+            }
+            WHERE {
+                { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }
+                BIND( IRI( CONCAT( str(kgi:), str(?c) ) ) AS ?classPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }
         """ ]
         <../meta/modifiedUpdate.ttl>
-        <../meta/classPartitionAggregation.ttl>
     ) .
 
 <sportalClassPartitionProperties.ttl> a mf:ManifestEntry ;
@@ -240,8 +96,17 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $datasetDescription void:classPartition [ void:class ?c ; void:properties ?x ] }
-            WHERE { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+                $datasetDescription void:classPartition ?classPartition .
+                GRAPH ?sportalGraph {
+                    ?classPartition void:class ?c ;
+                        void:properties ?x .
+                }
+            }
+            WHERE {
+                { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+                BIND( IRI( CONCAT( str(kgi:), str(?c) ) ) AS ?classPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }
         """ ]
         <../meta/modifiedUpdate.ttl>
     ) .
@@ -256,11 +121,19 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription void:classPartition [ void:class ?c ; void:distinctSubjects ?x ] }
-            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }
+                $datasetDescription void:classPartition ?classPartition .
+                GRAPH ?sportalGraph {
+                    ?classPartition void:class ?c ;
+                        void:distinctSubjects ?x .
+                }
+            }
+            WHERE {
+                { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }
+                BIND( IRI( CONCAT( str(kgi:), str(?c) ) ) AS ?classPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }
         """ ]
         <../meta/modifiedUpdate.ttl>
-        <../meta/classPartitionAggregation.ttl>
     ) .
 
 <sportalClassPartitionDistinctObjects.ttl> a mf:ManifestEntry ;
@@ -273,11 +146,19 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription void:classPartition [ void:class ?c ; void:distinctObjects ?x ] }
-            WHERE { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+                $datasetDescription void:classPartition ?classPartition .
+                GRAPH ?sportalGraph {
+                    ?classPartition void:class ?c ;
+                        void:distinctObjects ?x .
+                }
+            }
+            WHERE {
+                { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+                BIND( IRI( CONCAT( str(kgi:), str(?c) ) ) AS ?classPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }
         """  ]
         <../meta/modifiedUpdate.ttl>
-        <../meta/classPartitionAggregation.ttl>
     ) .
 
 <sportalClassPartitionPropertyPartition.ttl> a mf:ManifestEntry ;
@@ -296,11 +177,22 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:triples ?x ] ] }
-            WHERE { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
+                $datasetDescription void:classPartition ?classPartition .
+                GRAPH ?sportalGraph {
+                    ?classPartition void:class ?c ;
+                        void:propertyPartition ?classPropPartition .
+                    ?classPropPartition void:property ?p ;
+                        void:triples ?x .
+                }
+            }
+            WHERE {
+                { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
+                BIND( IRI( CONCAT( str(kgi:), str(?c) ) ) AS ?classPartition )
+                BIND( IRI( CONCAT( str(?classPartition), str(?p) ) ) AS ?classPropPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }
         """  ]
         <../meta/modifiedUpdate.ttl>
-        <../meta/classPartitionAggregation.ttl>
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -311,11 +203,21 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }
-            WHERE { ?s a ?c ; ?p ?o }
+                $datasetDescription void:classPartition ?classPartition .
+                GRAPH ?sportalGraph {
+                    ?classPartition void:class ?c ;
+                        void:propertyPartition ?classPropPartition .
+                    ?classPropPartition void:property ?p .
+                }
+            }
+            WHERE {
+                { ?s a ?c ; ?p ?o }
+                BIND( IRI( CONCAT( str(kgi:), str(?c) ) ) AS ?classPartition )
+                BIND( IRI( CONCAT( str(?classPartition), str(?p) ) ) AS ?classPropPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }
         """  ]
         <../meta/modifiedUpdate.ttl>
-        <../meta/classPartitionAggregation.ttl>
     ) .
 
 <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl> a mf:ManifestEntry ;
@@ -328,11 +230,22 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ; void:distinctSubjects ?x ] ] }
-            WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
+                $datasetDescription void:classPartition ?classPartition .
+                GRAPH ?sportalGraph {
+                    ?classPartition void:class ?c ;
+                        void:propertyPartition ?classPropPartition .
+                    ?classPropPartition void:property ?p ;
+                        void:distinctSubjects ?x .
+                }
+            }
+            WHERE {
+                { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
+                BIND( IRI( CONCAT( str(kgi:), str(?c) ) ) AS ?classPartition )
+                BIND( IRI( CONCAT( str(?classPartition), str(?p) ) ) AS ?classPropPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }
         """ ]
         <../meta/modifiedUpdate.ttl>
-        <../meta/classPartitionAggregation.ttl>
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -343,11 +256,104 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription void:classPartition [ void:class ?c ; void:propertyPartition [ void:property ?p ] ] }
-            WHERE { ?s a ?c ; ?p ?o }
+                $datasetDescription void:classPartition ?classPartition .
+                GRAPH ?sportalGraph {
+                    ?classPartition void:class ?c ;
+                        void:propertyPartition ?classPropPartition .
+                    ?classPropPartition void:property ?p .
+                }
+            }
+            WHERE {
+                { ?s a ?c ; ?p ?o . }
+                BIND( IRI( CONCAT( str(kgi:), str(?c) ) ) AS ?classPartition )
+                BIND( IRI( CONCAT( str(?classPartition), str(?p) ) ) AS ?classPropPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }
         """  ]
         <../meta/modifiedUpdate.ttl>
-        <../meta/classPartitionAggregation.ttl>
+    ) .
+
+<sportalPropertyPartition.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        <sportalPropertyPartitionTriples.ttl>
+    ) .
+
+<sportalPropertyPartitionTriples.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                $datasetDescription void:propertyPartition ?propPartition .
+                GRAPH ?sportalGraph {
+                    ?propPartition void:property ?p ;
+                        void:triples ?x .
+                }
+            }
+            WHERE {
+                { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }
+                BIND( IRI( CONCAT( str(kgi:), str(?p) ) ) AS ?propPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }"""
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) ;
+    kgi:onFailure (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                $datasetDescription void:propertyPartition ?propPartition .
+                GRAPH ?sportalGraph {
+                    ?propPartition void:property ?p .
+                }
+            }
+            WHERE {
+                { SELECT DISTINCT ?p WHERE { ?s ?p ?o } }
+                BIND( IRI( CONCAT( str(kgi:), str(?p) ) ) AS ?propPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }"""
+        ]
+            <../meta/modifiedUpdate.ttl>
+    ) .
+
+<sportalPropertyPartitionDistinctSubject.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                $datasetDescription void:propertyPartition ?propPartition .
+                GRAPH ?sportalGraph {
+                    ?propPartition void:property ?p ;
+                        void:distinctSubjects ?x .
+                }
+            } WHERE {
+                { SELECT (COUNT(DISTINCT ?s) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }
+                BIND( IRI( CONCAT( str(kgi:), str(?p) ) ) AS ?propPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }"""
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+<sportalPropertyPartitionDistinctObject.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                GRAPH ?sportalGraph {
+                    ?propPartition void:property ?p ;
+                        void:distinctObjects ?x .
+                }
+            } WHERE {
+                { SELECT (COUNT(DISTINCT ?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }
+                BIND( IRI( CONCAT( str(kgi:), str(?p) ) ) AS ?propPartition )
+                BIND( IRI( CONCAT( str($endpointUrl), "Statistics" ) ) AS ?sportalGraph )
+            }"""
+        ]
+        <../meta/modifiedUpdate.ttl>
     ) .
 
 # Miscanellous statistics from SPORTAL using a vocabulary created for SPORTAL only
