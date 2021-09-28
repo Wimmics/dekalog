@@ -12,7 +12,6 @@
             <vocabularyList.ttl>
             <tripleCount.ttl>
             <classCount.ttl>
-            <classPopulation.ttl>
             <propertyCount.ttl>
             <languages.ttl>
         ) .
@@ -354,24 +353,6 @@
                 }
             """ ]
         ) .
-
-<classPopulation.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX earl: <http://www.w3.org/ns/earl#>
-                PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                CONSTRUCT {
-                    $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpointUrl ;
-                        kgi:curated $datasetDescription .
-                    $datasetDescription void:classPartition [ void:class ?class ; void:entities ?count ] . }
-                WHERE { SELECT ?class (count(?instance) AS ?count) WHERE { SELECT DISTINCT ?class ?instance $FROM WHERE { ?instance a ?class } } GROUP BY ?class }
-            """
-        ]
-        <../meta/modifiedUpdate.ttl>
-    ) .
 
 
 <classCount.ttl> a mf:ManifestEntry ;
