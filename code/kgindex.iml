@@ -10,6 +10,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="corese-core-4.1.1-jar-with-dependencies" level="project" />
+    <orderEntry type="library" name="corese-core-4.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-shacl:4.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-tdb:4.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-tdb2:4.1.0" level="project" />

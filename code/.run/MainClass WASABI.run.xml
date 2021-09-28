@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="[NOPE] MainClass WASABI" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="fr.inria.kgindex.MainClass" />
+    <module name="kgindex" />
+    <option name="PROGRAM_PARAMETERS" value="-name Wasabi -endpoint http://wasabi.inria.fr/sparql -manifest file:///home/pmaillot/git/dekalog/rules/manifest.ttl -federation http://localhost:8080/sparql" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

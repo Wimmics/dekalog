@@ -1,3 +1,4 @@
+<<<<<<< HEAD:code/src/main/java/fr/inria/kgindex/main/rules/RuleApplication.java
 package fr.inria.kgindex.main.rules;
 
 import fr.inria.kgindex.main.data.Dataset;
@@ -10,10 +11,24 @@ import fr.inria.kgindex.main.util.Utils;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryParseException;
+=======
+package fr.inria.kgindex.rules;
+
+import fr.inria.kgindex.data.DescribedDataset;
+import fr.inria.kgindex.data.ManifestEntry;
+import fr.inria.kgindex.data.RuleLibrary;
+import fr.inria.kgindex.util.DatasetUtils;
+import fr.inria.kgindex.util.EarlReport;
+import fr.inria.kgindex.util.KGIndex;
+import fr.inria.kgindex.util.Utils;
+import org.apache.jena.query.*;
+>>>>>>> ModelToDataset:code/src/main/java/fr/inria/kgindex/rules/RuleApplication.java
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.vocabulary.EARL;
@@ -23,17 +38,18 @@ import org.apache.jena.update.UpdateRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.net.http.HttpRequest;
 
 import static fr.inria.kgindex.main.util.Utils.dateFormatter;
 
@@ -50,14 +66,14 @@ public class RuleApplication {
     public static String federationserver = null;
 
     private final ManifestEntry _entry;
-    private final Dataset _describedDataset;
+    private final DescribedDataset _describedDataset;
     private Actions _actionsSuccess = null;
     private Actions _actionsFailure = null;
-    private Model _datasetDescription;
+    private Dataset _datasetDescription;
     private TestExecution _tests = null;
     private TYPE _type = TYPE.SHACL;
 
-    public RuleApplication(ManifestEntry entry, TestExecution tests, Actions actionsSuccess, Actions actionsFailure, Dataset describedDataset, Model datasetDescription) {
+    public RuleApplication(ManifestEntry entry, TestExecution tests, Actions actionsSuccess, Actions actionsFailure, DescribedDataset describedDataset, Dataset datasetDescription) {
         this._entry = entry;
         this._describedDataset = describedDataset;
         this._datasetDescription = datasetDescription;
@@ -74,17 +90,17 @@ public class RuleApplication {
         this._type = type;
     }
 
-    public Model apply() {
+    public Dataset apply() {
         logger.trace("Test START " + this._entry.getTestResource() );
-        Model result = ModelFactory.createDefaultModel();
+        Dataset result = DatasetFactory.create();
 
         // Lancer fonction d'application
-        Model testResult = this._tests.execute( this._describedDataset, this._datasetDescription);
-        result.add(testResult);
+        Dataset testResult = this._tests.execute( this._describedDataset, this._datasetDescription);
+        result = DatasetUtils.addDataset(result, testResult);
 
         // Récupérer rapport d'application
         boolean testPassed = false;
-        List<RDFNode> testResultList = testResult.listObjectsOfProperty(EARL.outcome).toList();
+        List<RDFNode> testResultList = testResult.getDefaultModel().listObjectsOfProperty(EARL.outcome).toList();
 
         // Vérification du résultat
         if(testResultList.size() > 0){
@@ -105,87 +121,129 @@ public class RuleApplication {
         } else {
             actionsToApply = this._actionsFailure;
         }
-        logger.trace("Action START " + this._entry.getFileResource() );
-        actionsToApply.forEach(action -> {
+        logger.trace("Action START " + actionsToApply.size() + " actions : " + this._entry.getFileResource() );
+        for(Action action : actionsToApply) {
             if(action.getType() == Action.TYPE.SPARQL) {
                 String queryStringRaw = action.getActionNode().asLiteral().getString();
                 Set<String> queryStringSet = Utils.rewriteQueryPlaceholders(queryStringRaw, this._describedDataset);
-                queryStringSet.forEach(queryString -> {
-                    if ((action.getEndpointUrl().equals(KGIndex.federation.getURI()) && (RuleApplication.federationserver != null))
-                            || (!action.getEndpointUrl().equals(KGIndex.federation.getURI()))) {
-                        if (action.getEndpointUrl().equals(KGIndex.federation.getURI())) {
+                for(String queryString : queryStringSet) {
+                    if((action.getEndpointUrl().equals(KGIndex.federation.getURI()) && (RuleApplication.federationserver != null))
+                            || (! action.getEndpointUrl().equals(KGIndex.federation.getURI()))) {
+                        if(action.getEndpointUrl().equals(KGIndex.federation.getURI())) {
                             action.setEndpointUrl(RuleApplication.federationserver);
                         }
                         Date startDate = new Date();
-                        Literal startDateLiteral = result.createLiteral(dateFormatter.format(startDate));
+                        Model tmpModel = ModelFactory.createDefaultModel();
+                        Literal startDateLiteral = tmpModel.createLiteral(dateFormatter.format(startDate));
+                        tmpModel.close();
                         try {
-                            if (queryString.contains("CONSTRUCT")) {
-                                QueryExecution actionExecution = QueryExecutionFactory.sparqlService(action.getEndpointUrl(), queryString);
+                            if (queryString.contains("CONSTRUCT") && ! queryString.contains("GRAPH")) {
+                                Query constructQuery = QueryFactory.create(queryString);
+                                QueryExecution actionExecution = QueryExecutionFactory.sparqlService(action.getEndpointUrl(), constructQuery );
                                 actionExecution.setTimeout(Utils.queryTimeout);
 
                                 try {
-                                    Model actionResult = actionExecution.execConstruct();
-                                    result.add(actionResult);
+                                    Dataset constructData = actionExecution.execConstructDataset();
+                                    result = DatasetUtils.addDataset(result, constructData);
                                 } catch (RiotException e) {
                                     logger.error(e);
-                                    logger.trace(this._entry.getTestResource() + " action could not be added because of RiotException");
+                                    logger.trace(this._entry.getFileResource() + " action could not be added because of RiotException");
+                                } catch(QueryException e) {
+                                    logger.error(e);
+                                    logger.trace(this._entry.getFileResource() + " action could not be added because of QueryException");
                                 }
                                 actionExecution.close();
-                            } else if (queryString.contains("INSERT")) {
+                            } else if (queryString.contains("INSERT") || queryString.contains("DELETE")) {
                                 UpdateRequest insertUpdate = UpdateFactory.create(queryString);
                                 UpdateAction.execute(insertUpdate, this._datasetDescription);
-                            } else if (queryString.contains("DELETE")) {
-                                UpdateRequest deleteUpdate = UpdateFactory.create(queryString);
-                                UpdateAction.execute(deleteUpdate, this._datasetDescription);
+                                this._datasetDescription.commit();
+                            } else if (queryString.contains("CONSTRUCT") && queryString.contains("GRAPH")) {
+                                // Tentative d'envoyer la requête sans passer par Jena
+                                try {
+                                    HttpClient client = RulesUtils.getHttpClient();
+                                    URI queryURL = URI.create(action.getEndpointUrl() + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
+                                    HttpRequest request = HttpRequest.newBuilder()
+                                            .uri(queryURL)
+                                            .GET()
+                                            .header("Accept", "application/x-trig")
+                                            .build();
+                                    Dataset bodyData = DatasetFactory.create();
+                                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                                    if(response.statusCode() == 200) {
+                                        String bodyString = response.body();
+                                        bodyString = bodyString.replace("= {", " {");
+                                        StringReader bodyReader = new StringReader(bodyString);
+                                        RDFDataMgr.read(bodyData, bodyReader, "", Lang.TRIG);
+                                        DatasetUtils.addDataset(result, bodyData);
+                                    }
+                                } catch (RiotException | InterruptedException | IOException e1) {
+                                    logger.error(e1);
+                                }
                             }
                         } catch (QueryExceptionHTTP e) {
                             logger.info(e);
                             logger.trace(this._entry.getTestResource() + " : " + e.getMessage());
                             Date endDate = new Date();
-                            Literal endDateLiteral = result.createLiteral(dateFormatter.format(endDate));
-                            result.add(EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral));
-                        } catch (QueryParseException e) {
-                            // Tentative d'envoyer la requête sans passer par Jena
-                            HttpClient client = HttpClient.newHttpClient();
-                            HttpRequest request = null;
+                            Model tmpModel1 = ModelFactory.createDefaultModel();
+                            Literal endDateLiteral = tmpModel1.createLiteral(dateFormatter.format(endDate));
+                            tmpModel1.close();
+                            Model earlReport = EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral);
+                            result = DatasetUtils.addDataset(result, DatasetFactory.create(earlReport));
+                        } catch (QueryParseException ep) {
                             try {
-                                URI queryURL = URI.create(action.getEndpointUrl() + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
-                                logger.debug(queryURL);
-                                request = HttpRequest.newBuilder()
-                                        .uri(queryURL)
-                                        .GET()
-                                        .header("Accept", "application/rdf+xml")
-                                        .build();
-                            } catch (UnsupportedEncodingException e1) {
-                                e1.printStackTrace();
-                            }
-                            client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                                    .thenApply(HttpResponse::body)
-                                    .thenAccept(bodyString -> {
-                                        if (queryString.contains("CONSTRUCT")) {
-                                            Model bodyModel = ModelFactory.createDefaultModel();
-                                            StringReader bodyReader = new StringReader(bodyString);
-                                            try {
-                                                bodyModel.read(bodyReader, "");
-                                                result.add(bodyModel);
-                                            } catch(RiotException er) {
-                                                logger.error(bodyString);
-                                                throw e;
-                                            }
+                                if (queryString.contains("CONSTRUCT")) {
+                                    // Tentative d'envoyer la requête sans passer par Jena
+                                    HttpClient client = RulesUtils.getHttpClient();
+                                    HttpRequest request = null;
+                                    try {
+                                        URI queryURL = URI.create(action.getEndpointUrl() + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
+                                        logger.debug(queryURL);
+                                        request = HttpRequest.newBuilder()
+                                                .uri(queryURL)
+                                                .GET()
+                                                .header("Accept", "application/x-trig")
+                                                .build();
+                                    } catch (UnsupportedEncodingException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                    Dataset bodyData = DatasetFactory.create();
+                                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                                    logger.debug(response.statusCode());
+                                    logger.debug(response.body());
+                                    if(response.statusCode() == 200) {
+                                        String bodyString = response.body();
+                                        bodyString = bodyString.replace("= {", " {");
+                                        StringReader bodyReader = new StringReader(bodyString);
+                                        try {
+                                            RDFDataMgr.read(bodyData, bodyReader, "", Lang.TRIG);
+                                        } catch(RiotException er) {
+                                            logger.error(bodyString);
+                                            throw er;
                                         }
-                                    })
-                                    .join();
+                                        DatasetUtils.addDataset(result, bodyData);
+                                    }
+                                } else if (queryString.contains("INSERT") || queryString.contains("DELETE")) {
+                                    UpdateRequest insertUpdate = UpdateFactory.create(queryString);
+                                    UpdateAction.execute(insertUpdate, this._datasetDescription);
+                                    this._datasetDescription.commit();
+                                }
+                            } catch (IOException | InterruptedException  e) {
+                                logger.error(e);
+                            } catch (RiotException e) {
+                                logger.error(e);
+                                logger.trace(this._entry.getFileResource() + " action could not be added because of RiotException");
+                            }
                         }
                     }
-                });
+                };
             } else if(action.getType() == Action.TYPE.Manifest) {
                 Set<ManifestEntry> entrySet = RuleLibrary.getLibrary().get(action.getActionNode());
-                entrySet.forEach(entry -> {
+                for(ManifestEntry entry : entrySet) {
                     RuleApplication application = RuleFactory.create(entry, this._describedDataset, this._datasetDescription);
                     application.apply();
-                });
+                };
             }
-        });
+        };
         logger.trace("Action END " + this._entry.getFileResource() );
 
         return result;

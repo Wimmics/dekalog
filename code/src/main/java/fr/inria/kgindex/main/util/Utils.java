@@ -1,13 +1,16 @@
 package fr.inria.kgindex.main.util;
 
+<<<<<<< HEAD:code/src/main/java/fr/inria/kgindex/main/util/Utils.java
 import fr.inria.kgindex.main.data.Dataset;
+=======
+import fr.inria.kgindex.data.DescribedDataset;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+>>>>>>> ModelToDataset:code/src/main/java/fr/inria/kgindex/util/Utils.java
 import org.apache.jena.rdf.model.Resource;
 
 import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class Utils {
@@ -15,35 +18,51 @@ public class Utils {
     public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
     public static long queryTimeout = 30000;
 
+    public static String PLACEHOLDER_DATASETDESCRIPTION = "$datasetDescription";
+    public static String PLACEHOLDER_ENDPOINTDESCRIPTION = "$endpointDescription";
+    public static String PLACEHOLDER_METADATADESCRIPTION = "$metadataDescription";
+    public static String PLACEHOLDER_GRAPHLIST = "$graphList";
+    public static String PLACEHOLDER_LIMIT = "$LIMIT";
+    public static String PLACEHOLDER_DATASETNAME = "$name$";
+    public static String PLACEHOLDER_DATETIME = "$dateLiteral";
+    public static String PLACEHOLDER_FROM = "$FROM";
+    public static String PLACEHOLDER_NAMESPACE = "$namespace";
+    public static String PLACEHOLDER_ENDPOINTURL = "$endpointUrl";
+
     /**
-     * Replace the placeholders in tests and queries. Placeholders include "$datasetDescription", "$endpointDescription", "$metadataDescription", "$graphList", "$LIMIT", "FROM", "$namespace", "$endpoint", "$name$". To take into account the usage of HTTP or HTTPS in endpoint URL, the result can be two different strings with endoint url variants instead of one.
+     * Replace the placeholders in tests and queries. Placeholders include "$datasetDescription", "$endpointDescription", "$metadataDescription", "$graphList", "$LIMIT", "FROM", "$namespace", "$endpoint", "$name$", $dateLiteral.
+     * To take into account the usage of HTTP or HTTPS in endpoint URL, the result can be two different strings with endoint url variants instead of one.
      * @param queryString
      * @param describedDataset
      * @return a set of transformed strings.
      */
-    public static Set<String> rewriteQueryPlaceholders(String queryString, Dataset describedDataset) {
+    public static Set<String> rewriteQueryPlaceholders(String queryString, final DescribedDataset describedDataset) {
         HashSet<String> result = new HashSet<String>();
 
-        queryString = queryString.replaceAll(Pattern.quote("$datasetDescription"), "<"+describedDataset.getDatasetDescriptionResource().getURI()+">");
-        queryString = queryString.replaceAll(Pattern.quote("$endpointDescription"), "<"+describedDataset.getEndpointDescriptionResource().getURI()+">");
-        queryString = queryString.replaceAll(Pattern.quote("$metadataDescription"), "<"+describedDataset.getMetadataDescriptionResource().getURI()+">");
-        queryString = queryString.replaceAll(Pattern.quote("$graphList"), "<"+describedDataset.getGraphListResource().getURI()+">");
-        queryString = queryString.replaceAll(Pattern.quote("$LIMIT"), "");
-        queryString = queryString.replaceAll(Pattern.quote("$name$"), describedDataset.getName());
+        queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_DATASETDESCRIPTION), "<"+describedDataset.getDatasetDescriptionResource().getURI()+">");
+        queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_ENDPOINTDESCRIPTION), "<"+describedDataset.getEndpointDescriptionResource().getURI()+">");
+        queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_METADATADESCRIPTION), "<"+describedDataset.getMetadataDescriptionResource().getURI()+">");
+        queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_GRAPHLIST), "<"+describedDataset.getGraphListResource().getURI()+">");
+        queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_LIMIT), "");
+        queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_DATASETNAME), describedDataset.getName());
+        Date date = new Date();
+        Model tmpModel = ModelFactory.createDefaultModel();
+        queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_DATETIME),"\"" + dateFormatter.format(date) + "\"^^<http://www.w3.org/2001/XMLSchema#datetime>");
+        tmpModel.close();
 
-        if(queryString.contains("$FROM") && describedDataset.areGraphsRequired()) {
+        if(queryString.contains(PLACEHOLDER_FROM) && describedDataset.areGraphsRequired()) {
             String fromString = "";
             Iterator<Resource> graphIt = describedDataset.getGraphList().iterator();
             while(graphIt.hasNext()) {
                 Resource graph = graphIt.next();
                 fromString += "FROM <" + graph.getURI() + ">\n";
             }
-            queryString = queryString.replaceAll(Pattern.quote("$FROM"), fromString);
+            queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_FROM), fromString);
         } else {
-            queryString = queryString.replaceAll(Pattern.quote("$FROM"), "");
+            queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_FROM), "");
         }
 
-        if(queryString.contains("$namespace")) {
+        if(queryString.contains(PLACEHOLDER_NAMESPACE)) {
             String namespaceString = "\"";
             ListIterator<String> namespaceIt = describedDataset.getNamespaces().listIterator();
             if(namespaceIt.hasNext()) {
@@ -55,35 +74,28 @@ public class Utils {
                 namespaceString += "|" + namespace;
             }
             namespaceString += "\"";
-            queryString = queryString.replaceAll(Pattern.quote("$namespace"), namespaceString);
+            queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_NAMESPACE), namespaceString);
         }
 
         // URL de l'endpoint avec generation de variantes HTTP HTTPS
-        if(queryString.contains("$endpoint")) {
+        if(queryString.contains(PLACEHOLDER_ENDPOINTURL)) {
             String queryVariant = queryString;
             String endpointUrlVariant = describedDataset.getEndpointUrl();
             if(describedDataset.getEndpointUrl().startsWith("http:")) {
                 endpointUrlVariant = endpointUrlVariant.replace("http://", "https://");
-                queryString = queryString.replaceAll(Pattern.quote("$endpoint"), "<"+describedDataset.getEndpointUrl()+">");
-                queryVariant = queryVariant.replaceAll(Pattern.quote("$endpoint"), "<"+endpointUrlVariant+">");
+                queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_ENDPOINTURL), "<"+describedDataset.getEndpointUrl()+">");
+                queryVariant = queryVariant.replaceAll(Pattern.quote(PLACEHOLDER_ENDPOINTURL), "<"+endpointUrlVariant+">");
             } else if(describedDataset.getEndpointUrl().startsWith("https:")) {
                 endpointUrlVariant = endpointUrlVariant.replace("https://", "http://");
-                queryString = queryString.replaceAll(Pattern.quote("$endpoint"), "<"+describedDataset.getEndpointUrl()+">");
-                queryVariant = queryVariant.replaceAll(Pattern.quote("$endpoint"), "<"+endpointUrlVariant+">");
+                queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_ENDPOINTURL), "<"+describedDataset.getEndpointUrl()+">");
+                queryVariant = queryVariant.replaceAll(Pattern.quote(PLACEHOLDER_ENDPOINTURL), "<"+endpointUrlVariant+">");
             } else {
-                queryString = queryString.replaceAll(Pattern.quote("$endpoint"), "<"+describedDataset.getEndpointUrl()+">");
+                queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_ENDPOINTURL), "<"+describedDataset.getEndpointUrl()+">");
             }
             result.add(queryVariant);
         }
         result.add(queryString);
 
         return result;
-    }
-
-    public static String rewriteUrlWithPlaceholders(String url, Dataset describedDataset) {
-
-        String urlWithLowerCaseName = url.replaceAll(Pattern.quote("$name$"), describedDataset.getName().toLowerCase());
-
-        return urlWithLowerCaseName;
     }
 }

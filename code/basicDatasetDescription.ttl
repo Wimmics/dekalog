@@ -1,0 +1,21 @@
+<http://ns.inria.fr/kg/#sparql-service>
+        a                         <http://www.w3.org/ns/dcat#DataService> , <http://www.w3.org/ns/sparql-service-description#Service> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Basic dataset description for project tests." ;
+        <http://www.w3.org/ns/dcat#servesDataset>
+                <http://ns.inria.fr/kg/index#TestDataset> ;
+        <http://www.w3.org/ns/sparql-service-description#endpoint>
+                <http://localhost:8890/sparql> .
+
+<http://ns.inria.fr/kg/#TestDataset>
+        a                              <http://www.w3.org/ns/prov#Entity> , <http://www.w3.org/ns/dcat#Dataset> , <http://rdfs.org/ns/void#Dataset> , <http://schema.org/Dataset> ;
+        <http://purl.org/dc/terms/creator>
+                "Pierre Maillot" ;
+        <http://purl.org/dc/terms/licence>
+                <https://creativecommons.org/licenses/by-nc/4.0/> ;
+        <http://purl.org/dc/terms/subject>
+                "test" ;
+        <http://rdfs.org/ns/void#sparqlEndpoint>
+                <http://localhost:8890/sparql> ;
+        <http://schema.org/datePublished>
+                "2021-09-21"^^<http://www.w3.org/2001/XMLSchema#date> .

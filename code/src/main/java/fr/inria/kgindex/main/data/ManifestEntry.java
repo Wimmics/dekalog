@@ -1,7 +1,12 @@
 package fr.inria.kgindex.main.data;
 
+<<<<<<< HEAD:code/src/main/java/fr/inria/kgindex/main/data/ManifestEntry.java
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Manifest;
+=======
+import fr.inria.kgindex.util.KGIndex;
+import fr.inria.kgindex.util.Manifest;
+>>>>>>> ModelToDataset:code/src/main/java/fr/inria/kgindex/data/ManifestEntry.java
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.vocabulary.RDF;

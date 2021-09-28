@@ -13,13 +13,15 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
             CONSTRUCT {
-                $endpointDescription sd:endpoint $endpoint ;
+                $endpointDescription sd:endpoint $endpointUrl ;
                     sd:feature lsq:Regex .
             } WHERE {
             }
             """
         ]
+        <../meta/modifiedUpdate.ttl>
     ) .
 
 <SPARQLESSelFilBool.ttl> a mf:ManifestEntry ;
@@ -28,12 +30,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
             CONSTRUCT {
-                $endpointDescription sd:endpoint $endpoint ;
+                $endpointDescription sd:endpoint $endpointUrl ;
                     sd:feature kgi:BooleanInPattern .
             } WHERE {
             }
             """
         ]
+        <../meta/modifiedUpdate.ttl>
     ) .

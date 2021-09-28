@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MainClass Test" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="fr.inria.kgindex.MainClass" />
+    <module name="kgindex" />
+    <option name="PROGRAM_PARAMETERS" value="-name Test -endpoint http://localhost:8890/sparql -manifest file:///home/pmaillot/git/dekalog/code/testManifest.ttl" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="fr.inria.kgindex.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

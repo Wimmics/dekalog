@@ -4,6 +4,8 @@
 <> a mf:Manifest ;
     mf:entries (
             <equivalences.ttl>
+            <classPartitionAggregation.ttl>
+            <modifiedUpdate.ttl>
         ) .
 
 <equivalences.ttl> a mf:ManifestEntry ;
@@ -33,10 +35,10 @@
         [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s dcterms:subject ?o . } WHERE { ?s schema:keywords ?o . } """ ]
         [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s schema:keywords ?o . } WHERE { ?s dcterms:subject ?o . } """ ]
         [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s dcterms:creator ?o . } WHERE { ?s schema:author ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX prov: <http://www.w3.org/ns/prov#> INSERT { ?s dcterms:creator ?o . } WHERE { ?s prov:wasAttributedTo ?o . } """ ]
         [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s schema:author ?o . } WHERE { ?s dcterms:creator ?o . } """ ]
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#> PREFIX schema: <http://schema.org/> INSERT { ?s schema:author ?o . } WHERE { ?s prov:wasAttributedTo ?o . } """ ]
+        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX prov: <http://www.w3.org/ns/prov#> INSERT { ?s dcterms:creator ?o . } WHERE { ?s prov:wasAttributedTo ?o . } """ ]
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#> PREFIX dcterms: <http://purl.org/dc/terms/> INSERT { ?s prov:wasAttributedTo ?o . } WHERE { ?s dcterms:creator ?o . } """ ]
+        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#> PREFIX schema: <http://schema.org/> INSERT { ?s schema:author ?o . } WHERE { ?s prov:wasAttributedTo ?o . } """ ]
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#> PREFIX schema: <http://schema.org/> INSERT { ?s prov:wasAttributedTo ?o . } WHERE { ?s schema:author ?o . } """ ]
         [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s dcterms:licence ?o . } WHERE { ?s schema:licence ?o . } """ ]
         [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s schema:licence ?o . } WHERE { ?s dcterms:licence ?o . } """ ]
@@ -44,4 +46,52 @@
         [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $datasetDescription void:sparqlEndpoint ?o . } WHERE { $endpointDescription sd:endpoint ?o . } """ ]
         [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s rdfs:comment ?o . } WHERE { ?s skos:definition ?o . } """ ]
         [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s skos:definition ?o . } WHERE { ?s rdfs:comment ?o . } """ ]
+        <modifiedUpdate.ttl>
+    ) .
+
+<modifiedUpdate.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    OPTIONAL { $metadataDescription dcterms:modified ?mod . }
+                }
+            """
+        ]
+    ) .
+
+<classPartitionAggregation.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                DELETE {
+                    GRAPH ?g {
+                        $datasetDescription void:classPartition ?o2 .
+                        ?o2 ?p2 ?oo2 .
+                    }
+                }
+                INSERT {
+                    GRAPH ?g {
+                        ?o1 ?p2 ?oo2 .
+                    }
+                }
+                WHERE { GRAPH ?g {
+                    $datasetDescription void:classPartition ?o1 ;
+                        void:classPartition ?o2 .
+                    ?o1 void:class ?c1 ;
+                        ?p1 ?oo1 .
+                    ?o2 void:class ?c2 ;
+                        ?p2 ?oo2 .
+                    FILTER (?c1 = ?c2)
+                    }
+                }
+            """
+        ]
     ) .

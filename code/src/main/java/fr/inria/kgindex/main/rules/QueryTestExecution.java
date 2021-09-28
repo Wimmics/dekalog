@@ -1,5 +1,6 @@
 package fr.inria.kgindex.main.rules;
 
+<<<<<<< HEAD:code/src/main/java/fr/inria/kgindex/main/rules/QueryTestExecution.java
 import fr.inria.kgindex.main.data.Dataset;
 import fr.inria.kgindex.main.util.EarlReport;
 import fr.inria.kgindex.main.util.KGIndex;
@@ -7,6 +8,14 @@ import fr.inria.kgindex.main.util.Utils;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
+=======
+import fr.inria.kgindex.data.DescribedDataset;
+import fr.inria.kgindex.util.DatasetUtils;
+import fr.inria.kgindex.util.EarlReport;
+import fr.inria.kgindex.util.KGIndex;
+import fr.inria.kgindex.util.Utils;
+import org.apache.jena.query.*;
+>>>>>>> ModelToDataset:code/src/main/java/fr/inria/kgindex/rules/QueryTestExecution.java
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.vocabulary.DCTerms;
@@ -28,16 +37,16 @@ public class QueryTestExecution extends TestExecution {
         super(tests, url);
     }
 
-    public Model execute(Dataset describedDataset, Model datasetDescription) {
+    public Dataset execute(DescribedDataset describedDataset, Dataset datasetDescription) {
         return executeTestQueryTest(describedDataset);
     }
 
-    private Model executeTestQueryTest(Dataset describedDataset) {
-        Model result = ModelFactory.createDefaultModel();
+    private Dataset executeTestQueryTest(DescribedDataset describedDataset) {
+        Dataset result = DatasetFactory.create();
 
-        this.getTests().getTests().forEach(testModel -> {
+        for(Model testModel : this.getTests().getTests()) {
             Date startDate = new Date();
-            Literal startDateLiteral =  result.createLiteral(dateFormatter.format(startDate));
+            Literal startDateLiteral =  result.getDefaultModel().createLiteral(dateFormatter.format(startDate));
 
             List<Statement> queryStatementList = testModel.listStatements((Resource)null, KGIndex.query, (RDFNode)null).toList();
             Literal queryResource = queryStatementList.get(0).getObject().asLiteral();
@@ -55,17 +64,16 @@ public class QueryTestExecution extends TestExecution {
             // Remplacement des placeholders dans la requete devrait être ici
             Set<String> queryStringVariant = Utils.rewriteQueryPlaceholders(queryStringRaw, describedDataset);
 
-            queryStringVariant.forEach(queryString -> {
+            for(String queryString : queryStringVariant) {
                 boolean passed = true;
                 String errorMessage = "";
-
                 // Execution de la requête
                 try {
                     QueryExecution testQueryExecution = QueryExecutionFactory.sparqlService(this.getEndpointUrl(), queryString);
                     testQueryExecution.setTimeout(Utils.queryTimeout);
                     if(queryString.contains("ASK")) {
                         passed = testQueryExecution.execAsk();
-                    } else {
+                    } else if (queryString.contains("SELECT")) {
                         ResultSet testResults = testQueryExecution.execSelect();
                         passed = true;
                     }
@@ -77,16 +85,18 @@ public class QueryTestExecution extends TestExecution {
                 }
 
                 Date endDate = new Date();
-                Literal endDateLiteral =  result.createLiteral(dateFormatter.format(endDate));
+                Literal endDateLiteral =  result.getDefaultModel().createLiteral(dateFormatter.format(endDate));
 
                 // Generation of report
                 if(passed) {
-                    result.add(EarlReport.createEarlPassedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), startDateLiteral, endDateLiteral));
+                    Dataset earlReport = DatasetFactory.create(EarlReport.createEarlPassedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), startDateLiteral, endDateLiteral));
+                    result = DatasetUtils.addDataset(result, earlReport);
                 } else {
-                    result.add(EarlReport.createEarlFailedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), errorMessage, startDateLiteral, endDateLiteral));
+                    Dataset earlReport = DatasetFactory.create(EarlReport.createEarlFailedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), errorMessage, startDateLiteral, endDateLiteral));
+                    result = DatasetUtils.addDataset(result, earlReport);
                 }
-            });
-        });
+            };
+        };
 
         return result;
     }

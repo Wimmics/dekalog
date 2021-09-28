@@ -1,7 +1,12 @@
 package fr.inria.kgindex.main.rules;
 
+<<<<<<< HEAD:code/src/main/java/fr/inria/kgindex/main/rules/TestExecution.java
 import fr.inria.kgindex.main.data.Dataset;
 import org.apache.jena.rdf.model.Model;
+=======
+import fr.inria.kgindex.data.DescribedDataset;
+import org.apache.jena.query.Dataset;
+>>>>>>> ModelToDataset:code/src/main/java/fr/inria/kgindex/rules/TestExecution.java
 
 public abstract class TestExecution {
 
@@ -25,5 +30,5 @@ public abstract class TestExecution {
         this._endpointUrl = url;
     }
 
-    public abstract Model execute(Dataset describedDataset, Model datasetDescription);
+    public abstract Dataset execute(DescribedDataset describedDataset, Dataset datasetDescription);
 }
