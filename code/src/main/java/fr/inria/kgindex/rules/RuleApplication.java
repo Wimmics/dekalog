@@ -86,8 +86,6 @@ public class RuleApplication {
         // Récupérer rapport d'application
         boolean testPassed = false;
         List<RDFNode> testResultList = testResult.getDefaultModel().listObjectsOfProperty(EARL.outcome).toList();
-        testResult.getDefaultModel().write(System.err, "TTL");
-        logger.debug(testResultList);
 
         // Vérification du résultat
         if(testResultList.size() > 0){
@@ -126,13 +124,11 @@ public class RuleApplication {
                         try {
                             if (queryString.contains("CONSTRUCT") && ! queryString.contains("GRAPH")) {
                                 Query constructQuery = QueryFactory.create(queryString);
-                                logger.debug(constructQuery);
                                 QueryExecution actionExecution = QueryExecutionFactory.sparqlService(action.getEndpointUrl(), constructQuery );
                                 actionExecution.setTimeout(Utils.queryTimeout);
 
                                 try {
                                     Dataset constructData = actionExecution.execConstructDataset();
-                                    RDFDataMgr.write(System.err, constructData, Lang.TRIG);
                                     result = DatasetUtils.addDataset(result, constructData);
                                 } catch (RiotException e) {
                                     logger.error(e);
@@ -144,7 +140,6 @@ public class RuleApplication {
                                 actionExecution.close();
                             } else if (queryString.contains("INSERT") || queryString.contains("DELETE")) {
                                 UpdateRequest insertUpdate = UpdateFactory.create(queryString);
-                                logger.debug(queryString);
                                 UpdateAction.execute(insertUpdate, this._datasetDescription);
                                 this._datasetDescription.commit();
                             } else if (queryString.contains("CONSTRUCT") && queryString.contains("GRAPH")) {
@@ -152,7 +147,6 @@ public class RuleApplication {
                                 try {
                                     HttpClient client = RulesUtils.getHttpClient();
                                     URI queryURL = URI.create(action.getEndpointUrl() + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
-                                    logger.debug(queryURL);
                                     HttpRequest request = HttpRequest.newBuilder()
                                             .uri(queryURL)
                                             .GET()
@@ -160,8 +154,6 @@ public class RuleApplication {
                                             .build();
                                     Dataset bodyData = DatasetFactory.create();
                                     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                                    logger.debug(response.statusCode());
-                                    logger.debug(response.body());
                                     if(response.statusCode() == 200) {
                                         String bodyString = response.body();
                                         bodyString = bodyString.replace("= {", " {");
