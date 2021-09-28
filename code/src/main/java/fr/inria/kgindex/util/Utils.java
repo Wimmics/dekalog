@@ -1,8 +1,9 @@
 package fr.inria.kgindex.util;
 
 import fr.inria.kgindex.data.DescribedDataset;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

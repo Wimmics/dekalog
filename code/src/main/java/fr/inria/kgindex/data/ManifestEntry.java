@@ -2,16 +2,13 @@ package fr.inria.kgindex.data;
 
 import fr.inria.kgindex.util.KGIndex;
 import fr.inria.kgindex.util.Manifest;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.vocabulary.EARL;
-import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ManifestEntry {
 

@@ -1,6 +1,5 @@
 package fr.inria.kgindex.rules;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeSet;
 

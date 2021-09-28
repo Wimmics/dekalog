@@ -2,7 +2,6 @@ package fr.inria.kgindex.rules;
 
 import fr.inria.kgindex.data.DescribedDataset;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.rdf.model.Model;
 
 public abstract class TestExecution {
 

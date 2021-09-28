@@ -3,7 +3,6 @@ package fr.inria.kgindex.data;
 import org.apache.jena.rdf.model.RDFNode;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 public class RuleLibrary {

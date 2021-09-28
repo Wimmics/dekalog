@@ -7,8 +7,6 @@ import fr.inria.kgindex.util.KGIndex;
 import fr.inria.kgindex.util.Utils;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDFS;
