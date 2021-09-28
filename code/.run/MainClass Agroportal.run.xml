@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="MainClass Agroportal" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="fr.inria.kgindex.MainClass" />
+    <option name="MAIN_CLASS_NAME" value="fr.inria.kgindex.main.MainClass" />
     <module name="kgindex" />
     <option name="PROGRAM_PARAMETERS" value="-name Agroportal -endpoint http://sparql.agroportal.lirmm.fr/sparql/ -manifest file:///home/pmaillot/git/dekalog/rules/manifest.ttl -federation http://localhost:8080/sparql" />
     <method v="2">
