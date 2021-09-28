@@ -57,20 +57,7 @@
                    ?s ?p ?res .
                 }"""
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
         <../meta/equivalences.ttl>
     ) .
 
@@ -125,21 +112,8 @@
                     ?s ?pp ?res .
                  }"""
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
-            <../meta/equivalences.ttl>
+        <../meta/modifiedUpdate.ttl>
+        <../meta/equivalences.ttl>
         ) .
 
 <languages.ttl> a mf:ManifestEntry ;
@@ -161,44 +135,31 @@
 
 <graphList.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-    [
-        mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-        PREFIX dcat: <http://www.w3.org/ns/dcat#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kg/index#>
-        CONSTRUCT {
-            $metadataDescription a prov:Entity , earl:TestSubject ;
-                prov:wasDerivedFrom $endpointUrl ;
-                kgi:curated $endpointDescription .
-            $endpointDescription sd:availableGraphs $graphList .
-            $graphList sd:namedGraph [
-                    a sd:NamedGraph ;
-                    sd:name ?graph
-                ] .
-        }
-        WHERE {
-            SELECT DISTINCT ?graph WHERE {
-                GRAPH ?graph { ?s ?p ?o }
-            }
-        }
-        """
-    ]
-    [
-        mf:action """
-            PREFIX dcterms: <http://purl.org/dc/terms/>
-            DELETE {
-                $metadataDescription dcterms:modified ?mod .
-            }
-            INSERT {
-                $metadataDescription dcterms:modified $dateLiteral .
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                $metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasDerivedFrom $endpointUrl ;
+                    kgi:curated $endpointDescription .
+                $endpointDescription sd:availableGraphs $graphList .
+                $graphList sd:namedGraph [
+                        a sd:NamedGraph ;
+                        sd:name ?graph
+                    ] .
             }
             WHERE {
-                $metadataDescription dcterms:modified ?mod .
+                SELECT DISTINCT ?graph WHERE {
+                    GRAPH ?graph { ?s ?p ?o }
+                }
             }
-        """
-    ]
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
     ) ;
     kgi:onFailure (
         <graphListCorese.ttl>
@@ -227,20 +188,7 @@
                 }
             }"""
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
     ) .
 
 <vocabularyList.ttl> a mf:ManifestEntry ;
@@ -280,20 +228,7 @@
             }
             """
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
     ) ;
     kgi:onFailure (
         <vocabularyListCorese.ttl>
@@ -344,20 +279,7 @@
                 BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
             }"""
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
         <vocabularyListCoreseLOV.ttl>
     ) .
 
@@ -448,20 +370,7 @@
                 WHERE { SELECT ?class (count(?instance) AS ?count) WHERE { SELECT DISTINCT ?class ?instance $FROM WHERE { ?instance a ?class } } GROUP BY ?class }
             """
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
     ) .
 
 
@@ -500,20 +409,7 @@
                 }
             """
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
     ) .
 
 <propertyCount.ttl> a mf:ManifestEntry ;
@@ -549,20 +445,7 @@
                 }
             """
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
     ) .
 
 <tripleCount.ttl> a mf:ManifestEntry ;
@@ -595,20 +478,7 @@
                 }
             """
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
     ) .
 
 # Miscanellous statistics from SPORTAL using a vocabulary created for SPORTAL only

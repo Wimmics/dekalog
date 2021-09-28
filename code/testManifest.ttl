@@ -7,7 +7,6 @@
 @prefix void: <http://rdfs.org/ns/void#> .
 
 <> a mf:Manifest ;
-<<<<<<< Updated upstream
     mf:entries (
             <file:///user/pmaillot/home/git/dekalog/rules/extraction/vocabularyListCoreseLOV.ttl>
             <file:///user/pmaillot/home/git/dekalog/rules/extraction/endpointDescResource.ttl>
@@ -27,6 +26,26 @@
                         ?s ?p ?o
                         FILTER( isLiteral(?o) )
                     }
+                }
+            """
+        ]
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl>
+    ) .
+
+
+<file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                DELETE {
+                    $metadataDescription dcterms:modified ?mod .
+                }
+                INSERT {
+                    $metadataDescription dcterms:modified $dateLiteral .
+                }
+                WHERE {
+                    OPTIONAL { $metadataDescription dcterms:modified ?mod . }
                 }
             """
         ]
@@ -71,21 +90,8 @@
                    ?s ?p ?res .
                 }"""
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
-            <file:///user/pmaillot/home/git/dekalog/rules/meta/equivalences.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/equivalences.ttl>
     ) .
 
 <file:///user/pmaillot/home/git/dekalog/rules/extraction/datasetDescResource.ttl> a mf:ManifestEntry ;
@@ -139,21 +145,8 @@
                     ?s ?pp ?res .
                  }"""
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
-            <file:///user/pmaillot/home/git/dekalog/rules/meta/equivalences.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/equivalences.ttl>
         ) .
 
 <file:///user/pmaillot/home/git/dekalog/rules/meta/equivalences.ttl> a mf:ManifestEntry ;
@@ -192,20 +185,7 @@
         [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s schema:licence ?o . } WHERE { ?s dcterms:licence ?o . } """ ]
         [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $endpointDescription sd:endpoint ?o . } WHERE { $datasetDescription void:sparqlEndpoint ?o . } """ ]
         [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $datasetDescription void:sparqlEndpoint ?o . } WHERE { $endpointDescription sd:endpoint ?o . } """ ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl>
     ) .
 
 <file:///user/pmaillot/home/git/dekalog/rules/extraction/vocabularyListCoreseLOV.ttl> a mf:ManifestEntry ;
@@ -280,4 +260,5 @@
             }
         }
         """ ]
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl>
     ) .
