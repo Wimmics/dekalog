@@ -373,6 +373,7 @@
                 }
             """
         ]
+        <../meta/classPartitionAggregation.ttl>
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -397,6 +398,7 @@
                 }
             """
         ]
+        <../meta/classPartitionAggregation.ttl>
     ) .
 
 <sportalClassPartitionClasses.ttl> a mf:ManifestEntry ;
@@ -423,6 +425,7 @@
                 }
             """
         ]
+        <../meta/classPartitionAggregation.ttl>
     ) .
 
 <sportalClassPartitionProperties.ttl> a mf:ManifestEntry ;
@@ -478,6 +481,7 @@
                 }
             """
         ]
+        <../meta/classPartitionAggregation.ttl>
     ) .
 
 <sportalClassPartitionDistinctObjects.ttl> a mf:ManifestEntry ;
@@ -507,6 +511,7 @@
                 }
             """
         ]
+        <../meta/classPartitionAggregation.ttl>
     ) .
 
 <sportalClassPartitionPropertyPartition.ttl> a mf:ManifestEntry ;
@@ -542,6 +547,7 @@
                 }
             """
         ]
+        <../meta/classPartitionAggregation.ttl>
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -569,6 +575,7 @@
                 }
             """
         ]
+        <../meta/classPartitionAggregation.ttl>
     ) .
 
 <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl> a mf:ManifestEntry ;
@@ -598,6 +605,7 @@
                 }
             """
         ]
+        <../meta/classPartitionAggregation.ttl>
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -625,6 +633,7 @@
                 }
             """
         ]
+        <../meta/classPartitionAggregation.ttl> 
     ) .
 
 # Miscanellous statistics from SPORTAL using a vocabulary created for SPORTAL only

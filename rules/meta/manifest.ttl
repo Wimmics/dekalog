@@ -4,6 +4,7 @@
 <> a mf:Manifest ;
     mf:entries (
             <equivalences.ttl>
+            <classPartitionAggregation.ttl>
         ) .
 
 <equivalences.ttl> a mf:ManifestEntry ;
@@ -55,6 +56,35 @@
                 }
                 WHERE {
                     $metadataDescription dcterms:modified ?mod .
+                }
+            """
+        ]
+    ) .
+
+<classPartitionAggregation.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                DELETE {
+                    GRAPH ?g {
+                        $datasetDescription void:classPartition ?o2 .
+                        ?o2 ?p2 ?oo2 .
+                    }
+                }
+                INSERT {
+                    GRAPH ?g {
+                        ?o1 ?p2 ?oo2 .
+                    }
+                }
+                WHERE { GRAPH ?g {
+                    $datasetDescription void:classPartition ?o1 ;
+                        void:classPartition ?o2 .
+                    ?o1 void:class ?c1 ;
+                        ?p1 ?oo1 .
+                    ?o2 void:class ?c2 ;
+                        ?p2 ?oo2 .
+                    FILTER (?c1 = ?c2)
+                    }
                 }
             """
         ]
