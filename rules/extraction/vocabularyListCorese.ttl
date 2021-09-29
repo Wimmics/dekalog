@@ -9,7 +9,9 @@ kgi:vocabularyListCoreseExtractionTest rdf:type kgi:TestQuery ;
     kgi:endpoint kgi:federation ;
     kgi:query """ASK
         WHERE {
-            { ?s ?elem ?o . }
-            UNION { ?s ?p ?elem . }
-            BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
+            SERVICE $endpointUrl {
+                { ?s ?elem ?o . }
+                UNION { ?s ?p ?elem . }
+                BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
+            }
         }""" .
