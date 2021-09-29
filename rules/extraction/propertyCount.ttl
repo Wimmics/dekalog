@@ -18,7 +18,7 @@ kgi:countPropertyShape a sh:NodeShape  ,
             $FROM
             WHERE {
                 ?res void:properties ?extractedValue .
-                ?res ?p $endpoint .
+                ?res ?p $endpointUrl .
                 { ?res a dcat:Dataset }
                 UNION { ?res a void:Dataset }
                 {

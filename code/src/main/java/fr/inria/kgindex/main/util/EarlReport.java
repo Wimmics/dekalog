@@ -1,8 +1,8 @@
-package fr.inria.kgindex.util;
+package fr.inria.kgindex.main.util;
 
-import fr.inria.kgindex.data.Dataset;
-import fr.inria.kgindex.data.FakeSHACLValidationReport;
-import fr.inria.kgindex.data.ManifestEntry;
+import fr.inria.kgindex.main.data.DescribedDataset;
+import fr.inria.kgindex.main.data.FakeSHACLValidationReport;
+import fr.inria.kgindex.main.data.ManifestEntry;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -10,13 +10,12 @@ import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.vocabulary.RDF;
 
 import java.util.Date;
-import java.util.Map;
 
-import static fr.inria.kgindex.util.Utils.dateFormatter;
+import static fr.inria.kgindex.main.util.Utils.dateFormatter;
 
 public class EarlReport {
 
-    public static Model createEarlReport(boolean passed, Dataset describedDataset, ManifestEntry entry, String message, Literal startDate, Literal endDate) {
+    public static Model createEarlReport(boolean passed, DescribedDataset describedDataset, ManifestEntry entry, String message, Literal startDate, Literal endDate) {
         Model result = ModelFactory.createDefaultModel();
         Resource assertionResource = result.createResource();
 
@@ -42,7 +41,7 @@ public class EarlReport {
         return result;
     }
 
-    public static Model createEarlQueryReport(boolean passed, Dataset describedDataset, String sentQuery, ManifestEntry entry, String message, Literal startDate, Literal endDate) {
+    public static Model createEarlQueryReport(boolean passed, DescribedDataset describedDataset, String sentQuery, ManifestEntry entry, String message, Literal startDate, Literal endDate) {
         Model result = createEarlReport(passed, describedDataset, entry, message, startDate, endDate);
 
         if(sentQuery != null) {
@@ -56,15 +55,15 @@ public class EarlReport {
         return result;
     }
 
-    public static Model createEarlPassedQueryReport(Dataset describedDataset, String sentQuery, ManifestEntry entry, Literal startDateLiteral, Literal endDateLiteral) {
+    public static Model createEarlPassedQueryReport(DescribedDataset describedDataset, String sentQuery, ManifestEntry entry, Literal startDateLiteral, Literal endDateLiteral) {
         return createEarlQueryReport(true, describedDataset, sentQuery, entry, "", startDateLiteral, endDateLiteral);
     }
 
-    public static Model createEarlFailedQueryReport(Dataset describedDataset, String sentQuery, ManifestEntry entry, String message, Literal startDateLiteral, Literal endDateLiteral) {
+    public static Model createEarlFailedQueryReport(DescribedDataset describedDataset, String sentQuery, ManifestEntry entry, String message, Literal startDateLiteral, Literal endDateLiteral) {
         return createEarlQueryReport(false, describedDataset, sentQuery, entry, message, startDateLiteral, endDateLiteral);
     }
 
-    public static Model createEarlSHACLReport(Dataset describedDataset, ValidationReport report, ManifestEntry entry, Literal startDateLiteral, Literal endDateLiteral) {
+    public static Model createEarlSHACLReport(DescribedDataset describedDataset, ValidationReport report, ManifestEntry entry, Literal startDateLiteral, Literal endDateLiteral) {
         Model result = createEarlReport(report.conforms(), describedDataset, entry, entry.getTitle(), startDateLiteral, endDateLiteral);
 
         if(report != null) {
@@ -79,7 +78,7 @@ public class EarlReport {
         return result;
     }
 
-    public static Model createEarlSHACLReport(Dataset describedDataset, FakeSHACLValidationReport report, ManifestEntry entry, Literal startDateLiteral, Literal endDateLiteral) {
+    public static Model createEarlSHACLReport(DescribedDataset describedDataset, FakeSHACLValidationReport report, ManifestEntry entry, Literal startDateLiteral, Literal endDateLiteral) {
         Property conforms = report.getValue().createProperty(SHACL.conforms.getURI());
         boolean reportConforms = report.getValue().contains(null, conforms, report.getValue().createTypedLiteral(true));
         Model result = createEarlReport(reportConforms, describedDataset, entry, entry.getTitle(), startDateLiteral, endDateLiteral);

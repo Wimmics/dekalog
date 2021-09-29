@@ -1,6 +1,6 @@
-package fr.inria.kgindex.rules;
+package fr.inria.kgindex.main.rules;
 
-import fr.inria.kgindex.data.ManifestEntry;
+import fr.inria.kgindex.main.data.ManifestEntry;
 import org.apache.jena.rdf.model.Model;
 
 import java.util.HashSet;

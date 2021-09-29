@@ -1,12 +1,11 @@
-package fr.inria.kgindex.rules;
+package fr.inria.kgindex.main.rules;
 
-import fr.inria.kgindex.data.Dataset;
-import fr.inria.kgindex.data.FakeSHACLValidationReport;
-import fr.inria.kgindex.util.EarlReport;
-import fr.inria.kgindex.util.Utils;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.ResultSet;
+import fr.inria.kgindex.main.data.DescribedDataset;
+import fr.inria.kgindex.main.util.DatasetUtils;
+import fr.inria.kgindex.main.util.EarlReport;
+import fr.inria.kgindex.main.data.FakeSHACLValidationReport;
+import fr.inria.kgindex.main.util.Utils;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.Shapes;
@@ -20,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import static fr.inria.kgindex.util.Utils.dateFormatter;
+import static fr.inria.kgindex.main.util.Utils.dateFormatter;
 
 public class SHACLTestExecution extends TestExecution {
 
@@ -30,7 +29,7 @@ public class SHACLTestExecution extends TestExecution {
         super(tests, url);
     }
 
-    public Model execute(Dataset describedDataset, Model datasetDescription) {
+    public Dataset execute(DescribedDataset describedDataset, Dataset datasetDescription) {
         return executeTestShapeTest(describedDataset, datasetDescription);
     }
 
@@ -39,13 +38,13 @@ public class SHACLTestExecution extends TestExecution {
      * @param describedDataset
      * @return
      */
-    private Model executeTestShapeTest(Dataset describedDataset, Model datasetDescription) {
-        Model result = ModelFactory.createDefaultModel();
+    private Dataset executeTestShapeTest(DescribedDataset describedDataset, Dataset datasetDescription) {
+        Dataset result = DatasetFactory.create();
         ShaclValidator validator = ShaclValidator.get();
 
-        this._tests.getTests().forEach(testModel -> {
+        for(Model testModel : this._tests.getTests()) {
             Date startDate = new Date();
-            Literal startDateLiteral = result.createLiteral(dateFormatter.format(startDate));
+            Literal startDateLiteral = result.getDefaultModel().createLiteral(dateFormatter.format(startDate));
             Model earlReport = null;
 
             Property sparqlProperty = testModel.createProperty(SHACL.sparql.getURI());
@@ -109,7 +108,7 @@ public class SHACLTestExecution extends TestExecution {
                         }
                     }
                     Date endDate = new Date();
-                    Literal endDateLiteral =  result.createLiteral(dateFormatter.format(endDate));
+                    Literal endDateLiteral =  result.getDefaultModel().createLiteral(dateFormatter.format(endDate));
 
                     // Gestion des rapports de validation
                     FakeSHACLValidationReport fakeValidationReport = FakeSHACLValidationReport.createFakeSHACLValidationReport(this.getTests().getManifestEntry(), validationResultBool);
@@ -117,22 +116,22 @@ public class SHACLTestExecution extends TestExecution {
                 } else {
                     Shapes testShapes = validator.parse(testModel.getGraph());
 
-                    ValidationReport report = validator.validate(testShapes, datasetDescription.getGraph());
+                    ValidationReport report = validator.validate(testShapes, datasetDescription.asDatasetGraph().getUnionGraph());
 
                     Date endDate = new Date();
-                    Literal endDateLiteral =  result.createLiteral(dateFormatter.format(endDate));
+                    Literal endDateLiteral =  result.getDefaultModel().createLiteral(dateFormatter.format(endDate));
 
                     earlReport = EarlReport.createEarlSHACLReport(describedDataset, report, this.getTests().getManifestEntry(), startDateLiteral, endDateLiteral);
                 }
             } catch(Exception e) {
                 Date endDate = new Date();
-                Literal endDateLiteral =  result.createLiteral(dateFormatter.format(endDate));
+                Literal endDateLiteral =  result.getDefaultModel().createLiteral(dateFormatter.format(endDate));
                 logger.info(e);
                 earlReport = EarlReport.createEarlReport(false, describedDataset, this.getTests().getManifestEntry(), e.getMessage() ,startDateLiteral, endDateLiteral);
             }
 
-            result.add(earlReport);
-        });
+            result = DatasetUtils.addDataset(result, DatasetFactory.create(earlReport));
+        };
 
         return result;
     }

@@ -1,14 +1,22 @@
-package fr.inria.kgindex;
+package fr.inria.kgindex.main;
 
-import fr.inria.kgindex.data.Dataset;
-import fr.inria.kgindex.data.ManifestEntry;
-import fr.inria.kgindex.data.RuleLibrary;
-import fr.inria.kgindex.rules.RuleApplication;
-import fr.inria.kgindex.rules.RuleFactory;
-import fr.inria.kgindex.util.*;
+import fr.inria.kgindex.main.data.DescribedDataset;
+import fr.inria.kgindex.main.data.ManifestEntry;
+import fr.inria.kgindex.main.data.RuleLibrary;
+import fr.inria.kgindex.main.rules.RuleApplication;
+import fr.inria.kgindex.main.rules.RuleFactory;
+import fr.inria.kgindex.main.util.DatasetUtils;
+import fr.inria.kgindex.main.util.SPARQL_SD;
+import fr.inria.kgindex.main.util.Utils;
 import org.apache.commons.cli.*;
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.util.FileUtils;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.NodeIterator;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.VOID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +24,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MainClass {
@@ -94,24 +103,24 @@ public class MainClass {
 			String endpointUrl = cmd.getOptionValue(OPT_ENDPOINT);
 			String datasetName = cmd.getOptionValue(OPT_NAME);
 
-			String outputFilename = "kbMetadata"+ datasetName +".ttl";
+			String outputFilename = "kbMetadata"+ datasetName +".trig";
 			if(cmd.hasOption(OPT_OUTPUT)) {
-				outputFilename = cmd.getOptionValue(OPT_OUTPUT, "kbMetadata"+ datasetName +".ttl");
+				outputFilename = cmd.getOptionValue(OPT_OUTPUT, "kbMetadata"+ datasetName +".trig");
 			}
 
-			Dataset describedDataset = new Dataset(endpointUrl, datasetName);
+			DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetName);
 
 			Model manifestModel = ModelFactory.createDefaultModel();
-			manifestModel.read(manifestRootFile, "TTL");
+			manifestModel.read(manifestRootFile, "TRIG");
 
-			Model datasetDescription = ModelFactory.createDefaultModel();
+			Dataset datasetDescription = DatasetFactory.create();
 
 			List<RDFNode> manifestList = ManifestEntry.extractIncludedFromManifest(manifestModel);
 
 			Model includedManifestModel = ModelFactory.createDefaultModel();
 			manifestList.forEach( included -> {
 				Model tmpManifestModel = ModelFactory.createDefaultModel();
-				tmpManifestModel.read(included.toString(), "TTL");
+				tmpManifestModel.read(included.toString(), "TRIG");
 				includedManifestModel.add(tmpManifestModel);
 				tmpManifestModel.close();
 			});
@@ -120,24 +129,24 @@ public class MainClass {
 			List<RDFNode> testList = ManifestEntry.extractEntriesList(includedManifestModel);
 
 			// Application des règles pour chaque ManifestEntry
-			testList.forEach(testNode -> {
+			for (RDFNode testNode : testList) {
 				Set<ManifestEntry> testEntrySet = RuleLibrary.getLibrary().get(testNode);
 
-				testEntrySet.forEach(testEntry -> {
+				for (ManifestEntry testEntry : testEntrySet) {
 					RuleApplication application = RuleFactory.create(testEntry, describedDataset, datasetDescription);
-					Model testResult = application.apply();
-					datasetDescription.add(testResult);
+					Dataset testResult = application.apply();
+					datasetDescription = DatasetUtils.addDataset(datasetDescription, testResult);
 
 					// Keeping the list of the dataset namespaces up to date
 					if (describedDataset.getNamespaces().isEmpty()
-							&& (datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
-							|| datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
+							&& (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
+							|| datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
 						NodeIterator namespaceIt = null;
-						if (datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
-							namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
+						if (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
+							namespaceIt = datasetDescription.getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
 						}
-						if (datasetDescription.contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
-							namespaceIt = datasetDescription.listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
+						if (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
+							namespaceIt = datasetDescription.getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
 						}
 
 						assert namespaceIt != null;
@@ -148,16 +157,17 @@ public class MainClass {
 					}
 
 					// Checking if the graph list is necessary according to the endpoint description
-					if (!datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
-							&& datasetDescription.contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
+					if (!datasetDescription.getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
+							&& datasetDescription.getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
 						describedDataset.setGraphsAreRequired(true);
 					}
-				});
-			});
+				}
+				;
+			};
 
 			try {
 				OutputStream outputStream = new FileOutputStream(outputFilename);
-				datasetDescription.write(outputStream, FileUtils.guessLang(outputFilename, "TTL"));
+				RDFDataMgr.write(outputStream, datasetDescription, Lang.TRIG);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}

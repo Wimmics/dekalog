@@ -11,6 +11,6 @@ kgi:connectedEndpointDescResourceTest rdf:type kgi:TestQuery , earl:TestCase ;
     kgi:query """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         ASK
         WHERE {
-            ?res sd:endpoint $endpoint .
+            ?res sd:endpoint $endpointUrl .
         }
         $LIMIT""" .
