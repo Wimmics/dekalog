@@ -7,13 +7,13 @@
 <> a mf:Manifest ;
     mf:entries  (
             <classPopulation.ttl>
-            <sportalDistinctRDFNodes.ttl>
             <sportalDistinctUrisObjects.ttl>
-            <sportalDistinctBlankNodeObjects.ttl>
             <sportalDistinctUrisSubjects.ttl>
-            <sportalDistinctBlankNodes.ttl>
+            <sportalDistinctBlankNodeObjects.ttl>
             <sportalDistinctBlankNodeSubjects.ttl>
+            <sportalDistinctBlankNodes.ttl>
             <sportalDistinctIRIReferences.ttl>
+            <sportalDistinctRDFNodes.ttl>
             <sportalDistinctLiterals.ttl>
             <sportalClassPartitionClasses.ttl>
             <sportalClassPartitionDistinctObjects.ttl>
@@ -54,6 +54,125 @@
         <../meta/modifiedUpdate.ttl>
     ) .
 
+<sportalDistinctRDFNodes.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
+                CONSTRUCT {
+                    $datasetDescription voidex:e:distinctRDFNodes ?x
+                }
+                WHERE {
+                    SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))}
+                }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+<sportalDistinctUrisObjects.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
+                CONSTRUCT {
+                    $datasetDescription voidex:distinctIRIReferenceObjects ?x
+                }
+                WHERE {
+                    SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE {
+                    ?s ?p ?o
+                    FILTER(isIri(?o))}
+                }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+<sportalDistinctUrisSubjects.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
+                CONSTRUCT {
+                    $datasetDescription voidex:distinctIRIReferenceSubjects ?x
+                }
+                WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isIRI(?s))} }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+<sportalDistinctBlankNodeSubjects.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
+                CONSTRUCT {
+                    $datasetDescription voidex:distinctBlankNodeSubjects ?x
+                }
+                WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+<sportalDistinctBlankNodeObjects.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
+                CONSTRUCT {
+                    $datasetDescription voidex:distinctBlankNodeSubjects ?x
+                }
+                WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+<sportalDistinctBlankNodeObjects.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
+                CONSTRUCT {
+                    $datasetDescription voidex:distinctBlankNodeSubjects ?x
+                }
+                WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+<sportalDistinctBlankNodes.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
+            CONSTRUCT { $datasetDescription voidex:distinctBlankNodes ?x }
+            WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x)
+            WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+<sportalDistinctIRIReferences.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
+            CONSTRUCT { $datasetDescription voidex:distinctIRIReferences ?x }
+            WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x)
+            WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u)) } }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+<sportalDistinctLiterals.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
+            CONSTRUCT { $datasetDescription voidex:distinctLiterals ?x }
+            WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
 <sportalClassPartition.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         <sportalClassPartitionTriples.ttl>
@@ -61,34 +180,38 @@
 
 <sportalClassPartitionTriples.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-            PREFIX kgi: <http://ns.inria.fr/kg/index#>
-            CONSTRUCT {
-                $datasetDescription void:classPartition [
-                        void:class ?c ;
-                        void:triples ?x
-                    ]
-            }
-            WHERE {
-                { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
-            }
-        """ ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    $datasetDescription void:classPartition [
+                            void:class ?c ;
+                            void:triples ?x
+                        ]
+                }
+                WHERE {
+                    { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+                }
+            """
+        ]
         <../meta/modifiedUpdate.ttl>
     ) ;
     kgi:onFailure (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kg/index#>
-        PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT {
-                $datasetDescription void:classPartition [
-                        void:class ?c
-                    ]
-            }
-            WHERE {
-                { ?s a ?c . }
-            }
-        """ ]
+        [
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+                CONSTRUCT {
+                    $datasetDescription void:classPartition [
+                            void:class ?c
+                        ]
+                }
+                WHERE {
+                    { ?s a ?c . }
+                }
+            """
+        ]
         <../meta/modifiedUpdate.ttl>
     ) .
 

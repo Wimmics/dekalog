@@ -1,6 +1,5 @@
 package fr.inria.kgindex;
 
-import fr.inria.kgindex.util.Utils;
 import org.apache.commons.cli.*;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
