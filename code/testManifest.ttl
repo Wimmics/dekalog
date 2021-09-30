@@ -8,7 +8,6 @@
 
 <> a mf:Manifest ;
     mf:entries (
-            <file:///user/pmaillot/home/git/dekalog/rules/extraction/vocabularyListCoreseLOV.ttl>
             <file:///user/pmaillot/home/git/dekalog/rules/extraction/endpointDescResource.ttl>
             <file:///user/pmaillot/home/git/dekalog/rules/extraction/datasetDescResource.ttl>
             <file:///user/pmaillot/home/git/dekalog/rules/extraction/languages.ttl>
@@ -92,6 +91,24 @@
         ]
         <file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl>
         <file:///user/pmaillot/home/git/dekalog/rules/meta/equivalences.ttl>
+    ) ;
+    kgi:onFailure (
+        [
+            mf:action """
+                PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
+                        sd:endpoint $endpointUrl .
+                    $metadataDescription a prov:Entity , earl:TestSubject ;
+                         prov:wasDerivedFrom $endpointUrl ;
+                         kgi:curated $endpointDescription .
+                }"""
+        ]
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl>
     ) .
 
 <file:///user/pmaillot/home/git/dekalog/rules/extraction/datasetDescResource.ttl> a mf:ManifestEntry ;
@@ -147,6 +164,23 @@
         ]
         <file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl>
         <file:///user/pmaillot/home/git/dekalog/rules/meta/equivalences.ttl>
+        ) ;
+        kgi:onFailure (
+            [
+                mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                    PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                    PREFIX prov: <http://www.w3.org/ns/prov#>
+                    PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                    PREFIX earl: <http://www.w3.org/ns/earl#>
+                    PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                    INSERT DATA {
+                        $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
+                        $metadataDescription a prov:Entity , earl:TestSubject ;
+                            prov:wasDerivedFrom $endpointUrl ;
+                            kgi:curated $datasetDescription .
+                    }"""
+            ]
+            <file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl>
         ) .
 
 <file:///user/pmaillot/home/git/dekalog/rules/meta/equivalences.ttl> a mf:ManifestEntry ;
