@@ -27,10 +27,13 @@ public class CatalogInputMain {
 
     private static final String OPT_CATALOG_FILE = "catalogFile";
     private static final String OPT_CATALOG_ENDPOINT = "catalogEndpoint";
+    private static final String OPT_MANIFEST = "manifest";
     private static final String OPT_TIMEOUT = "timeout";
     private static final String OPT_OUTPUT = "output";
     private static final String OPT_HELP = "help";
     private static final String APP_NAME = "kgindex";
+    private static final String DEFAULT_TIMEOUT = "30000";
+    private static final String DEFAULT_MANIFEST = "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl";
 
     public static void main(String[] args) {
         Options options = new Options();
@@ -54,12 +57,17 @@ public class CatalogInputMain {
         options.addOption(Option.builder(OPT_OUTPUT)
                 .required(false)
                 .hasArg()
-                .desc("Output filename. Default is 'output.rdf'.")
+                .desc("Output filename. Default is 'output.trig'.")
+                .build());
+        options.addOption(Option.builder(OPT_MANIFEST)
+                .required(false)
+                .hasArg()
+                .desc("Root manifest file of the generation rules. Default is " + DEFAULT_MANIFEST )
                 .build());
         options.addOption(Option.builder(OPT_TIMEOUT)
                 .required(false)
                 .hasArg()
-                .desc("Timeout for all queries in milliseconds. Default is 30000.")
+                .desc("Timeout for all queries in milliseconds. Default is " + DEFAULT_TIMEOUT + ".")
                 .build());
         CommandLineParser parser = new DefaultParser();
         try {
@@ -69,13 +77,16 @@ public class CatalogInputMain {
                 formatter.printHelp( APP_NAME, options );
             }
 
-            String outputFilename = "output.ttl";
+            String outputFilename = "output.trig";
             if(cmd.hasOption(OPT_OUTPUT)) {
-                outputFilename = cmd.getOptionValue(OPT_OUTPUT, "output.ttl");
+                outputFilename = cmd.getOptionValue(OPT_OUTPUT, "output.trig");
             }
             if(cmd.hasOption(OPT_TIMEOUT)) {
-                String queryTimeoutString = cmd.getOptionValue(OPT_TIMEOUT, "30000");
+                String queryTimeoutString = cmd.getOptionValue(OPT_TIMEOUT, DEFAULT_TIMEOUT);
                 Utils.queryTimeout = Long.parseLong(queryTimeoutString);
+            }
+            if(cmd.hasOption(OPT_MANIFEST)) {
+                Utils.manifestRootFile = cmd.getOptionValue(OPT_MANIFEST, DEFAULT_MANIFEST);
             }
 
             RDFConnection catalogConnection = null;
@@ -114,25 +125,36 @@ public class CatalogInputMain {
 
             logger.debug(datasetEndpointQuery);
             assert catalogConnection != null;
+            String finalOutputFilename = outputFilename;
             catalogConnection.querySelect(datasetEndpointQuery, querySolution -> {
                 logger.debug(querySolution.get("?datasetUri") + " " + querySolution.get("?endpointUrl") + " " + querySolution.get("?datasetName"));
+                try {
                 String datasetUri = querySolution.get("?datasetUri").toString();
                 String endpointUrl = querySolution.get("?endpointUrl").asResource().getURI();
-                String datasetName = querySolution.get("?datasetName").toString();
+                String datasetName = "";
+                if(querySolution.get("?datasetName") == null) {
+                    datasetName = URLEncoder.encode(datasetUri, StandardCharsets.UTF_8.toString());
+                } else {
+                    datasetName = querySolution.get("?datasetName").toString();
+                }
                 logger.trace("START dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
 
                 // Faire l'extraction de description selon nos regles
-                try {
                     Path tmpDatasetDescFile = Files.createTempFile(null, ".trig");
 
-                    if(datasetName.equals("")) {
-                        datasetName = URLEncoder.encode(datasetUri, StandardCharsets.UTF_8);
-                    }
+                    datasetName = URLEncoder.encode(datasetName, StandardCharsets.UTF_8.toString());
                     MainClass.extractIndexDescriptionForDataset(datasetName, endpointUrl, tmpDatasetDescFile.toString());
                     logger.trace("END dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
                     logger.trace("Transfert to result START");
                     InputStream inputStream = new FileInputStream(tmpDatasetDescFile.toString());
                     RDFDataMgr.read(result, inputStream, Lang.TRIG);
+                    Files.deleteIfExists(tmpDatasetDescFile);
+                    try {
+                        OutputStream outputStream = new FileOutputStream(finalOutputFilename);
+                        RDFDataMgr.write(outputStream, result, Lang.TRIG);
+                    } catch (FileNotFoundException e) {
+                        logger.error(e);
+                    }
                     logger.trace("Transfert to result END");
                 } catch (IOException e) {
                     e.printStackTrace();
