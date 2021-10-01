@@ -11,6 +11,7 @@
             <file:///user/pmaillot/home/git/dekalog/rules/extraction/endpointDescResource.ttl>
             <file:///user/pmaillot/home/git/dekalog/rules/extraction/datasetDescResource.ttl>
             <file:///user/pmaillot/home/git/dekalog/rules/extraction/languages.ttl>
+            <file:///user/pmaillot/home/git/dekalog/rules/check/reachability.ttl>
         ) .
 
 <file:///user/pmaillot/home/git/dekalog/rules/extraction/languages.ttl> a mf:ManifestEntry ;
