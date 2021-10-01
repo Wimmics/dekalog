@@ -22,17 +22,25 @@ public class DescribedDataset {
 	private boolean _graphsAreRequiredFlag = false;
 	
 	public DescribedDataset(String endpoint, String name) {
-		this._endpointUrl = endpoint;
+		this(endpoint, KGIndex.kgindexNamespace + name + "Endpoint", KGIndex.kgindexNamespace + name + "Dataset", KGIndex.kgindexNamespace + name + "Metadata");
 		this._name = name;
+	}
 
-		Resource endpointDescResource = this._model.createResource(KGIndex.kgindexNamespace + this._name + "Endpoint");
+	public DescribedDataset(String endpoint, String endpointResourceUrl, String datasetResourceUrl, String metadataResourceUrl) {
+		this(endpoint);
+
+		Resource endpointDescResource = this._model.createResource(endpointResourceUrl);
 		this.setEndpointDescriptionResource(endpointDescResource);
-		Resource datasetDescResource = this._model.createResource(KGIndex.kgindexNamespace + this._name + "Dataset");
+		Resource datasetDescResource = this._model.createResource(datasetResourceUrl);
 		this.setDatasetDescriptionResource(datasetDescResource);
-		Resource metadataDescResource = this._model.createResource(KGIndex.kgindexNamespace + this._name + "Metadata");
+		Resource metadataDescResource = this._model.createResource(metadataResourceUrl);
 		this.setMetadataDescriptionResource(metadataDescResource);
-		Resource graphListResource = this._model.createResource(KGIndex.kgindexNamespace + this._name + "GraphList");
+		Resource graphListResource = this._model.createResource(endpointResourceUrl + "GraphList");
 		this.setGraphListResource(graphListResource);
+	}
+
+	private DescribedDataset(String endpoint) {
+		this._endpointUrl = endpoint;
 	}
 	
 	public String getEndpointUrl() {

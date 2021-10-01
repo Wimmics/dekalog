@@ -118,7 +118,10 @@ public class MainClass {
 
 	public static void extractIndexDescriptionForDataset(String datasetName, String endpointUrl, String outputFilename) {
 		DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetName);
+		extractIndexDescriptionForDataset(describedDataset, outputFilename);
+	}
 
+	public static void extractIndexDescriptionForDataset(DescribedDataset describedDataset, String outputFilename) {
 		Model manifestModel = ModelFactory.createDefaultModel();
 		manifestModel.read(Utils.manifestRootFile, "TRIG");
 
