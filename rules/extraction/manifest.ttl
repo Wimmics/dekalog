@@ -28,7 +28,7 @@
                 CONSTRUCT {
                     $endpointDescription ?p ?o .
                     $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                        sd:endpoint $endpointUrl .
+                        sd:endpoint $rawEndpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                          prov:wasDerivedFrom $endpointUrl ;
                          kgi:curated $endpointDescription ;
@@ -69,7 +69,7 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
                     $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                        sd:endpoint $endpointUrl .
+                        sd:endpoint $rawEndpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                          prov:wasDerivedFrom $endpointUrl ;
                          kgi:curated $endpointDescription .
