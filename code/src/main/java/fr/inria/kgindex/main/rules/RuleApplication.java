@@ -31,6 +31,9 @@ import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -150,6 +153,7 @@ public class RuleApplication {
                                     HttpRequest request = HttpRequest.newBuilder()
                                             .uri(queryURL)
                                             .GET()
+                                            .timeout(Duration.of(Utils.queryTimeout, ChronoUnit.MILLIS))
                                             .header("Accept", "application/x-trig")
                                             .build();
                                     Dataset bodyData = DatasetFactory.create();
@@ -186,6 +190,7 @@ public class RuleApplication {
                                         request = HttpRequest.newBuilder()
                                                 .uri(queryURL)
                                                 .GET()
+                                                .timeout(Duration.of(Utils.queryTimeout, ChronoUnit.MILLIS))
                                                 .header("Accept", "application/x-trig")
                                                 .build();
                                     } catch (UnsupportedEncodingException e1) {
@@ -193,8 +198,6 @@ public class RuleApplication {
                                     }
                                     Dataset bodyData = DatasetFactory.create();
                                     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                                    logger.debug(response.statusCode());
-                                    logger.debug(response.body());
                                     if(response.statusCode() == 200) {
                                         String bodyString = response.body();
                                         bodyString = bodyString.replace("= {", " {");
@@ -214,6 +217,9 @@ public class RuleApplication {
                                 }
                             } catch (IOException | InterruptedException  e) {
                                 logger.error(e);
+                            } catch (QueryParseException e) {
+                                logger.debug(queryString);
+                                throw e;
                             } catch (RiotException e) {
                                 logger.error(e);
                                 logger.trace(this._entry.getFileResource() + " action could not be added because of RiotException");
