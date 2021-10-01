@@ -68,7 +68,7 @@ public class QueryTestExecution extends TestExecution {
                         passed = true;
                     }
                     testQueryExecution.close();
-                } catch(QueryExceptionHTTP e) {
+                } catch(QueryException e) {
                     logger.info(e);
                     errorMessage = e.getMessage();
                     passed = false;
