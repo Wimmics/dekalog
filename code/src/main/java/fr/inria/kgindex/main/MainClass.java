@@ -174,8 +174,7 @@ public class MainClass {
 					describedDataset.setGraphsAreRequired(true);
 				}
 			}
-			;
-		};
+		}
 
 		try {
 			OutputStream outputStream = new FileOutputStream(outputFilename);

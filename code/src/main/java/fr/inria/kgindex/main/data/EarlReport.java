@@ -1,8 +1,7 @@
-package fr.inria.kgindex.main.util;
+package fr.inria.kgindex.main.data;
 
-import fr.inria.kgindex.main.data.DescribedDataset;
-import fr.inria.kgindex.main.data.FakeSHACLValidationReport;
-import fr.inria.kgindex.main.data.ManifestEntry;
+import fr.inria.kgindex.main.util.KGIndex;
+import fr.inria.kgindex.main.util.PROV;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.vocabulary.SHACL;

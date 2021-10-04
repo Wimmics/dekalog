@@ -112,20 +112,7 @@
             }
             """
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
     ) .
 
 <provenance.ttl> a mf:ManifestEntry ;

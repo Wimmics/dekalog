@@ -161,6 +161,7 @@
                     SELECT DISTINCT (lang(?o) as ?lang)  WHERE {
                         ?s ?p ?o
                         FILTER( isLiteral(?o) )
+                        FILTER( ?lang != "" )
                     }
                 }
             """
