@@ -45,7 +45,7 @@ public class SHACLTestExecution extends TestExecution {
         for(Model testModel : this._tests.getTests()) {
             Date startDate = new Date();
             Literal startDateLiteral = result.getDefaultModel().createLiteral(dateFormatter.format(startDate));
-            Model earlReport = null;
+            EarlReport earlReport = null;
 
             Property sparqlProperty = testModel.createProperty(SHACL.sparql.getURI());
             try {
@@ -130,7 +130,7 @@ public class SHACLTestExecution extends TestExecution {
                 earlReport = EarlReport.createEarlReport(false, describedDataset, this.getTests().getManifestEntry(), e.getMessage() ,startDateLiteral, endDateLiteral);
             }
 
-            result = DatasetUtils.addDataset(result, DatasetFactory.create(earlReport));
+            result = DatasetUtils.addDataset(result, DatasetFactory.create(earlReport.getReport()));
         };
 
         return result;

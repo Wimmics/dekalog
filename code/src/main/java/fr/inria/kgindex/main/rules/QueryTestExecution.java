@@ -79,10 +79,10 @@ public class QueryTestExecution extends TestExecution {
 
                 // Generation of report
                 if(passed) {
-                    Dataset earlReport = DatasetFactory.create(EarlReport.createEarlPassedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), startDateLiteral, endDateLiteral));
+                    Dataset earlReport = DatasetFactory.create(EarlReport.createEarlPassedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), startDateLiteral, endDateLiteral).getReport());
                     result = DatasetUtils.addDataset(result, earlReport);
                 } else {
-                    Dataset earlReport = DatasetFactory.create(EarlReport.createEarlFailedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), errorMessage, startDateLiteral, endDateLiteral));
+                    Dataset earlReport = DatasetFactory.create(EarlReport.createEarlFailedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), errorMessage, startDateLiteral, endDateLiteral).getReport());
                     result = DatasetUtils.addDataset(result, earlReport);
                 }
             };

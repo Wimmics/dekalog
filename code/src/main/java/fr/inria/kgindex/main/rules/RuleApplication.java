@@ -176,7 +176,7 @@ public class RuleApplication {
                             Model tmpModel1 = ModelFactory.createDefaultModel();
                             Literal endDateLiteral = tmpModel1.createLiteral(dateFormatter.format(endDate));
                             tmpModel1.close();
-                            Model earlReport = EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral);
+                            Model earlReport = EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral).getReport();
                             result = DatasetUtils.addDataset(result, DatasetFactory.create(earlReport));
                         } catch (QueryParseException ep) {
                             try {
