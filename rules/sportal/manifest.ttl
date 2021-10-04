@@ -59,7 +59,7 @@
         [
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 CONSTRUCT {
-                    $datasetDescription voidex:e:distinctRDFNodes ?x
+                    $datasetDescription voidex:distinctRDFNodes ?x
                 }
                 WHERE {
                     SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))}
