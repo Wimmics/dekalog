@@ -77,20 +77,29 @@ public class EarlReport {
         this._report.add(this._assertionResource, EARL.test, entry.getTestResource());
     }
 
-    private static EarlReport createBasicEarlReport(DescribedDataset describedDataset, Literal startDate, Literal endDate) {
+    public static EarlReport createBasicEarlReport(boolean passed, DescribedDataset describedDataset, Literal startDate, Literal endDate) {
         EarlReport result = new EarlReport();
 
         result.addSubject(describedDataset);
         result.setStartEndDatetimes(startDate, endDate);
+        result.addResult(passed);
+
+        return result;
+    }
+
+    public static EarlReport createBasicEarlReport(boolean passed, DescribedDataset describedDataset) {
+        EarlReport result = new EarlReport();
+
+        result.addSubject(describedDataset);
+        result.addResult(passed);
 
         return result;
     }
 
     public static EarlReport createEarlReport(boolean passed, DescribedDataset describedDataset, ManifestEntry entry, String message, Literal startDate, Literal endDate) {
-        EarlReport result = createBasicEarlReport(describedDataset, startDate, endDate);
+        EarlReport result = createBasicEarlReport(passed, describedDataset, startDate, endDate);
 
         result.addTest(entry);
-        result.addResult(passed);
         result.addResultInfo(message);
         result.addResultInfo(entry.getTitle());
 

@@ -266,7 +266,7 @@
                 $datasetDescription void:classPartition [
                         void:class ?c ;
                         void:distinctSubjects ?x
-                    ]
+                    ] .
             }
             WHERE {
                 { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }

@@ -44,12 +44,6 @@ public class RuleApplication {
 
     private static final Logger logger = LogManager.getLogger(RuleApplication.class);
 
-    public enum TYPE {
-        SPARQL,
-        SHACL,
-        UNKNOWN
-    }
-
     public static String federationserver = null;
 
     private final ManifestEntry _entry;
@@ -58,7 +52,7 @@ public class RuleApplication {
     private Actions _actionsFailure = null;
     private Dataset _datasetDescription;
     private TestExecution _tests = null;
-    private TYPE _type = TYPE.SHACL;
+    private TestExecution.TYPE _type = TestExecution.TYPE.SHACL;
 
     public RuleApplication(ManifestEntry entry, TestExecution tests, Actions actionsSuccess, Actions actionsFailure, DescribedDataset describedDataset, Dataset datasetDescription) {
         this._entry = entry;
@@ -69,11 +63,11 @@ public class RuleApplication {
         this._tests = tests;
     }
 
-    public TYPE getType() {
+    public TestExecution.TYPE getType() {
         return this._type;
     }
 
-    public void setType(TYPE type) {
+    public void setType(TestExecution.TYPE type) {
         this._type = type;
     }
 

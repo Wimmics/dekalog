@@ -6,6 +6,13 @@ import org.apache.jena.query.Dataset;
 
 public abstract class TestExecution {
 
+    public enum TYPE {
+        SPARQL,
+        SHACL,
+        DUMMY,
+        UNKNOWN
+    }
+
     protected Tests _tests = null;
     protected String _endpointUrl = "";
 
