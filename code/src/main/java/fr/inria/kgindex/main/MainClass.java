@@ -147,6 +147,7 @@ public class MainClass {
 			for (ManifestEntry testEntry : testEntrySet) {
 				RuleApplication application = RuleFactory.create(testEntry, describedDataset, datasetDescription);
 				Dataset testResult = application.apply();
+				logger.trace("Result update START");
 				datasetDescription = DatasetUtils.addDataset(datasetDescription, testResult);
 
 				// Keeping the list of the dataset namespaces up to date
@@ -173,6 +174,7 @@ public class MainClass {
 						&& datasetDescription.getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
 					describedDataset.setGraphsAreRequired(true);
 				}
+				logger.trace("Result update END");
 			}
 		}
 
