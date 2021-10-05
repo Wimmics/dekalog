@@ -1,5 +1,11 @@
 # DeKaloG changelog
 
+## [2.3] 2021-10-05
+* Multiple bugfixes
+* SPARQLES tests to determine the SPARQL coverage of an endpoint have been implemented
+* A new main class implement the reading of a file or an endpoint containing a DCAT catalog of data to extract the description of each of them
+* Rules can use external sources, such as LOV, for their tests and actions
+
 ## [2.2] 2021-09-14
 * Rules can now trigger action in case of success or failure of their test. It is also possible to trigger other rules in this manner.
 * Rules that use a federation server need to use a specific resource as an endpoint (kgi:federation) which will be replaced by the URL given to the generation executable

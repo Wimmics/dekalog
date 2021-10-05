@@ -1,0 +1,1176 @@
+<http://ns.inria.fr/kg/index#AgroLDEndpoint>
+        a       <http://www.w3.org/ns/earl#TestSubject> , <http://www.w3.org/ns/sparql-service-description#Service> , <http://www.w3.org/ns/prov#Entity> , <http://www.w3.org/ns/dcat#DataService> ;
+        <http://www.w3.org/ns/dcat#servesDataset>
+                <http://ns.inria.fr/kg/index#AgroLDDataset> ;
+        <http://www.w3.org/ns/sparql-service-description#availableGraphs>
+                <http://ns.inria.fr/kg/index#AgroLDGraphList> ;
+        <http://www.w3.org/ns/sparql-service-description#endpoint>
+                <http://agrold.southgreen.fr/sparql> , <https://agrold.southgreen.fr/sparql> ;
+        <http://www.w3.org/ns/sparql-service-description#feature>
+                <http://lsq.aksw.org/vocab#Regex> , <http://ns.inria.fr/kg/index#BooleanInPattern> .
+
+<http://ns.inria.fr/kg/index#AgroLDDataset>
+        a       <http://www.w3.org/ns/dcat#Dataset> , <http://www.w3.org/ns/prov#Entity> , <http://www.w3.org/ns/earl#TestSubject> , <http://rdfs.org/ns/void#Dataset> ;
+        <http://rdfs.org/ns/void#sparqlEndpoint>
+                <https://agrold.southgreen.fr/sparql> , <http://agrold.southgreen.fr/sparql> .
+
+<http://ns.inria.fr/kg/index#AgroLDGraphList>
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <urn:virtuoso:val:acl:schema>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/sio>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.w3.org/2002/07/owl#>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://localhost:8890/DAV/>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/pato>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/qtl.annotations>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/ensembl.plants>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <file:///home/pmaillot/git/dekalog/code/facets>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/uniprot.plants>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.openlinksw.com/schemas/virtrdf#>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.w3.org/2002/07/owl#>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/qtaro.genes>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/po>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/ncbitaxon>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <file:///home/pmaillot/git/dekalog/code/facets>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <file:///home/pmaillot/git/dekalog/code/virtrdf-label>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/to>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.openlinksw.com/schemas/oplweb#>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/plantftdb>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/interpro>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/tropgenedb>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/msu.genes>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/oryzabase.genes>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/msu.genes>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/greenphyldb>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/qtaro.qtl>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/ino>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/go>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/ensembl.plants>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/eco>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/rap.msu>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/sniplaydb>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/sniplaydb>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <file:///home/pmaillot/git/dekalog/code/b3sifp>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <file:///home/pmaillot/git/dekalog/code/virtrdf-label>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.openlinksw.com/schemas/oplweb#>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/gramene.cyc>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/ricenetdb>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/tropgenedb>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/plantftdb>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/gramene.qtl>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/gramene.qtl>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.w3.org/ns/ldp#>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/ricenetdb>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/vocabulary>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/cegresources>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.openlinksw.com/schemas/virtrdf#>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/vocabulary>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://localhost:8890/DAV/>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/genome.hub>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <file:///home/pmaillot/git/dekalog/code/b3sonto>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.w3.org/ns/ldp#>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/interpro>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/so>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/sio>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <urn:rules.skos>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/go>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/ro>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/so>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://localhost:8890/sparql>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/ncbitaxon>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/qtaro.genes>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/eco>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/ino>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/pato>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <urn:rules.skos>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <urn:virtuoso:val:acl:schema>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/faldo>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <file:///home/pmaillot/git/dekalog/code/b3sonto>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/to>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/qtaro.qtl>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/oryzabase.genes>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/uniprot.plants>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/rap.msu>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/protein.annotations>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/protein.annotations>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/greenphyldb>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://localhost:8890/sparql>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/faldo>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/ro>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/cegresources>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/rapdb>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/genome.hub>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/rapdb>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/po>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <file:///home/pmaillot/git/dekalog/code/b3sifp>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/qtl.annotations>
+                ] ;
+        <http://www.w3.org/ns/sparql-service-description#namedGraph>
+                [ a       <http://www.w3.org/ns/sparql-service-description#NamedGraph> ;
+                  <http://www.w3.org/ns/sparql-service-description#name>
+                          <http://www.southgreen.fr/agrold/gramene.cyc>
+                ] .
+
+<http://ns.inria.fr/kg/index#AgroLDMetadata>
+        a       <http://www.w3.org/ns/prov#Entity> , <http://www.w3.org/ns/earl#TestSubject> ;
+        <http://ns.inria.fr/kg/index#curated>
+                <http://ns.inria.fr/kg/index#AgroLDEndpoint> , <http://ns.inria.fr/kg/index#AgroLDDataset> ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <https://agrold.southgreen.fr/sparql> .\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:35:51"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#datasetDescResourceConnectedTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:35:51" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:35:51"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:38:32"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctUrisTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:38:32" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:38:32"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:44:34"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionPropertiesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:44:34" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:44:34"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <https://agrold.southgreen.fr/sparql> .\n        }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:35:51"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#connectedEndpointDescResourceTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:35:51" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:35:51"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT ?class (count(?instance) AS ?count) WHERE {\n        SELECT DISTINCT ?class ?instance\n        \n        WHERE {\n            ?instance a ?class .\n        }\n    }\n    GROUP BY ?class" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" , "Unexpected error making the query: java.net.SocketTimeoutException: Read timed out" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:38:02"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#classPopCountTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:38:02" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:37:32"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:42:04"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionClassesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:42:04" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:42:02"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT DISTINCT ?ns\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" , "Not Found" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:36:54"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#vocabularyListExtractionTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:36:54" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:36:54"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:46:35"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalPropertyPartitionDistinctSubjectTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:46:35" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:46:35"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    [ a       <http://www.w3.org/ns/shacl#ValidationReport> ;
+                                      <http://www.w3.org/ns/shacl#conforms>
+                                              true
+                                    ] ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:36:55"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#countPropertyShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:36:55" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:36:55"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:39:02"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctBlankNodeObjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:39:02" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:39:02"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://agrold.southgreen.fr/sparql> .\n        }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:35:51"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#connectedEndpointDescResourceTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:35:51" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:35:51"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:43:34"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionDistinctSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:43:34" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:43:34"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE {\n            SELECT DISTINCT (lang(?o) as ?lang) WHERE {\n                ?s ?p ?o . FILTER( isLiteral(?o) )\n            }\n        }\n        LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:37:02"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#languagesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:37:02" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:36:55"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?o false } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:35:51"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#filterBoolTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:35:51" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:35:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:38:02"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctUrisObjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:38:02" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:38:02"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    [ a       <http://www.w3.org/ns/shacl#ValidationReport> ;
+                                      <http://www.w3.org/ns/shacl#conforms>
+                                              true
+                                    ] ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:47:05"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#provenanceExtractionShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:47:05" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:47:05"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:40:02"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalBlankNodeSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:40:02" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:40:02"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:45:04"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionPropertyPartitionDistinctSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:45:04" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:45:04"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:37:32"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#equivalenceTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:37:32" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:37:32"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX nonsensical: <http://nonsensic.al> PREFIX ex: <http://e.g>  SELECT * WHERE { nonsensical:1 ex:type ?val . FILTER regex(?val, \"thi\") } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:35:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#filterRegexTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:35:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:35:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            ASK\n            WHERE {\n                {\n                    SELECT (count(*) AS ?value) WHERE {\n                        ?s ?p ?o .\n                    }\n                }\n            } " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:36:55"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#countTripleShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:36:55" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:36:54"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:46:05"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalPropertyPartitionDistinctObjectTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:46:05" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:46:04"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    [ a       <http://www.w3.org/ns/shacl#ValidationReport> ;
+                                      <http://www.w3.org/ns/shacl#conforms>
+                                              true
+                                    ] ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:36:55"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#countClassShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:36:55" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:36:55"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:41:32"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctLiteralsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:41:32" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:41:32"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:35:51"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#graphListExtractionTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:35:51" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:35:51"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:42:34"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionDistinctObjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:42:34" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:42:34"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:37:32"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#modifiedUpdateTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:37:32" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:37:32"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:47:05"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#reachableEndpointTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:47:05" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:47:05"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:41:32"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctRDFNodesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:41:32" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:41:32"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:40:32"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctBlankNodesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:40:32" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:40:32"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <http://agrold.southgreen.fr/sparql> .\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:35:51"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#datasetDescResourceConnectedTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:35:51" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:35:51"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T17:41:02"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#AgroLDMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctIRIReferencesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T17:41:02" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T17:41:02"
+                ] ;
+        <http://purl.org/dc/terms/modified>
+                "29-09-2021T17:47:05"^^<http://www.w3.org/2001/XMLSchema#datetime> ;
+        <http://www.w3.org/ns/dqv#hasQualityMeasurement>
+                [ a       <http://www.w3.org/ns/dqv#QualityMeasurement> ;
+                  <http://www.w3.org/ns/dqv#computedOn>
+                          <http://ns.inria.fr/kg/index#AgroLDEndpoint> ;
+                  <http://www.w3.org/ns/dqv#isMeasurementOf>
+                          <http://ns.inria.fr/kg/index#reachableEndpointTest> ;
+                  <http://www.w3.org/ns/dqv#value>
+                          true
+                ] ;
+        <http://www.w3.org/ns/dqv#hasQualityMeasurement>
+                [ a       <http://www.w3.org/ns/dqv#QualityMeasurement> ;
+                  <http://www.w3.org/ns/dqv#computedOn>
+                          <http://ns.inria.fr/kg/index#AgroLDEndpoint> ;
+                  <http://www.w3.org/ns/dqv#isMeasurementOf>
+                          <http://ns.inria.fr/kg/index#reachableEndpointTest> ;
+                  <http://www.w3.org/ns/dqv#value>
+                          true
+                ] ;
+        <http://www.w3.org/ns/dqv#hasQualityMeasurement>
+                [ a       <http://www.w3.org/ns/dqv#QualityMeasurement> ;
+                  <http://www.w3.org/2000/01/rdf-schema#label>
+                          "Provenance information are present in the metadata"@en ;
+                  <http://www.w3.org/ns/dqv#computedOn>
+                          <http://ns.inria.fr/kg/index#AgroLDEndpoint> ;
+                  <http://www.w3.org/ns/dqv#isMeasurementOf>
+                          <http://ns.inria.fr/kg/index#provenanceExtractionShape> ;
+                  <http://www.w3.org/ns/dqv#value>
+                          true
+                ] ;
+        <http://www.w3.org/ns/prov#wasDerivedFrom>
+                <http://agrold.southgreen.fr/sparql> , <https://agrold.southgreen.fr/sparql> .

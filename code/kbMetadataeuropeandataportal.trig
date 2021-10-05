@@ -1,0 +1,641 @@
+<http://ns.inria.fr/kg/index#europeandataportalDataset>
+        a       <http://www.w3.org/ns/prov#Entity> , <http://rdfs.org/ns/void#Dataset> , <http://www.w3.org/ns/dcat#Dataset> .
+
+<http://ns.inria.fr/kg/index#europeandataportalMetadata>
+        a       <http://www.w3.org/ns/earl#TestSubject> , <http://www.w3.org/ns/prov#Entity> ;
+        <http://ns.inria.fr/kg/index#curated>
+                <http://ns.inria.fr/kg/index#europeandataportalEndpoint> , <http://ns.inria.fr/kg/index#europeandataportalDataset> ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:47"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionPropertiesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:47" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:47"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:47"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalPropertyPartitionDistinctSubjectTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:47" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:47"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT ?class (count(?instance) AS ?count) WHERE {\n        SELECT DISTINCT ?class ?instance\n        \n        WHERE {\n            ?instance a ?class .\n        }\n    }\n    GROUP BY ?class" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:46"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#classPopCountTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:46" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:46"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            ASK\n            WHERE {\n                {\n                    SELECT (count(*) AS ?value) WHERE {\n                        ?s ?p ?o .\n                    }\n                }\n            } " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not supported for ASK queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:45"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#countTripleShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:45" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:45"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:47"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionDistinctObjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:47" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:47"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:46"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctLiteralsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:46" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:46"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <http://www.europeandataportal.eu/sparql> .\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not supported for ASK queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:45"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#datasetDescResourceConnectedTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:45" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:45"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not supported for ASK queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:45"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#graphListExtractionTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:45" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:45"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <https://www.europeandataportal.eu/sparql> .\n        }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not supported for ASK queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:45"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#connectedEndpointDescResourceTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:45" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:45"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:46"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctUrisTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:46" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:46"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:47"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalPropertyPartitionDistinctObjectTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:47" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:47"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:46"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#countClassShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:46" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:46"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:46"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalBlankNodeSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:46" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:46"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:46"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctBlankNodeObjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:46" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:46"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "ASK {\n            SELECT DISTINCT (lang(?o) as ?lang) WHERE {\n                ?s ?p ?o . FILTER( isLiteral(?o) )\n            } LIMIT 1\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not supported for ASK queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:46"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#languagesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:46" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:46"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://www.europeandataportal.eu/sparql> .\n        }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not supported for ASK queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:45"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#connectedEndpointDescResourceTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:45" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:45"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:47"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#reachableEndpointTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:47" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:47"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:47"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionClassesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:47" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:46"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <https://www.europeandataportal.eu/sparql> .\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not supported for ASK queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:45"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#datasetDescResourceConnectedTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:45" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:45"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?o false } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:45"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#filterBoolTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:45" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:45"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX nonsensical: <http://nonsensic.al> PREFIX ex: <http://e.g>  SELECT * WHERE { nonsensical:1 ex:type ?val . FILTER regex(?val, \"thi\") } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:45"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#filterRegexTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:45" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:45"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:46"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctRDFNodesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:46" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:46"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://www.w3.org/ns/earl#info>
+                                    [ a       <http://www.w3.org/ns/shacl#ValidationReport> ;
+                                      <http://www.w3.org/ns/shacl#conforms>
+                                              true
+                                    ] ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:47"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#provenanceExtractionShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:47" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:47"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:47"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionPropertyPartitionDistinctSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:47" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:47"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:46"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctIRIReferencesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:46" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:46"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT DISTINCT ?ns\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:45"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#vocabularyListExtractionTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:45" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:45"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:46"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#countPropertyShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:46" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:46"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:46"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctBlankNodesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:46" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:46"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:46"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctUrisObjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:46" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:46"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "Endpoint returned Content-Type: text/html which is not recognized for SELECT queries" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T11:06:47"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#europeandataportalMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionDistinctSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T11:06:47" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T11:06:47"
+                ] ;
+        <http://www.w3.org/ns/prov#wasDerivedFrom>
+                <http://www.europeandataportal.eu/sparql> , <https://www.europeandataportal.eu/sparql> .
+
+<http://ns.inria.fr/kg/index#europeandataportalEndpoint>
+        a       <http://www.w3.org/ns/earl#TestSubject> , <http://www.w3.org/ns/prov#Entity> , <http://www.w3.org/ns/dcat#DataService> , <http://www.w3.org/ns/sparql-service-description#Service> ;
+        <http://www.w3.org/ns/sparql-service-description#endpoint>
+                <https://www.europeandataportal.eu/sparql> .

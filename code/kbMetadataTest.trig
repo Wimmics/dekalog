@@ -1,0 +1,805 @@
+<http://ns.inria.fr/kg/index#TestMetadata>
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "\n        CONSTRUCT { ?x <http://example.org/type> ?v }\n        WHERE\n        {\n          <http://nonsensical.com/1> <http://example.org/type> ?o .\n          OPTIONAL {?o <http://example.org/type> ?v }\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_CONOPT.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?v FILTER isBlank(?v) . } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELFILBLANK.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT DISTINCT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?o } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SEL-DISTINCT.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "CONSTRUCT WHERE { <http://nonsensical.com/1> ?p ?o} LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_CON-.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?o }  LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SEL.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT *\n        WHERE\n            { <http://nonsensical.com/1> <http://example.org/type> ?c .\n              OPTIONAL\n                { ?c <http://example.org/type> ?e } .\n              FILTER (! bound(?e))\n            } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELFILNOTBOUND.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT ?o\n        {\n          <http://nonsensical.com/1> <http://example.org/type> ?o .\n          SERVICE <http://dbpedia.org/sparql> {\n            <http://nonsensical.com/2> <http://example.org/type> ?o\n          }\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELSERVICE.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "\n        SELECT * WHERE {\n        ?s ?o false\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELFILBOOL.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT (MIN(?o) AS ?min)\n        WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type>  ?o\n        }\n        LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELMIN.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "select distinct * where {?c <http://example.org/type> _:bn} LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELBNODE.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "\n        CONSTRUCT { ?x <http://example.org/type> ?o }\n        WHERE\n        {\n          <http://nonsensical.com/1> <http://example.org/type> ?o .\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_CON.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT ?s ?str WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type> ?str\n        \tFILTER STRSTARTS(STR(?str), \"h\")\n        }" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELFILSTART.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE {\n            <http://nonsensical.com/1> <http://example.org/type>* ?z\n        }  LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELPATHS.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX : <http://www.example.org/>\n        SELECT (SUM(?o) AS ?sum)\n        WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type>  ?o\n        }\n        LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELSUM.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT *\n        WHERE\n        {\t?s <http://example.org/type> <http://example.org/thing> .\n        \tFILTER NOT EXISTS {\n        \t\t?s <http://example.org/sameAs> <http://nonsensical.com/1>\n        \t}\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELFILNOTEXISTS.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT *\n        WHERE\n        {\t<http://nonsensical.com/1> <http://example.org/type> ?type .\n        \tMINUS {\n        \t\t?type <http://example.org/sameAs> ?same\n        \t}\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELMINUS.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s <http://example.org/type> <http://nonsensical.com/1> } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELEMPTY.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT ?o\n            {\n               <http://nonsensical.com/1> ?p  ?o\n            }\n            VALUES ?o {\n             <http://example.org/thing>\n            }" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELVALUES.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT DISTINCT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?o } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SEL-REDUCED.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT ?y where {\n        \tgraph ?g {\n        \t\t{ SELECT * where {<http://nonsensical.com/1> <http://example.org/type>  ?y} }\n        \t}\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELSUBQGRAPH.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n        SELECT * WHERE {\n            <http://nonsensical.com/1> <http://example.org/type> ?v .\n            FILTER(datatype(xsd:string(?v)) = xsd:string) .\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELFILSTR.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "ASK {\n    ?s ?p ?o\n    }" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_ASK.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT *\n        WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type> ?val\n        \tFILTER regex(?val, \"thi\")\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELFILREGEX.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE {\n        ?s ?o 12\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELFILNUM.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?o . ?o ?p <http://example.org/thing> } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELJOIN.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT ?y\n        where {\n        {\n        \tSELECT * where { <http://nonsensical.com/1> <http://example.org/type>  ?y}}\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELSUBQ.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT *\n        WHERE\n        {\t?s <http://example.org/type> <http://example.org/thing> .\n        \tFILTER NOT EXISTS {\n        \t\t?s <http://example.org/sameAs> <http://nonsensical.com/1>\n        \t}\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELFILNOTEXISTS.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?v . FILTER isIRI(?v) . } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELFILIRI.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?o OPTIONAL {?o ?p ?x}} LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELOPT.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT *\n        {\n           { <http://nonsensical.com/1> <http://example.org/type> ?o }\n          UNION\n           { GRAPH ?g { ?s <http://example.org/type> ?o } }\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELGRAPHUNION.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "\n        CONSTRUCT { ?x <http://example.org/type> ?v }\n        WHERE\n        {\n        <http://nonsensical.com/1> <http://example.org/type> ?o .\n        ?o <http://example.org/type> ?x\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_CONJOIN.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type> ?str\n        \tFILTER CONTAINS(?str, \"a\")\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELFILCONTAINS.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * {\n          <http://nonsensical.com/1> <http://example.org/type> ?o .\n            GRAPH ?g { ?o <http://example.org/type> ?q }\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELGRAPHJOIN.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "ASK {\n        \tFILTER(2 NOT IN ())\n        }" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:39"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_ASKFILNOTIN.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:39" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:39"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n        SELECT * WHERE {\n        \t?num <http://example.org/type> xsd:integer\n        \tFILTER(ABS(?num) >= 2)\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELFILABS.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT (MAX(?o) AS ?max)\n        WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type> ?o\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELMAX.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT (AVG(?o) AS ?avg)\n        WHERE {\n        \t<http://nonsensical.com/1> ?p ?o\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELAVG.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { {?s <http://example.org/type> <http://example.org/thing>} UNION {?s <http://example.org/type> <http://example.org/string>}} LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELUNION.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * {\n            GRAPH ?g { <http://nonsensical.com/1> <http://example.org/type> ?o }\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELGRAPH.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * FROM <http://non.default.graph.com/graph1>\n        FROM NAMED <http://non.default.graph.com/graph2> { <http://nonsensical.com/1> <http://example.org/type> ?o } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELFROM.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT *\n        WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type> ?val .\n        \tFILTER regex(?val, \"thi\", \"i\")\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:41"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL10/SPARQLES_SELFILREGEX-i.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:41" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:41"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT ?z\n        {\n          <http://nonsensical.com/1> ?p ?o .\n          BIND(?o+10 AS ?z)\n        } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "05-10-2021T18:00:40"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#TestMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <file:///user/pmaillot/home/git/dekalog/rules/sparqles/SPARQL11/SPARQLES_SELBIND.ttl> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "05-10-2021T18:00:40" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "05-10-2021T18:00:40"
+                ] .
+
+<http://ns.inria.fr/kg/index#TestEndpoint>
+        <http://www.w3.org/ns/sparql-service-description#endpoint>
+                <http://wasabi.inria.fr/sparql> ;
+        <http://www.w3.org/ns/sparql-service-description#feature>
+                <http://www.w3.org/ns/sparql-service-description#SPARQL10Query> , <http://www.w3.org/ns/sparql-service-description#SPARQL11Query> .

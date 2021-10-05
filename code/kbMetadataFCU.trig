@@ -1,0 +1,3436 @@
+<http://ns.inria.fr/kg/index#FCUDataset>
+        a       <http://www.w3.org/ns/prov#Entity> , <http://www.w3.org/ns/dcat#Dataset> , <http://www.w3.org/ns/earl#TestSubject> , <http://rdfs.org/ns/void#Dataset> ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    3 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2000/01/rdf-schema#comment>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    403 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#altLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#scopeNote>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#topConceptOf>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#entities>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/creator>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#hasTopConcept>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/title>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/creator>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#properties>
+                          6
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/vocab/vann/preferredNamespacePrefix>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#hasTopConcept>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    404 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#altLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#versionInfo>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#imports>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#entities>
+                          528
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/publisher>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#hiddenLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#entities>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/description>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/vocab/vann/preferredNamespacePrefix>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#member>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#imports>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    3 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2000/01/rdf-schema#comment>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/description>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#hasTopConcept>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#versionIRI>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/modified>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/modified>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          3
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/description>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#historyNote>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#hasTopConcept>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#equivalentClass>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2000/01/rdf-schema#subClassOf>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    528 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#entities>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#classes>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#properties>
+                          3
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#classes>
+                          5
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#versionIRI>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    141 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#narrower>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#properties>
+                          15
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    3 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2000/01/rdf-schema#comment>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    532 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#prefLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    513 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#inScheme>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#imports>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#classes>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#hiddenLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    532 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/title>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    478 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#note>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/contributor>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#topConceptOf>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#scopeNote>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    478 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#note>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#versionInfo>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    533 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#versionIRI>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#classes>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          3862
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#entities>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#properties>
+                          16
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#entities>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/modified>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#entities>
+                          533
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/licence>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#versionInfo>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    456 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2000/01/rdf-schema#seeAlso>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    403 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#altLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#imports>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#versionIRI>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/publisher>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#entities>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          26
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    532 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#prefLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#properties>
+                          16
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/contributor>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          51
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          3904
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    143 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#narrower>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/creator>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/licence>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#versionInfo>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#prefLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#hiddenLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    525 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#broader>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#imports>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#versionIRI>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/publisher>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    532 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          533
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/publisher>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://xmlns.com/foaf/0.1/homepage>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          3
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    528 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#prefLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/creator>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#hasValue>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#historyNote>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#intersectionOf>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    527 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#broader>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://xmlns.com/foaf/0.1/homepage>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    456 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2000/01/rdf-schema#seeAlso>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/publisher>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/creator>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          528
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          3862
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#entities>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    533 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#historyNote>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/title>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#entities>
+                          528
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/contributor>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#hasTopConcept>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#entities>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#prefLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#onProperty>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    480 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#note>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    527 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#broader>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/description>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#classes>
+                          3
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    528 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#prefLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    15 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#related>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2000/01/rdf-schema#subClassOf>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          26
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/licence>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#classes>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/creator>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#intersectionOf>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#entities>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#scopeNote>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#hasTopConcept>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/vocab/vann/preferredNamespacePrefix>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#prefLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/licence>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          8
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          26
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#member>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    404 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#altLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/contributor>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    15 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#related>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#properties>
+                          3
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    480 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#note>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#prefLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/description>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          3
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          533
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    527 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#versionInfo>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/title>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/modified>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/vocab/vann/preferredNamespacePrefix>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    143 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#narrower>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    15 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#related>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          3
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    515 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#inScheme>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/contributor>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          528
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/vocab/vann/preferredNamespacePrefix>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#onProperty>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#member>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#versionInfo>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2000/01/rdf-schema#label>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    15 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#related>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/creator>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          3904
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2000/01/rdf-schema#label>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#entities>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#historyNote>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://xmlns.com/foaf/0.1/homepage>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#classes>
+                          3
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#imports>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    528 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/licence>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#hasValue>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    458 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2000/01/rdf-schema#seeAlso>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#topConceptOf>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    525 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#broader>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          8
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#distinctSubjects>
+                          1
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://xmlns.com/foaf/0.1/homepage>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/title>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/title>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/modified>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#entities>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/creator>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          26
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#classes>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Class> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#equivalentClass>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/publisher>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#entities>
+                          2
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/contributor>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/creator>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Restriction> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#properties>
+                          4
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    515 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#inScheme>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#scopeNote>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/licence>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    513 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#inScheme>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2002/07/owl#versionIRI>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#entities>
+                          533
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#member>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/creator>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/creator>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/description>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#distinctObjects>
+                          51
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#ObjectProperty> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    141 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#narrower>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/vocab/vann/preferredNamespacePrefix>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#properties>
+                          30
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Collection> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://xmlns.com/foaf/0.1/homepage>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#hiddenLabel>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#topConceptOf>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    3 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2000/01/rdf-schema#comment>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://xmlns.com/foaf/0.1/homepage>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    1 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/terms/creator>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#NamedIndividual> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    458 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2000/01/rdf-schema#seeAlso>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2002/07/owl#Ontology> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    2 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://purl.org/dc/elements/1.1/modified>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#classPartition>
+                [ <http://rdfs.org/ns/void#class>
+                          <http://www.w3.org/2004/02/skos/core#Concept> ;
+                  <http://rdfs.org/ns/void#propertyPartition>
+                          [ <http://rdfs.org/ns/void#distinctSubjects>
+                                    527 ;
+                            <http://rdfs.org/ns/void#property>
+                                    <http://www.w3.org/2004/02/skos/core#definition>
+                          ]
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          45 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#member>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          3 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2000/01/rdf-schema#comment>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#equivalentClass>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/terms/licence>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/vocab/vann/preferredNamespacePrefix>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#versionIRI>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#imports>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/elements/1.1/publisher>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          15 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#related>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/terms/title>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#intersectionOf>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#hiddenLabel>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#versionInfo>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#hiddenLabel>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#member>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#hasTopConcept>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#hasValue>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2000/01/rdf-schema#label>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#inScheme>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/terms/licence>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#topConceptOf>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#imports>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          480 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#note>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#scopeNote>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#hasValue>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/terms/description>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1158 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#altLabel>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/elements/1.1/publisher>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/terms/creator>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          404 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#altLabel>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#onProperty>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://xmlns.com/foaf/0.1/homepage>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          584 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2000/01/rdf-schema#seeAlso>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          532 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#prefLabel>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          515 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#inScheme>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          143 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#broader>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          538 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#historyNote>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          4 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2000/01/rdf-schema#comment>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          458 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2000/01/rdf-schema#seeAlso>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          534 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#prefLabel>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#equivalentClass>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/elements/1.1/creator>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/1999/02/22-rdf-syntax-ns#first>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          143 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#narrower>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#versionIRI>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/terms/contributor>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#historyNote>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/elements/1.1/creator>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          15 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#related>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          536 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#definition>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#onProperty>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/elements/1.1/modified>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          527 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#broader>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/terms/creator>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://xmlns.com/foaf/0.1/homepage>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          525 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#definition>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#versionInfo>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2000/01/rdf-schema#subClassOf>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          567 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#note>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#topConceptOf>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          8 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/vocab/vann/preferredNamespacePrefix>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          4 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/terms/contributor>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/terms/description>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#scopeNote>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/elements/1.1/modified>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2000/01/rdf-schema#subClassOf>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2002/07/owl#intersectionOf>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          527 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#narrower>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          2 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/1999/02/22-rdf-syntax-ns#first>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctSubjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2004/02/skos/core#hasTopConcept>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          1 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://www.w3.org/2000/01/rdf-schema#label>
+                ] ;
+        <http://rdfs.org/ns/void#propertyPartition>
+                [ <http://rdfs.org/ns/void#distinctObjects>
+                          3 ;
+                  <http://rdfs.org/ns/void#property>
+                          <http://purl.org/dc/terms/title>
+                ] ;
+        <http://rdfs.org/ns/void#sparqlEndpoint>
+                <https://ontology.inrae.fr/frenchcropusage/query> , <http://ontology.inrae.fr/frenchcropusage/query> ;
+        <http://rdfs.org/ns/void#vocabulary>
+                <http://www.w3.org/2000/01/rdf-schema#> , <http://www.w3.org/2004/02/skos/core#> , <http://www.w3.org/1999/02/22-rdf-syntax-ns#> , <http://purl.org/dc/terms/> , <http://purl.org/vocab/vann/> , <http://purl.org/dc/elements/1.1/> , <http://xmlns.com/foaf/0.1/> , <http://www.w3.org/2002/07/owl#> ;
+        <http://schema.org/availableLanguage>
+                "fr" , "" , "en" .
+
+<http://ns.inria.fr/kg/index#FCUEndpoint>
+        a       <http://www.w3.org/ns/dcat#DataService> , <http://www.w3.org/ns/prov#Entity> , <http://www.w3.org/ns/sparql-service-description#Service> , <http://www.w3.org/ns/earl#TestSubject> ;
+        <http://www.w3.org/ns/dcat#servesDataset>
+                <http://ns.inria.fr/kg/index#FCUDataset> ;
+        <http://www.w3.org/ns/sparql-service-description#endpoint>
+                <https://ontology.inrae.fr/frenchcropusage/query> , <http://ontology.inrae.fr/frenchcropusage/query> ;
+        <http://www.w3.org/ns/sparql-service-description#feature>
+                <http://ns.inria.fr/kg/index#BooleanInPattern> , <http://lsq.aksw.org/vocab#Regex> .
+
+<http://ns.inria.fr/kg/index#FCUMetadata>
+        a       <http://www.w3.org/ns/prov#Entity> , <http://www.w3.org/ns/earl#TestSubject> ;
+        <http://ns.inria.fr/kg/index#curated>
+                <http://ns.inria.fr/kg/index#FCUEndpoint> , <http://ns.inria.fr/kg/index#FCUDataset> ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionDistinctSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    [ a       <http://www.w3.org/ns/shacl#ValidationReport> ;
+                                      <http://www.w3.org/ns/shacl#conforms>
+                                              true
+                                    ] ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#countPropertyShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctUrisObjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT ?class (count(?instance) AS ?count) WHERE {\n        SELECT DISTINCT ?class ?instance\n        \n        WHERE {\n            ?instance a ?class .\n        }\n    }\n    GROUP BY ?class" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#classPopCountTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <https://ontology.inrae.fr/frenchcropusage/query> .\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:49"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#datasetDescResourceConnectedTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:49" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:49"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    [ a       <http://www.w3.org/ns/shacl#ValidationReport> ;
+                                      <http://www.w3.org/ns/shacl#conforms>
+                                              true
+                                    ] ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#countClassShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:51"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionPropertyPartitionDistinctSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:51" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:51"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#modifiedUpdateTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionPropertiesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctBlankNodesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <https://ontology.inrae.fr/frenchcropusage/query> .\n        }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:49"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#connectedEndpointDescResourceTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:49" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:49"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "ASK\n        WHERE {\n            GRAPH ?graph { ?s ?p ?o }\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:49"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#graphListExtractionTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:49" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:49"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionClassesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX nonsensical: <http://nonsensic.al> PREFIX ex: <http://e.g>  SELECT * WHERE { nonsensical:1 ex:type ?val . FILTER regex(?val, \"thi\") } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:49"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#filterRegexTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:49" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:49"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:51"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalPropertyPartitionDistinctObjectTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:51" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:51"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n            PREFIX void: <http://rdfs.org/ns/void#>\n            PREFIX dcat: <http://www.w3.org/ns/dcat#>\n            ASK\n            WHERE {\n                {\n                    SELECT (count(*) AS ?value) WHERE {\n                        ?s ?p ?o .\n                    }\n                }\n            } " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#countTripleShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:51"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#reachableEndpointTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:51" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:51"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT DISTINCT ?ns\n        WHERE {\n            { ?s ?elem ?o . }\n            UNION { ?s ?p ?elem . }\n            BIND( REPLACE( str(?elem), \"(#|/)[^#/]*$\", \"$1\" ) AS ?ns ) .\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:49"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#vocabularyListExtractionTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:49" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:49"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE {\n            SELECT DISTINCT (lang(?o) as ?lang) WHERE {\n                ?s ?p ?o . FILTER( isLiteral(?o) )\n            }\n        }\n        LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#languagesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctRDFNodesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalClassPartitionDistinctObjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctBlankNodeObjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:51"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalPropertyPartitionDistinctSubjectTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:51" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:51"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    [ a       <http://www.w3.org/ns/shacl#ValidationReport> ;
+                                      <http://www.w3.org/ns/shacl#conforms>
+                                              true
+                                    ] ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:51"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#provenanceExtractionShape> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:51" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:51"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#equivalenceTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctUrisTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalBlankNodeSubjectsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctIRIReferencesTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?p ?o . } LIMIT 1" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:50"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#sportalDistinctLiteralsTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:50" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:50"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n        ASK\n        WHERE {\n            ?res sd:endpoint <http://ontology.inrae.fr/frenchcropusage/query> .\n        }\n        " ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:49"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#connectedEndpointDescResourceTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:49" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:49"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n        PREFIX void: <http://rdfs.org/ns/void#>\n        ASK\n        WHERE {\n            { ?res a dcat:Dataset }\n            UNION { ?res a void:Dataset }\n            ?res ?p <http://ontology.inrae.fr/frenchcropusage/query> .\n        }" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#failed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:49"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#datasetDescResourceConnectedTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:49" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:49"
+                ] ;
+        <http://ns.inria.fr/kg/index#trace>
+                [ a       <http://www.w3.org/ns/earl#Assertion> , <http://www.w3.org/ns/prov#Activity> ;
+                  <http://www.w3.org/ns/earl#result>
+                          [ <http://ns.inria.fr/kg/index#sentQuery>
+                                    "SELECT * WHERE { ?s ?o false } LIMIT 10" ;
+                            <http://www.w3.org/ns/earl#info>
+                                    "" ;
+                            <http://www.w3.org/ns/earl#outcome>
+                                    <http://www.w3.org/ns/earl#passed> ;
+                            <http://www.w3.org/ns/prov#generatedAtTime>
+                                    "29-09-2021T16:50:49"
+                          ] ;
+                  <http://www.w3.org/ns/earl#subject>
+                          <http://ns.inria.fr/kg/index#FCUMetadata> ;
+                  <http://www.w3.org/ns/earl#test>
+                          <http://ns.inria.fr/kg/index#filterBoolTest> ;
+                  <http://www.w3.org/ns/prov#endedAtTime>
+                          "29-09-2021T16:50:49" ;
+                  <http://www.w3.org/ns/prov#startedAtTime>
+                          "29-09-2021T16:50:49"
+                ] ;
+        <http://purl.org/dc/terms/modified>
+                "29-09-2021T16:50:51"^^<http://www.w3.org/2001/XMLSchema#datetime> ;
+        <http://www.w3.org/ns/dqv#hasQualityMeasurement>
+                [ a       <http://www.w3.org/ns/dqv#QualityMeasurement> ;
+                  <http://www.w3.org/ns/dqv#computedOn>
+                          <http://ns.inria.fr/kg/index#FCUEndpoint> ;
+                  <http://www.w3.org/ns/dqv#isMeasurementOf>
+                          <http://ns.inria.fr/kg/index#reachableEndpointTest> ;
+                  <http://www.w3.org/ns/dqv#value>
+                          true
+                ] ;
+        <http://www.w3.org/ns/dqv#hasQualityMeasurement>
+                [ a       <http://www.w3.org/ns/dqv#QualityMeasurement> ;
+                  <http://www.w3.org/2000/01/rdf-schema#label>
+                          "Provenance information are present in the metadata"@en ;
+                  <http://www.w3.org/ns/dqv#computedOn>
+                          <http://ns.inria.fr/kg/index#FCUEndpoint> ;
+                  <http://www.w3.org/ns/dqv#isMeasurementOf>
+                          <http://ns.inria.fr/kg/index#provenanceExtractionShape> ;
+                  <http://www.w3.org/ns/dqv#value>
+                          true
+                ] ;
+        <http://www.w3.org/ns/dqv#hasQualityMeasurement>
+                [ a       <http://www.w3.org/ns/dqv#QualityMeasurement> ;
+                  <http://www.w3.org/ns/dqv#computedOn>
+                          <http://ns.inria.fr/kg/index#FCUEndpoint> ;
+                  <http://www.w3.org/ns/dqv#isMeasurementOf>
+                          <http://ns.inria.fr/kg/index#reachableEndpointTest> ;
+                  <http://www.w3.org/ns/dqv#value>
+                          true
+                ] ;
+        <http://www.w3.org/ns/prov#wasDerivedFrom>
+                <http://ontology.inrae.fr/frenchcropusage/query> , <https://ontology.inrae.fr/frenchcropusage/query> .
