@@ -3,6 +3,7 @@ package fr.inria.kgindex.main.data;
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Manifest;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.logging.log4j.LogManager;
@@ -157,56 +158,63 @@ public class ManifestEntry {
 	private static Map<RDFNode, Set<ManifestEntry> > extractEntryFromManifest(Resource entryName, Model manifest) {
 		HashMap<RDFNode, Set<ManifestEntry> > result = new HashMap<>();
 
-		// Extraction des action onSuccess pour l'entrée courante
-		HashMap<RDFNode, Model> successActionModelSet = new HashMap<>();
-		List<RDFNode> successActionResources = manifest.listObjectsOfProperty(entryName, KGIndex.onSuccess).toList();
-		successActionResources.forEach(successActionResource -> {
-			List<RDFNode> successActionResourceList = successActionResource.as(RDFList.class).asJavaList(); // Objet de onSuccess est une RDFList
-			successActionResourceList.forEach(entryListNode -> {
-				Model tmpSuccessActionSet = extractActionModel(entryListNode, manifest);
-				successActionModelSet.put(entryListNode, extractActionModel(entryListNode, tmpSuccessActionSet));
+		try {
+			// Extraction des action onSuccess pour l'entrée courante
+			HashMap<RDFNode, Model> successActionModelSet = new HashMap<>();
+			List<RDFNode> successActionResources = manifest.listObjectsOfProperty(entryName, KGIndex.onSuccess).toList();
+			successActionResources.forEach(successActionResource -> {
+				List<RDFNode> successActionResourceList = successActionResource.as(RDFList.class).asJavaList(); // Objet de onSuccess est une RDFList
+				successActionResourceList.forEach(entryListNode -> {
+					Model tmpSuccessActionSet = extractActionModel(entryListNode, manifest);
+					successActionModelSet.put(entryListNode, extractActionModel(entryListNode, tmpSuccessActionSet));
 
-				// On ajoute les renvois d'entrées à la liste des manifest extraits
-				if(entryListNode.isResource() && ! entryListNode.isAnon()) {
-					result.putAll(extractEntryFromManifest(entryListNode.asResource(), manifest));
-					successActionModelSet.put(entryListNode, ModelFactory.createDefaultModel());
-				}
+					// On ajoute les renvois d'entrées à la liste des manifest extraits
+					if (entryListNode.isResource() && !entryListNode.isAnon()) {
+						result.putAll(extractEntryFromManifest(entryListNode.asResource(), manifest));
+						successActionModelSet.put(entryListNode, ModelFactory.createDefaultModel());
+					}
+				});
 			});
-		});
 
-		// Extraction des action onFailure pour l'entrée courante
-		HashMap<RDFNode, Model> failureActionModelSet = new HashMap<>();
-		NodeIterator failureActionResources = manifest.listObjectsOfProperty(entryName, KGIndex.onFailure);
-		failureActionResources.forEach(failureActionResource -> {
-			List<RDFNode> failureActionResourceList = failureActionResource.as(RDFList.class).asJavaList();
-			failureActionResourceList.forEach(entryListNode -> {
-				Model tmpSuccessActionSet = extractActionModel(entryListNode, manifest);
-				failureActionModelSet.put(entryListNode, extractActionModel(entryListNode, tmpSuccessActionSet));
+			// Extraction des action onFailure pour l'entrée courante
+			HashMap<RDFNode, Model> failureActionModelSet = new HashMap<>();
+			NodeIterator failureActionResources = manifest.listObjectsOfProperty(entryName, KGIndex.onFailure);
+			failureActionResources.forEach(failureActionResource -> {
+				List<RDFNode> failureActionResourceList = failureActionResource.as(RDFList.class).asJavaList();
+				failureActionResourceList.forEach(entryListNode -> {
+					Model tmpSuccessActionSet = extractActionModel(entryListNode, manifest);
+					failureActionModelSet.put(entryListNode, extractActionModel(entryListNode, tmpSuccessActionSet));
 
-				// On ajoute les renvois d'entrées à la liste des manifest extraits
-				if(entryListNode.isResource() && ! entryListNode.isAnon()) {
-					result.putAll(extractEntryFromManifest(entryListNode.asResource(), manifest));
-				}
+					// On ajoute les renvois d'entrées à la liste des manifest extraits
+					if (entryListNode.isResource() && !entryListNode.isAnon()) {
+						result.putAll(extractEntryFromManifest(entryListNode.asResource(), manifest));
+					}
+				});
 			});
-		});
 
-		// Traitement du fichier du test associé à l'entrée
-		Model kgiVocabulary = ModelFactory.createDefaultModel();
-		kgiVocabulary.read("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/dekalog_vocabulary.ttl", "TTL");
-		InfModel testModelWithInference = ModelFactory.createRDFSModel(kgiVocabulary);
-		Model testModel = ModelFactory.createDefaultModel();
-		testModel.read(entryName.getURI(), "TTL");
-		testModelWithInference.add(testModel);
+			// Traitement du fichier du test associé à l'entrée
+			Model kgiVocabulary = ModelFactory.createDefaultModel();
+			kgiVocabulary.read("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/dekalog_vocabulary.ttl", "TTL");
+			InfModel testModelWithInference = ModelFactory.createRDFSModel(kgiVocabulary);
+			Model testModel = ModelFactory.createDefaultModel();
+			testModel.read(entryName.getURI(), "TTL");
+			testModelWithInference.add(testModel);
 
-		ResIterator testResourceIterator = testModelWithInference.listSubjectsWithProperty(RDF.type, EARL.TestCase);
-		HashSet<ManifestEntry> entrySet = new HashSet<>();
-		testResourceIterator.forEach(testResource -> {
-			Model tmpTestModel = ModelFactory.createDefaultModel();
-			tmpTestModel.add(testModel);
-			ManifestEntry resultEntry = new ManifestEntry(entryName, successActionModelSet, failureActionModelSet, testResource, tmpTestModel);
-			entrySet.add(resultEntry);
-		});
-		result.put(entryName, entrySet);
+			ResIterator testResourceIterator = testModelWithInference.listSubjectsWithProperty(RDF.type, EARL.TestCase);
+			HashSet<ManifestEntry> entrySet = new HashSet<>();
+			testResourceIterator.forEach(testResource -> {
+				Model tmpTestModel = ModelFactory.createDefaultModel();
+				tmpTestModel.add(testModel);
+				ManifestEntry resultEntry = new ManifestEntry(entryName, successActionModelSet, failureActionModelSet, testResource, tmpTestModel);
+				entrySet.add(resultEntry);
+			});
+			result.put(entryName, entrySet);
+
+		} catch (RiotException e) {
+			logger.error(e);
+			logger.debug(entryName.getURI());
+			throw e;
+		}
 
 		return result;
 	}
