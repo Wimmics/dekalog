@@ -1,9 +1,9 @@
 package fr.inria.kgindex.main.rules;
 
 import fr.inria.kgindex.main.data.DescribedDataset;
-import fr.inria.kgindex.main.util.DatasetUtils;
 import fr.inria.kgindex.main.data.EarlReport;
 import fr.inria.kgindex.main.data.FakeSHACLValidationReport;
+import fr.inria.kgindex.main.util.DatasetUtils;
 import fr.inria.kgindex.main.util.Utils;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.*;

@@ -1,9 +1,9 @@
 package fr.inria.kgindex.main.rules;
 
 import fr.inria.kgindex.main.data.DescribedDataset;
+import fr.inria.kgindex.main.data.ManifestEntry;
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Manifest;
-import fr.inria.kgindex.main.data.ManifestEntry;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shacl.vocabulary.SHACL;
