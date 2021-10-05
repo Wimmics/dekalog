@@ -73,10 +73,18 @@ kgi:federation rdf:type rdfs:Resource ;
 
 kgi:SPARQL10QueryPartial rdf:type sd:Language ;
     rdfs:label "Represents the partial support of the SPARQL1.0 language by the endpoint." ;
+    rdfs:isDefinedBy kgi: ;
     rdfs:comment "This resource is defined to complement sd:SPARQL10Query for an endpoint that does not support one of more SPARQL1.0 features. Should be used as object of sd:features in the endpoint description of a KB." ;
     rdfs:isDefinedBy kgi: .
 
 kgi:SPARQL11QueryPartial rdf:type sd:Language ;
     rdfs:label "Represents the partial support of the SPARQL1.1 language by the endpoint." ;
+    rdfs:isDefinedBy kgi: ;
     rdfs:comment "This resource is defined to complement sd:SPARQL11Query for an endpoint that does not support one of more SPARQL1.1 features. Should be used as object of sd:features in the endpoint description of a KB." ;
     rdfs:isDefinedBy kgi: .
+
+kgi:DummyTest rdf:type rdf:Class ;
+    rdfs:label "Placeholder class for the test of a rule only affecting the index data." ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:comment "Some rules are 'meta' rules that do not need interaction with remote endpoints. This class is for a test that always succeed for these rules." ;
+    rdfs:subClassOf earl:TestCase .

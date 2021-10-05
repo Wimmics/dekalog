@@ -39,6 +39,7 @@ public class MainClass {
 	private static final String OPT_FEDERATION = "federation";
 	private static final String OPT_MANIFEST = "manifest";
 	private static final String OPT_HELP = "help";
+	private static final String APP_NAME = "kgindex";
 
 	public static void main(String[] args) {
 		Options options = new Options();
@@ -82,16 +83,16 @@ public class MainClass {
 			CommandLine cmd = parser.parse( options, args);
 			if(cmd.hasOption(OPT_HELP)) {
 				HelpFormatter formatter = new HelpFormatter();
-				formatter.printHelp( "kgindex", options );
+				formatter.printHelp( APP_NAME, options );
 				return ;
 			}
 			if(cmd.hasOption(OPT_TIMEOUT)) {
 				String queryTimeoutString = cmd.getOptionValue(OPT_TIMEOUT, "30000");
 				Utils.queryTimeout = Long.parseLong(queryTimeoutString);
 			}
-			String manifestRootFile = "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl";
+
 			if(cmd.hasOption(OPT_MANIFEST)) {
-				manifestRootFile = cmd.getOptionValue(OPT_MANIFEST, "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl");
+				Utils.manifestRootFile = cmd.getOptionValue(OPT_MANIFEST, "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl");
 			}
 
 			if(cmd.hasOption(OPT_FEDERATION)) {
@@ -108,76 +109,84 @@ public class MainClass {
 				outputFilename = cmd.getOptionValue(OPT_OUTPUT, "kbMetadata"+ datasetName +".trig");
 			}
 
-			DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetName);
-
-			Model manifestModel = ModelFactory.createDefaultModel();
-			manifestModel.read(manifestRootFile, "TRIG");
-
-			Dataset datasetDescription = DatasetFactory.create();
-
-			List<RDFNode> manifestList = ManifestEntry.extractIncludedFromManifest(manifestModel);
-
-			Model includedManifestModel = ModelFactory.createDefaultModel();
-			manifestList.forEach( included -> {
-				Model tmpManifestModel = ModelFactory.createDefaultModel();
-				tmpManifestModel.read(included.toString(), "TRIG");
-				includedManifestModel.add(tmpManifestModel);
-				tmpManifestModel.close();
-			});
-
-			RuleLibrary.getLibrary().putAll(ManifestEntry.extractEntriesFromManifest(includedManifestModel));
-			List<RDFNode> testList = ManifestEntry.extractEntriesList(includedManifestModel);
-
-			// Application des règles pour chaque ManifestEntry
-			for (RDFNode testNode : testList) {
-				Set<ManifestEntry> testEntrySet = RuleLibrary.getLibrary().get(testNode);
-
-				for (ManifestEntry testEntry : testEntrySet) {
-					RuleApplication application = RuleFactory.create(testEntry, describedDataset, datasetDescription);
-					Dataset testResult = application.apply();
-					datasetDescription = DatasetUtils.addDataset(datasetDescription, testResult);
-
-					// Keeping the list of the dataset namespaces up to date
-					if (describedDataset.getNamespaces().isEmpty()
-							&& (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
-							|| datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
-						NodeIterator namespaceIt = null;
-						if (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
-							namespaceIt = datasetDescription.getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
-						}
-						if (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
-							namespaceIt = datasetDescription.getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
-						}
-
-						assert namespaceIt != null;
-						describedDataset.addNamespaces(namespaceIt.toList()
-								.stream()
-								.map(RDFNode::toString)
-								.collect(Collectors.toList()));
-					}
-
-					// Checking if the graph list is necessary according to the endpoint description
-					if (!datasetDescription.getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
-							&& datasetDescription.getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
-						describedDataset.setGraphsAreRequired(true);
-					}
-				}
-				;
-			};
-
-			try {
-				OutputStream outputStream = new FileOutputStream(outputFilename);
-				RDFDataMgr.write(outputStream, datasetDescription, Lang.TRIG);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-
-			manifestModel.close();
-			datasetDescription.close();
+			extractIndexDescriptionForDataset(datasetName, endpointUrl, outputFilename);
 		} catch (ParseException e1) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp( "kgindex", options );
+			formatter.printHelp( APP_NAME, options );
 		}
+	}
+
+	public static void extractIndexDescriptionForDataset(String datasetName, String endpointUrl, String outputFilename) {
+		DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetName);
+		extractIndexDescriptionForDataset(describedDataset, outputFilename);
+	}
+
+	public static void extractIndexDescriptionForDataset(DescribedDataset describedDataset, String outputFilename) {
+		Model manifestModel = ModelFactory.createDefaultModel();
+		manifestModel.read(Utils.manifestRootFile, "TRIG");
+
+		Dataset datasetDescription = DatasetFactory.create();
+
+		List<RDFNode> manifestList = ManifestEntry.extractIncludedFromManifest(manifestModel);
+
+		Model includedManifestModel = ModelFactory.createDefaultModel();
+		manifestList.forEach( included -> {
+			Model tmpManifestModel = ModelFactory.createDefaultModel();
+			tmpManifestModel.read(included.toString(), "TRIG");
+			includedManifestModel.add(tmpManifestModel);
+			tmpManifestModel.close();
+		});
+
+		RuleLibrary.getLibrary().putAll(ManifestEntry.extractEntriesFromManifest(includedManifestModel));
+		List<RDFNode> testList = ManifestEntry.extractEntriesList(includedManifestModel);
+
+		// Application des règles pour chaque ManifestEntry
+		for (RDFNode testNode : testList) {
+			Set<ManifestEntry> testEntrySet = RuleLibrary.getLibrary().get(testNode);
+
+			for (ManifestEntry testEntry : testEntrySet) {
+				RuleApplication application = RuleFactory.create(testEntry, describedDataset, datasetDescription);
+				Dataset testResult = application.apply();
+				logger.trace("Result update START");
+				datasetDescription = DatasetUtils.addDataset(datasetDescription, testResult);
+
+				// Keeping the list of the dataset namespaces up to date
+				if (describedDataset.getNamespaces().isEmpty()
+						&& (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
+						|| datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
+					NodeIterator namespaceIt = null;
+					if (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
+						namespaceIt = datasetDescription.getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
+					}
+					if (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
+						namespaceIt = datasetDescription.getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
+					}
+
+					assert namespaceIt != null;
+					describedDataset.addNamespaces(namespaceIt.toList()
+							.stream()
+							.map(RDFNode::toString)
+							.collect(Collectors.toList()));
+				}
+
+				// Checking if the graph list is necessary according to the endpoint description
+				if (!datasetDescription.getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
+						&& datasetDescription.getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
+					describedDataset.setGraphsAreRequired(true);
+				}
+				logger.trace("Result update END");
+			}
+		}
+
+		try {
+			OutputStream outputStream = new FileOutputStream(outputFilename);
+			RDFDataMgr.write(outputStream, datasetDescription, Lang.TRIG);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		manifestModel.close();
+		datasetDescription.close();
 	}
 
 }

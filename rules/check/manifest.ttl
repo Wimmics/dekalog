@@ -48,11 +48,11 @@
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             CONSTRUCT {
                 $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
-                $endpointDescription sd:endpoint $endpointUrl ;
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset $datasetDescription ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpointUrl ;
+                    prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription , $endpointDescription ;
                     dqv:hasQualityMeasurement [
                         a dqv:QualityMeasurement ;
@@ -93,11 +93,11 @@
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             CONSTRUCT {
                 $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
-                $endpointDescription sd:endpoint $endpointUrl ;
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset $datasetDescription ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpointUrl ;
+                    prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription , $endpointDescription ;
                     dqv:hasQualityMeasurement [
                         a dqv:QualityMeasurement ;
@@ -112,20 +112,7 @@
             }
             """
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
     ) .
 
 <provenance.ttl> a mf:ManifestEntry ;

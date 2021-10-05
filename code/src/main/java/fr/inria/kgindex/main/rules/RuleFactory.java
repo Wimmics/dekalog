@@ -1,9 +1,9 @@
 package fr.inria.kgindex.main.rules;
 
 import fr.inria.kgindex.main.data.DescribedDataset;
+import fr.inria.kgindex.main.data.ManifestEntry;
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Manifest;
-import fr.inria.kgindex.main.data.ManifestEntry;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -22,7 +22,7 @@ public class RuleFactory {
 
         Actions testActionListSuccess = new Actions();
         Actions testActionListFailure = new Actions();
-        RuleApplication.TYPE interactionType;
+        TestExecution.TYPE interactionType;
         // Récuperer l'URI de l'interaction
         Resource testFileResource = entry.getFileResource();
 
@@ -31,14 +31,17 @@ public class RuleFactory {
         testModel.read(testFileResource.getURI(), "TTL");
         List<Resource> resTestQueryList = testModel.listSubjectsWithProperty(RDF.type, KGIndex.TestQuery).toList();
         List<Resource> resShapeList = testModel.listSubjectsWithProperty(RDF.type, testModel.createProperty(SHACL.NodeShape.getURI())).toList();
+        List<Resource> resDummyTestList = testModel.listSubjectsWithProperty(RDF.type, KGIndex.DummyTest).toList();
 
         // Fonction d'application adaptée
-        if (resTestQueryList.isEmpty() && !resShapeList.isEmpty()) {
-            interactionType = RuleApplication.TYPE.SPARQL;
-        } else if (!resTestQueryList.isEmpty() && resShapeList.isEmpty()) {
-            interactionType = RuleApplication.TYPE.SHACL;
+        if (resTestQueryList.isEmpty() && !resShapeList.isEmpty() && resDummyTestList.isEmpty()) {
+            interactionType = TestExecution.TYPE.SPARQL;
+        } else if (!resTestQueryList.isEmpty() && resShapeList.isEmpty() && resDummyTestList.isEmpty()) {
+            interactionType = TestExecution.TYPE.SHACL;
+        } else if (resTestQueryList.isEmpty() && resShapeList.isEmpty() && ! resDummyTestList.isEmpty()) {
+            interactionType = TestExecution.TYPE.DUMMY;
         } else {
-            interactionType = RuleApplication.TYPE.UNKNOWN;
+            interactionType = TestExecution.TYPE.UNKNOWN;
         }
 
         AtomicInteger successPriorityCount = new AtomicInteger();
@@ -119,10 +122,12 @@ public class RuleFactory {
         }
 
         TestExecution testExec = null;
-        if(interactionType.equals(RuleApplication.TYPE.SPARQL)) {
+        if(interactionType.equals(TestExecution.TYPE.SPARQL)) {
             testExec = new SHACLTestExecution(tests, testEndpointUrl);
-        } else if(interactionType.equals(RuleApplication.TYPE.SHACL)) {
+        } else if(interactionType.equals(TestExecution.TYPE.SHACL)) {
             testExec = new QueryTestExecution(tests, testEndpointUrl);
+        } else if(interactionType.equals(TestExecution.TYPE.DUMMY)) {
+            testExec = new DummyTestExecution(tests, testEndpointUrl);
         } else {
             throw new Error("Unexpected interaction type");
         }

@@ -1,0 +1,41 @@
+2021-10-04 13:17:20,134 TRACE f.i.k.m.r.RuleApplication [main] Test START http://ns.inria.fr/kg/index#connectedEndpointDescResourceTest
+2021-10-04 13:17:50,189 INFO f.i.k.m.r.QueryTestExecution [main] HttpException: -1 Unexpected error making the query: java.net.SocketTimeoutException: Read timed out
+2021-10-04 13:18:25,516 TRACE f.i.k.m.r.RuleApplication [main] Test START http://ns.inria.fr/kg/index#connectedEndpointDescResourceTest
+2021-10-04 13:18:55,572 INFO f.i.k.m.r.QueryTestExecution [main] HttpException: -1 Unexpected error making the query: java.net.SocketTimeoutException: Read timed out
+2021-10-04 13:19:25,599 INFO f.i.k.m.r.QueryTestExecution [main] HttpException: -1 Unexpected error making the query: java.net.SocketTimeoutException: Read timed out
+2021-10-04 13:19:25,606 TRACE f.i.k.m.r.RuleApplication [main] Test END http://ns.inria.fr/kg/index#connectedEndpointDescResourceTest false
+2021-10-04 13:19:25,608 TRACE f.i.k.m.r.RuleApplication [main] Action START 2 actions : file:///user/pmaillot/home/git/dekalog/rules/extraction/endpointDescResource.ttl
+2021-10-04 13:19:25,610 TRACE f.i.k.m.r.RuleApplication [main] Test START http://ns.inria.fr/kg/index#modifiedUpdateTest
+2021-10-04 13:19:25,612 TRACE f.i.k.m.r.RuleApplication [main] Test END http://ns.inria.fr/kg/index#modifiedUpdateTest true
+2021-10-04 13:19:25,612 TRACE f.i.k.m.r.RuleApplication [main] Action START 1 actions : file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl
+2021-10-04 13:19:25,674 TRACE f.i.k.m.r.RuleApplication [main] Action END file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl
+2021-10-04 13:19:25,678 TRACE f.i.k.m.r.RuleApplication [main] Action END file:///user/pmaillot/home/git/dekalog/rules/extraction/endpointDescResource.ttl
+2021-10-04 13:19:25,679 TRACE f.i.k.m.MainClass [main] Result update START
+2021-10-04 13:19:25,682 TRACE f.i.k.m.MainClass [main] Result update END
+2021-10-04 13:19:25,684 TRACE f.i.k.m.r.RuleApplication [main] Test START http://ns.inria.fr/kg/index#datasetDescResourceConnectedTest
+2021-10-04 13:19:55,700 INFO f.i.k.m.r.QueryTestExecution [main] HttpException: -1 Unexpected error making the query: java.net.SocketTimeoutException: Read timed out
+2021-10-04 13:20:23,303 TRACE f.i.k.m.r.RuleApplication [main] Test START http://ns.inria.fr/kg/index#connectedEndpointDescResourceTest
+2021-10-04 13:20:53,376 INFO f.i.k.m.r.QueryTestExecution [main] HttpException: -1 Unexpected error making the query: java.net.SocketTimeoutException: Read timed out
+2021-10-04 13:21:23,414 INFO f.i.k.m.r.QueryTestExecution [main] HttpException: -1 Unexpected error making the query: java.net.SocketTimeoutException: Read timed out
+2021-10-04 13:21:23,423 TRACE f.i.k.m.r.RuleApplication [main] Test END http://ns.inria.fr/kg/index#connectedEndpointDescResourceTest false
+2021-10-04 13:21:23,427 TRACE f.i.k.m.r.RuleApplication [main] Action START 2 actions : file:///user/pmaillot/home/git/dekalog/rules/extraction/endpointDescResource.ttl
+2021-10-04 13:21:23,430 TRACE f.i.k.m.r.RuleApplication [main] Test START http://ns.inria.fr/kg/index#modifiedUpdateTest
+2021-10-04 13:21:23,431 TRACE f.i.k.m.r.RuleApplication [main] Test END http://ns.inria.fr/kg/index#modifiedUpdateTest true
+2021-10-04 13:21:23,432 TRACE f.i.k.m.r.RuleApplication [main] Action START 1 actions : file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl
+2021-10-04 13:21:23,489 TRACE f.i.k.m.r.RuleApplication [main] Action END file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl
+2021-10-04 13:21:23,492 TRACE f.i.k.m.r.RuleApplication [main] Action END file:///user/pmaillot/home/git/dekalog/rules/extraction/endpointDescResource.ttl
+2021-10-04 13:21:23,493 TRACE f.i.k.m.MainClass [main] Result update START
+2021-10-04 13:21:23,495 TRACE f.i.k.m.MainClass [main] Result update END
+2021-10-04 13:21:23,496 TRACE f.i.k.m.r.RuleApplication [main] Test START http://ns.inria.fr/kg/index#datasetDescResourceConnectedTest
+2021-10-04 13:21:53,530 INFO f.i.k.m.r.QueryTestExecution [main] HttpException: -1 Unexpected error making the query: java.net.SocketTimeoutException: Read timed out
+2021-10-04 13:22:23,553 INFO f.i.k.m.r.QueryTestExecution [main] HttpException: -1 Unexpected error making the query: java.net.SocketTimeoutException: Read timed out
+2021-10-04 13:22:23,555 TRACE f.i.k.m.r.RuleApplication [main] Test END http://ns.inria.fr/kg/index#datasetDescResourceConnectedTest false
+2021-10-04 13:22:23,555 TRACE f.i.k.m.r.RuleApplication [main] Action START 2 actions : file:///user/pmaillot/home/git/dekalog/rules/extraction/datasetDescResource.ttl
+2021-10-04 13:22:23,557 TRACE f.i.k.m.r.RuleApplication [main] Test START http://ns.inria.fr/kg/index#modifiedUpdateTest
+2021-10-04 13:22:23,558 TRACE f.i.k.m.r.RuleApplication [main] Test END http://ns.inria.fr/kg/index#modifiedUpdateTest true
+2021-10-04 13:22:23,559 TRACE f.i.k.m.r.RuleApplication [main] Action START 1 actions : file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl
+2021-10-04 13:22:23,561 TRACE f.i.k.m.r.RuleApplication [main] Action END file:///user/pmaillot/home/git/dekalog/rules/meta/modifiedUpdate.ttl
+2021-10-04 13:22:23,563 TRACE f.i.k.m.r.RuleApplication [main] Action END file:///user/pmaillot/home/git/dekalog/rules/extraction/datasetDescResource.ttl
+2021-10-04 13:22:23,563 TRACE f.i.k.m.MainClass [main] Result update START
+2021-10-04 13:22:23,563 TRACE f.i.k.m.MainClass [main] Result update END
+2021-10-04 13:22:23,564 TRACE f.i.k.m.r.RuleApplication [main] Test START http://ns.inria.fr/kg/index#languagesTest

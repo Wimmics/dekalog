@@ -2,13 +2,13 @@ package fr.inria.kgindex.main.rules;
 
 import fr.inria.kgindex.main.util.Utils;
 
-import java.net.Authenticator;
 import java.net.http.HttpClient;
 import java.time.Duration;
 
 public class RulesUtils {
 
     private static HttpClient __client = null;
+    public static String USER_AGENT = "Semantic Knowledge Graph Index Agent, INRIA WIMMICS, Contact:pierre.maillot@inria.fr";
 
     public static HttpClient getHttpClient() {
         if(__client == null) {

@@ -11,6 +11,7 @@ public class KGIndex {
 	public static final String kgindexNamespace = "http://ns.inria.fr/kg/index#";
 
 	public static final Resource TestQuery = model.createResource(kgindexNamespace + "TestQuery");
+	public static final Resource DummyTest = model.createResource(kgindexNamespace + "DummyTest");
 	public static final Resource federation = model.createResource(kgindexNamespace + "federation");
 	public static final Property query = model.createProperty(kgindexNamespace + "query");
 	public static final Property sentQuery = model.createProperty(kgindexNamespace + "sentQuery");

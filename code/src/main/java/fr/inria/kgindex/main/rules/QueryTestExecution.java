@@ -1,13 +1,16 @@
 package fr.inria.kgindex.main.rules;
 
 import fr.inria.kgindex.main.data.DescribedDataset;
+import fr.inria.kgindex.main.data.EarlReport;
 import fr.inria.kgindex.main.util.DatasetUtils;
-import fr.inria.kgindex.main.util.EarlReport;
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Utils;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.query.QueryException;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
+import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.logging.log4j.LogManager;
@@ -59,8 +62,19 @@ public class QueryTestExecution extends TestExecution {
                 String errorMessage = "";
                 // Execution de la requête
                 try {
-                    QueryExecution testQueryExecution = QueryExecutionFactory.sparqlService(this.getEndpointUrl(), queryString);
-                    testQueryExecution.setTimeout(Utils.queryTimeout);
+                    org.apache.http.client.config.RequestConfig requestConfig = org.apache.http.client.config.RequestConfig.copy(org.apache.http.client.config.RequestConfig.DEFAULT)
+                            .setSocketTimeout(Math.toIntExact(Utils.queryTimeout))
+                            .setConnectTimeout(Math.toIntExact(Utils.queryTimeout))
+                            .setConnectionRequestTimeout(Math.toIntExact(Utils.queryTimeout))
+                            .build();
+                    org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
+                            .setUserAgent(RulesUtils.USER_AGENT)
+                            .useSystemProperties()
+                            .setDefaultRequestConfig(requestConfig)
+                            .build();
+                    QueryEngineHTTP testQueryExecution = new QueryEngineHTTP(this.getEndpointUrl(), queryString, client);
+                    testQueryExecution.addParam("timeout", String.valueOf(Utils.queryTimeout));
+                    testQueryExecution.setTimeout(Utils.queryTimeout, Utils.queryTimeout);
                     if(queryString.contains("ASK")) {
                         passed = testQueryExecution.execAsk();
                     } else if (queryString.contains("SELECT")) {
@@ -68,7 +82,7 @@ public class QueryTestExecution extends TestExecution {
                         passed = true;
                     }
                     testQueryExecution.close();
-                } catch(QueryExceptionHTTP e) {
+                } catch(QueryException e) {
                     logger.info(e);
                     errorMessage = e.getMessage();
                     passed = false;
@@ -79,10 +93,10 @@ public class QueryTestExecution extends TestExecution {
 
                 // Generation of report
                 if(passed) {
-                    Dataset earlReport = DatasetFactory.create(EarlReport.createEarlPassedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), startDateLiteral, endDateLiteral));
+                    Dataset earlReport = DatasetFactory.create(EarlReport.createEarlPassedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), startDateLiteral, endDateLiteral).getReport());
                     result = DatasetUtils.addDataset(result, earlReport);
                 } else {
-                    Dataset earlReport = DatasetFactory.create(EarlReport.createEarlFailedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), errorMessage, startDateLiteral, endDateLiteral));
+                    Dataset earlReport = DatasetFactory.create(EarlReport.createEarlFailedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), errorMessage, startDateLiteral, endDateLiteral).getReport());
                     result = DatasetUtils.addDataset(result, earlReport);
                 }
             };

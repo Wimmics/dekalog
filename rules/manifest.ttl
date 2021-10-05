@@ -3,8 +3,8 @@
 <> a mf:Manifest ;
     mf:include (
             <check/manifest.ttl>
+            <sparqles/manifest.ttl>
             <extraction/manifest.ttl>
             <sportal/manifest.ttl>
-            <sparqles/manifest.ttl>
             <meta/manifest.ttl>
         ) .

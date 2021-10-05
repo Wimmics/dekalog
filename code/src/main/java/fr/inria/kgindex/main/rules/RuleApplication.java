@@ -1,10 +1,10 @@
 package fr.inria.kgindex.main.rules;
 
 import fr.inria.kgindex.main.data.DescribedDataset;
+import fr.inria.kgindex.main.data.EarlReport;
 import fr.inria.kgindex.main.data.ManifestEntry;
 import fr.inria.kgindex.main.data.RuleLibrary;
 import fr.inria.kgindex.main.util.DatasetUtils;
-import fr.inria.kgindex.main.util.EarlReport;
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Utils;
 import org.apache.jena.query.*;
@@ -15,6 +15,7 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.update.UpdateAction;
@@ -31,22 +32,19 @@ import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static fr.inria.kgindex.main.util.Utils.dateFormatter;
 
 public class RuleApplication {
 
     private static final Logger logger = LogManager.getLogger(RuleApplication.class);
-
-    public enum TYPE {
-        SPARQL,
-        SHACL,
-        UNKNOWN
-    }
 
     public static String federationserver = null;
 
@@ -56,7 +54,7 @@ public class RuleApplication {
     private Actions _actionsFailure = null;
     private Dataset _datasetDescription;
     private TestExecution _tests = null;
-    private TYPE _type = TYPE.SHACL;
+    private TestExecution.TYPE _type = TestExecution.TYPE.SHACL;
 
     public RuleApplication(ManifestEntry entry, TestExecution tests, Actions actionsSuccess, Actions actionsFailure, DescribedDataset describedDataset, Dataset datasetDescription) {
         this._entry = entry;
@@ -67,11 +65,11 @@ public class RuleApplication {
         this._tests = tests;
     }
 
-    public TYPE getType() {
+    public TestExecution.TYPE getType() {
         return this._type;
     }
 
-    public void setType(TYPE type) {
+    public void setType(TestExecution.TYPE type) {
         this._type = type;
     }
 
@@ -124,9 +122,21 @@ public class RuleApplication {
                         try {
                             if (queryString.contains("CONSTRUCT") && ! queryString.contains("GRAPH")) {
                                 Query constructQuery = QueryFactory.create(queryString);
-                                QueryExecution actionExecution = QueryExecutionFactory.sparqlService(action.getEndpointUrl(), constructQuery );
-                                actionExecution.setTimeout(Utils.queryTimeout);
-
+                                org.apache.http.client.config.RequestConfig requestConfig = org.apache.http.client.config.RequestConfig.copy(org.apache.http.client.config.RequestConfig.DEFAULT)
+                                        .setSocketTimeout(Math.toIntExact(Utils.queryTimeout))
+                                        .setConnectTimeout(Math.toIntExact(Utils.queryTimeout))
+                                        .setConnectionRequestTimeout(Math.toIntExact(Utils.queryTimeout))
+                                        .build();
+                                org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
+                                        .setUserAgent(RulesUtils.USER_AGENT)
+                                        .useSystemProperties()
+                                        .setDefaultRequestConfig(requestConfig)
+                                        .build();
+                                QueryEngineHTTP actionExecution = new QueryEngineHTTP(action.getEndpointUrl(), constructQuery, client);
+                                actionExecution.addParam("timeout", String.valueOf(Utils.queryTimeout));
+                                actionExecution.addParam("format", Lang.TRIG.getContentType().getContentTypeStr());
+                                actionExecution.setTimeout(Utils.queryTimeout, TimeUnit.MILLISECONDS, Utils.queryTimeout, TimeUnit.MILLISECONDS);
+                                actionExecution.setAcceptHeader(Lang.TRIG.getContentType().getContentTypeStr());
                                 try {
                                     Dataset constructData = actionExecution.execConstructDataset();
                                     result = DatasetUtils.addDataset(result, constructData);
@@ -146,11 +156,15 @@ public class RuleApplication {
                                 // Tentative d'envoyer la requête sans passer par Jena
                                 try {
                                     HttpClient client = RulesUtils.getHttpClient();
-                                    URI queryURL = URI.create(action.getEndpointUrl() + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
+                                    URI queryURL = URI.create(action.getEndpointUrl()
+                                            + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString())
+                                            + "&timeout=" + Utils.queryTimeout
+                                            + "&format=" + Lang.TRIG.getContentType().getContentTypeStr());
                                     HttpRequest request = HttpRequest.newBuilder()
                                             .uri(queryURL)
                                             .GET()
-                                            .header("Accept", "application/x-trig")
+                                            .timeout(Duration.of(Utils.queryTimeout, ChronoUnit.MILLIS))
+                                            .header("Accept", Lang.TRIG.getContentType().getContentTypeStr())
                                             .build();
                                     Dataset bodyData = DatasetFactory.create();
                                     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -172,7 +186,7 @@ public class RuleApplication {
                             Model tmpModel1 = ModelFactory.createDefaultModel();
                             Literal endDateLiteral = tmpModel1.createLiteral(dateFormatter.format(endDate));
                             tmpModel1.close();
-                            Model earlReport = EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral);
+                            Model earlReport = EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral).getReport();
                             result = DatasetUtils.addDataset(result, DatasetFactory.create(earlReport));
                         } catch (QueryParseException ep) {
                             try {
@@ -186,6 +200,7 @@ public class RuleApplication {
                                         request = HttpRequest.newBuilder()
                                                 .uri(queryURL)
                                                 .GET()
+                                                .timeout(Duration.of(Utils.queryTimeout, ChronoUnit.MILLIS))
                                                 .header("Accept", "application/x-trig")
                                                 .build();
                                     } catch (UnsupportedEncodingException e1) {
@@ -193,8 +208,6 @@ public class RuleApplication {
                                     }
                                     Dataset bodyData = DatasetFactory.create();
                                     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                                    logger.debug(response.statusCode());
-                                    logger.debug(response.body());
                                     if(response.statusCode() == 200) {
                                         String bodyString = response.body();
                                         bodyString = bodyString.replace("= {", " {");
@@ -214,6 +227,9 @@ public class RuleApplication {
                                 }
                             } catch (IOException | InterruptedException  e) {
                                 logger.error(e);
+                            } catch (QueryParseException e) {
+                                logger.debug(queryString);
+                                throw e;
                             } catch (RiotException e) {
                                 logger.error(e);
                                 logger.trace(this._entry.getFileResource() + " action could not be added because of RiotException");

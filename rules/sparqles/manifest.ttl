@@ -2,42 +2,7 @@
 @prefix kgi: <http://ns.inria.fr/kg/index#> .
 
 <> a mf:Manifest ;
-    mf:entries (
-            <SPARQLESFilRegex.ttl>
-            <SPARQLESSelFilBool.ttl>
+    mf:include (
+            <SPARQL10/manifest.ttl>
+            <SPARQL11/manifest.ttl>
         ) .
-
-<SPARQLESFilRegex.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """
-            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-            PREFIX lsq: <http://lsq.aksw.org/vocab#>
-            PREFIX dcterms: <http://purl.org/dc/terms/>
-            CONSTRUCT {
-                $endpointDescription sd:endpoint $endpointUrl ;
-                    sd:feature lsq:Regex .
-            } WHERE {
-            }
-            """
-        ]
-        <../meta/modifiedUpdate.ttl>
-    ) .
-
-<SPARQLESSelFilBool.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """
-            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-            PREFIX kgi: <http://ns.inria.fr/kg/index#>
-            PREFIX dcterms: <http://purl.org/dc/terms/>
-            PREFIX lsq: <http://lsq.aksw.org/vocab#>
-            CONSTRUCT {
-                $endpointDescription sd:endpoint $endpointUrl ;
-                    sd:feature kgi:BooleanInPattern .
-            } WHERE {
-            }
-            """
-        ]
-        <../meta/modifiedUpdate.ttl>
-    ) .

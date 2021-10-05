@@ -13,6 +13,7 @@ public class Utils {
 
     public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
     public static long queryTimeout = 30000;
+    public static String manifestRootFile = "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl";
 
     public static String PLACEHOLDER_DATASETDESCRIPTION = "$datasetDescription";
     public static String PLACEHOLDER_ENDPOINTDESCRIPTION = "$endpointDescription";
@@ -24,6 +25,7 @@ public class Utils {
     public static String PLACEHOLDER_FROM = "$FROM";
     public static String PLACEHOLDER_NAMESPACE = "$namespace";
     public static String PLACEHOLDER_ENDPOINTURL = "$endpointUrl";
+    public static String PLACEHOLDER_RAWENDPOINTURL = "$rawEndpointUrl";
 
     /**
      * Replace the placeholders in tests and queries. Placeholders include "$datasetDescription", "$endpointDescription", "$metadataDescription", "$graphList", "$LIMIT", "FROM", "$namespace", "$endpoint", "$name$", $dateLiteral.
@@ -41,6 +43,7 @@ public class Utils {
         queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_GRAPHLIST), "<"+describedDataset.getGraphListResource().getURI()+">");
         queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_LIMIT), "");
         queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_DATASETNAME), describedDataset.getName());
+        queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_RAWENDPOINTURL), "<"+describedDataset.getEndpointUrl()+">");
         Date date = new Date();
         Model tmpModel = ModelFactory.createDefaultModel();
         queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_DATETIME),"\"" + dateFormatter.format(date) + "\"^^<http://www.w3.org/2001/XMLSchema#datetime>");

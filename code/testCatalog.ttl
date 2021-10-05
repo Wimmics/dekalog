@@ -1,0 +1,491 @@
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix dkg: <http://ns.inria.fr/kg/index#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix kgi: <http://ns.inria.fr/kg/index#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+kgi:catalogTest a dcat:Catalog ;
+    dcat:dataset kgi:TestDataset , kgi:FCUDataset , kgi:ScholarlyData , kgi:AgroLDDataset , kgi:BNBDataset , kgi:AgroPortalDataset .
+
+kgi:BNBDataset void:sparqlEndpoint <https://bnb.data.bl.uk/sparql> ;
+    rdfs:label "BNB".
+
+kgi:AgroLDDataset void:sparqlEndpoint <http://agrold.southgreen.fr/sparql> ;
+    schema:name "AgroLD".
+
+kgi:AgroPortalDataset void:sparqlEndpoint <http://sparql.agroportal.lirmm.fr/sparql/> ;
+    dcterms:title "AgroPortal" .
+
+kgi:FCUDataset void:sparqlEndpoint <http://ontology.inrae.fr/frenchcropusage/query> ;
+    dcterms:title "FCU" .
+
+kgi:ScholarlyData void:sparqlEndpoint <http://www.scholarlydata.org/sparql> ;
+    rdfs:label "ScholarlyData".
+
+kgi:TestDataset void:sparqlEndpoint <http://localhost:8890/sparql> ;
+    rdfs:label "Test" .
+
+
+
+
+@prefix ns0:	<http://purl.org/dc/terms/> .
+@prefix ns1:	<https://linkedwiki.com/dataset/> .
+ns1:Wikidata	ns0:title	"Wikidata" .
+@prefix void:	<http://rdfs.org/ns/void#> .
+@prefix ns3:	<https://query.wikidata.org/> .
+ns1:Wikidata	void:sparqlEndpoint	ns3:sparql .
+ns1:UriBurner	ns0:title	"UriBurner" .
+@prefix ns4:	<https://linkeddata.uriburner.com/> .
+ns1:UriBurner	void:sparqlEndpoint	ns4:sparql .
+ns1:Europeana_Cultural_Data	ns0:title	"Europeana Cultural Data" ;
+	void:sparqlEndpoint	<http://sparql.europeana.eu> .
+<https://linkedwiki.com/dataset/data.persee.fr>	ns0:title	"Data Pers\u00E9e" .
+@prefix ns5:	<http://data.persee.fr/> .
+<https://linkedwiki.com/dataset/data.persee.fr>	void:sparqlEndpoint	ns5:sparql .
+ns1:isidore	ns0:title	"isidore.science" .
+@prefix ns6:	<https://isidore.science/> .
+ns1:isidore	void:sparqlEndpoint	ns6:sparql .
+ns1:HM_Land_Registry_Open_Data	ns0:title	"HM Land Registry Open Data" .
+@prefix ns7:	<http://landregistry.data.gov.uk/landregistry/> .
+ns1:HM_Land_Registry_Open_Data	void:sparqlEndpoint	ns7:query .
+ns1:Aragon_Open_Data_Sparql_endpoint	ns0:title	"Aragon Open Data Sparql endpoint" .
+@prefix ns8:	<https://opendata.aragon.es/> .
+ns1:Aragon_Open_Data_Sparql_endpoint	void:sparqlEndpoint	ns8:sparql .
+ns1:Linked_open_EP_data	ns0:title	"Linked open EP data of European Patent Office" .
+@prefix ns9:	<https://data.epo.org/linked-data/> .
+ns1:Linked_open_EP_data	void:sparqlEndpoint	ns9:query .
+ns1:UK_Parliament	ns0:title	"UK Parliament" .
+@prefix ns10:	<https://api.parliament.uk/> .
+ns1:UK_Parliament	void:sparqlEndpoint	ns10:sparql .
+ns1:SireneLD	ns0:title	"SireneLD" .
+@prefix ns11:	<https://triplestore.sireneld.io/sirene/> .
+ns1:SireneLD	void:sparqlEndpoint	ns11:sparql .
+ns1:LinkedWiki	ns0:title	"LinkedWiki" .
+@prefix ns12:	<https://linkedwiki.com/> .
+ns1:LinkedWiki	void:sparqlEndpoint	ns12:sparql .
+ns1:IODS	ns0:title	"IODS" .
+@prefix ns13:	<https://io.datascience-paris-saclay.fr/> .
+ns1:IODS	void:sparqlEndpoint	ns13:sparql .
+ns1:LinkedGeoData	ns0:title	"LinkedGeoData" .
+@prefix ns14:	<http://linkedgeodata.org/> .
+ns1:LinkedGeoData	void:sparqlEndpoint	ns14:sparql .
+ns1:Research_Vocabularies_Australia	ns0:title	"Research Vocabularies Australia" ;
+	void:sparqlEndpoint	<https://vocabs.ands.org.au/repository/api/sparql/> .
+ns1:YCBA_LOD	ns0:title	"YCBA LOD" .
+@prefix ns15:	<http://collection.britishart.yale.edu/> .
+ns1:YCBA_LOD	void:sparqlEndpoint	ns15:sparql .
+ns1:FactForge	ns0:title	"FactForge" .
+@prefix ns16:	<http://factforge.net/repositories/> .
+ns1:FactForge	void:sparqlEndpoint	ns16:ff-news .
+ns1:Memory_of_Taichung_Database	ns0:title	"Memory of Taichung Database" .
+@prefix ns17:	<http://data.digitalculture.tw/taichung/> .
+ns1:Memory_of_Taichung_Database	void:sparqlEndpoint	ns17:sparql .
+ns1:MuseumFinland	ns0:title	"MuseumFinland" .
+@prefix ns18:	<http://ldf.fi/SERVICE/> .
+ns1:MuseumFinland	void:sparqlEndpoint	ns18:sparql .
+ns1:Semantic_Kalevala	ns0:title	"Semantic Kalevala" .
+@prefix ns19:	<http://ldf.fi/folklore/> .
+ns1:Semantic_Kalevala	void:sparqlEndpoint	ns19:sparql .
+ns1:Geologic_Unit_Type	ns0:title	"Geologic Unit Type" .
+@prefix ns20:	<http://vocabs.ands.org.au/repository/api/sparql/> .
+ns1:Geologic_Unit_Type	void:sparqlEndpoint	ns20:ga_geologic-unit-type_v0-1 .
+ns1:International_Chronostratigraphic_Chart_data_set	ns0:title	"International Chronostratigraphic Chart data set" ;
+	void:sparqlEndpoint	ns20:csiro_international-chronostratigraphic-chart_2018 .
+ns1:Colil	ns0:title	"Colil" .
+@prefix ns21:	<https://colil.dbcls.jp/> .
+ns1:Colil	void:sparqlEndpoint	ns21:sparql .
+ns1:Allie	ns0:title	"Allie" .
+@prefix ns22:	<http://data.allie.dbcls.jp/> .
+ns1:Allie	void:sparqlEndpoint	ns22:sparql .
+ns1:DisGeNET	ns0:title	"DisGeNET" ;
+	void:sparqlEndpoint	<http://rdf.disgenet.org/sparql/> .
+ns1:Japan_Search	ns0:title	"Japan Search" ;
+	void:sparqlEndpoint	<https://jpsearch.go.jp/rdf/sparql/> .
+ns1:Microsoft_Academic_Knowledge_Graph	ns0:title	"Microsoft Academic Knowledge Graph" .
+@prefix ns23:	<http://ma-graph.org/> .
+ns1:Microsoft_Academic_Knowledge_Graph	void:sparqlEndpoint	ns23:sparql .
+ns1:MIMO	ns0:title	"MIMO" .
+@prefix ns24:	<http://data.mimo-db.eu/> .
+ns1:MIMO	void:sparqlEndpoint	ns24:sparql .
+ns1:ONS_Open_Geography_Portal	ns0:title	"ONS Open Geography Portal" .
+@prefix ns25:	<http://statistics.data.gov.uk/> .
+ns1:ONS_Open_Geography_Portal	void:sparqlEndpoint	ns25:sparql .
+ns1:Union_List_of_Artist_Names	ns0:title	"Union List of Artist Names" .
+@prefix ns26:	<http://vocab.getty.edu/> .
+ns1:Union_List_of_Artist_Names	void:sparqlEndpoint	ns26:sparql .
+ns1:TORA	ns0:title	"TORA" .
+@prefix ns27:	<https://tora.entryscape.net/> .
+ns1:TORA	void:sparqlEndpoint	ns27:snorql .
+ns1:CiteSeer	ns0:title	"CiteSeer" ;
+	void:sparqlEndpoint	<http://citeseer.rkbexplorer.com/sparql/> .
+ns1:PathoPhenoDB	ns0:title	"PathoPhenoDB" ;
+	void:sparqlEndpoint	<http://patho.phenomebrowser.net/sparql/> .
+ns1:MicrobeDB	ns0:title	"MicrobeDB" .
+@prefix ns28:	<http://genome.microbedb.jp/> .
+ns1:MicrobeDB	void:sparqlEndpoint	ns28:sparql .
+ns1:Orphanet_Rare_Disease_Ontology	ns0:title	"Orphanet Rare Disease Ontology" .
+@prefix ns29:	<https://www.orpha.net/> .
+ns1:Orphanet_Rare_Disease_Ontology	void:sparqlEndpoint	ns29:sparql .
+ns1:ProKinO	ns0:title	"ProKinO" .
+@prefix ns30:	<http://vulcan.cs.uga.edu/> .
+ns1:ProKinO	void:sparqlEndpoint	ns30:sparql .
+ns1:Australian_and_New_Zealand_Standard_Research_Classification	ns0:title	"Australian and New Zealand Standard Research Classification" ;
+	void:sparqlEndpoint	ns20:anzsrc-for .
+ns1:neXtProt	ns0:title	"neXtProt" ;
+	void:sparqlEndpoint	<https://sparql.nextprot.org/> .
+ns1:Uniprot	ns0:title	"Uniprot" .
+@prefix ns31:	<https://sparql.uniprot.org/> .
+ns1:Uniprot	void:sparqlEndpoint	ns31:sparql .
+ns1:Thesaurus_of_Geographic_Names_LOD_Dataset	ns0:title	"Thesaurus of Geographic Names LOD Dataset" ;
+	void:sparqlEndpoint	ns26:sparql .
+ns1:Getty_Vocabulary_Program	ns0:title	"Getty Vocabulary Program" ;
+	void:sparqlEndpoint	ns26:sparql .
+ns1:OrthoDB	ns0:title	"OrthoDB" .
+@prefix ns32:	<https://sparql.orthodb.org/> .
+ns1:OrthoDB	void:sparqlEndpoint	ns32:sparql .
+ns1:Bio2RDF	ns0:title	"Bio2RDF" .
+@prefix ns33:	<http://bio2rdf.org/> .
+ns1:Bio2RDF	void:sparqlEndpoint	ns33:sparql .
+ns1:Nobel_Foundation_database	ns0:title	"Nobel Foundation database" .
+@prefix ns34:	<http://data.nobelprize.org/> .
+ns1:Nobel_Foundation_database	void:sparqlEndpoint	ns34:sparql .
+ns1:Ensembl	ns0:title	"Ensembl" .
+@prefix ns35:	<https://www.ebi.ac.uk/rdf/services/> .
+ns1:Ensembl	void:sparqlEndpoint	ns35:sparql .
+<https://linkedwiki.com/dataset/Artsdata.ca>	ns0:title	"Artsdata.ca" .
+@prefix ns36:	<http://db.artsdata.ca/repositories/> .
+<https://linkedwiki.com/dataset/Artsdata.ca>	void:sparqlEndpoint	ns36:artsdata .
+<https://linkedwiki.com/dataset/data.culture.fr>	ns0:title	"data.culture.fr" .
+@prefix ns37:	<http://data.culture.fr/thesaurus/> .
+<https://linkedwiki.com/dataset/data.culture.fr>	void:sparqlEndpoint	ns37:sparql .
+ns1:IdRef	ns0:title	"IdRef" .
+@prefix ns38:	<https://data.idref.fr/> .
+ns1:IdRef	void:sparqlEndpoint	ns38:sparql .
+ns1:Schools_Online_Thesaurus	ns0:title	"Schools Online Thesaurus" .
+@prefix ns39:	<http://vocabulary.curriculum.edu.au/PoolParty/sparql/> .
+ns1:Schools_Online_Thesaurus	void:sparqlEndpoint	ns39:scot .
+ns1:HAL	ns0:title	"HAL" .
+@prefix ns40:	<http://sparql.archives-ouvertes.fr/> .
+ns1:HAL	void:sparqlEndpoint	ns40:sparql .
+ns1:Linked_COVID-19_Data	ns0:title	"Linked COVID-19 Data" .
+@prefix ns41:	<https://digits2.mainzed.org/covid19/> .
+ns1:Linked_COVID-19_Data	void:sparqlEndpoint	ns41:sparql .
+ns1:British_National_Bibliography	ns0:title	"British National Bibliography" .
+@prefix ns42:	<https://bnb.data.bl.uk/> .
+ns1:British_National_Bibliography	void:sparqlEndpoint	ns42:sparql .
+ns1:ADS	ns0:title	"ADS" .
+@prefix ns43:	<http://data.archaeologydataservice.ac.uk/sparql/repositories/> .
+ns1:ADS	void:sparqlEndpoint	ns43:archives .
+ns1:AGROVOC	ns0:title	"AGROVOC" .
+@prefix ns44:	<http://agrovoc.uniroma2.it/> .
+ns1:AGROVOC	void:sparqlEndpoint	ns44:sparql .
+ns1:ChEMBL	ns0:title	"ChEMBL" ;
+	void:sparqlEndpoint	ns35:sparql .
+<https://linkedwiki.com/dataset/dati.beniculturali.it>	ns0:title	"dati.beniculturali.it" ;
+	void:sparqlEndpoint	<http://dati.beniculturali.it/> .
+ns1:Bgee	ns0:title	"Bgee" .
+@prefix ns45:	<https://bgee.org/> .
+ns1:Bgee	void:sparqlEndpoint	ns45:sparql .
+ns1:PRO	ns0:title	"PRO" .
+@prefix ns46:	<https://sparql.proconsortium.org/virtuoso/> .
+ns1:PRO	void:sparqlEndpoint	ns46:sparql .
+ns1:Pathway_Commons	ns0:title	"Pathway Commons" ;
+	void:sparqlEndpoint	<https://rdf.pathwaycommons.org/sparql/> .
+ns1:Linked_Stage_Graph	ns0:title	"Linked Stage Graph" .
+@prefix ns47:	<https://slod.fiz-karlsruhe.de/> .
+ns1:Linked_Stage_Graph	void:sparqlEndpoint	ns47:sparql .
+ns1:KEGG	ns0:title	"KEGG" .
+@prefix ns48:	<https://www.genome.jp/sparql/> .
+ns1:KEGG	void:sparqlEndpoint	ns48:linkdb .
+ns1:OpenAIRE	ns0:title	"OpenAIRE" .
+@prefix ns49:	<http://lod.openaire.eu/> .
+ns1:OpenAIRE	void:sparqlEndpoint	ns49:sparql .
+ns1:OpenCitations	ns0:title	"OpenCitations" .
+@prefix ns50:	<https://w3id.org/oc/> .
+ns1:OpenCitations	void:sparqlEndpoint	ns50:sparql .
+ns1:Rhea	ns0:title	"Rhea" .
+@prefix ns51:	<https://sparql.rhea-db.org/> .
+ns1:Rhea	void:sparqlEndpoint	ns51:sparql .
+ns1:IEEE	ns0:title	"IEEE" ;
+	void:sparqlEndpoint	<http://ieee.rkbexplorer.com/sparql/> .
+ns1:MeSH	ns0:title	"MeSH" .
+@prefix ns52:	<https://id.nlm.nih.gov/mesh/> .
+ns1:MeSH	void:sparqlEndpoint	ns52:sparql .
+<https://linkedwiki.com/dataset/backstage.bbc.co.uk>	ns0:title	"backstage.bbc.co.uk" .
+@prefix ns53:	<http://bbc.openlinksw.com/> .
+<https://linkedwiki.com/dataset/backstage.bbc.co.uk>	void:sparqlEndpoint	ns53:sparql .
+ns1:Linked_Open_Vocabularies	ns0:title	"LOV" .
+@prefix ns54:	<https://lov.linkeddata.es/dataset/lov/> .
+ns1:Linked_Open_Vocabularies	void:sparqlEndpoint	ns54:sparql .
+ns1:Ordnance_Survey	ns0:title	"Ordnance Survey" .
+@prefix ns55:	<https://data.ordnancesurvey.co.uk/datasets/os-linked-data/apis/> .
+ns1:Ordnance_Survey	void:sparqlEndpoint	ns55:sparql .
+ns1:DrugBank	ns0:title	"DrugBank" ;
+	void:sparqlEndpoint	<http://wifo5-04.informatik.uni-mannheim.de/drugbank/snorql/> .
+<https://linkedwiki.com/dataset/datos.gob.es>	ns0:title	"datos.gob.es" .
+@prefix ns56:	<https://datos.gob.es/virtuoso/> .
+<https://linkedwiki.com/dataset/datos.gob.es>	void:sparqlEndpoint	ns56:sparql .
+ns1:Chamber_of_Deputies_of_Italy	ns0:title	"Chamber of Deputies of Italy" .
+@prefix ns57:	<https://dati.camera.it/> .
+ns1:Chamber_of_Deputies_of_Italy	void:sparqlEndpoint	ns57:sparql .
+ns1:Reactome	ns0:title	"Reactome" ;
+	void:sparqlEndpoint	ns35:sparql .
+ns1:BioModels	ns0:title	"BioModels" ;
+	void:sparqlEndpoint	ns35:sparql .
+ns1:WikiPathways	ns0:title	"WikiPathways" .
+@prefix ns58:	<http://sparql.wikipathways.org/> .
+ns1:WikiPathways	void:sparqlEndpoint	ns58:sparql .
+ns1:Open_Data_Web	ns0:title	"Open Data Web" ;
+	void:sparqlEndpoint	<http://sparql.odw.tw/> .
+ns1:Epigraphic_Database_Heidelberg	ns0:title	"Epigraphic Database Heidelberg" .
+@prefix ns59:	<https://edh-www.adw.uni-heidelberg.de/data/> .
+ns1:Epigraphic_Database_Heidelberg	void:sparqlEndpoint	ns59:query .
+ns1:LEMB	ns0:title	"LEMB" .
+@prefix ns60:	<http://id.sgcb.mcu.es/> .
+ns1:LEMB	void:sparqlEndpoint	ns60:sparql .
+ns1:Biblioteca_Virtual_Miguel_de_Cervantes	ns0:title	"Biblioteca Virtual Miguel de Cervantes" .
+@prefix ns61:	<http://data.cervantesvirtual.com/bvmc-lod/repositories/> .
+ns1:Biblioteca_Virtual_Miguel_de_Cervantes	void:sparqlEndpoint	ns61:data .
+ns1:National_Library_of_Finland	ns0:title	"National Library of Finland" .
+@prefix ns62:	<https://data.nationallibrary.fi/bib/> .
+ns1:National_Library_of_Finland	void:sparqlEndpoint	ns62:sparql .
+ns1:Galiciana	ns0:title	"Galiciana" .
+@prefix ns63:	<https://datos-abertos.galiciana.gal/pt/> .
+ns1:Galiciana	void:sparqlEndpoint	ns63:sparql .
+ns1:Integrated_Authority_File_GND	ns0:title	"The German National Library's Integrated Authority File" .
+@prefix ns64:	<https://zbw.eu/beta/sparql/gnd/> .
+ns1:Integrated_Authority_File_GND	void:sparqlEndpoint	ns64:query .
+ns1:STW_Thesarus_for_Economics	ns0:title	"STW Thesarus for Economics" .
+@prefix ns65:	<https://zbw.eu/beta/sparql/stw/> .
+ns1:STW_Thesarus_for_Economics	void:sparqlEndpoint	ns65:query .
+ns1:Economists_subset_of_GND	ns0:title	"Economists subset of GND" .
+@prefix ns66:	<https://zbw.eu/beta/sparql/econ_pers/> .
+ns1:Economists_subset_of_GND	void:sparqlEndpoint	ns66:query .
+ns1:Economics_institutions_subset_of_GND	ns0:title	"Economics institutions subset of GND" .
+@prefix ns67:	<https://zbw.eu/beta/sparql/econ_corp/> .
+ns1:Economics_institutions_subset_of_GND	void:sparqlEndpoint	ns67:query .
+ns1:EconStor	ns0:title	"EconStor" ;
+	void:sparqlEndpoint	<http://linkeddata.econstor.eu/beta/snorql/> .
+<https://linkedwiki.com/dataset/20th_Century_Press_Archives_(PM20)>	ns0:title	"20th Century Press Archives (PM20)" .
+@prefix ns68:	<https://zbw.eu/beta/sparql/pm20/> .
+<https://linkedwiki.com/dataset/20th_Century_Press_Archives_(PM20)>	void:sparqlEndpoint	ns68:query .
+ns1:WordNet	ns0:title	"WordNet" ;
+	void:sparqlEndpoint	<http://wordnet.rkbexplorer.com/sparql/> .
+ns1:Official_statistics_from_MHCLG	ns0:title	"Official statistics from MHCLG" .
+@prefix ns69:	<https://opendatacommunities.org/> .
+ns1:Official_statistics_from_MHCLG	void:sparqlEndpoint	ns69:sparql .
+ns1:Korean_Intellectual_Property_Office	ns0:title	"Dataset of Korean Intellectual Property Office about patents" .
+@prefix ns70:	<http://lod.kipo.kr/data/patent/> .
+ns1:Korean_Intellectual_Property_Office	void:sparqlEndpoint	ns70:sparql .
+ns1:Dataset_of_Korean_Intellectual_Property_Office_about_oversea_patents	ns0:title	"Dataset of Korean Intellectual Property Office about oversea patents" .
+@prefix ns71:	<http://lod.kipo.kr/data/oversea_patent/> .
+ns1:Dataset_of_Korean_Intellectual_Property_Office_about_oversea_patents	void:sparqlEndpoint	ns71:sparql .
+ns1:Dataset_of_Korean_Intellectual_Property_Office_about_admin_processes	ns0:title	"Dataset of Korean Intellectual Property Office about admin processes" .
+@prefix ns72:	<http://lod.kipo.kr/data/admin_processes/> .
+ns1:Dataset_of_Korean_Intellectual_Property_Office_about_admin_processes	void:sparqlEndpoint	ns72:sparql .
+ns1:Dataset_of_Korean_Intellectual_Property_Office_about_classification	ns0:title	"Dataset of Korean Intellectual Property Office about classification" .
+@prefix ns73:	<http://lod.kipo.kr/data/classification/> .
+ns1:Dataset_of_Korean_Intellectual_Property_Office_about_classification	void:sparqlEndpoint	ns73:sparql .
+ns1:Thesaurus_of_Korean_Intellectual_Property_Office	ns0:title	"Thesaurus of Korean Intellectual Property Office" .
+@prefix ns74:	<http://lod.kipo.kr/data/thesaurus/> .
+ns1:Thesaurus_of_Korean_Intellectual_Property_Office	void:sparqlEndpoint	ns74:sparql .
+ns1:OpenStreetMap	ns0:title	"OpenStreetMap" .
+@prefix ns75:	<https://sophox.org/> .
+ns1:OpenStreetMap	void:sparqlEndpoint	ns75:sparql .
+ns1:National_Library_of_Korea	ns0:title	"National Library of Korea" .
+@prefix ns76:	<https://lod.nl.go.kr/> .
+ns1:National_Library_of_Korea	void:sparqlEndpoint	ns76:sparql .
+ns1:European_Environment_Agency	ns0:title	"European Environment Agency" .
+@prefix ns77:	<https://semantic.eea.europa.eu/> .
+ns1:European_Environment_Agency	void:sparqlEndpoint	ns77:sparql .
+ns1:Biblioteca_Nacional_de_Espana	ns0:title	"Biblioteca Nacional de Espa\u00F1a" .
+@prefix ns78:	<http://datos.bne.es/> .
+ns1:Biblioteca_Nacional_de_Espana	void:sparqlEndpoint	ns78:sparql .
+ns1:EMBL-EBI	ns0:title	"EMBL-EBI" ;
+	void:sparqlEndpoint	ns35:sparql .
+ns1:European_Data_Portal	ns0:title	"European Data Portal" .
+@prefix ns79:	<https://www.europeandataportal.eu/> .
+ns1:European_Data_Portal	void:sparqlEndpoint	ns79:sparql .
+ns1:SKOS-history_of_ZBW_Leibniz_Information_Centre_of_Economics	ns0:title	"SKOS-history of ZBW Leibniz Information Centre of Economics" .
+@prefix ns80:	<https://zbw.eu/beta/sparql/stwv/> .
+ns1:SKOS-history_of_ZBW_Leibniz_Information_Centre_of_Economics	void:sparqlEndpoint	ns80:query .
+ns1:ESCR	ns0:title	"ESCR" .
+@prefix ns81:	<https://data.escr.fr/> .
+ns1:ESCR	void:sparqlEndpoint	ns81:sparql .
+ns1:Open_Data_Catalogue_of_Ministry_of_Finance_of_the_Czech_Republic	ns0:title	"Open Data Catalogue of Ministry of Finance of the Czech Republic" .
+@prefix ns82:	<https://opendata.mfcr.cz/lod/> .
+ns1:Open_Data_Catalogue_of_Ministry_of_Finance_of_the_Czech_Republic	void:sparqlEndpoint	ns82:sparql .
+ns1:YAGO_4	ns0:title	"YAGO 4" .
+@prefix ns83:	<https://yago-knowledge.org/> .
+ns1:YAGO_4	void:sparqlEndpoint	ns83:sparql .
+ns1:European_Union_Open_Data_Portal	ns0:title	"European Union Open Data Portal" .
+@prefix ns84:	<http://publications.europa.eu/webapi/rdf/> .
+ns1:European_Union_Open_Data_Portal	void:sparqlEndpoint	ns84:sparql .
+ns1:YAGO	ns0:title	"YAGO" .
+@prefix ns85:	<https://linkeddata1.calcul.u-psud.fr/> .
+ns1:YAGO	void:sparqlEndpoint	ns85:sparql .
+ns1:Scholarly_Linked_Open_Data	ns0:title	"Scholarly Linked Open Data" ;
+	void:sparqlEndpoint	<http://www.scholarlydata.org/sparql/> .
+ns1:Europeana	ns0:title	"Europeana" ;
+	void:sparqlEndpoint	<http://sparql.europeana.eu/> .
+ns1:EUROPA	ns0:title	"EUROPA" .
+@prefix ns86:	<https://data.europa.eu/euodp/> .
+ns1:EUROPA	void:sparqlEndpoint	ns86:sparqlep .
+ns1:INSEE	ns0:title	"INSEE" .
+@prefix ns87:	<https://rdf.insee.fr/> .
+ns1:INSEE	void:sparqlEndpoint	ns87:sparql .
+ns1:Register_of_rights_and_responsibilities_of_public_authorities_of_Czechia	ns0:title	"Register of rights and responsibilities of public authorities of Czechia" .
+@prefix ns88:	<https://rpp-opendata.egon.gov.cz/odrpp/> .
+ns1:Register_of_rights_and_responsibilities_of_public_authorities_of_Czechia	void:sparqlEndpoint	ns88:sparql .
+ns1:BioPortal	ns0:title	"NCBO BioPortal" .
+@prefix ns89:	<http://sparql.bioontology.org/> .
+ns1:BioPortal	void:sparqlEndpoint	ns89:sparql .
+ns1:GWAS_Central	ns0:title	"GWAS Central" .
+@prefix ns90:	<https://fuseki.gwascentral.org/gc/> .
+ns1:GWAS_Central	void:sparqlEndpoint	ns90:query .
+ns1:Linked_Life_Data	ns0:title	"Linked Life Data" .
+@prefix ns91:	<https://linkedlifedata.com/> .
+ns1:Linked_Life_Data	void:sparqlEndpoint	ns91:sparql .
+ns1:Code-Point_Open_Linked_Data	ns0:title	"Code-Point Open Linked Data" .
+@prefix ns92:	<https://data.ordnancesurvey.co.uk/datasets/code-point-open/apis/> .
+ns1:Code-Point_Open_Linked_Data	void:sparqlEndpoint	ns92:sparql .
+ns1:Open_Names_Linked_Data	ns0:title	"Open Names Linked Data" .
+@prefix ns93:	<https://data.ordnancesurvey.co.uk/datasets/opennames/apis/> .
+ns1:Open_Names_Linked_Data	void:sparqlEndpoint	ns93:sparql .
+ns1:Boundary_Line_Linked_Data	ns0:title	"Boundary Line Linked Data" .
+@prefix ns94:	<https://data.ordnancesurvey.co.uk/datasets/boundary-line/apis/> .
+ns1:Boundary_Line_Linked_Data	void:sparqlEndpoint	ns94:sparql .
+<https://linkedwiki.com/dataset/50K_Gazetteer_Linked_Data>	ns0:title	"50K Gazetteer Linked Data" .
+@prefix ns95:	<https://data.ordnancesurvey.co.uk/datasets/50k-gazetteer/apis/> .
+<https://linkedwiki.com/dataset/50K_Gazetteer_Linked_Data>	void:sparqlEndpoint	ns95:sparql .
+ns1:Czech_DBPedia	ns0:title	"Czech DBPedia" .
+@prefix ns96:	<https://cs.dbpedia.org/> .
+ns1:Czech_DBPedia	void:sparqlEndpoint	ns96:sparql .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ns98:	<http://ns.inria.fr/kg/index#> .
+@prefix ns99:	<http://www.w3.org/ns/dcat#> .
+ns98:catalogTest	rdf:type	ns99:Catalog ;
+	ns99:dataset	ns1:OrthoDB ,
+		ns1:Getty_Vocabulary_Program ,
+		ns1:Thesaurus_of_Geographic_Names_LOD_Dataset ,
+		ns1:Nobel_Foundation_database ,
+		ns1:GWAS_Central ,
+		ns1:BioPortal ,
+		ns1:Bio2RDF ,
+		ns1:Australian_and_New_Zealand_Standard_Research_Classification ,
+		ns1:Register_of_rights_and_responsibilities_of_public_authorities_of_Czechia ,
+		ns1:ProKinO ,
+		ns1:Orphanet_Rare_Disease_Ontology ,
+		ns1:INSEE ,
+		ns1:EUROPA ,
+		ns1:Europeana ,
+		ns1:Uniprot ,
+		ns1:neXtProt ,
+		ns1:CiteSeer ,
+		ns1:TORA ,
+		ns1:Union_List_of_Artist_Names ,
+		ns1:Scholarly_Linked_Open_Data ,
+		ns1:MicrobeDB ,
+		ns1:YAGO ,
+		ns1:PathoPhenoDB ,
+		ns1:Microsoft_Academic_Knowledge_Graph ,
+		ns1:Japan_Search ,
+		ns1:DisGeNET ,
+		ns1:ONS_Open_Geography_Portal ,
+		ns1:European_Union_Open_Data_Portal ,
+		ns1:MIMO ,
+		ns1:Geologic_Unit_Type ,
+		ns1:YAGO_4 ,
+		ns1:Allie ,
+		ns1:Open_Data_Catalogue_of_Ministry_of_Finance_of_the_Czech_Republic ,
+		ns1:Colil ,
+		ns1:International_Chronostratigraphic_Chart_data_set ,
+		ns1:FactForge ,
+		ns1:YCBA_LOD ,
+		ns1:Semantic_Kalevala ,
+		ns1:European_Data_Portal ,
+		ns1:MuseumFinland ,
+		ns1:ESCR ,
+		ns1:Memory_of_Taichung_Database ,
+		ns1:SKOS-history_of_ZBW_Leibniz_Information_Centre_of_Economics ,
+		ns1:European_Environment_Agency ,
+		ns1:Research_Vocabularies_Australia ,
+		ns1:National_Library_of_Korea ,
+		ns1:OpenStreetMap ,
+		ns1:LinkedGeoData ,
+		ns1:EMBL-EBI ,
+		ns1:Biblioteca_Nacional_de_Espana ,
+		ns1:Korean_Intellectual_Property_Office ,
+		ns1:Official_statistics_from_MHCLG ,
+		ns1:Thesaurus_of_Korean_Intellectual_Property_Office ,
+		ns1:Dataset_of_Korean_Intellectual_Property_Office_about_classification ,
+		ns1:Dataset_of_Korean_Intellectual_Property_Office_about_admin_processes ,
+		ns1:Dataset_of_Korean_Intellectual_Property_Office_about_oversea_patents ,
+		ns1:Economics_institutions_subset_of_GND ,
+		ns1:Economists_subset_of_GND ,
+		ns1:STW_Thesarus_for_Economics ,
+		ns1:WordNet ,
+		<https://linkedwiki.com/dataset/20th_Century_Press_Archives_(PM20)> ,
+		ns1:EconStor ,
+		ns1:National_Library_of_Finland ,
+		ns1:Biblioteca_Virtual_Miguel_de_Cervantes ,
+		ns1:LEMB ,
+		ns1:Integrated_Authority_File_GND ,
+		ns1:Galiciana ,
+		ns1:Open_Data_Web ,
+		ns1:WikiPathways ,
+		ns1:BioModels ,
+		ns1:IODS ,
+		ns1:Epigraphic_Database_Heidelberg ,
+		ns1:Europeana_Cultural_Data ,
+		ns1:UriBurner ,
+		ns1:Wikidata ,
+		ns1:DrugBank ,
+		ns1:LinkedWiki ,
+		ns1:SireneLD ,
+		ns1:UK_Parliament ,
+		ns1:Ordnance_Survey ,
+		ns1:Linked_open_EP_data ,
+		ns1:Aragon_Open_Data_Sparql_endpoint ,
+		ns1:HM_Land_Registry_Open_Data ,
+		ns1:Reactome ,
+		ns1:isidore ,
+		<https://linkedwiki.com/dataset/data.persee.fr> ,
+		ns1:Chamber_of_Deputies_of_Italy ,
+		<https://linkedwiki.com/dataset/datos.gob.es> ,
+		ns1:IEEE ,
+		ns1:Linked_Open_Vocabularies ,
+		<https://linkedwiki.com/dataset/backstage.bbc.co.uk> ,
+		ns1:MeSH ,
+		ns1:Rhea ,
+		ns1:Czech_DBPedia ,
+		ns1:Linked_Stage_Graph ,
+		ns1:OpenCitations ,
+		ns1:OpenAIRE ,
+		ns1:KEGG ,
+		ns1:Bgee ,
+		<https://linkedwiki.com/dataset/dati.beniculturali.it> ,
+		ns1:ChEMBL ,
+		<https://linkedwiki.com/dataset/50K_Gazetteer_Linked_Data> ,
+		ns1:Boundary_Line_Linked_Data ,
+		ns1:Open_Names_Linked_Data ,
+		ns1:Pathway_Commons ,
+		ns1:PRO ,
+		ns1:Linked_COVID-19_Data ,
+		ns1:AGROVOC ,
+		ns1:ADS ,
+		ns1:Code-Point_Open_Linked_Data ,
+		ns1:British_National_Bibliography ,
+		<https://linkedwiki.com/dataset/data.culture.fr> ,
+		<https://linkedwiki.com/dataset/Artsdata.ca> ,
+		ns1:Linked_Life_Data ,
+		ns1:Ensembl ,
+		ns1:HAL ,
+		ns1:Schools_Online_Thesaurus ,
+		ns1:IdRef .
