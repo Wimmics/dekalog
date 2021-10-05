@@ -62,8 +62,19 @@ public class QueryTestExecution extends TestExecution {
                 String errorMessage = "";
                 // Execution de la requête
                 try {
-                    QueryExecution testQueryExecution = QueryExecutionFactory.sparqlService(this.getEndpointUrl(), queryString);
-                    testQueryExecution.setTimeout(Utils.queryTimeout);
+                    org.apache.http.client.config.RequestConfig requestConfig = org.apache.http.client.config.RequestConfig.copy(org.apache.http.client.config.RequestConfig.DEFAULT)
+                            .setSocketTimeout(Math.toIntExact(Utils.queryTimeout))
+                            .setConnectTimeout(Math.toIntExact(Utils.queryTimeout))
+                            .setConnectionRequestTimeout(Math.toIntExact(Utils.queryTimeout))
+                            .build();
+                    org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
+                            .setUserAgent(RulesUtils.USER_AGENT)
+                            .useSystemProperties()
+                            .setDefaultRequestConfig(requestConfig)
+                            .build();
+                    QueryEngineHTTP testQueryExecution = new QueryEngineHTTP(this.getEndpointUrl(), queryString, client);
+                    testQueryExecution.addParam("timeout", String.valueOf(Utils.queryTimeout));
+                    testQueryExecution.setTimeout(Utils.queryTimeout, Utils.queryTimeout);
                     if(queryString.contains("ASK")) {
                         passed = testQueryExecution.execAsk();
                     } else if (queryString.contains("SELECT")) {

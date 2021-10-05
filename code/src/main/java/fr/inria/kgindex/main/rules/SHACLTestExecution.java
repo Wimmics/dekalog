@@ -11,6 +11,7 @@ import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -99,12 +100,24 @@ public class SHACLTestExecution extends TestExecution {
                         if (selectObject.isLiteral()) {
                             Literal selectObjLit = selectObject.asLiteral();
                             String selectQuery = selectObjLit.getString();
-                            QueryExecution selectExec = QueryExecutionFactory.sparqlService(this.getEndpointUrl(), selectQuery);
+                            org.apache.http.client.config.RequestConfig requestConfig = org.apache.http.client.config.RequestConfig.copy(org.apache.http.client.config.RequestConfig.DEFAULT)
+                                    .setSocketTimeout(Math.toIntExact(Utils.queryTimeout))
+                                    .setConnectTimeout(Math.toIntExact(Utils.queryTimeout))
+                                    .setConnectionRequestTimeout(Math.toIntExact(Utils.queryTimeout))
+                                    .build();
+                            org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
+                                    .setUserAgent(RulesUtils.USER_AGENT)
+                                    .useSystemProperties()
+                                    .setDefaultRequestConfig(requestConfig)
+                                    .build();
+                            QueryEngineHTTP selectExec = new QueryEngineHTTP(this.getEndpointUrl(), selectQuery, client);
+                            selectExec.addParam("timeout", String.valueOf(Utils.queryTimeout));
                             selectExec.setTimeout(Utils.queryTimeout);
                             ResultSet selectResults = selectExec.execSelect();
                             if (selectResults.hasNext()) {
                                 validationResultBool = false;
                             }
+                            selectExec.close();
                         }
                     }
                     Date endDate = new Date();

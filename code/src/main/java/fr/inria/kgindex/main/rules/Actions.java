@@ -9,7 +9,7 @@ public class Actions extends TreeSet<Action> {
         super(new Comparator<Action>() {
             @Override
             public int compare(Action o1, Action o2) {
-                return o2.getPriority() - o1.getPriority();
+                return o1.getPriority() - o2.getPriority();
             }
         });
     }

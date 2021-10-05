@@ -15,6 +15,7 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.update.UpdateAction;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static fr.inria.kgindex.main.util.Utils.dateFormatter;
 
@@ -120,11 +122,24 @@ public class RuleApplication {
                         try {
                             if (queryString.contains("CONSTRUCT") && ! queryString.contains("GRAPH")) {
                                 Query constructQuery = QueryFactory.create(queryString);
-                                QueryExecution actionExecution = QueryExecutionFactory.sparqlService(action.getEndpointUrl(), constructQuery );
-                                actionExecution.setTimeout(Utils.queryTimeout);
-
+                                org.apache.http.client.config.RequestConfig requestConfig = org.apache.http.client.config.RequestConfig.copy(org.apache.http.client.config.RequestConfig.DEFAULT)
+                                        .setSocketTimeout(Math.toIntExact(Utils.queryTimeout))
+                                        .setConnectTimeout(Math.toIntExact(Utils.queryTimeout))
+                                        .setConnectionRequestTimeout(Math.toIntExact(Utils.queryTimeout))
+                                        .build();
+                                org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
+                                        .setUserAgent(RulesUtils.USER_AGENT)
+                                        .useSystemProperties()
+                                        .setDefaultRequestConfig(requestConfig)
+                                        .build();
+                                QueryEngineHTTP actionExecution = new QueryEngineHTTP(action.getEndpointUrl(), constructQuery, client);
+                                actionExecution.addParam("timeout", String.valueOf(Utils.queryTimeout));
+                                actionExecution.addParam("format", Lang.TRIG.getContentType().getContentTypeStr());
+                                actionExecution.setTimeout(Utils.queryTimeout, TimeUnit.MILLISECONDS, Utils.queryTimeout, TimeUnit.MILLISECONDS);
+                                actionExecution.setAcceptHeader(Lang.TRIG.getContentType().getContentTypeStr());
                                 try {
                                     Dataset constructData = actionExecution.execConstructDataset();
+                                    logger.debug(actionExecution.getHttpResponseContentType());
                                     result = DatasetUtils.addDataset(result, constructData);
                                 } catch (RiotException e) {
                                     logger.error(e);
@@ -142,12 +157,15 @@ public class RuleApplication {
                                 // Tentative d'envoyer la requête sans passer par Jena
                                 try {
                                     HttpClient client = RulesUtils.getHttpClient();
-                                    URI queryURL = URI.create(action.getEndpointUrl() + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
+                                    URI queryURL = URI.create(action.getEndpointUrl()
+                                            + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString())
+                                            + "&timeout=" + Utils.queryTimeout
+                                            + "&format=" + Lang.TRIG.getContentType().getContentTypeStr());
                                     HttpRequest request = HttpRequest.newBuilder()
                                             .uri(queryURL)
                                             .GET()
                                             .timeout(Duration.of(Utils.queryTimeout, ChronoUnit.MILLIS))
-                                            .header("Accept", "application/x-trig")
+                                            .header("Accept", Lang.TRIG.getContentType().getContentTypeStr())
                                             .build();
                                     Dataset bodyData = DatasetFactory.create();
                                     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

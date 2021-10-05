@@ -8,6 +8,7 @@ import java.time.Duration;
 public class RulesUtils {
 
     private static HttpClient __client = null;
+    public static String USER_AGENT = "Semantic Knowledge Graph Index Agent, INRIA WIMMICS, Contact:pierre.maillot@inria.fr";
 
     public static HttpClient getHttpClient() {
         if(__client == null) {
