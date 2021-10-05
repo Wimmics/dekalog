@@ -127,17 +127,17 @@ public class CatalogInputMain {
             catalogConnection.querySelect(datasetEndpointQuery, querySolution -> {
                 logger.debug(querySolution.get("?datasetUri") + " " + querySolution.get("?endpointUrl") + " " + querySolution.get("?datasetName"));
                 try {
-                String datasetUri = querySolution.get("?datasetUri").toString();
-                String endpointUrl = querySolution.get("?endpointUrl").asResource().getURI();
-                String datasetName = "";
-                if(querySolution.get("?datasetName") == null) {
-                    datasetName = URLEncoder.encode(datasetUri, StandardCharsets.UTF_8.toString());
-                } else {
-                    datasetName = querySolution.get("?datasetName").toString();
-                }
-                logger.trace("START dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
+                    String datasetUri = querySolution.get("?datasetUri").toString();
+                    String endpointUrl = querySolution.get("?endpointUrl").asResource().getURI();
+                    String datasetName = "";
+                    if(querySolution.get("?datasetName") == null) {
+                        datasetName = URLEncoder.encode(datasetUri, StandardCharsets.UTF_8.toString());
+                    } else {
+                        datasetName = querySolution.get("?datasetName").toString();
+                    }
+                    logger.trace("START dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
 
-                // Faire l'extraction de description selon nos regles
+                    // Faire l'extraction de description selon nos regles
                     Path tmpDatasetDescFile = Files.createTempFile(null, ".trig");
 
                     datasetName = URLEncoder.encode(datasetName, StandardCharsets.UTF_8.toString());

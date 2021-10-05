@@ -139,7 +139,6 @@ public class RuleApplication {
                                 actionExecution.setAcceptHeader(Lang.TRIG.getContentType().getContentTypeStr());
                                 try {
                                     Dataset constructData = actionExecution.execConstructDataset();
-                                    logger.debug(actionExecution.getHttpResponseContentType());
                                     result = DatasetUtils.addDataset(result, constructData);
                                 } catch (RiotException e) {
                                     logger.error(e);
