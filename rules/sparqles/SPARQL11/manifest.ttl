@@ -1,0 +1,405 @@
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix kgi: <http://ns.inria.fr/kg/index#> .
+
+<> a mf:Manifest ;
+    mf:entries (
+        <SPARQLES_ASKFILNOTIN.ttl>
+        <SPARQLES_CON-.ttl>
+        <SPARQLES_SELAVG.ttl>
+        <SPARQLES_SELBIND.ttl>
+        <SPARQLES_SELFILNOTEXISTS.ttl>
+        <SPARQLES_SELFILABS.ttl>
+        <SPARQLES_SELFILCONTAINS.ttl>
+        <SPARQLES_SELFILNOTEXISTS.ttl>
+        <SPARQLES_SELFILSTART.ttl>
+        <SPARQLES_SELMAX.ttl>
+        <SPARQLES_SELMIN.ttl>
+        <SPARQLES_SELMINUS.ttl>
+        <SPARQLES_SELPATHS.ttl>
+        <SPARQLES_SELSERVICE.ttl>
+        <SPARQLES_SELSUBQ.ttl>
+        <SPARQLES_SELSUBQGRAPH.ttl>
+        <SPARQLES_SELSUM.ttl>
+        <SPARQLES_SELVALUES.ttl>
+        ) .
+
+<SPARQLES_ASKFILNOTIN.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:ASKFILNOTIN .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_CON-.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:CON- .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELAVG.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELAVG .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELBIND.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELBIND .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELFILNOTEXISTS.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELFILNOTEXISTS .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELFILABS.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELFILABS .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELFILCONTAINS.ttl>  a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELFILCONTAINS .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELFILNOTEXISTS.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELFILNOTEXISTS .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELFILSTART.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELFILSTART .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELMAX.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELMAX .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELMIN.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELMIN .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELMINUS.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELMINUS .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELPATHS.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELPATHS .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELSERVICE.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELSERVICE .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELSUBQGRAPH.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELSUBQGRAPH .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELSUBQ.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELSUBQ .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELSUM.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELSUM .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SELVALUES.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    sd:feature sparqles:SELVALUES .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
+<SPARQLES_SPARQL11.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+            [
+                mf:action """
+                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX lsq: <http://lsq.aksw.org/vocab#>
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+                DELETE {
+                    $endpointDescription sd:feature
+                        sparqles:ASKFILNOTIN ,
+                        sparqles:CON- ,
+                        sparqles:SELAVG ,
+                        sparqles:SELBIND ,
+                        sparqles:SELFILNOTEXISTS ,
+                        sparqles:SELFILABS ,
+                        sparqles:SELFILCONTAINS ,
+                        sparqles:SELFILNOTEXISTS ,
+                        sparqles:SELFILSTART ,
+                        sparqles:SELMAX ,
+                        sparqles:SELMIN ,
+                        sparqles:SELMINUS ,
+                        sparqles:SELPATHS ,
+                        sparqles:SELSERVICE ,
+                        sparqles:SELSUBQGRAPH ,
+                        sparqles:SELSUBQ ,
+                        sparqles:SELSUM ,
+                        sparqles:SELVALUES .
+                }
+                INSERT {
+                    $endpointDescription sd:feature sd:SPARQL11Query .
+                } WHERE {
+                    $endpointDescription sd:feature
+                        sparqles:ASKFILNOTIN ,
+                        sparqles:CON- ,
+                        sparqles:SELAVG ,
+                        sparqles:SELBIND ,
+                        sparqles:SELFILNOTEXISTS ,
+                        sparqles:SELFILABS ,
+                        sparqles:SELFILCONTAINS ,
+                        sparqles:SELFILNOTEXISTS ,
+                        sparqles:SELFILSTART ,
+                        sparqles:SELMAX ,
+                        sparqles:SELMIN ,
+                        sparqles:SELMINUS ,
+                        sparqles:SELPATHS ,
+                        sparqles:SELSERVICE ,
+                        sparqles:SELSUBQGRAPH ,
+                        sparqles:SELSUBQ ,
+                        sparqles:SELSUM ,
+                        sparqles:SELVALUES .
+                }
+                """
+            ]
+            <../../meta/modifiedUpdate.ttl>
+        ) .
