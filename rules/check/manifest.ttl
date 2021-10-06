@@ -5,6 +5,7 @@
     mf:entries (
             <reachability.ttl>
             <provenance.ttl>
+            <basicFederatedQuery.ttl>
         ) .
 
 <basicFederatedQuery.ttl> a mf:ManifestEntry ;
@@ -12,28 +13,13 @@
         [
             mf:action """
                 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-                CONSTRUCT {
+                INSERT DATA {
                     $endpointDescription sd:endpoint $endpointUrl ;
                         sd:feature sd:basicFederatedQuery .
                 }
-                WHERE {
-                }
             """
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
     ) .
 
 <reachability.ttl> a mf:ManifestEntry ;
@@ -46,10 +32,17 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX dqv: <http://www.w3.org/ns/dqv#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-            CONSTRUCT {
-                $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
+            INSERT DATA {
+                $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject ;
+                    dcat:service $endpointDescription ;
+                    dcat:distribution [
+                        a dcat:Distribution ;
+                        dcat:accessUrl $rawEndpointUrl ;
+                        dcat:mediaType "application/sparql-query"
+                    ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset $datasetDescription ;
+                    dcat:endpointUrl $rawEndpointUrl ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
@@ -62,24 +55,9 @@
                     ] .
 
             }
-            WHERE {
-            }
             """
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
@@ -91,10 +69,17 @@
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX dqv: <http://www.w3.org/ns/dqv#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-            CONSTRUCT {
-                $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject .
+            INSERT DATA {
+                $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject ;
+                    dcat:service $endpointDescription ;
+                    dcat:distribution [
+                        a dcat:Distribution ;
+                        dcat:accessUrl $rawEndpointUrl ;
+                        dcat:mediaType "application/sparql-query"
+                    ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset $datasetDescription ;
+                    dcat:endpointUrl $rawEndpointUrl ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
@@ -108,8 +93,6 @@
                     ] .
 
             }
-            WHERE {
-            }
             """
         ]
         <../meta/modifiedUpdate.ttl>
@@ -121,7 +104,7 @@
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-            CONSTRUCT {
+            INSERT DATA {
                 $metadataDescription dqv:hasQualityMeasurement [
                     a dqv:QualityMeasurement ;
                     rdfs:label "Provenance information are present in the metadata"@en ;
@@ -129,31 +112,17 @@
                     dqv:isMeasurementOf kgi:provenanceExtractionShape ;
                     dqv:value "true"^^xsd:boolean
                 ] .
-            } WHERE {
             }
             """
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-            CONSTRUCT {
+            INSERT DATA {
                 $metadataDescription dqv:hasQualityMeasurement [
                     a dqv:QualityMeasurement ;
                     rdfs:label "Provenance information are absent from the metadata"@en ;
@@ -161,22 +130,8 @@
                     dqv:isMeasurementOf kgi:provenanceExtractionShape ;
                     dqv:value "false"^^xsd:boolean
                 ] .
-            } WHERE {
             }
             """
         ]
-        [
-            mf:action """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                DELETE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-                INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
-                }
-                WHERE {
-                    $metadataDescription dcterms:modified ?mod .
-                }
-            """
-        ]
+        <../meta/modifiedUpdate.ttl>
     ) .

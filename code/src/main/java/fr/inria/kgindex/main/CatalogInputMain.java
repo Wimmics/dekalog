@@ -1,15 +1,20 @@
 package fr.inria.kgindex.main;
 
+import fr.inria.kgindex.main.data.DescribedDataset;
+import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Utils;
 import org.apache.commons.cli.*;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.vocabulary.DCAT;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -102,6 +107,8 @@ public class CatalogInputMain {
             }
 
             Dataset result = DatasetFactory.create();
+            Resource catalogRoot = result.getDefaultModel().createResource(KGIndex.kgindexNamespace + "catalogRoot");
+            result.getDefaultModel().add(catalogRoot, RDF.type, DCAT.Catalog );
 
             logger.trace("START of catalog processing");
             // Envoyer les requêtes d'extraction des descriptions de dataset
@@ -141,7 +148,9 @@ public class CatalogInputMain {
                     Path tmpDatasetDescFile = Files.createTempFile(null, ".trig");
 
                     datasetName = URLEncoder.encode(datasetName, StandardCharsets.UTF_8.toString());
-                    MainClass.extractIndexDescriptionForDataset(datasetName, endpointUrl, tmpDatasetDescFile.toString());
+                    DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetName);
+                    result.getDefaultModel().add(catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());
+                    MainClass.extractIndexDescriptionForDataset(describedDataset, tmpDatasetDescFile.toString());
                     logger.trace("END dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
                     logger.trace("Transfert to result START");
                     InputStream inputStream = new FileInputStream(tmpDatasetDescFile.toString());
