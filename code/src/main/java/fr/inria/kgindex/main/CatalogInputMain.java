@@ -105,11 +105,18 @@ public class CatalogInputMain {
             RDFConnection catalogConnection = null;
             if(cmd.hasOption(OPT_CATALOG_FILE)) {
                 String catalogFilename = cmd.getOptionValue(OPT_CATALOG_FILE);
+                Dataset catalogDataset = DatasetFactory.createTxnMem();
 
                 // Créer connexion locale
-                Dataset catalogDataset = DatasetFactory.create();
-                RDFDataMgr.read(catalogDataset, catalogFilename);
-                catalogConnection = RDFConnectionFactory.connect(catalogDataset);
+                if(catalogFilename != null && catalogDataset != null ) {
+                    logger.debug(catalogDataset + " " + catalogFilename);
+                    RDFDataMgr.read(catalogDataset, catalogFilename);
+                    catalogConnection = RDFConnectionFactory.connect(catalogDataset);
+                } else {
+                    HelpFormatter formatter = new HelpFormatter();
+                    formatter.printHelp( APP_NAME, options );
+                    throw new Error("Catalog file name is null");
+                }
             } else if(cmd.hasOption(OPT_CATALOG_ENDPOINT)) {
                 // Créer connexion distante
                 String catalogUrl = cmd.getOptionValue(OPT_CATALOG_ENDPOINT);
