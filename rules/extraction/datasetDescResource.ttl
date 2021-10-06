@@ -7,7 +7,7 @@
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-kgi:datasetDescResourceConnectedTest rdf:type kgi:TestQuery ;
+<> rdf:type kgi:TestQuery ;
     dcterms:title "Extraction of dataset description resources" ;
     dcterms:description "Extraction of the dataset description resource the example endpoint, if there are any. The resources are instances of dcat: or void: Dataset." ;
     kgi:query """PREFIX dcat: <http://www.w3.org/ns/dcat#>

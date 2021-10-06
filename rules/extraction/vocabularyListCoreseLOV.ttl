@@ -5,7 +5,7 @@
 @prefix kgi: <http://ns.inria.fr/kgindex#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-kgi:vocabularyListCoreseLOVExtractionTest rdf:type kgi:TestQuery ;
+<> rdf:type kgi:TestQuery ;
     dcterms:title "Test of the Linked Open Vocabulary endpoint reachability"@en ;
     kgi:endpoint <https://lov.linkeddata.es/dataset/lov/sparql> ;
     kgi:query """ASK WHERE { ?s ?p ?o }""" .

@@ -6,7 +6,7 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 
-kgi:countClassShape a sh:NodeShape  ,
+<> a sh:NodeShape  ,
         earl:TestCase ;
     sh:targetNode kgi:dummyTarget ;
     sh:sparql [

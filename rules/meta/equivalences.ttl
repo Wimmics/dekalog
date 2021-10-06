@@ -5,4 +5,4 @@
 @prefix kgi: <http://ns.inria.fr/kg/index#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
-kgi:equivalenceTest rdf:type kgi:DummyTest .
+<> rdf:type kgi:DummyTest .

@@ -5,7 +5,7 @@
 @prefix kgi: <http://ns.inria.fr/kg/index#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-kgi:graphListCoreseExtractionTest rdf:type kgi:TestQuery ;
+<> rdf:type kgi:TestQuery ;
     dcterms:title "Extraction of the list of graphs in the endpoint"@en ;
     kgi:query """ASK
         WHERE {

@@ -4,7 +4,7 @@
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
-kgi:countPropertyShape a sh:NodeShape  ,
+<> a sh:NodeShape  ,
         earl:TestCase ;
     sh:targetNode kgi:dummyTarget ;
     sh:sparql [
