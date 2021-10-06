@@ -140,15 +140,15 @@ public class CatalogInputMain {
                     if(querySolution.get("?datasetName") == null) {
                         datasetName = URLEncoder.encode(datasetUri, StandardCharsets.UTF_8.toString());
                     } else {
-                        datasetName = querySolution.get("?datasetName").toString();
+                        datasetName = URLEncoder.encode(querySolution.get("?datasetName").toString(), StandardCharsets.UTF_8.toString());;
                     }
                     logger.trace("START dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
 
                     // Faire l'extraction de description selon nos regles
                     Path tmpDatasetDescFile = Files.createTempFile(null, ".trig");
 
-                    datasetName = URLEncoder.encode(datasetName, StandardCharsets.UTF_8.toString());
                     DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetName);
+                    describedDataset.setDatasetDescriptionResource(result.getDefaultModel().createResource(datasetUri));
                     result.getDefaultModel().add(catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());
                     MainClass.extractIndexDescriptionForDataset(describedDataset, tmpDatasetDescFile.toString());
                     logger.trace("END dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
