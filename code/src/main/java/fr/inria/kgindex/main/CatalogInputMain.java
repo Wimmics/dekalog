@@ -1,6 +1,7 @@
 package fr.inria.kgindex.main;
 
 import fr.inria.kgindex.main.data.DescribedDataset;
+import fr.inria.kgindex.main.rules.RuleApplication;
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Utils;
 import org.apache.commons.cli.*;
@@ -30,6 +31,7 @@ public class CatalogInputMain {
 
     private static final String OPT_CATALOG_FILE = "catalogFile";
     private static final String OPT_CATALOG_ENDPOINT = "catalogEndpoint";
+    private static final String OPT_FEDERATION = "federation";
     private static final String OPT_MANIFEST = "manifest";
     private static final String OPT_TIMEOUT = "timeout";
     private static final String OPT_OUTPUT = "output";
@@ -57,6 +59,11 @@ public class CatalogInputMain {
                 .build());
         inputGroup.setRequired(true);
         options.addOptionGroup(inputGroup);
+        options.addOption(Option.builder(OPT_FEDERATION)
+                .required(false)
+                .hasArg()
+                .desc("SPARQL endpoint URL to a federation server used in rules for the generation. If none is given, rules using the kgi:federated endpoint will not be executed.")
+                .build());
         options.addOption(Option.builder(OPT_OUTPUT)
                 .required(false)
                 .hasArg()
@@ -90,6 +97,9 @@ public class CatalogInputMain {
             }
             if(cmd.hasOption(OPT_MANIFEST)) {
                 Utils.manifestRootFile = cmd.getOptionValue(OPT_MANIFEST, DEFAULT_MANIFEST);
+            }
+            if(cmd.hasOption(OPT_FEDERATION)) {
+                RuleApplication.federationserver = cmd.getOptionValue(OPT_FEDERATION, null);
             }
 
             RDFConnection catalogConnection = null;
@@ -150,7 +160,7 @@ public class CatalogInputMain {
                     DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetName);
                     describedDataset.setDatasetDescriptionResource(result.getDefaultModel().createResource(datasetUri));
                     result.getDefaultModel().add(catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());
-                    MainClass.extractIndexDescriptionForDataset(describedDataset, tmpDatasetDescFile.toString());
+                    DatasetDescriptionExtraction.extractIndexDescriptionForDataset(describedDataset, tmpDatasetDescFile.toString());
                     logger.trace("END dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
                     logger.trace("Transfert to result START");
                     InputStream inputStream = new FileInputStream(tmpDatasetDescFile.toString());

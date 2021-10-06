@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Catalog D2KAB" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="fr.inria.kgindex.main.CatalogInputMain" />
+    <module name="kgindex" />
+    <option name="PROGRAM_PARAMETERS" value="-catalogFile testCatalogD2KAB.ttl -timeout 10000" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
