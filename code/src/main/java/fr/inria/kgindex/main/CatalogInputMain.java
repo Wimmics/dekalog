@@ -15,7 +15,9 @@ import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.DCAT;
+import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.SKOS;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -126,6 +128,110 @@ public class CatalogInputMain {
             Dataset result = DatasetFactory.create();
             Resource catalogRoot = result.getDefaultModel().createResource(KGIndex.kgindexNamespace + "catalogRoot");
             result.getDefaultModel().add(catalogRoot, RDF.type, DCAT.Catalog );
+            // Requetes exemples
+            Resource descResListExample = result.getDefaultModel().createResource();
+            result.getDefaultModel().add(catalogRoot, SKOS.example, descResListExample);
+            result.getDefaultModel().add(descResListExample, DCTerms.description, "Return the list description resources for the dataset, endpoint and metadata of each KB");
+            result.getDefaultModel().add(descResListExample, DCTerms.subject, " PREFIX void: <http://rdfs.org/ns/void#> " +
+                    " PREFIX dcat: <http://www.w3.org/ns/dcat#> " +
+                    " PREFIX earl: <http://www.w3.org/ns/earl#> " +
+                    " PREFIX kgi: <http://ns.inria.fr/kg/index#> " +
+                    " PREFIX voidex: <http://ldf.fi/void-ext#> " +
+                    " PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> " +
+                    " SELECT ?datasetDesc ?endpointDesc ?metadataDesc ?endpoint WHERE { " +
+                    " ?datasetDesc a  dcat:Dataset . " +
+                    " ?datasetDesc void:sparqlEndpoint ?endpoint . " +
+                    " ?endpointDesc sd:endpoint ?endpoint . " +
+                    " ?metadataDesc kgi:curated ?datasetDesc , ?endpointDesc . " +
+                    " } GROUP BY ?endpoint ORDER BY DESC( ?datasetDesc) ");
+            Resource testResultExample = result.getDefaultModel().createResource();
+            result.getDefaultModel().add(catalogRoot, SKOS.example, testResultExample);
+            result.getDefaultModel().add(testResultExample, DCTerms.description, "Return the list of tests and their outcome for each KB");
+            result.getDefaultModel().add(testResultExample, DCTerms.subject, "PREFIX void: <http://rdfs.org/ns/void#> " +
+                    "PREFIX dcat: <http://www.w3.org/ns/dcat#> " +
+                    "PREFIX earl: <http://www.w3.org/ns/earl#> " +
+                    "PREFIX kgi: <http://ns.inria.fr/kg/index#> " +
+                    "SELECT DISTINCT ?base ?test ?outcome WHERE { " +
+                    "?base a  dcat:Dataset . " +
+                    "?metadata kgi:curated ?base . " +
+                    "?metadata kgi:trace ?trace . " +
+                    "?trace earl:result ?result . " +
+                    "?result earl:outcome ?outcome . " +
+                    "?trace earl:test ?test . " +
+                    "} GROUP BY ?metadata ?result ORDER BY DESC( ?base) ASC(?test)");
+            Resource featuresExample = result.getDefaultModel().createResource();
+            result.getDefaultModel().add(catalogRoot, SKOS.example, featuresExample);
+            result.getDefaultModel().add(featuresExample, DCTerms.description, "List of the features of the endpoint of each KB");
+            result.getDefaultModel().add(featuresExample, DCTerms.subject, "PREFIX void: <http://rdfs.org/ns/void#> " +
+                    "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> " +
+                    "PREFIX dcat: <http://www.w3.org/ns/dcat#> " +
+                    "PREFIX earl: <http://www.w3.org/ns/earl#> " +
+                    "PREFIX kgi: <http://ns.inria.fr/kg/index#> " +
+                    "SELECT DISTINCT ?datasetDesc ?endpoint ?feature WHERE { " +
+                    "?datasetDesc a  dcat:Dataset . " +
+                    "?datasetDesc void:sparqlEndpoint ?endpoint . " +
+                    "?endpointDesc a sd:Service . " +
+                    "?endpointDesc sd:endpoint ?endpoint . " +
+                    "?endpointDesc sd:feature ?feature . " +
+                    "FILTER( CONTAINS(str(?feature, str(sd:))) ) " +
+                    "} GROUP BY ?endpointDesc ?feature  ORDER BY DESC( ?datasetDesc) ");
+            Resource iriNumberExample = result.getDefaultModel().createResource();
+            result.getDefaultModel().add(catalogRoot, SKOS.example, iriNumberExample);
+            result.getDefaultModel().add(iriNumberExample, DCTerms.description, "Number of IRIs per KB.");
+            result.getDefaultModel().add(iriNumberExample, DCTerms.subject, "PREFIX void: <http://rdfs.org/ns/void#> " +
+                    "PREFIX dcat: <http://www.w3.org/ns/dcat#> " +
+                    "PREFIX earl: <http://www.w3.org/ns/earl#> " +
+                    "PREFIX kgi: <http://ns.inria.fr/kg/index#> " +
+                    "PREFIX voidex: <http://ldf.fi/void-ext#> " +
+                    "SELECT ?datasetDesc ?endpoint ?IRIs WHERE { " +
+                    "?datasetDesc a  dcat:Dataset . " +
+                    "?datasetDesc void:sparqlEndpoint ?endpoint . " +
+                    "?datasetDesc voidex:distinctIRIReferences ?IRIs . " +
+                    "} GROUP BY ?endpoint ORDER BY DESC( ?datasetDesc) ");
+            Resource classListExample = result.getDefaultModel().createResource();
+            result.getDefaultModel().add(catalogRoot, SKOS.example, classListExample);
+            result.getDefaultModel().add(classListExample, DCTerms.description, "List of classes per KB.");
+            result.getDefaultModel().add(classListExample, DCTerms.subject, "PREFIX void: <http://rdfs.org/ns/void#> " +
+                    "PREFIX dcat: <http://www.w3.org/ns/dcat#> " +
+                    "PREFIX earl: <http://www.w3.org/ns/earl#> " +
+                    "PREFIX kgi: <http://ns.inria.fr/kg/index#> " +
+                    "PREFIX voidex: <http://ldf.fi/void-ext#> " +
+                    "SELECT ?datasetDesc ?endpoint ?class WHERE { " +
+                    "?datasetDesc a  dcat:Dataset . " +
+                    "?datasetDesc void:sparqlEndpoint ?endpoint . " +
+                    "?datasetDesc void:classPartition ?partition . " +
+                    "?partition void:class ?class . " +
+                    "} GROUP BY ?endpoint  ORDER BY DESC( ?datasetDesc) ");
+            Resource classTriplesExample = result.getDefaultModel().createResource();
+            result.getDefaultModel().add(catalogRoot, SKOS.example, classTriplesExample);
+            result.getDefaultModel().add(classTriplesExample, DCTerms.description, "Number of triples per class per KB.");
+            result.getDefaultModel().add(classTriplesExample, DCTerms.subject, "PREFIX void: <http://rdfs.org/ns/void#> " +
+                    "PREFIX dcat: <http://www.w3.org/ns/dcat#> " +
+                    "PREFIX earl: <http://www.w3.org/ns/earl#> " +
+                    "PREFIX kgi: <http://ns.inria.fr/kg/index#> " +
+                    "PREFIX voidex: <http://ldf.fi/void-ext#> " +
+                    "SELECT ?datasetDesc ?endpoint ?class ?triples WHERE { " +
+                    "?datasetDesc a  dcat:Dataset . " +
+                    "?datasetDesc void:sparqlEndpoint ?endpoint . " +
+                    "?datasetDesc void:classPartition ?partition . " +
+                    "?partition void:class ?class . " +
+                    "?partition void:triples ?triples . " +
+                    "} GROUP BY ?endpoint ORDER BY DESC( ?datasetDesc) ");
+            Resource classClassesExample = result.getDefaultModel().createResource();
+            result.getDefaultModel().add(catalogRoot, SKOS.example, classClassesExample);
+            result.getDefaultModel().add(classClassesExample, DCTerms.description, "Number of classes used conjointly per class per KB.");
+            result.getDefaultModel().add(classClassesExample, DCTerms.subject, "PREFIX void: <http://rdfs.org/ns/void#> " +
+                    "PREFIX dcat: <http://www.w3.org/ns/dcat#> " +
+                    "PREFIX earl: <http://www.w3.org/ns/earl#> " +
+                    "PREFIX kgi: <http://ns.inria.fr/kg/index#> " +
+                    "PREFIX voidex: <http://ldf.fi/void-ext#> " +
+                    "SELECT ?datasetDesc ?endpoint ?class ?triples WHERE { " +
+                    "?datasetDesc a  dcat:Dataset . " +
+                    "?datasetDesc void:sparqlEndpoint ?endpoint . " +
+                    "?datasetDesc void:classPartition ?partition . " +
+                    "?partition void:class ?class . " +
+                    "?partition void:classes ?triples . " +
+                    "} GROUP BY ?endpoint ORDER BY DESC( ?datasetDesc) ");
 
             logger.trace("START of catalog processing");
             // Envoyer les requêtes d'extraction des descriptions de dataset
@@ -145,7 +251,6 @@ public class CatalogInputMain {
                     "}" +
                     "}");
 
-            logger.debug(datasetEndpointQuery);
             assert catalogConnection != null;
             String finalOutputFilename = outputFilename;
             catalogConnection.querySelect(datasetEndpointQuery, querySolution -> {
