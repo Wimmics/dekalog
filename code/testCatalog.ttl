@@ -11,7 +11,7 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
 kgi:catalogTest a dcat:Catalog ;
-    dcat:dataset kgi:TestDataset , kgi:FCUDataset , kgi:ScholarlyData , kgi:AgroLDDataset , kgi:BNBDataset , kgi:AgroPortalDataset .
+    dcat:dataset kgi:TestDataset , kgi:FCUDataset , kgi:ScholarlyData , kgi:AgroLDDataset , kgi:BNBDataset , kgi:AgroPortalDataset , kgi:orkg .
 
 kgi:BNBDataset void:sparqlEndpoint <https://bnb.data.bl.uk/sparql> ;
     rdfs:label "BNB".
@@ -30,3 +30,6 @@ kgi:ScholarlyData void:sparqlEndpoint <http://www.scholarlydata.org/sparql> ;
 
 kgi:TestDataset void:sparqlEndpoint <http://localhost:8890/sparql> ;
     rdfs:label "Test" .
+
+kgi:orkg void:sparqlEndpoint <https://www.orkg.org/orkg/triplestore> ;
+    rdfs:label "Open Research Knowledge Graph (ORKG)" .

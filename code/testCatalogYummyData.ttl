@@ -11,22 +11,217 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
 kgi:catalogTest a dcat:Catalog ;
-    dcat:dataset kgi:TestDataset , kgi:FCUDataset , kgi:ScholarlyData , kgi:AgroLDDataset , kgi:BNBDataset , kgi:AgroPortalDataset .
+    dcat:dataset kgi:Protein_Ontology , kgi:AOP-Wiki , kgi:UniProt , kgi:Bgee , kgi:lsd , kgi:OpenLifeData , kgi:WikiPathways , kgi:oma , kgi:Wikidata , kgi:Wikidata , kgi:Bio2RDF , kgi:HAMAP , kgi:GlyConnect , kgi:MetaNetX , kgi:IDEAL , kgi:FORUM , kgi:Allie , kgi:Colil , kgi:Rhea , kgi:polyadenylation-sites-in-magnaporthe-oryza , kgi:MeSH , kgi:AgroLD , kgi:ProKinO , kgi:MAKG , kgi:DisGeNET , kgi:neXtProt , kgi:GlyCosmos , kgi:PDBj-BMRB , kgi:DDBJ , kgi:LinkDB , kgi:LSDB , kgi:MIcrobeDB , kgi:OrphaData , kgi:OBOOntoBee , kgi:MBGD , kgi:DBKERO , kgi:AGROVOC , kgi:harvard , kgi:eagle-i , kgi:hawaii , kgi:ohsu , kgi:NBDC , kgi:GlyGen , kgi:upenn , kgi:RIKEN , kgi:upr , kgi:jsu , kgi:CUNY , kgi:eagle-i , kgi:famu , kgi:msm , kgi:meharry , kgi:hunter-cuny , kgi:alaska , kgi:Pathway_Commons , kgi:howard , kgi:cdrewu , kgi:montana , kgi:xula , kgi:cau , kgi:tsu , kgi:utep , kgi:tuskegee , kgi:psm , kgi:uccaribe , kgi:utsa , kgi:patho , kgi:linkedlifedata , kgi:FirstAuthor_Navigation , kgi:OrthoDB , kgi:glycoinfo , kgi:BioGateway .
 
-kgi:BNBDataset void:sparqlEndpoint <https://bnb.data.bl.uk/sparql> ;
-    rdfs:label "BNB".
+kgi:Protein_Ontology rdfs:label "Protein Ontology" ;
+    void:sparqlEndpoint <https://sparql.proconsortium.org/virtuoso/sparql> .
 
-kgi:AgroLDDataset void:sparqlEndpoint <http://agrold.southgreen.fr/sparql> ;
-    schema:name "AgroLD".
+kgi:AOP-Wiki rdfs:label "AOP-Wiki SPARQL endpoint" ;
+    void:sparqlEndpoint <https://aopwiki.rdf.bigcat-bioinformatics.org/sparql> .
 
-kgi:AgroPortalDataset void:sparqlEndpoint <http://sparql.agroportal.lirmm.fr/sparql/> ;
-    dcterms:title "AgroPortal" .
+kgi:UniProt rdfs:label "UniProt" ;
+    void:sparqlEndpoint <https://sparql.uniprot.org/> .
 
-kgi:FCUDataset void:sparqlEndpoint <http://ontology.inrae.fr/frenchcropusage/query> ;
-    dcterms:title "FCU" .
+kgi:Bgee rdfs:label "Bgee, a gene expression database" ;
+    void:sparqlEndpoint <https://bgee.org/sparql> .
 
-kgi:ScholarlyData void:sparqlEndpoint <http://www.scholarlydata.org/sparql> ;
-    rdfs:label "ScholarlyData".
+kgi:lsd rdfs:label "Life Science Dictionary" ;
+    void:sparqlEndpoint <http://lsd.dbcls.jp/sparql> .
 
-kgi:TestDataset void:sparqlEndpoint <http://localhost:8890/sparql> ;
-    rdfs:label "Test" .
+kgi:OpenLifeData rdfs:label "OpenLifeData" ;
+    void:sparqlEndpoint <http://sparql.openlifedata.org/> .
+
+kgi:WikiPathways  rdfs:label "WikiPathways" ;
+    void:sparqlEndpoint <http://sparql.wikipathways.org/sparql> .
+
+kgi:oma rdfs:label "OMA Orthology database" ;
+    void:sparqlEndpoint <https://sparql.omabrowser.org/sparql> .
+
+kgi:Wikidata rdfs:label "Wikidata" ;
+    void:sparqlEndpoint <https://query.wikidata.org/sparql> .
+
+kgi:Bio2RDF rdfs:label "Bio2RDF" ;
+    void:sparqlEndpoint <http://bio2rdf.org/sparql> .
+
+kgi:HAMAP  rdfs:label "HAMAP" ;
+    void:sparqlEndpoint <https://hamap.expasy.org/sparql/> .
+
+kgi:GlyConnect  rdfs:label "GlyConnect RDF" ;
+    void:sparqlEndpoint <https://glyconnect.expasy.org/sparql> .
+
+kgi:MetaNetX  rdfs:label "MetaNetX" ;
+    void:sparqlEndpoint <https://rdf.metanetx.org/sparql> .
+
+kgi:IDEAL  rdfs:label "IDEAL" ;
+    void:sparqlEndpoint <https://ideal-rdf.dbcls.jp/sparql> .
+
+kgi:FORUM  rdfs:label "FORUM Knowledge graph Database" ;
+    void:sparqlEndpoint <https://forum.semantic-metabolomics.fr/sparql/> .
+
+kgi:Allie  rdfs:label "Allie" ;
+    void:sparqlEndpoint <http://data.allie.dbcls.jp/sparql> .
+
+kgi:Colil  rdfs:label "Colil" ;
+    void:sparqlEndpoint <http://colil.dbcls.jp/sparql> .
+
+kgi:Rhea  rdfs:label "Rhea" ;
+    void:sparqlEndpoint <https://sparql.rhea-db.org/sparql> .
+
+kgi:polyadenylation-sites-in-magnaporthe-oryza rdfs:label "polyadenylation-sites-in-magnaporthe-oryza" ;
+    void:sparqlEndpoint <https://dydra.com/markw/polyadenylation-sites-in-magnaporthe-oryza/sparql> .
+
+kgi:MeSH  rdfs:label "Medical Subject Headings (MeSH) RDF Linked Data" ;
+    void:sparqlEndpoint <https://id.nlm.nih.gov/mesh/sparql> .
+
+kgi:AgroLD  rdfs:label "Agronomic Linked Data (AgroLD)" ;
+    void:sparqlEndpoint <http://sparql.southgreen.fr/> .
+
+kgi:ProKinO  rdfs:label "ProKinO" ;
+    void:sparqlEndpoint <http://vulcan.cs.uga.edu/sparql> .
+
+kgi:MAKG  rdfs:label "Microsoft Academic Knowledge Graph (MAKG)" ;
+    void:sparqlEndpoint <http://ma-graph.org/sparql> .
+
+kgi:DisGeNET  rdfs:label "DisGeNET" ;
+    void:sparqlEndpoint <http://rdf.disgenet.org/sparql/> .
+
+kgi:neXtProt  rdfs:label "neXtProt" ;
+    void:sparqlEndpoint <https://sparql.nextprot.org/> .
+
+kgi:GlyCosmos  rdfs:label "GlyCosmos" ;
+    void:sparqlEndpoint <https://ts.glycosmos.org/sparql> .
+
+kgi:PDBj-BMRB  rdfs:label "PDBj-BMRB" ;
+    void:sparqlEndpoint <http://bmrbpub.protein.osaka-u.ac.jp/search/rdf> .
+
+kgi:DDBJ  rdfs:label "DDBJ@RDF Portal" ;
+    void:sparqlEndpoint <https://integbio.jp/rdf/ddbj/sparql> .
+
+kgi:LinkDB  rdfs:label "LinkDB" ;
+    void:sparqlEndpoint <http://www.genome.jp/sparql/linkdb> .
+
+kgi:LSDB  rdfs:label "LSDB Archive @ NBDC" ;
+    void:sparqlEndpoint <https://dba-rdf.biosciencedbc.jp/sparql> .
+
+kgi:MIcrobeDB  rdfs:label "MIcrobeDB.jp" ;
+    void:sparqlEndpoint <http://genome.microbedb.jp/sparql> .
+
+kgi:OrphaData  rdfs:label "OrphaData" ;
+    void:sparqlEndpoint <http://www.orpha.net/sparql> .
+
+kgi:OBOOntoBee  rdfs:label "OBO/OntoBee" ;
+    void:sparqlEndpoint <http://sparql.hegroup.org/sparql/> .
+
+kgi:MBGD  rdfs:label "Microbial Genome Database for Comparative Analysis (MBGD)" ;
+    void:sparqlEndpoint <http://sparql.nibb.ac.jp/sparql> .
+
+kgi:DBKERO  rdfs:label "DBKERO@RDF Portal" ;
+    void:sparqlEndpoint <https://integbio.jp/rdf/kero/sparql> .
+
+kgi:AGROVOC  rdfs:label "AGROVOC" ;
+    void:sparqlEndpoint <https://agrovoc.fao.org/sparql> .
+
+kgi:harvard  rdfs:label "Harvard University" ;
+    void:sparqlEndpoint <https://harvard.eagle-i.net/sparqler/sparql> .
+
+kgi:eagle-i  rdfs:label "eagle-i Global Repository" ;
+    void:sparqlEndpoint <https://global.eagle-i.net/sparqler/sparql> .
+
+kgi:hawaii rdfs:label "University of Hawai'i Manoa" ;
+    void:sparqlEndpoint <https://hawaii.eagle-i.net/sparqler/sparql> .
+
+kgi:ohsu rdfs:label "Oregon Health and Science University" ;
+    void:sparqlEndpoint <https://ohsu.eagle-i.net/sparqler/sparql> .
+
+kgi:NBDC rdfs:label "NBDC RDF Portal" ;
+    void:sparqlEndpoint <http://integbio.jp/rdf/sparql> .
+
+kgi:GlyGen rdfs:label "GlyGen" ;
+    void:sparqlEndpoint <http://sparql.glygen.org:8880/sparql> .
+
+kgi:upenn rdfs:label "University of Pennsylvania" ;
+    void:sparqlEndpoint <https://eagle-i.itmat.upenn.edu/sparqler/sparql> .
+
+kgi:RIKEN rdfs:label "RIKEN MetaDatabase" ;
+    void:sparqlEndpoint <http://metadb.riken.jp/sparql> .
+
+kgi:upr rdfs:label "University of Puerto Rico" ;
+    void:sparqlEndpoint <https://upr.eagle-i.net/sparqler/sparql> .
+
+kgi:jsu rdfs:label "Jackson State University" ;
+    void:sparqlEndpoint <https://jsu.eagle-i.net/sparqler/sparql> .
+
+kgi:CUNY rdfs:label "City College of New York, CUNY" ;
+    void:sparqlEndpoint <https://ccny-cuny.eagle-i.net/sparqler/sparql> .
+
+kgi:eagle-i rdfs:label "eagle-i Network Shared Resource Repository" ;
+    void:sparqlEndpoint <https://shared.eagle-i.net/sparqler/sparql> .
+
+kgi:famu rdfs:label "Florida Agricultural and Mechanical University" ;
+    void:sparqlEndpoint <https://famu.eagle-i.net/sparqler/sparql> .
+
+kgi:msm rdfs:label "Morehouse School of Medicine" ;
+    void:sparqlEndpoint <https://msm.eagle-i.net/sparqler/sparql> .
+
+kgi:meharry rdfs:label "Meharry Medical College" ;
+    void:sparqlEndpoint <https://meharry.eagle-i.net/sparqler/sparql> .
+
+kgi:hunter-cuny rdfs:label "Hunter College, CUNY" ;
+    void:sparqlEndpoint <https://hunter-cuny.eagle-i.net/sparqler/sparql> .
+
+kgi:alaska rdfs:label "University of Alaska Fairbanks" ;
+    void:sparqlEndpoint <https://alaska.eagle-i.net/sparqler/sparql> .
+
+kgi:Pathway_Commons rdfs:label "Pathway Commons" ;
+    void:sparqlEndpoint <http://rdf.pathwaycommons.org/sparql/> .
+
+kgi:howard rdfs:label "Howard University" ;
+    void:sparqlEndpoint <https://howard.eagle-i.net/sparqler/sparql> .
+
+kgi:cdrewu rdfs:label "Charles R. Drew University of Medicine and Science" ;
+    void:sparqlEndpoint <https://cdrewu.eagle-i.net/sparqler/sparql> .
+
+kgi:montana rdfs:label "Montana State University" ;
+    void:sparqlEndpoint <https://montana.eagle-i.net/sparqler/sparql> .
+
+kgi:xula rdfs:label "Xavier University of Louisiana" ;
+    void:sparqlEndpoint <https://xula.eagle-i.net/sparqler/sparql> .
+
+kgi:cau rdfs:label "Clark Atlanta University" ;
+    void:sparqlEndpoint <https://cau.eagle-i.net/sparqler/sparql> .
+
+kgi:tsu rdfs:label "Texas Southern University" ;
+    void:sparqlEndpoint <https://tsu.eagle-i.net/sparqler/sparql> .
+
+kgi:utep rdfs:label "University of Texas at El Paso" ;
+    void:sparqlEndpoint <https://utep.eagle-i.net/sparqler/sparql> .
+
+kgi:tuskegee rdfs:label "Tuskegee University" ;
+    void:sparqlEndpoint <https://tuskegee.eagle-i.net/sparqler/sparql> .
+
+kgi:psm rdfs:label "Ponce School of Medicine and Health Sciences" ;
+    void:sparqlEndpoint <https://psm.eagle-i.net/sparqler/sparql> .
+
+kgi:uccaribe rdfs:label "Universidad Central del Caribe" ;
+    void:sparqlEndpoint <https://uccaribe.eagle-i.net/sparqler/sparql> .
+
+kgi:utsa rdfs:label "University of Texas at San Antonio" ;
+    void:sparqlEndpoint <https://utsa.eagle-i.net/sparqler/sparql> .
+
+kgi:patho rdfs:label "PathoPhenoDB" ;
+    void:sparqlEndpoint <http://patho.phenomebrowser.net/sparql/> .
+
+kgi:linkedlifedata rdfs:label "Linked Life Data" ;
+    void:sparqlEndpoint <http://linkedlifedata.com/sparql> .
+
+kgi:FirstAuthor_Navigation rdfs:label "FirstAuthor Navigation" ;
+    void:sparqlEndpoint <http://navi.first.lifesciencedb.jp/fanavi/sparql> .
+
+kgi:OrthoDB rdfs:label "OrthoDB @ sib.swiss" ;
+    void:sparqlEndpoint <http://sparql.orthodb.org/sparql> .
+
+kgi:glycoinfo rdfs:label "GLIC SPARQL endpoint" ;
+    void:sparqlEndpoint <https://sparql.glycoinfo.org/sparql> .
+
+kgi:BioGateway rdfs:label "BioGateway" ;
+    void:sparqlEndpoint <http://ssb4.nt.ntnu.no:33020/sparql> .
