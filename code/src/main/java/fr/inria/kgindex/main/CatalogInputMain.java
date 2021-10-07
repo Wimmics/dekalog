@@ -129,6 +129,18 @@ public class CatalogInputMain {
             Resource catalogRoot = result.getDefaultModel().createResource(KGIndex.kgindexNamespace + "catalogRoot");
             result.getDefaultModel().add(catalogRoot, RDF.type, DCAT.Catalog );
             // Requetes exemples
+            Resource exampleListExample = result.getDefaultModel().createResource();
+            result.getDefaultModel().add(catalogRoot, SKOS.example, exampleListExample);
+            result.getDefaultModel().add(exampleListExample, DCTerms.description, "Return the list of example queries.");
+            result.getDefaultModel().add(exampleListExample, DCTerms.subject, "PREFIX kgi: <http://ns.inria.fr/kg/index#> " +
+                    " PREFIX dcterms: <http://purl.org/dc/terms/> " +
+                    " PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
+                    " SELECT DISTINCT ?description   ?query " +
+                    " WHERE {  " +
+                    " kgi:catalogRoot skos:example ?exampleRes . " +
+                    " ?exampleRes dcterms:description ?description . " +
+                    " ?exampleRes dcterms:subject ?query . " +
+                    " }");
             Resource descResListExample = result.getDefaultModel().createResource();
             result.getDefaultModel().add(catalogRoot, SKOS.example, descResListExample);
             result.getDefaultModel().add(descResListExample, DCTerms.description, "Return the list description resources for the dataset, endpoint and metadata of each KB");
@@ -161,7 +173,7 @@ public class CatalogInputMain {
                     "} GROUP BY ?metadata ?result ORDER BY DESC( ?base) ASC(?test)");
             Resource featuresExample = result.getDefaultModel().createResource();
             result.getDefaultModel().add(catalogRoot, SKOS.example, featuresExample);
-            result.getDefaultModel().add(featuresExample, DCTerms.description, "List of the features of the endpoint of each KB");
+            result.getDefaultModel().add(featuresExample, DCTerms.description, "List of the SPARQL-SD features of the endpoint of each KB");
             result.getDefaultModel().add(featuresExample, DCTerms.subject, "PREFIX void: <http://rdfs.org/ns/void#> " +
                     "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> " +
                     "PREFIX dcat: <http://www.w3.org/ns/dcat#> " +
@@ -173,7 +185,7 @@ public class CatalogInputMain {
                     "?endpointDesc a sd:Service . " +
                     "?endpointDesc sd:endpoint ?endpoint . " +
                     "?endpointDesc sd:feature ?feature . " +
-                    "FILTER( CONTAINS(str(?feature, str(sd:))) ) " +
+                    "FILTER( CONTAINS(str(?feature), str(sd:))) " +
                     "} GROUP BY ?endpointDesc ?feature  ORDER BY DESC( ?datasetDesc) ");
             Resource iriNumberExample = result.getDefaultModel().createResource();
             result.getDefaultModel().add(catalogRoot, SKOS.example, iriNumberExample);
