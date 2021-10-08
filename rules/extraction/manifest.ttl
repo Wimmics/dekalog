@@ -126,7 +126,7 @@
         ]
         <../meta/modifiedUpdate.ttl>
         <../meta/equivalences.ttl>
-    )
+    ) .
 
 <datasetDescResource.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
