@@ -9,6 +9,7 @@
 
 <> rdf:type kgi:TestQuery ;
     dcterms:title "Extraction of dataset description resources" ;
+    dcterms:isReferencedBy <manifest.ttl> ;
     dcterms:description "Extraction of the dataset description resource the example endpoint, if there are any. The resources are instances of dcat: or void: Dataset." ;
     kgi:query """PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX void: <http://rdfs.org/ns/void#>

@@ -6,6 +6,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
 <> rdf:type kgi:TestQuery , earl:TestCase ;
+    dcterms:isReferencedBy <manifest.ttl> ;
     dcterms:title "Reachability test" ;
     dcterms:description "Reachability is tested with a simple query" ;
     kgi:query """SELECT * WHERE { ?s ?p ?o . } LIMIT 1"""  .

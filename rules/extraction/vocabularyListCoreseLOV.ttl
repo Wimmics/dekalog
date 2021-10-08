@@ -6,6 +6,7 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <> rdf:type kgi:TestQuery ;
+    dcterms:isReferencedBy <manifest.ttl> ;
     dcterms:title "Test of the Linked Open Vocabulary endpoint reachability"@en ;
     kgi:endpoint <https://lov.linkeddata.es/dataset/lov/sparql> ;
     kgi:query """ASK WHERE { ?s ?p ?o }""" .

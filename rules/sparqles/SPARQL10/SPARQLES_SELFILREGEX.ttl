@@ -6,6 +6,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
 <> rdf:type kgi:TestQuery ;
+    dcterms:isReferencedBy <manifest.ttl> ;
     dcterms:title "Select with empty results" ;
     dcterms:description "PARQL SELECT query with a single-triple pattern and a FILTER operator filtering variables containing the 'thi' string, case sensitive" ;
     kgi:query """SELECT *

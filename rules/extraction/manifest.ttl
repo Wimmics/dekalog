@@ -60,6 +60,55 @@
         <../meta/equivalences.ttl>
     ) ;
     kgi:onFailure (
+        <endpointDescResourceLocalhost.ttl>
+    ).
+
+<endpointDescResourceLocalhost.ttl>
+    kgi:onSuccess (
+        [
+            mf:action """
+                PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    $endpointDescription ?p ?o .
+                    $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
+                        sd:endpoint $rawEndpointUrl .
+                    $metadataDescription a prov:Entity , earl:TestSubject ;
+                         prov:wasDerivedFrom $endpointUrl ;
+                         kgi:curated $endpointDescription ;
+                         kgi:original ?res .
+                    GRAPH $endpointUrl {
+                        ?res sd:endpoint $rawEndpointUrl .
+                        ?res ?p ?o .
+                    }
+                } WHERE {
+                    ?res sd:endpoint ?endpoint .
+                    ?res ?p ?o .
+                    FILTER(CONTAINS(str(?endpoint), "locahost"))
+                }"""
+        ]
+        [
+            mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                   ?s ?p $endpointDescription .
+                   $metadataDescription kgi:original ?res .
+                   GRAPH $endpointUrl {
+                        ?s ?p ?res .
+                   }
+                } WHERE {
+                    ?res sd:endpoint ?endpoint .
+                   ?s ?p ?res .
+                   FILTER(CONTAINS(str(?endpoint), "locahost"))
+                }"""
+        ]
+        <../meta/modifiedUpdate.ttl>
+        <../meta/equivalences.ttl>
+    ) ;
+    kgi:onFailure (
         [
             mf:action """
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
@@ -76,7 +125,8 @@
                 }"""
         ]
         <../meta/modifiedUpdate.ttl>
-    ) .
+        <../meta/equivalences.ttl>
+    )
 
 <datasetDescResource.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (

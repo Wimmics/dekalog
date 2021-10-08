@@ -8,6 +8,7 @@
 
 <> rdf:type sh:NodeShape ,
         earl:TestCase ;
+    dcterms:isReferencedBy <manifest.ttl> ;
     sh:targetClass void:Dataset ;
     sh:name "Provenance information"@en ;
 	sh:description "We need information about the authors, the licensing and the creation process." ;

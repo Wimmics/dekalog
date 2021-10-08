@@ -5,6 +5,7 @@
 @prefix kgi: <http://ns.inria.fr/kg/index#> .
 
 <> rdf:type kgi:TestQuery ;
+    dcterms:isReferencedBy <manifest.ttl> ;
     dcterms:title "ASK query" ;
     dcterms:description "SPARQL ASK." ;
     kgi:query """ASK {

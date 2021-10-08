@@ -6,6 +6,7 @@
 
 <> a sh:NodeShape  ,
         earl:TestCase ;
+    dcterms:isReferencedBy <manifest.ttl> ;
     sh:targetNode kgi:dummyTarget ;
     sh:sparql [
     		rdf:type sh:SPARQLConstraint ;

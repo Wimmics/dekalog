@@ -6,6 +6,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
 <> rdf:type kgi:TestQuery ;
+    dcterms:isReferencedBy <manifest.ttl> ;
     dcterms:title "Select with empty results" ;
     dcterms:description "SPARQL SELECT query with a join of two triple patterns using GRAPH in one of the triple patterns" ;
     kgi:query """SELECT * {

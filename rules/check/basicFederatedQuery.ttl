@@ -6,6 +6,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
 <> rdf:type kgi:TestQuery ;
+    dcterms:isReferencedBy <manifest.ttl> ;
     dcterms:title "Basic federation test" ;
     dcterms:description "Basic federation is supported" ;
     kgi:query """SELECT * WHERE { SERVICE <https://dbpedia.org/sparql> { ?s ?p ?o . } } LIMIT 1"""  .

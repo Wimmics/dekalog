@@ -8,6 +8,7 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <> rdf:type kgi:TestQuery ;
+    dcterms:isReferencedBy <manifest.ttl> ;
     dcterms:title "Presence of language tags in the content." ;
     dcterms:description "Check if there are langage tags to make the content of the KB multilingual." ;
     kgi:query """ASK {

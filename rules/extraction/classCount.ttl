@@ -9,6 +9,7 @@
 <> a sh:NodeShape  ,
         earl:TestCase ;
     sh:targetNode kgi:dummyTarget ;
+    dcterms:isReferencedBy <manifest.ttl> ;
     sh:sparql [
     		rdf:type sh:SPARQLConstraint ;
     		sh:message "There are as many classes as expected." ;

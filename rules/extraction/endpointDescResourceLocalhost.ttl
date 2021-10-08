@@ -8,10 +8,11 @@
 <> rdf:type kgi:TestQuery , earl:TestCase ;
     dcterms:isReferencedBy <manifest.ttl> ;
     dcterms:title "Extraction of endpoint description resources" ;
-    dcterms:description "Extraction of the endpoint description resource the example endpoint, if there are any. The resources are the subject of the property sd:endpoint." ;
+    dcterms:description "Extraction of an endpoint description resource from the example endpointif it describes a 'localhost' endpoint." ;
     kgi:query """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         ASK
         WHERE {
-            ?res sd:endpoint $endpointUrl .
+            ?res sd:endpoint ?endpoint .
+            FILTER(CONTAINS(str(?endpoint), "locahost"))
         }
         $LIMIT""" .

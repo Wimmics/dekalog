@@ -6,6 +6,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
 <> rdf:type kgi:TestQuery ;
+    dcterms:isReferencedBy <manifest.ttl> ;
     dcterms:title "Optional in construct" ;
     dcterms:description "SPARQL CONSTRUCT query with two triple patterns and an optional returning an RDF graph of resources and their types" ;
     kgi:query """

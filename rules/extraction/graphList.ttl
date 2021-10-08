@@ -7,6 +7,7 @@
 
 <> rdf:type kgi:TestQuery , earl:TestCase ;
     dcterms:title "Extraction of the list of graphs in the endpoint"@en ;
+    dcterms:isReferencedBy <manifest.ttl> ;
     kgi:query """ASK
         WHERE {
             GRAPH ?graph { ?s ?p ?o }

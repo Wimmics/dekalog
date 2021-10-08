@@ -5,4 +5,5 @@
 @prefix kgi: <http://ns.inria.fr/kg/index#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
-<> rdf:type kgi:DummyTest .
+<> rdf:type kgi:DummyTest ;
+    dcterms:isReferencedBy <manifest.ttl> , <../check/manifest.ttl> , <../extraction/manifest.ttl> , <../sparqles/SPARQL10/manifest.ttl> , <../sparqles/SPARQL11/manifest.ttl> , <../sportal/manifest.ttl> .
