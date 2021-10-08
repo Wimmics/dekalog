@@ -101,10 +101,15 @@
         ]
         [
             mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                    ?s ?p $endpointDescription .
-                   $metadataDescription kgi:original ?res .
+                   $metadataDescription prov:wasGeneratedBy [
+                           a prov:Activity ;
+                           prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResourceLocalhost.ttl>
+                       ] ;
+                       kgi:original ?res .
                    GRAPH $endpointUrl {
                         ?s ?p ?res .
                    }
