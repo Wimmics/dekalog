@@ -30,6 +30,10 @@
                     $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
                         sd:endpoint $rawEndpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
+                        prov:wasGeneratedBy [
+                                a prov:Activity ;
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResource.ttl>
+                            ] ;
                          prov:wasDerivedFrom $endpointUrl ;
                          kgi:curated $endpointDescription ;
                          kgi:original ?res .
@@ -44,6 +48,7 @@
         ]
         [
             mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                    ?s ?p $endpointDescription .
@@ -77,6 +82,10 @@
                     $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
                         sd:endpoint $rawEndpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
+                        prov:wasGeneratedBy [
+                                a prov:Activity ;
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResourceLocalhost.ttl>
+                            ] ;
                          prov:wasDerivedFrom $endpointUrl ;
                          kgi:curated $endpointDescription ;
                          kgi:original ?res .
@@ -120,6 +129,10 @@
                     $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
                         sd:endpoint $rawEndpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
+                         prov:wasGeneratedBy [
+                                a prov:Activity ;
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResource.ttl>
+                            ] ;
                          prov:wasDerivedFrom $endpointUrl ;
                          kgi:curated $endpointDescription .
                 }"""
@@ -140,6 +153,10 @@
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
                         ?pp ?o .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
+                        prov:wasGeneratedBy [
+                                a prov:Activity ;
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl>
+                            ] ;
                         prov:wasDerivedFrom $endpointUrl ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
@@ -163,6 +180,10 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
+                        prov:wasGeneratedBy [
+                                a prov:Activity ;
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl>
+                            ] ;
                         prov:wasDerivedFrom $endpointUrl ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
@@ -193,6 +214,10 @@
                     INSERT DATA {
                         $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
                         $metadataDescription a prov:Entity , earl:TestSubject ;
+                            prov:wasGeneratedBy [
+                                    a prov:Activity ;
+                                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl>
+                                ] ;
                             prov:wasDerivedFrom $endpointUrl ;
                             kgi:curated $datasetDescription .
                     }"""
@@ -204,8 +229,13 @@
     kgi:onSuccess (
         [
             mf:action """PREFIX schema: <http://schema.org/>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
                     $datasetDescription schema:availableLanguage ?lang .
+                    $metadataDescription prov:wasGeneratedBy [
+                                a prov:Activity ;
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/languages.ttl>
+                            ] .
                 }
                 WHERE {
                     SELECT DISTINCT (lang(?o) as ?lang)  WHERE {
@@ -229,6 +259,10 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasGeneratedBy [
+                            a prov:Activity ;
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/graphList.ttl>
+                        ] ;
                     prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $endpointDescription .
                 $endpointDescription sd:availableGraphs $graphList .
@@ -256,8 +290,13 @@
             kgi:endpoint kgi:federation ;
             mf:action """PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             CONSTRUCT {
+                $metadataDescription prov:wasGeneratedBy [
+                            a prov:Activity ;
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/graphListCorese.ttl>
+                        ] .
                 $endpointDescription sd:availableGraphs $graphList .
                 $graphList sd:namedGraph [
                         a sd:NamedGraph ;
@@ -285,7 +324,11 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpointUrl ;
+                    prov:wasGeneratedBy [
+                               a prov:Activity ;
+                               prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl>
+                           ] .
+                    prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:vocabulary ?ns .
             }
@@ -303,7 +346,11 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpointUrl ;
+                     prov:wasGeneratedBy [
+                            a prov:Activity ;
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl>
+                        ] ;
+                    prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:vocabulary ?ns .
             }
@@ -330,7 +377,11 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpointUrl ;
+                     prov:wasGeneratedBy [
+                            a prov:Activity ;
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl>
+                        ] ;
+                    prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:vocabulary ?ns .
             }
@@ -352,7 +403,11 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpointUrl ;
+                     prov:wasGeneratedBy [
+                            a prov:Activity ;
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl>
+                        ] ;
+                    prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:vocabulary ?ns .
             }
@@ -382,7 +437,11 @@
                     PREFIX dcterms: <http://purl.org/dc/terms/>
                     CONSTRUCT {
                         $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $endpoint ;
+                             prov:wasGeneratedBy [
+                                    a prov:Activity ;
+                                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCoreseLOV.ttl>
+                                ] ;
+                            prov:wasDerivedFrom $rawEndpointUrl ;
                             kgi:curated $datasetDescription .
                         $datasetDescription void:vocabulary ?vocabURI .
                         ?vocabURI a voaf:Vocabulary ;
@@ -417,7 +476,11 @@
                     PREFIX dcterms: <http://purl.org/dc/terms/>
                     CONSTRUCT {
                         $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $endpoint ;
+                             prov:wasGeneratedBy [
+                                    a prov:Activity ;
+                                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCoreseLOV.ttl>
+                                ] ;
+                            prov:wasDerivedFrom $rawEndpointUrl ;
                             kgi:curated $datasetDescription .
                         $datasetDescription void:vocabulary ?vocabURI .
                             ?vocabURI a voaf:Vocabulary ;
@@ -465,6 +528,10 @@
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX owl: <http://www.w3.org/2002/07/owl#>
                 CONSTRUCT {
+                     prov:wasGeneratedBy [
+                            a prov:Activity ;
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/classCount.ttl>
+                        ] .
                     $datasetDescription void:classes ?count .
                 }
                 WHERE {
@@ -504,6 +571,10 @@
                 PREFIX owl: <http://www.w3.org/2002/07/owl#>
                 CONSTRUCT {
                     $datasetDescription void:properties ?count .
+                         prov:wasGeneratedBy [
+                                a prov:Activity ;
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/propertyCount.ttl>
+                            ] .
                 }
                 WHERE {
                     SELECT (count(?p) AS ?count)
@@ -538,6 +609,10 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     $datasetDescription void:triples ?count .
+                         prov:wasGeneratedBy [
+                                a prov:Activity ;
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/propertyCount.ttl>
+                            ] .
                 }
                 WHERE {
                     SELECT (count(*) AS ?count) WHERE {

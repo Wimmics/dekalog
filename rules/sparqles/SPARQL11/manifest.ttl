@@ -29,9 +29,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_ASKFILNOTIN.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:ASKFILNOTIN .
             }
@@ -47,9 +52,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_CON-.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:CON- .
             }
@@ -65,9 +75,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELAVG.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELAVG .
             }
@@ -83,9 +98,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELBIND.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELBIND .
             }
@@ -101,9 +121,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILNOTEXISTS.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELFILNOTEXISTS .
             }
@@ -119,9 +144,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILABS.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELFILABS .
             }
@@ -137,9 +167,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILCONTAINS.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELFILCONTAINS .
             }
@@ -155,9 +190,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILNOTEXISTS.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELFILNOTEXISTS .
             }
@@ -173,9 +213,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILSTART.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELFILSTART .
             }
@@ -191,9 +236,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELMAX.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELMAX .
             }
@@ -209,9 +259,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELMIN.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELMIN .
             }
@@ -227,9 +282,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELMINUS.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELMINUS .
             }
@@ -245,9 +305,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELPATHS.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELPATHS .
             }
@@ -263,9 +328,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELSERVICE.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELSERVICE .
             }
@@ -281,9 +351,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELSUBQGRAPH.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELSUBQGRAPH .
             }
@@ -299,9 +374,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELSUBQ.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELSUBQ .
             }
@@ -317,9 +397,14 @@
             mf:action """
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELSUM.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELSUM .
             }
@@ -336,8 +421,13 @@
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX lsq: <http://lsq.aksw.org/vocab#>
             PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy [
+                    a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELVALUES.ttl>
+                ] .
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     sd:feature sparqles:SELVALUES .
             }
@@ -354,6 +444,7 @@
                 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
                 PREFIX lsq: <http://lsq.aksw.org/vocab#>
                 PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 DELETE {
                     $endpointDescription sd:feature
@@ -377,6 +468,10 @@
                         sparqles:SELVALUES .
                 }
                 INSERT {
+                    $metadataDescription prov:wasGeneratedBy [
+                        a prov:Activity ;
+                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SPARQL11.ttl>
+                    ] .
                     $endpointDescription sd:feature sd:SPARQL11Query .
                 } WHERE {
                     $endpointDescription sd:feature

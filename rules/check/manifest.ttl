@@ -16,6 +16,10 @@
                 INSERT DATA {
                     $endpointDescription sd:endpoint $endpointUrl ;
                         sd:feature sd:basicFederatedQuery .
+                $metadataDescription prov:wasGeneratedBy [
+                        a prov:Activity ;
+                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicFederatedQuery.ttl>
+                    ] .
                 }
             """
         ]
@@ -47,6 +51,10 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription , $endpointDescription ;
+                    prov:wasGeneratedBy [
+                        a prov:Activity ;
+                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl>
+                    ] ;
                     dqv:hasQualityMeasurement [
                         a dqv:QualityMeasurement ;
                         dqv:computedOn $endpointDescription ;
@@ -85,6 +93,10 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription , $endpointDescription ;
+                    prov:wasGeneratedBy [
+                        a prov:Activity ;
+                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl>
+                    ] ;
                     dqv:hasQualityMeasurement [
                         a dqv:QualityMeasurement ;
                         rdfs:label "Could not reach the endpoint"@en ;
@@ -104,15 +116,21 @@
         [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             INSERT DATA {
-                $metadataDescription dqv:hasQualityMeasurement [
-                    a dqv:QualityMeasurement ;
-                    rdfs:label "Provenance information are present in the metadata"@en ;
-                    dqv:computedOn $endpointDescription ;
-                    dqv:isMeasurementOf kgi:provenanceExtractionShape ;
-                    dqv:value "true"^^xsd:boolean
-                ] .
+                $metadataDescription
+                    prov:wasGeneratedBy [
+                        a prov:Activity ;
+                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl>
+                    ] ;
+                    dqv:hasQualityMeasurement [
+                        a dqv:QualityMeasurement ;
+                        rdfs:label "Provenance information are present in the metadata"@en ;
+                        dqv:computedOn $endpointDescription ;
+                        dqv:isMeasurementOf kgi:provenanceExtractionShape ;
+                        dqv:value "true"^^xsd:boolean
+                    ] .
             }
             """
         ]
@@ -122,15 +140,21 @@
         [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             INSERT DATA {
-                $metadataDescription dqv:hasQualityMeasurement [
-                    a dqv:QualityMeasurement ;
-                    rdfs:label "Provenance information are absent from the metadata"@en ;
-                    dqv:computedOn $endpointDescription ;
-                    dqv:isMeasurementOf kgi:provenanceExtractionShape ;
-                    dqv:value "false"^^xsd:boolean
-                ] .
+                $metadataDescription
+                    prov:wasGeneratedBy [
+                        a prov:Activity ;
+                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl>
+                    ] ;
+                    dqv:hasQualityMeasurement [
+                        a dqv:QualityMeasurement ;
+                        rdfs:label "Provenance information are absent from the metadata"@en ;
+                        dqv:computedOn $endpointDescription ;
+                        dqv:isMeasurementOf kgi:provenanceExtractionShape ;
+                        dqv:value "false"^^xsd:boolean
+                    ] .
             }
             """
         ]
