@@ -221,9 +221,14 @@ public class RuleApplication {
                                         DatasetUtils.addDataset(result, bodyData);
                                     }
                                 } else if (queryString.contains("INSERT") || queryString.contains("DELETE")) {
-                                    UpdateRequest insertUpdate = UpdateFactory.create(queryString);
-                                    UpdateAction.execute(insertUpdate, this._datasetDescription);
-                                    this._datasetDescription.commit();
+                                    try {
+                                        UpdateRequest insertUpdate = UpdateFactory.create(queryString);
+                                        UpdateAction.execute(insertUpdate, this._datasetDescription);
+                                        this._datasetDescription.commit();
+                                    } catch(QueryParseException er) {
+                                        logger.error(queryString);
+                                        throw er;
+                                    }
                                 }
                             } catch (IOException | InterruptedException  e) {
                                 logger.error(e);
