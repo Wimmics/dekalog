@@ -131,7 +131,7 @@ public class CatalogInputMain {
             // Requetes exemples
             Resource exampleListExample = result.getDefaultModel().createResource();
             result.getDefaultModel().add(catalogRoot, SKOS.example, exampleListExample);
-            result.getDefaultModel().add(exampleListExample, DCTerms.description, "Return the list of example queries.");
+            result.getDefaultModel().add(exampleListExample, DCTerms.description, "Returns the list of example queries.");
             result.getDefaultModel().add(exampleListExample, DCTerms.subject, "PREFIX kgi: <http://ns.inria.fr/kg/index#> " +
                     " PREFIX dcterms: <http://purl.org/dc/terms/> " +
                     " PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
@@ -143,7 +143,7 @@ public class CatalogInputMain {
                     " }");
             Resource descResListExample = result.getDefaultModel().createResource();
             result.getDefaultModel().add(catalogRoot, SKOS.example, descResListExample);
-            result.getDefaultModel().add(descResListExample, DCTerms.description, "Return the list description resources for the dataset, endpoint and metadata of each KB");
+            result.getDefaultModel().add(descResListExample, DCTerms.description, "Returns the list description resources for the dataset, endpoint and metadata of each KB");
             result.getDefaultModel().add(descResListExample, DCTerms.subject, " PREFIX void: <http://rdfs.org/ns/void#> " +
                     " PREFIX dcat: <http://www.w3.org/ns/dcat#> " +
                     " PREFIX earl: <http://www.w3.org/ns/earl#> " +
@@ -158,7 +158,7 @@ public class CatalogInputMain {
                     " } GROUP BY ?endpoint ORDER BY DESC( ?datasetDesc) ");
             Resource testResultExample = result.getDefaultModel().createResource();
             result.getDefaultModel().add(catalogRoot, SKOS.example, testResultExample);
-            result.getDefaultModel().add(testResultExample, DCTerms.description, "Return the list of tests and their outcome for each KB");
+            result.getDefaultModel().add(testResultExample, DCTerms.description, "Returns the list of tests and their outcome for each KB");
             result.getDefaultModel().add(testResultExample, DCTerms.subject, "PREFIX void: <http://rdfs.org/ns/void#> " +
                     "PREFIX dcat: <http://www.w3.org/ns/dcat#> " +
                     "PREFIX earl: <http://www.w3.org/ns/earl#> " +
@@ -244,6 +244,24 @@ public class CatalogInputMain {
                     "?partition void:class ?class . " +
                     "?partition void:classes ?triples . " +
                     "} GROUP BY ?endpoint ORDER BY DESC( ?datasetDesc) ");
+            Resource failureReasonExample = result.getDefaultModel().createResource();
+            result.getDefaultModel().add(catalogRoot, SKOS.example, failureReasonExample);
+            result.getDefaultModel().add(failureReasonExample, DCTerms.description, "Returns the message associated with failed tests.");
+            result.getDefaultModel().add(failureReasonExample, DCTerms.subject, "PREFIX void: <http://rdfs.org/ns/void#>  " +
+                    "PREFIX dcat: <http://www.w3.org/ns/dcat#>  " +
+                    "PREFIX earl: <http://www.w3.org/ns/earl#>  " +
+                    "PREFIX kgi: <http://ns.inria.fr/kg/index#>  " +
+                    "SELECT DISTINCT ?base ?test ?info  " +
+                    "WHERE { ?base a  dcat:Dataset .  " +
+                    "?metadata kgi:curated ?base .  " +
+                    "?metadata kgi:trace ?trace .  " +
+                    "?trace earl:result ?result .  " +
+                    "?result earl:outcome earl:failed .  " +
+                    "?result earl:info ?info .  " +
+                    "?trace earl:test ?test .  " +
+                    "}  " +
+                    "GROUP BY ?metadata ?result  " +
+                    "ORDER BY DESC( ?base) ASC(?test)");
 
             logger.trace("START of catalog processing");
             // Envoyer les requêtes d'extraction des descriptions de dataset
@@ -252,10 +270,14 @@ public class CatalogInputMain {
                     "PREFIX dcterms: <http://purl.org/dc/terms/>" +
                     "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
                     "PREFIX dcat: <http://www.w3.org/ns/dcat#>" +
-                    "SELECT DISTINCT ?datasetUri ?endpointUrl ?datasetName WHERE { " +
-                    "?datasetCatalog a dcat:Catalog ;" +
-                    "   dcat:dataset ?datasetUri ." +
-                    "?datasetUri void:sparqlEndpoint ?endpointUrl . " +
+                    "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> " +
+                    "PREFIX dcat: <http://www.w3.org/ns/dcat#> " +
+                    " SELECT DISTINCT ?datasetUri ?endpointUrl ?datasetName WHERE { " +
+                    " ?datasetCatalog a dcat:Catalog ;" +
+                    " dcat:dataset ?datasetUri . " +
+                    " { ?datasetUri void:sparqlEndpoint ?endpointUrl . }" +
+                    " UNION { ?datasetUri sd:endpoint ?endpointUrl . }" +
+                    " UNION { ?datasetUri dcat:endpointUrl ?endpointUrl . }" +
                     "OPTIONAL {" +
                     "   { ?datasetUri rdfs:label ?datasetName } " +
                     "   UNION { ?datasetUri schema:name ?datasetName }" +
