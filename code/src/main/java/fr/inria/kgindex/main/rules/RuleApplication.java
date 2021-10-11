@@ -198,7 +198,6 @@ public class RuleApplication {
                                     HttpRequest request = null;
                                     try {
                                         URI queryURL = URI.create(action.getEndpointUrl() + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
-                                        logger.debug(queryURL);
                                         request = HttpRequest.newBuilder()
                                                 .uri(queryURL)
                                                 .GET()
