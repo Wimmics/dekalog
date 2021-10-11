@@ -1,5 +1,6 @@
 package fr.inria.kgindex.main.data;
 
+import fr.inria.kgindex.main.util.Manifest;
 import org.apache.jena.rdf.model.RDFNode;
 
 import java.util.HashMap;
@@ -14,5 +15,13 @@ public class RuleLibrary {
             __library = new HashMap<>();
         }
         return __library;
+    }
+
+    public static void closeLibrary() {
+        __library.entrySet().forEach(entrySet -> {
+            entrySet.getValue().forEach(entry -> {
+                entry.close();
+            });
+        });
     }
 }

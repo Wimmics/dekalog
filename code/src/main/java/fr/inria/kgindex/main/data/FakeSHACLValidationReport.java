@@ -22,7 +22,10 @@ public class FakeSHACLValidationReport extends AbstractMap.SimpleEntry<Resource,
         resultModel.add(resultNode, RDF.type, ValidationReport);
         resultModel.add(resultNode, conforms, reportResult);
 
-        FakeSHACLValidationReport result = new FakeSHACLValidationReport(resultNode, resultModel);
-        return result;
+        return new FakeSHACLValidationReport(resultNode, resultModel);
+    }
+
+    public void close() {
+        this.getValue().close();
     }
 }

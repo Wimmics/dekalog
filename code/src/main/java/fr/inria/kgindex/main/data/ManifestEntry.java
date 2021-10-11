@@ -83,6 +83,15 @@ public class ManifestEntry {
 		return this._fileResource.toString();
 	}
 
+	public void close() {
+		this._actionsFailure.entrySet().forEach(action -> {
+			action.getValue().close();
+		});
+		this._actionsSuccess.entrySet().forEach(action -> {
+			action.getValue().close();
+		});
+	}
+
 	/**
 	 * Extract all the manifests in a hierarchy, starting from a root manifest given.
 	 * @param manifest

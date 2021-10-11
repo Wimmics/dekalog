@@ -1,6 +1,7 @@
 package fr.inria.kgindex.main;
 
 import fr.inria.kgindex.main.data.DescribedDataset;
+import fr.inria.kgindex.main.data.RuleLibrary;
 import fr.inria.kgindex.main.rules.RuleApplication;
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Utils;
@@ -318,6 +319,7 @@ public class CatalogInputMain {
                     } catch (FileNotFoundException e) {
                         logger.error(e);
                     }
+                    describedDataset.close();
                     logger.trace("Transfert to result END");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -331,7 +333,8 @@ public class CatalogInputMain {
             } catch (FileNotFoundException e) {
                 logger.error(e);
             }
-
+            result.close();
+            RuleLibrary.closeLibrary();
         } catch (ParseException e1) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp( APP_NAME, options );

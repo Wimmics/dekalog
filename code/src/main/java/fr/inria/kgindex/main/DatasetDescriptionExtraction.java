@@ -34,6 +34,7 @@ public class DatasetDescriptionExtraction {
 	public static void extractIndexDescriptionForDataset(String datasetName, String endpointUrl, String outputFilename) {
 		DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetName);
 		extractIndexDescriptionForDataset(describedDataset, outputFilename);
+		describedDataset.close();
 	}
 
 	public static void extractIndexDescriptionForDataset(DescribedDataset describedDataset, String outputFilename) {
@@ -99,7 +100,7 @@ public class DatasetDescriptionExtraction {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-
+		includedManifestModel.close();
 		manifestModel.close();
 		datasetDescription.close();
 	}

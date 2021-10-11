@@ -79,7 +79,6 @@ public class RuleApplication {
 
         // Lancer fonction d'application
         Dataset testResult = this._tests.execute( this._describedDataset, this._datasetDescription);
-        result = DatasetUtils.addDataset(result, testResult);
 
         // Récupérer rapport d'application
         boolean testPassed = false;
@@ -95,6 +94,9 @@ public class RuleApplication {
                 }
             }
         }
+
+        result = DatasetUtils.addDataset(result, testResult);
+        testResult.close();
 
         logger.trace("Test END " + this._entry.getTestResource() + " " + testPassed );
         Actions actionsToApply = null;

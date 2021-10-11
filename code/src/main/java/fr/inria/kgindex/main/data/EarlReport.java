@@ -29,6 +29,10 @@ public class EarlReport {
         this._report.add(this._assertionResult, PROV.generatedAtTime, this._report.createLiteral(dateFormatter.format(date)));
     }
 
+    public void close() {
+        this._report.close();;
+    }
+
     public Model getReport() {
         return this._report;
     }

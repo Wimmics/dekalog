@@ -32,6 +32,7 @@ public class RuleFactory {
         List<Resource> resTestQueryList = testModel.listSubjectsWithProperty(RDF.type, KGIndex.TestQuery).toList();
         List<Resource> resShapeList = testModel.listSubjectsWithProperty(RDF.type, testModel.createProperty(SHACL.NodeShape.getURI())).toList();
         List<Resource> resDummyTestList = testModel.listSubjectsWithProperty(RDF.type, KGIndex.DummyTest).toList();
+        testModel.close();
 
         // Fonction d'application adaptée
         if (resTestQueryList.isEmpty() && !resShapeList.isEmpty() && resDummyTestList.isEmpty()) {
@@ -120,6 +121,7 @@ public class RuleFactory {
         if(! testEndpointNodeList.isEmpty()) {
             testEndpointUrl = testEndpointNodeList.get(0).toString();
         }
+        testModel.close();
 
         TestExecution testExec = null;
         if(interactionType.equals(TestExecution.TYPE.SPARQL)) {
