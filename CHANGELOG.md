@@ -1,5 +1,9 @@
 # DeKaloG changelog
 
+## [2.3.1]2021-10-11
+* More bugfixes
+* re-factoring for the index generation
+
 ## [2.3] 2021-10-05
 * Multiple bugfixes
 * SPARQLES tests to determine the SPARQL coverage of an endpoint have been implemented
