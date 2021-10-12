@@ -92,13 +92,21 @@ public class QueryTestExecution extends TestExecution {
                 Literal endDateLiteral =  result.getDefaultModel().createLiteral(dateFormatter.format(endDate));
 
                 // Generation of report
+                Dataset earlReport = null;
                 if(passed) {
-                    Dataset earlReport = DatasetFactory.create(EarlReport.createEarlPassedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), startDateLiteral, endDateLiteral).getReport());
-                    result = DatasetUtils.addDataset(result, earlReport);
+                    if(Utils.queryNeedsRewriting(queryStringRaw)) {
+                        earlReport = DatasetFactory.create(EarlReport.createEarlPassedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), startDateLiteral, endDateLiteral).getReport());
+                    } else {
+                        earlReport = DatasetFactory.create(EarlReport.createEarlPassedQueryReport(describedDataset, null, this.getTests().getManifestEntry(), startDateLiteral, endDateLiteral).getReport());
+                    }
                 } else {
-                    Dataset earlReport = DatasetFactory.create(EarlReport.createEarlFailedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), errorMessage, startDateLiteral, endDateLiteral).getReport());
-                    result = DatasetUtils.addDataset(result, earlReport);
+                    if(Utils.queryNeedsRewriting(queryStringRaw)) {
+                        earlReport = DatasetFactory.create(EarlReport.createEarlFailedQueryReport(describedDataset, queryString, this.getTests().getManifestEntry(), errorMessage, startDateLiteral, endDateLiteral).getReport());
+                    } else {
+                        earlReport = DatasetFactory.create(EarlReport.createEarlFailedQueryReport(describedDataset, null, this.getTests().getManifestEntry(), errorMessage, startDateLiteral, endDateLiteral).getReport());
+                    }
                 }
+                result = DatasetUtils.addDataset(result, earlReport);
             };
         };
 
