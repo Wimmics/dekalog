@@ -127,9 +127,8 @@ public class CatalogInputMain {
             }
 
             Dataset result = DatasetFactory.create();
-            Resource catalogRoot = result.getDefaultModel().createResource(KGIndex.catalogRoot);
-            result.getDefaultModel().add(catalogRoot, RDF.type, DCAT.Catalog );
-            
+            result.getDefaultModel().add(KGIndex.catalogRoot, RDF.type, DCAT.Catalog );
+
             logger.trace("START of catalog processing");
             // Envoyer les requêtes d'extraction des descriptions de dataset
             Query datasetEndpointQuery = QueryFactory.create("PREFIX void: <http://rdfs.org/ns/void#>" +
@@ -172,7 +171,7 @@ public class CatalogInputMain {
 
                     DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetName);
                     describedDataset.setDatasetDescriptionResource(result.getDefaultModel().createResource(datasetUri));
-                    result.getDefaultModel().add(catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());
+                    result.getDefaultModel().add(KGIndex.catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());
                     DatasetDescriptionExtraction.extractIndexDescriptionForDataset(describedDataset, tmpDatasetDescFile.toString());
                     logger.trace("END dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
                     logger.trace("Transfert to result START");
