@@ -48,12 +48,6 @@ kgi:TestQuery rdf:type rdfs:Class ;
     rdfs:isDefinedBy kgi: ;
     rdfs:subClassOf earl:TestCase .
 
-kgi:query rdf:type rdf:Property ;
-    rdfs:label "String representation with templates elements of the tested query" ;
-    rdfs:isDefinedBy kgi: ;
-    rdfs:domain kgi:TestQuery ;
-    rdfs:range xsd:string .
-
 kgi:onSuccess rdf:type rdf:Property ;
     rdfs:label "List of actions triggered by the success of the test present at the URI of the entry." ;
     rdfs:isDefinedBy kgi: ;
@@ -88,3 +82,7 @@ kgi:DummyTest rdf:type rdf:Class ;
     rdfs:isDefinedBy kgi: ;
     rdfs:comment "Some rules are 'meta' rules that do not need interaction with remote endpoints. This class is for a test that always succeed for these rules." ;
     rdfs:subClassOf earl:TestCase .
+
+kgi:catalogRoot rdf:type rdfs:Resource ;
+    rdfs:label "Root of a catalog." ;
+    rdfs:comment "Default resource used to represent the catalog at the root of the index." .
