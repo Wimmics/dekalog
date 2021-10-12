@@ -5,6 +5,7 @@
     mf:entries (
             <equivalences.ttl>
             <modifiedUpdate.ttl>
+            <exampleQueries.ttl>
         ) .
 
 <equivalences.ttl> a mf:ManifestEntry ;
@@ -69,3 +70,137 @@
             """
         ]
     ) .
+
+<exampleQueries.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX kgi: <http://ns.inria.fr/kg/index#> PREFIX prov: <http://www.w3.org/ns/prov#> SELECT DISTINCT ?rule (count(DISTINCT ?base) AS ?count) WHERE { ?base a  dcat:Dataset . ?metadata kgi:curated ?base . ?metadata prov:wasGeneratedBy ?activity . ?activity a prov:Activity ;  prov:used ?rule . } GROUP BY ?rule ORDER BY DESC(?count)" ;
+                        dcterms:description "Extract the list of rules used with the number of bases that have used them."
+                    ]
+                }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> PREFIX voidex: <http://ldf.fi/void-ext#> SELECT ?datasetDesc ?endpoint ?class ?triples WHERE { ?datasetDesc a dcat:Dataset . ?datasetDesc void:sparqlEndpoint ?endpoint . ?datasetDesc void:classPartition ?partition . ?partition void:class ?class . ?partition void:triples ?triples . } GROUP BY ?endpoint ORDER BY DESC( ?datasetDesc) " ;
+                        dcterms:description "Number of triples per class per KB."
+                    ]
+                }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> PREFIX voidex: <http://ldf.fi/void-ext#> SELECT ?datasetDesc ?endpoint ?class ?triples WHERE { ?datasetDesc a dcat:Dataset . ?datasetDesc void:sparqlEndpoint ?endpoint . ?datasetDesc void:classPartition ?partition . ?partition void:class ?class . ?partition void:classes ?triples . } GROUP BY ?endpoint ORDER BY DESC( ?datasetDesc) " ;
+                        dcterms:description "Number of classes used conjointly per class per KB."
+                    ]
+                }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> SELECT DISTINCT ?base ?test ?outcome WHERE { ?base a dcat:Dataset . ?metadata kgi:curated ?base . ?metadata kgi:trace ?trace . ?trace earl:result ?result . ?result earl:outcome ?outcome . ?trace earl:test ?test . } GROUP BY ?metadata ?result ORDER BY DESC( ?base) ASC(?test)" ;
+                        dcterms:description "Returns the list of tests and their outcome for each KB."
+                    ]
+                }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> SELECT DISTINCT ?datasetDesc ?endpoint ?feature WHERE { ?datasetDesc a dcat:Dataset . ?datasetDesc void:sparqlEndpoint ?endpoint . ?endpointDesc a sd:Service . ?endpointDesc sd:endpoint ?endpoint . ?endpointDesc sd:feature ?feature . FILTER( CONTAINS(str(?feature), str(sd:))) } GROUP BY ?endpointDesc ?feature ORDER BY DESC( ?datasetDesc)" ;
+                        dcterms:description "List of the SPARQL-SD features of the endpoint of each KB."
+                    ]
+                }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX kgi: <http://ns.inria.fr/kg/index#> PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> SELECT DISTINCT ?description ?query WHERE { kgi:catalogRoot skos:example ?exampleRes . ?exampleRes dcterms:description ?description . ?exampleRes dcterms:subject ?query . }" ;
+                        dcterms:description "Returns the list of example queries."
+                    ]
+                }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> PREFIX voidex: <http://ldf.fi/void-ext#> SELECT ?datasetDesc ?endpoint ?class WHERE { ?datasetDesc a dcat:Dataset . ?datasetDesc void:sparqlEndpoint ?endpoint . ?datasetDesc void:classPartition ?partition . ?partition void:class ?class . } GROUP BY ?endpoint ORDER BY DESC( ?datasetDesc)" ;
+                        dcterms:description "List of classes per KB."
+                    ]
+                }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> PREFIX voidex: <http://ldf.fi/void-ext#> PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> SELECT ?datasetDesc ?endpointDesc ?metadataDesc ?endpoint WHERE { ?datasetDesc a dcat:Dataset . ?datasetDesc void:sparqlEndpoint ?endpoint . ?endpointDesc sd:endpoint ?endpoint . ?metadataDesc kgi:curated ?datasetDesc , ?endpointDesc . } GROUP BY ?endpoint ORDER BY DESC( ?datasetDesc)" ;
+                        dcterms:description "Returns the list description resources for the dataset, endpoint and metadata of each KB."
+                    ]
+                }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> PREFIX voidex: <http://ldf.fi/void-ext#> SELECT ?datasetDesc ?endpoint ?IRIs WHERE { ?datasetDesc a dcat:Dataset . ?datasetDesc void:sparqlEndpoint ?endpoint . ?datasetDesc voidex:distinctIRIReferences ?IRIs . } GROUP BY ?endpoint ORDER BY DESC( ?datasetDesc)" ;
+                        dcterms:description "Number of IRIs per KB."
+                    ]
+                }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> SELECT DISTINCT ?base ?test ?info WHERE { ?base a dcat:Dataset . ?metadata kgi:curated ?base . ?metadata kgi:trace ?trace . ?trace earl:result ?result . ?result earl:outcome earl:failed . ?result earl:info ?info . ?trace earl:test ?test . } GROUP BY ?metadata ?result ORDER BY DESC( ?base) ASC(?test)" ;
+                        dcterms:description "Returns the message associated with failed tests."
+                    ]
+                }
+            """
+        ]
+    )
