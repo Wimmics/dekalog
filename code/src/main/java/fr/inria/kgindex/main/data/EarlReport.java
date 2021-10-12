@@ -72,7 +72,7 @@ public class EarlReport {
     }
 
     private void addResultInfo(String info) {
-        if(! info.equals("")) {
+        if(info != null && ! info.equals("")) {
             this._report.add(this._assertionResult, EARL.info, this._report.createLiteral(info));
         }
     }
@@ -104,8 +104,12 @@ public class EarlReport {
         EarlReport result = createBasicEarlReport(passed, describedDataset, startDate, endDate);
 
         result.addTest(entry);
-        result.addResultInfo(message);
-        result.addResultInfo(entry.getTitle());
+        if(message != null) {
+            result.addResultInfo(message);
+        }
+        if(entry.getTitle() != null) {
+            result.addResultInfo(entry.getTitle());
+        }
 
         return result;
     }
