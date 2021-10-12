@@ -638,9 +638,6 @@ ns14:Q97010743
 ns14:Q97285695
 	rdfs:label	"Q97285695" ;
 	void:sparqlEndpoint	ns166:sparql .
-ns14:Q97319022
-	rdfs:label	"Q97319022" ;
-	void:sparqlEndpoint	[ ] .
 ns14:Q97621285
 	rdfs:label	"Q97621285" ;
 	void:sparqlEndpoint	<https://wcqs-beta.wmflabs.org/> , <https://query.wikidata.org> .
