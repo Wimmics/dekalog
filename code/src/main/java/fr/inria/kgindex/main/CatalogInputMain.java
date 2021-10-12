@@ -131,7 +131,7 @@ public class CatalogInputMain {
 
             logger.trace("START of catalog processing");
             // Envoyer les requêtes d'extraction des descriptions de dataset
-            Query datasetEndpointQuery = QueryFactory.create("PREFIX void: <http://rdfs.org/ns/void#>" +
+            String datasetEndpointQueryString = "PREFIX void: <http://rdfs.org/ns/void#>" +
                     "PREFIX schema: <http://schema.org/>" +
                     "PREFIX dcterms: <http://purl.org/dc/terms/>" +
                     "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
@@ -149,7 +149,9 @@ public class CatalogInputMain {
                     "   UNION { ?datasetUri schema:name ?datasetName }" +
                     "   UNION { ?datasetUri dcterms:title ?datasetName }" +
                     "}" +
-                    "}");
+                    "FILTER(isIRI(?endpointUrl) && ! isBlank(?endpointUrl) )" +
+                    "}";
+            Query datasetEndpointQuery = QueryFactory.create(datasetEndpointQueryString);
 
             assert catalogConnection != null;
             String finalOutputFilename = outputFilename;
