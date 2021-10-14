@@ -437,6 +437,26 @@
         <SPARQLES_SPARQL11.ttl>
     ) .
 
+<SPARQLES_SELCOUNT.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX lsq: <http://lsq.aksw.org/vocab#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
+            INSERT DATA {
+                $endpointDescription sd:endpoint $rawEndpointUrl ;
+                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELCOUNT.ttl> ;
+                    sd:feature sparqles:SELCOUNT .
+            }
+            """
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <SPARQLES_SPARQL11.ttl>
+    ) .
+
 <SPARQLES_SPARQL11.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
             [
@@ -459,6 +479,7 @@
                         sparqles:SELFILSTART ,
                         sparqles:SELMAX ,
                         sparqles:SELMIN ,
+                        sparqles:SELCOUNT ,
                         sparqles:SELMINUS ,
                         sparqles:SELPATHS ,
                         sparqles:SELSERVICE ,
@@ -486,6 +507,7 @@
                         sparqles:SELFILSTART ,
                         sparqles:SELMAX ,
                         sparqles:SELMIN ,
+                        sparqles:SELCOUNT ,
                         sparqles:SELMINUS ,
                         sparqles:SELPATHS ,
                         sparqles:SELSERVICE ,
