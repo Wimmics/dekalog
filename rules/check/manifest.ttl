@@ -48,14 +48,11 @@
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset $datasetDescription ;
                     dcat:endpointUrl $rawEndpointUrl ;
+                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription , $endpointDescription ;
-                    prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl>
-                    ] ;
                     dqv:hasQualityMeasurement [
                         a dqv:QualityMeasurement ;
                         dqv:computedOn $endpointDescription ;
@@ -90,14 +87,11 @@
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset $datasetDescription ;
                     dcat:endpointUrl $rawEndpointUrl ;
+                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription , $endpointDescription ;
-                    prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl>
-                    ] ;
                     dqv:hasQualityMeasurement [
                         a dqv:QualityMeasurement ;
                         rdfs:label "Could not reach the endpoint"@en ;
@@ -121,10 +115,7 @@
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             INSERT DATA {
                 $metadataDescription
-                    prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl>
-                    ] ;
+                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
                     dqv:hasQualityMeasurement [
                         a dqv:QualityMeasurement ;
                         rdfs:label "Provenance information are present in the metadata"@en ;
@@ -145,10 +136,7 @@
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             INSERT DATA {
                 $metadataDescription
-                    prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl>
-                    ] ;
+                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
                     dqv:hasQualityMeasurement [
                         a dqv:QualityMeasurement ;
                         rdfs:label "Provenance information are absent from the metadata"@en ;

@@ -32,14 +32,11 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                    $metadataDescription prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/classPopulation.ttl>
-                    ] .
-                    $datasetDescription void:classPartition [
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/classPopulation.ttl> ;
+                        void:classPartition [
                             void:class ?class ;
                             void:entities ?count
-                        ]
+                        ] .
                 }
                 WHERE {
                     { SELECT ?class (count(?instance) AS ?count)
@@ -61,11 +58,8 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $metadataDescription prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctRDFNodes.ttl>
-                    ] .
-                    $datasetDescription voidex:distinctRDFNodes ?x
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctRDFNodes.ttl> ;
+                        voidex:distinctRDFNodes ?x .
                 }
                 WHERE {
                     SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))}
@@ -81,11 +75,8 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $metadataDescription prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisObjects.ttl>
-                    ] .
-                    $datasetDescription voidex:distinctIRIReferenceObjects ?x
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisObjects.ttl> ;
+                         voidex:distinctIRIReferenceObjects ?x .
                 }
                 WHERE {
                     SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE {
@@ -103,11 +94,8 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $metadataDescription prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisSubjects.ttl>
-                    ] .
-                    $datasetDescription voidex:distinctIRIReferenceSubjects ?x
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisSubjects.ttl> ;
+                          voidex:distinctIRIReferenceSubjects ?x
                 }
                 WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isIRI(?s))} }
             """
@@ -121,11 +109,8 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $metadataDescription prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeSubjects.ttl>
-                    ] .
-                    $datasetDescription voidex:distinctBlankNodeSubjects ?x
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeSubjects.ttl> ;
+                          voidex:distinctBlankNodeSubjects ?x
                 }
                 WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} }
             """
@@ -139,11 +124,8 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $metadataDescription prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeObjects.ttl>
-                    ] .
-                    $datasetDescription voidex:distinctBlankNodeSubjects ?x
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeObjects.ttl> ;
+                          voidex:distinctBlankNodeSubjects ?x
                 }
                 WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} }
             """
@@ -157,11 +139,8 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodes.ttl>
-                ] .
-                $datasetDescription voidex:distinctBlankNodes ?x .
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodes.ttl> ;
+                      voidex:distinctBlankNodes ?x .
             }
             WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x)
             WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } }
@@ -176,11 +155,8 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctIRIReferences.ttl>
-                ] .
-                $datasetDescription voidex:distinctIRIReferences ?x
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctIRIReferences.ttl> ;
+                      voidex:distinctIRIReferences ?x
             }
             WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x)
             WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u)) } }
@@ -195,11 +171,8 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctLiterals.ttl>
-                ] .
-                $datasetDescription voidex:distinctLiterals ?x
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctLiterals.ttl> ;
+                      voidex:distinctLiterals ?x
             }
             WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} }
             """
@@ -219,11 +192,8 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                    $metadataDescription prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl>
-                    ] .
-                    $datasetDescription void:classPartition [
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl> ;
+                          void:classPartition [
                             void:class ?c ;
                             void:triples ?x
                         ]
@@ -243,11 +213,8 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
                 CONSTRUCT {
-                    $metadataDescription prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl>
-                    ] .
-                    $datasetDescription void:classPartition [
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl> ;
+                          void:classPartition [
                             void:class ?c
                         ]
                 }
@@ -266,11 +233,8 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl>
-                ] .
-                $datasetDescription void:classPartition [
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl> ;
+                      void:classPartition [
                         void:class ?c ;
                         void:classes ?x
                     ]
@@ -289,11 +253,8 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl>
-                ] .
-                $datasetDescription void:classPartition [
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl> ;
+                      void:classPartition [
                         void:class ?c ;
                         void:properties ?x
                     ]
@@ -312,11 +273,8 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl>
-                ] .
-                $datasetDescription void:classPartition [
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl> ;
+                    void:classPartition [
                         void:class ?c ;
                         void:distinctSubjects ?x
                     ] .
@@ -335,11 +293,8 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl>
-                ] .
-                $datasetDescription void:classPartition [
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl> ;
+                    void:classPartition [
                         void:class ?c ;
                         void:distinctObjects ?x
                     ]
@@ -364,11 +319,8 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl>
-                ] .
-                $datasetDescription void:classPartition [
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl> ;
+                     void:classPartition [
                         void:class ?c ;
                         void:propertyPartition [
                                 void:property ?p ;
@@ -388,11 +340,8 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl>
-                ] .
-                $datasetDescription void:classPartition [
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl> ;
+                     void:classPartition [
                         void:class ?c ;
                         void:propertyPartition [
                                 void:property ?p
@@ -413,11 +362,8 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl>
-                ] .
-                $datasetDescription void:classPartition [
+                $datasetDescriptionprov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl> ;
+                     void:classPartition [
                         void:class ?c ;
                         void:propertyPartition [
                                 void:property ?p ;
@@ -437,11 +383,8 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl>
-                ] .
-                $datasetDescription void:classPartition [
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl> ;
+                    void:classPartition [
                         void:class ?c ;
                         void:propertyPartition [
                                 void:property ?p
@@ -467,11 +410,8 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl>
-                ] .
-                $datasetDescription void:propertyPartition [
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl> ;
+                    void:propertyPartition [
                         void:property ?p ;
                         void:triples ?x
                     ]
@@ -488,11 +428,8 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl>
-                ] .
-                $datasetDescription void:propertyPartition [
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl> ;
+                    void:propertyPartition [
                         void:property ?p
                     ]
             }
@@ -510,11 +447,8 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctSubject.ttl>
-                ] .
-                $datasetDescription void:propertyPartition [
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctSubject.ttl> ;
+                    void:propertyPartition [
                         void:property ?p ;
                         void:distinctSubjects ?x
                     ]
@@ -532,11 +466,8 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy [
-                    a prov:Activity ;
-                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctObject.ttl>
-                ] .
-                $datasetDescription void:propertyPartition [
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctObject.ttl> ;
+                    void:propertyPartition [
                         void:property ?p ;
                         void:distinctObjects ?x
                     ]
