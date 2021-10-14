@@ -203,4 +203,40 @@
                 }
             """
         ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX kgi: <http://ns.inria.fr/kg/index#> PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX prov: <http://www.w3.org/ns/prov#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> SELECT DISTINCT ?info (count(?test) AS ?count) WHERE { ?base a dcat:Dataset . ?metadata kgi:curated ?base . ?metadata kgi:trace ?trace . ?trace earl:result ?result . ?result earl:outcome earl:failed . ?result earl:info ?info . ?trace earl:test ?test . } GROUP BY ?info ORDER BY DESC( ?count)" ;
+                        dcterms:description "Returns the message associated with failed tests and the number of times they appear in the index."
+                    ]
+                }"""
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> SELECT DISTINCT ?base (count(?test) AS ?count)  WHERE { ?base a  dcat:Dataset . ?metadata kgi:curated ?base . ?metadata kgi:trace ?trace . ?trace earl:result ?result . ?result earl:outcome earl:passed . ?trace earl:test ?test . } GROUP BY ?base  ORDER BY DESC( ?count) ASC(?base)" ;
+                        dcterms:description "Returns the number of tests passed for each base."
+                    ]
+                }"""
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> SELECT DISTINCT ?base (count(?test) AS ?count)  WHERE { ?base a  dcat:Dataset . ?metadata kgi:curated ?base . ?metadata kgi:trace ?trace . ?trace earl:result ?result . ?result earl:outcome earl:failed . ?trace earl:test ?test . } GROUP BY ?base  ORDER BY DESC( ?count) ASC(?base)" ;
+                        dcterms:description "Returns the number of tests failed for each base."
+                    ]
+                }"""
+        ]
     )
