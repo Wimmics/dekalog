@@ -56,7 +56,7 @@
                     dqv:hasQualityMeasurement [
                         a dqv:QualityMeasurement ;
                         dqv:computedOn $endpointDescription ;
-                        dqv:isMeasurementOf kgi:reachableEndpointTest ;
+                        dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
                         dqv:value "true"^^xsd:boolean
                     ] .
 
@@ -96,7 +96,7 @@
                         a dqv:QualityMeasurement ;
                         rdfs:label "Could not reach the endpoint"@en ;
                         dqv:computedOn $endpointDescription ;
-                        dqv:isMeasurementOf kgi:reachableEndpointTest ;
+                        dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
                         dqv:value "false"^^xsd:boolean
                     ] .
 
@@ -120,7 +120,7 @@
                         a dqv:QualityMeasurement ;
                         rdfs:label "Provenance information are present in the metadata"@en ;
                         dqv:computedOn $endpointDescription ;
-                        dqv:isMeasurementOf kgi:provenanceExtractionShape ;
+                        dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
                         dqv:value "true"^^xsd:boolean
                     ] .
             }
@@ -141,7 +141,7 @@
                         a dqv:QualityMeasurement ;
                         rdfs:label "Provenance information are absent from the metadata"@en ;
                         dqv:computedOn $endpointDescription ;
-                        dqv:isMeasurementOf kgi:provenanceExtractionShape ;
+                        dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
                         dqv:value "false"^^xsd:boolean
                     ] .
             }
