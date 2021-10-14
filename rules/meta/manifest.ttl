@@ -239,4 +239,28 @@
                     ]
                 }"""
         ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> PREFIX voidex: <http://ldf.fi/void-ext#> PREFIX dqv: <http://www.w3.org/ns/dqv#> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT (count(DISTINCT ?endpoint) AS ?count) WHERE {   ?endpointDesc dcat:endpointUrl ?endpoint .   ?measurement dqv:computedOn ?endpointDesc .   ?measurement dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> .   ?measurement dqv:value "true"^^xsd:boolean }" ;
+                        dcterms:description "Returns the number of tests that passed the availability test."
+                    ]
+                }"""
+        ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example [
+                        dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#>     PREFIX dcat: <http://www.w3.org/ns/dcat#>     PREFIX earl: <http://www.w3.org/ns/earl#>     PREFIX kgi: <http://ns.inria.fr/kg/index#>     SELECT DISTINCT ?test (count(?result) AS ?count)    WHERE {       ?base a  dcat:Dataset .       ?metadata kgi:curated ?base .      ?metadata kgi:trace ?trace .       ?trace earl:result ?result .       ?result earl:outcome earl:failed .       ?trace earl:test ?test .     } GROUP BY ?test ORDER BY DESC(?count)" ;
+                        dcterms:description "Returns the tests sorted by their number of failures."
+                    ]
+                }"""
+        ]
     )
