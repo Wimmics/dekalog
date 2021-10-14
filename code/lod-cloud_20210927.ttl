@@ -1,0 +1,1270 @@
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix dkg: <http://ns.inria.fr/kg/index#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix kgi: <http://ns.inria.fr/kg/index#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+kgi:catalogLODCloud a dcat:Catalog ;
+    dcat:dataset
+        [ void:sparqlEndpoint <http://wiktionary.dbpedia.org/sparql> ;
+            rdfs:label "sparql endpoint" ] ,
+        [ void:sparqlEndpoint <http://caligraph.org/sparql> ;
+            rdfs:label "CaLiGraph SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://sonicbanana.cs.wright.edu:8890/sparql> ] ,
+    [ void:sparqlEndpoint <http://dati.isprambiente.it/sparql> ;
+            rdfs:label "main sparql EndPoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/massobservation/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <https://linkeddata.cultureelerfgoed.nl/sparql> ;
+            rdfs:label "SPARQLViewer" ] ,
+    [ void:sparqlEndpoint <http://baixue.com> ;
+            rdfs:label "hongsejingdian gequ " ] ,
+    [ void:sparqlEndpoint <http://jisc.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://data.dive.beeldengeluid.nl/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://purl.org/weso/sparql> ;
+            rdfs:label "WESO SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://collection.britishmuseum.org/Sparql> ] ,
+
+    [ void:sparqlEndpoint <http://agalpha.mathbiol.org/repositories/tcga> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://sparql.nextprot.org/> ;
+            rdfs:label "neXtProt SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://enipedia.tudelft.nl/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://revyu.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://services.data.gov.uk/statistics/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/drugbank/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://alaska.eagle-i.net/sparqler/sparql> ;
+                rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://cultura.linkeddata.es/sparql> ] ,
+
+    [ void:sparqlEndpoint <https://data.gov.uz/uz/docs/do/view/usage> ;
+                rdfs:label "API" ] ,
+    [ void:sparqlEndpoint <http://zbw.eu/beta/sparql/stw/query> ] ,
+
+    [ void:sparqlEndpoint <http://www.open-biomed.org.uk/sparql/endpoint/flybase> ] ,
+
+    [ void:sparqlEndpoint <http://upr.eagle-i.net/sparqler/sparql> ;
+                rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://data.oceandrilling.org/sparql>  ] ,
+
+    [ void:sparqlEndpoint <http://environment.data.gov.uk/sparql/bwq/> ;
+                rdfs:label "Environment Agency Bathing Water Quality Data SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://www.ebi.ac.uk/rdf/services/atlas/sparql> ;
+                rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.orpha.net/sparql> ;
+                rdfs:label "Sparql Editor" ] ,
+    [ void:sparqlEndpoint <http://purl.org/weso/sparql> ;
+                rdfs:label "WESO SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://vocabulary.wolterskluwer.de/PoolParty/sparql/arbeitsrecht> ;
+                rdfs:label "SPARQL-Endpoint" ] ,
+    [ void:sparqlEndpoint <http://famu.eagle-i.net/sparqler/sparql> ;
+                rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+                rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://psm.eagle-i.net/sparqler/sparql> ;
+                rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/eutc-productions/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://data.hnm.hu/sparql> ;
+                rdfs:label "Sparql endpoint of the colls-lib-bib subset" ] ,
+    [ void:sparqlEndpoint <http://lod.apc.gov.tw/sparql> ;
+                rdfs:label "SPARQL endpoint of Taiwan Indigenous People " ] ,
+    [ void:sparqlEndpoint <http://lod.ac/bdls/sparql> ;
+                rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://rdf.myexperiment.org/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://api.kasabi.com/dataset/pali-english-lexicon/apis/sparql> ;
+                rdfs:label "Sparql" ] ,
+    [ void:sparqlEndpoint <http://linkedspl.bio2rdf.org/sparql> ;
+                rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://eculture2.cs.vu.nl:8890/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://bis.270a.info/sparql> ;
+                rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://wikipathways.bio2rdf.org/sparql> ;
+                rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.odw.tw> ;
+                rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+                rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://data.semanticuniverse.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://acm.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://howard.eagle-i.net/sparqler/sparql> ;
+                rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://eventmedia.eurecom.fr/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://www.imagesnippets.com/sparql/images> ] ,
+
+    [ void:sparqlEndpoint <http://www.icane.es/opendata/sparql> ;
+                rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://purl.org/weso/sparql> ;
+                rdfs:label "WESO SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+                rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://data.oceandrilling.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/eures/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://lod.xdams.org/sparql> ;
+                rdfs:label "Endpoint Sparql" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+                rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+                rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/eurostat/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+                rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://www.ss-framework.com/sparql> ] ,
+    [ void:sparqlEndpoint <http://sider.bio2rdf.org/sparql> ;
+                rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://heritagedata.org/live/sparql> ;
+                rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://ohsu.eagle-i.net/sparqler/sparql> ;
+                rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+                rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://telegraphis.net/data/countries/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://api.kasabi.com/dataset/bricklink/apis/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://libris.kb.se/sparql> ;
+                rdfs:label "LIBRIS SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.yovisto.com/> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+                rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://era.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/stitch/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://data.semanticweb.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://demo.spraakdata.gu.se/ltlod/test/> ;
+                rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://crime.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://goa.bio2rdf.org/sparql> ;
+                rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://onto.fel.cvut.cz/rdf4j-server/repositories/ufo-current> ;
+                rdfs:label "Sparql endpoint (RDF4J) for the current version of UFO" ] ,
+    [ void:sparqlEndpoint <http://tuskegee.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://services.data.gov/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://meharry.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://bioportal.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://colinda.org/endpoint.php> ;
+            rdfs:label "SPARQL endpoint 1" ] ,
+    [ void:sparqlEndpoint <http://data.colinda.org/endpoint.php> ;
+            rdfs:label "SPARQL enpdoint 2" ] ,
+    [ void:sparqlEndpoint <http://www.influencetracker.com:8890/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://lod.b3kat.de/sparql> ;
+            rdfs:label "B3Kat SPARQL-Endpoint" ] ,
+    [ void:sparqlEndpoint <http://irefindex.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://ieee.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://185.94.71.25:62020/snorql/> ;
+            rdfs:label "Polish LGU financial statements - SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.sindice.com/sparql> ;
+            rdfs:label "Sudoc SPARQL endpoint (via Sindice)" ] ,
+    [ void:sparqlEndpoint <http://www.eclap.eu/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://linkeddata.ge.imati.cnr.it:8890/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://lsd.taxonconcept.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linkeddata.uriburner.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://ecowlim.tfri.gov.tw/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://aemet.linkeddata.es/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://fun.rkbexplorer.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://dbkwik.webdatacommons.org/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://opendatacommunities.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://sparql.contextdatacloud.org> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://data.gov.uz/en/docs/do> ;
+            rdfs:label "API" ] ,
+    [ void:sparqlEndpoint <http://sabiork.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://dbmi-icode-01.dbmi.pitt.edu/dikb/sparql> ;
+            rdfs:label "SPARQL endpoint to the DIKB" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://api.cooperationdatabank.org/datasets/coda/databank/services/databank/sparql> ;
+            rdfs:label "SPARQL API" ] ,
+    [ void:sparqlEndpoint <http://jsu.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://uis.270a.info/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://lab.environment.data.gov.au/sparql> ;
+            rdfs:label "Sparql endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/pbac/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://www.open-biomed.org.uk/sparql/endpoint/flyted> ] ,
+
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://pathwaycommons.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://platform.uberblic.org/api/v1/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://hunter-cuny.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://dewey.info/sparql.php> ] ,
+
+    [ void:sparqlEndpoint <http://mlode.nlp2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://risks.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://vocab.getty.edu/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://eur-lex.publicdata.eu/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://harvard.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://uccaribe.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://tsu.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://demo.spraakdata.gu.se/ltlod/test/> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://chembl.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://cau.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://ccny-cuny.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://river.styx.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://transparency.270a.info/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://rae2001.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://212.81.220.68:2020/elviajero> ] ,
+
+    [ void:sparqlEndpoint <http://vocabulary.semantic-web.at/PoolParty/sparql/OpenData> ] ,
+
+    [ void:sparqlEndpoint <http://unodc.publicdata.eu/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://ieeevis.tw.rpi.edu/nosparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://156.35.82.103/sparql> ;
+            rdfs:label "WESO SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://ldf.fi/warsa/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://utep.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://kasabi.com/api/sparql-endpoint-foodista> ;
+            rdfs:label "SPARQL page" ] ,
+    [ void:sparqlEndpoint <http://api.kasabi.com/dataset/foodista/apis/sparql> ;
+            rdfs:label "Sparql" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://lobid.org/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://api.talis.com/stores/climb/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://covidontheweb.inria.fr/sparql> ;
+            rdfs:label "Covid-on-the-Web SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://greek-lod.auth.gr/police/sparql> ;
+            rdfs:label "Hellenic Police SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.sstu.ru:3030/speciality-vocabulary/> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/eccompetition/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/eupmedia/services/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://opendap.tw.rpi.edu/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://rdf.disgenet.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://mgi.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.linkedopendata.it/grrp> ] ,
+
+    [ void:sparqlEndpoint <http://data.utpl.edu.ec/ecuadorresearch/lod/sparql> ;
+            rdfs:label "Sparql EndPoint" ] ,
+    [ void:sparqlEndpoint <http://data.persee.fr/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://kaiko.getalp.org/sparql> ;
+            rdfs:label "SPARQL Endpoint for dbnary" ] ,
+    [ void:sparqlEndpoint <http://data.oceandrilling.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://dblp.l3s.de/d2r/sparql> ] ,
+
+    [ void:sparqlEndpoint <https://digitaalerfgoed.poolparty.biz/PoolParty/sparql/term/id/cht> ;
+            rdfs:label "Cultuurhistorische Thesaurus Sparql" ] ,
+    [ void:sparqlEndpoint <http://semanticweb.cs.vu.nl/dss/sparql/> ;
+            rdfs:label "SPARQL endpoint for Dutch Ships and Sailors" ] ,
+    [ void:sparqlEndpoint <http://dutchshipsandsailors.nl/data/sparql/> ;
+            rdfs:label "SPARQL endpoint hosted by Huygens ING" ] ,
+    [ void:sparqlEndpoint <http://ibm.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://agrovoc.uniroma2.it/sparql> ;
+            rdfs:label "Public SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://epsrc.rkbexplorer.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://dbtune.org/classical/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://spending.lichfielddc.gov.uk/sparql> ] ,
+
+    [ void:sparqlEndpoint <https://www.ebi.ac.uk/rdf/services/chembl/sparql> ;
+            rdfs:label "ChEMBL SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://dblp.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://data.bib.uni-mannheim.de/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://italy.rkbexplorer.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://semantic.eea.europa.eu/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://ichoose.tw.rpi.edu/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://roma.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://ndb.publink.lod2.eu/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://biomodels.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://linkedspending.aksw.org/sparql> ;
+            rdfs:label "SPARQL Endpoint for LinkedSpending" ] ,
+    [ void:sparqlEndpoint <http://oai.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://api.talis.com/stores/eumida/services/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://opendatacommunities.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <https://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://data.allie.dbcls.jp/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://services.data.gov.uk/patents/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://data.odw.tw/sparql> ;
+            rdfs:label "ODW SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.odw.tw/> ;
+            rdfs:label "ODW SPARQL Endpoint (virtuso)" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/bbc-backstage/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://purl.org/weso/sparql> ;
+            rdfs:label "WESO SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://resex.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://linkedlifedata.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://sparql.uniprot.org/sparql> ;
+            rdfs:label "UniProt sparql endpoint" ] ,
+    [ void:sparqlEndpoint <http://sgd.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://eagle-i.ea.vanderbilt.edu/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://cr.eionet.europa.eu/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://api.talis.com/stores/whoiswho/services/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://agrinepaldata.com/sparql> ;
+            rdfs:label "Sparql End Point" ] ,
+    [ void:sparqlEndpoint <http://abs.270a.info/sparql> ;
+            rdfs:label "ABS SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.kupkb.org/sparql> ;
+            rdfs:label "KUPKB Sparql" ] ,
+    [ void:sparqlEndpoint <https://pgxlod.loria.fr/sparql> ;
+            rdfs:label "PGxLOD SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://publications.europa.eu/webapi/rdf/sparql> ;
+            rdfs:label "CELLAR - Query Service of the Publications Office of the European Union " ] ,
+    [ void:sparqlEndpoint <http://genage.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://dbmi-icode-01.dbmi.pitt.edu/sparql> ;
+            rdfs:label "SPARQL endpoint to LinkedSPL" ] ,
+    [ void:sparqlEndpoint <http://rdf.muninn-project.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://es.dbpedia.org/sparql> ;
+            rdfs:label "SPARQL EndPoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/smcjournals/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://data.utpl.edu.ec/utpl/lod/sparql> ;
+            rdfs:label "Sparql EndPoint" ] ,
+    [ void:sparqlEndpoint <http://103.102.234.109:3030/dataset.html?tab=query&ds=/aishephd> ;
+            rdfs:label "AISHE SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://vocabulary.semantic-web.at/PoolParty/sparql/AustrianSkiTeam> ] ,
+
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://curriculum.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/factbook/sparql> ] ,
+
+    [ void:sparqlEndpoint <https://www.ebi.ac.uk/rdf/services/biomodels/sparql> ;
+            rdfs:label "BioModels SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.ebi.ac.uk/rdf/services/reactome/sparql> ;
+            rdfs:label "Reactome SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/eurobarometer/services/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://mlode.nlp2rdf.org/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://vocabulary.wolterskluwer.de/PoolParty/sparql/court> ;
+            rdfs:label "SPARQL-Endpoint" ] ,
+    [ void:sparqlEndpoint <http://biordf.net/sparql> ;
+            rdfs:label "BioRDF.net SPARQL enpoint" ] ,
+    [ void:sparqlEndpoint <http://eu.dbpedia.org/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://aliada.scanbit.net:8891/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://linkeddata.ge.imati.cnr.it:8890/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://cr.eionet.europa.eu/sparql> ] ,
+
+    [ void:sparqlEndpoint <https://data.pdok.nl/sparql> ;
+            rdfs:label "SPARQL endpoint voor de BAG" ] ,
+    [ void:sparqlEndpoint <http://sociallink.futuro.media/sparql> ;
+            rdfs:label "SocialLink's SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://purl.org/weso/sparql> ;
+            rdfs:label "WESO SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://ecb.publicdata.eu/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://www.rdfabout.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/rsinger-dev4/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://cr3.eionet.europa.eu/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://foreign.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://drugbank.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://data.epo.org/linked-data/> ;
+            rdfs:label "SPARQL Endpoint for European Patent Information" ] ,
+    [ void:sparqlEndpoint <http://sparql.reegle.info/> ] ,
+
+    [ void:sparqlEndpoint <http://mlode.nlp2rdf.org/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://linkeddata.finki.ukim.mk/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://onto.beef.org.pl/sparql> ;
+            rdfs:label "SPARQL EndPoint" ] ,
+    [ void:sparqlEndpoint <http://kisti.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://hgnc.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://nsf.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://europeana.ontotext.com/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://webisa.webdatacommons.org/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://gendr.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://purl.org/weso/sparql> ;
+            rdfs:label "WESO SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://pomelo.iis.sinica.edu.tw:2020/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://orphanet.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://visualdataweb.infor.uva.es/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://pisa.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/dblp/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://en.openei.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://resource.geolba.ac.at/PoolParty/sparql/GeologicUnit> ] ,
+
+    [ void:sparqlEndpoint <http://resource.geolba.ac.at/PoolParty/sparql/GeologicTimeScale> ] ,
+
+    [ void:sparqlEndpoint <http://resource.geolba.ac.at/PoolParty/sparql/lithology> ] ,
+
+    [ void:sparqlEndpoint <http://resource.geolba.ac.at/PoolParty/sparql/tectonicunit> ] ,
+
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://aseg.cs.concordia.ca/secold/sparqlendpoint> ] ,
+
+    [ void:sparqlEndpoint <http://linkedopencommerce.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <https://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://babelnet.org/sparql/> ;
+            rdfs:label "SPARQL endpoint " ] ,
+    [ void:sparqlEndpoint <http://id.ndl.go.jp/auth/ndla/> ] ,
+
+    [ void:sparqlEndpoint <http://purl.org/weso/sparql> ;
+            rdfs:label "WESO SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://deploy.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://slod.fiz-karlsruhe.de/sparql> ;
+            rdfs:label "Linked Stage Graph" ] ,
+    [ void:sparqlEndpoint <https://hdt.lod.labs.vu.nl/?g=LOD-a-lot> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://ecs.rkbexplorer.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://api.talis.com/stores/trafficscotland/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://unlocode.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://dartmouth.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://data.open.ac.uk/> ] ,
+
+    [ void:sparqlEndpoint <http://tkm.kiom.re.kr/ontology/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://lod.hebis.de/sparql> ;
+            rdfs:label "HeBIS SPARQL-Endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/gunnbib-digitalmanuskripter/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://webscience.rkbexplorer.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://virtuoso-eurosentiment.paradigmatecnologico.com/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://data.gov.cz/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/diseasome/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://linguistic.linkeddata.es/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://deepblue.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://www.linklion.org:8890/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://agencies.publicdata.eu/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://mmisw.org/sparql> ] ,
+    [ void:sparqlEndpoint <https://mmisw.org/ont/sparql> ] ,
+    [ void:sparqlEndpoint <http://mesh.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://lod.openlinksw.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://semanticquran.aksw.org/sparql> ] ,
+    [ void:sparqlEndpoint <http://data.oceandrilling.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://data.fundacionctic.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linkeddata4.dia.fi.upm.es:8907/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://ruian.linked.opendata.cz/sparql> ;
+            rdfs:label "RUIAN SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://publications.europa.eu/webapi/rdf/sparql> ;
+            rdfs:label "CELLAR - Query Service of the Publications Office of the European Union" ] ,
+    [ void:sparqlEndpoint <http://wormbase.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.kasabi.com/dataset/nasa/apis/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://ldf.fi/ww1lod/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://lod.xdams.org/sparql> ;
+            rdfs:label "Endpoint Sparql" ] ,
+    [ void:sparqlEndpoint <http://services.data.gov.uk/transport/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://ndc.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://data.szepmuveszeti.hu/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://greek-lod.auth.gr/fire-brigade/sparql> ;
+            rdfs:label "Hellenic Fire Brigade SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://helheim.deusto.es/hedatuz/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://wordnet.okfn.gr:8890/sparql/> ;
+            rdfs:label "Sparql endpoint" ] ,
+    [ void:sparqlEndpoint <https://sparql.uniprot.org/sparql> ;
+            rdfs:label "Official SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.kasabi.com/dataset/renewable-energy-generators/apis/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://greek-lod.math.auth.gr/intervalue/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://eculture2.cs.vu.nl:5020/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://usgs-stko.geog.ucsb.edu:8080/sparql/select> ;
+            rdfs:label "USGS-LOD SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.linkedopendata.it/musei> ] ,
+
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://lsr.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://omim.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.data.southampton.ac.uk/> ] ,
+
+    [ void:sparqlEndpoint <http://webconf.rkbexplorer.com/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://query.wikidata.org/bigdata/namespace/wdq/sparql> ;
+            rdfs:label "Big Data End Point" ] ,
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://prelex.publicdata.eu/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://data.bibsys.no/data/query_authority.html> ] ,
+
+    [ void:sparqlEndpoint <http://nlg.okfn.gr/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://serendipity.utpl.edu.ec/lod/sparql> ;
+            rdfs:label "Sparql EndPoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.dbacademic.tech/ds/sparql> ] ,
+    [ void:sparqlEndpoint <http://data.linkedct.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://fr.dbpedia.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://query.wikidata.org/sparql> ;
+            rdfs:label "Wikidata Query Service" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://vocabulary.semantic-web.at/PoolParty/sparql/semweb> ] ,
+
+    [ void:sparqlEndpoint <http://linkeddata.finki.ukim.mk/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://citeseer.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://sparql.linkedopendata.it/loc> ] ,
+
+    [ void:sparqlEndpoint <https://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://data.linkedmdb.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://data.cnr.it/sparql-proxy/> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/bbc-wildlife/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://api.kasabi.com/dataset/prelinger-archives/apis/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://api.talis.com/stores/pokedex/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://core.kmi.open.ac.uk/s> ;
+            rdfs:label "SPARQL endpoint " ] ,
+    [ void:sparqlEndpoint <http://hawaii.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://gdlc.rkbexplorer.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://data.linkededucation.org/request/lak-conference/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://geo.linkeddata.es/sparql> ;
+            rdfs:label "gadgasg" ] ,
+    [ void:sparqlEndpoint <http://digitale.bncf.firenze.sbn.it/openrdf-workbench/repositories/NS/query> ] ,
+    [ void:sparqlEndpoint <http://data.lider-project.eu/usage/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://nl.dbpedia.org/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/gutendata/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://api.talis.com/stores/ordnance-survey/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://publications.europa.eu/webapi/rdf/sparql> ;
+            rdfs:label "CELLAR - Query Service of the Publications Office of the European Union" ] ,
+    [ void:sparqlEndpoint <http://bnb.data.bl.uk/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://mlode.nlp2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://meducator.open.ac.uk/resourcesrestapi/rest/meducator/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://ct-linkdata.aegean.gr/gcam/sparql> ;
+            rdfs:label "GCAM sparql endpoint" ] ,
+    [ void:sparqlEndpoint <http://dbsnp.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://ld.panlex.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/theviewfrom/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://dbtune.org/jamendo/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://api.talis.com/stores/metoffice/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linkedgeodata.org/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://services.data.gov.uk/reference/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://www.open-biomed.org.uk/sparql/endpoint/tcm> ] ,
+
+    [ void:sparqlEndpoint <https://sparql-noipa.mef.gov.it/sparql> ;
+            rdfs:label "NoiPA SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/moseley/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://services.data.gov.uk/education/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://diwis.imis.athena-innovation.gr:8181/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://os.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://dati.isprambiente.it/sparql> ;
+            rdfs:label "main sparql EndPoint" ] ,
+    [ void:sparqlEndpoint <http://datos.artium.org/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://opendatacommunities.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://wiki.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://lod.sztaki.hu/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://premon.fbk.eu/sparql> ;
+            rdfs:label "PreMOn Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://km.aifb.kit.edu/services/xlike-lexicon/> ;
+            rdfs:label "SPARQL end point" ] ,
+    [ void:sparqlEndpoint <http://lexinfo.net/corpora/alpino/query.php> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://healthdata.tw.rpi.edu/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://www.archivesdefrance.culture.gouv.fr/thesaurus/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://156.35.31.156/sparql> ;
+            rdfs:label "WESO SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://neuroweb.med.yale.edu:8890/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://cdrewu.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://demo.spraakdata.gu.se/ltlod/test/> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://laas.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://data.oceandrilling.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://apps.morelab.deusto.es/labman/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://datos.bcn.cl/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.kasabi.com/dataset/sanskrit-english-lexicon/apis/sparql> ;
+            rdfs:label "Sparql" ] ,
+    [ void:sparqlEndpoint <http://sparql.cwrc.ca/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://purl.org/twc/arrayexpress/virtuoso/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://visualdataweb.infor.uva.es/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://clinicaltrials.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://twarql.org:8890/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://oecd.270a.info/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/sider/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://zhishi.me/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/jgoodwin-genealogy/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://sparql.linkedopendata.it/istat> ] ,
+
+    [ void:sparqlEndpoint <http://bnb.data.bl.uk/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://cb.semsol.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://logd.tw.rpi.edu/sparql> ;
+            rdfs:label "Rensselaer LOGD SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://ecb.270a.info/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://id.sgcb.mcu.es/sparql> ] ,
+
+    [ void:sparqlEndpoint <https://nkod.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://cr.eionet.europa.eu/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://iserve.kmi.open.ac.uk/iserve/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://api.talis.com/stores/nvd/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://imf.270a.info/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/productdb/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://services.data.gov.uk/research/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://utsa.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://darmstadt.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <https://sparql.crssnky.xyz/spql/imas/query> ;
+            rdfs:label "Endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://datos.bne.es/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://geoname.linkedopendata.tw/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://lsd.taxonconcept.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://dbpedia.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://semantic.ckan.net/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://soa4all.isoco.net/luf/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://services.data.gov.uk/business/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.kasabi.com/dataset/yahoo-geoplanet/apis/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.linkedopendata.it/cap> ] ,
+
+    [ void:sparqlEndpoint <http://dbtune.org/musicbrainz/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://api.kasabi.com/dataset/ecco-tcp-eighteenth-century-collections-online-texts/apis/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://lov.okfn.org/endpoint/lov> ] ,
+
+    [ void:sparqlEndpoint <http://202.45.139.84:10035/catalogs/fao/repositories/agris> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://cordis.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://api.talis.com/stores/datagovuk/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://nomisma.org/> ;
+            rdfs:label "Nomisma.org SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://extbi.lab.aau.dk/sparql/> ;
+            rdfs:label "EXTBI SPARQL Endpoint " ] ,
+    [ void:sparqlEndpoint <http://13.125.246.132/sparql> ;
+            rdfs:label "Custom server" ] ,
+    [ void:sparqlEndpoint <http://notube.rkbexplorer.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://provenanceweb.org/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://data.muziekweb.nl/MuziekwebOrganization/Muziekweb/sparql/Muziekweb> ;
+            rdfs:label "YASGUI interface" ] ,
+    [ void:sparqlEndpoint <https://api.data.muziekweb.nl/datasets/muziekweborganization/Muziekweb/services/Muziekweb/sparql> ;
+            rdfs:label "API path" ] ,
+    [ void:sparqlEndpoint <http://budapest.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://kent.zpr.fer.hr:8080/educationalProgram/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://miuras.inf.um.es/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://www.open-biomed.org.uk/sparql/endpoint/bdgp_20081030> ] ,
+
+    [ void:sparqlEndpoint <https://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.orpha.net/sparql> ;
+            rdfs:label "Sparql endpoint" ] ,
+    [ void:sparqlEndpoint <http://vocabs.ardc.edu.au/repository/api/sparql/csiro_international-chronostratigraphic-chart_geologic-time-scale-2020> ;
+            rdfs:label "Geological Timescale - 2020 edition - SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://bfs.270a.info/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.openmobilenetwork.org> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://data.oceandrilling.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://opendata.aragon.es/sparql> ;
+            rdfs:label "Aragon Open Data SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://data.organic-edunet.eu/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://data.organic-edunet.eu/snorql/> ;
+            rdfs:label "SPARQL endpoint API" ] ,
+    [ void:sparqlEndpoint <http://taxonomy.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://lofd.tw.rpi.edu/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://dotac.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://ma-graph.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/schemapedia/services/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://gov.tso.co.uk/coins/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://labs.mondeca.com/endpoint/ends> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://newcastle.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://data-gov.ie/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://dbtune.org/bbc/peel/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://pt.dbpedia.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://minsky.gsi.dit.upm.es/semanticwiki/index.php/Special:SPARQLEndpoint> ;
+            rdfs:label "VulneraPedia_Sparql" ] ,
+    [ void:sparqlEndpoint <http://commons.dbpedia.org/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://photos.rkbexplorer.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://iproclass.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/elections/services/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://spatial.ucd.ie/lod/sparql> ;
+            rdfs:label "SPARQL End Point" ] ,
+    [ void:sparqlEndpoint <http://mlode.nlp2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://ncbigene.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://govwild.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <https://opendata.aragon.es/sparql> ;
+            rdfs:label "Aragon Open Data SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://mtimo.de/234> ;
+            rdfs:label "asdf" ] ,
+    [ void:sparqlEndpoint <http://data.rism.info/sparql> ;
+            rdfs:label "RISM SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://eurecom.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://foodpedia.tk/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://tcga.deri.ie> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://purl.org/weso/sparql> ;
+            rdfs:label "WESO SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://kaunas.rkbexplorer.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://msm.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://rdfabout.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://rdf.farmbio.uu.se/chembl/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.linkedopendata.it/grrt> ] ,
+
+    [ void:sparqlEndpoint <http://eurostat.linked-statistics.org/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://frb.270a.info/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://semanticweb.cs.vu.nl/iati/sparql/> ;
+            rdfs:label "IATI Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://id.ndl.go.jp/auth/ndlsh/> ] ,
+
+    [ void:sparqlEndpoint <http://ulm.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://dbtune.org/myspace/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://data.odw.tw/sparql> ;
+            rdfs:label "ODW SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.odw.tw/> ;
+            rdfs:label "ODW SPARQL Endpoint (virtuso)" ] ,
+    [ void:sparqlEndpoint <http://libver.math.auth.gr/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/cordis/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://southampton.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://affymetrix.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://taxref.mnhn.fr/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://140.109.28.64:2020/sparql> ;
+            rdfs:label "SPARQL ENDPOINT" ] ,
+    [ void:sparqlEndpoint <http://ja.dbpedia.org/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://worldbank.270a.info/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://n-lex.publicdata.eu/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://homologene.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.jesandco.org:8890/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://digitaleconomy.rkbexplorer.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://vocab.getty.edu/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://publicspending.medialab.ntua.gr/sparql> ;
+            rdfs:label "SPARQL Endpoint (updated daily)" ] ,
+    [ void:sparqlEndpoint <http://eprints.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://dati.camera.it/sparql> ;
+            rdfs:label "main sparql EndPoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/airports/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://services.data.gov.uk/environment/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://lod.gesis.org/thesoz/sparql> ;
+            rdfs:label "TheSoz SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://202.73.13.50:55824/catalogs/performance/repositories/jita> ;
+            rdfs:label "Sparql" ] ,
+    [ void:sparqlEndpoint <http://interpro.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://irit.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://fao.270a.info/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://greek-lod.math.auth.gr/kalikratis/sparql> ;
+            rdfs:label "Kalikratis municipalities SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/dailymed/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://data.archiveshub.ac.uk/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/medicare/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://ft.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://purl.org/weso/sparql> ;
+            rdfs:label "WESO SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://el.dbpedia.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://alma.uni.lu/sparql> ;
+            rdfs:label "ALMA Sparql" ] ,
+    [ void:sparqlEndpoint <http://linkedopencommerce.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://nextprot.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/musicbrainz/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://roni.rkbexplorer.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://purl.org/twc/arrayexpress/virtuoso/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://data.lenka.no/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://webenemasuno.linkeddata.es/sparql> ;
+            rdfs:label "El Viajero' SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://semantic.eea.europa.eu/sparql> ] ,
+
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://sparql.msc2010.org> ;
+            rdfs:label "MSC2010-SKOS SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://dbtune.org/magnatune/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://data.bnf.fr/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://sw.unime.it:8890/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://data.bibbase.org:2020/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://sparql.linkedopendata.it/scuole> ] ,
+
+    [ void:sparqlEndpoint <https://www.snik.eu/sparql> ;
+            rdfs:label "SPARQL Endpoint for SNIK" ] ,
+    [ void:sparqlEndpoint <http://lisbon.rkbexplorer.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://pubmed.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://publications.europa.eu/webapi/rdf/sparql> ;
+            rdfs:label "CELLAR - Query Service of the Publications Office of the European Union" ] ,
+    [ void:sparqlEndpoint <http://lobid.org/sparql/> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://www.ebi.ac.uk/rdf/services/biosamples/sparql> ;
+            rdfs:label "BioSamples SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://demo.spraakdata.gu.se/ltlod/test/> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://data.logainm.ie/sparql> ;
+            rdfs:label "Linked Logainm SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://sparql.uniprot.org> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://query.wikidata.org/bigdata/namespace/wdq/sparql> ;
+            rdfs:label "Big Data" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <https://purl.org/whonto/onto> ;
+            rdfs:label "WHO Crona Virus infected case " ] ,
+    [ void:sparqlEndpoint <http://omwn.linguistic-lod.org/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://www.open-biomed.org.uk/sparql/endpoint/flyatlas> ] ,
+
+    [ void:sparqlEndpoint <https://www.foodie-cloud.org/sparql> ;
+            rdfs:label "SPARQL Endpoint in Virtuoso" ] ,
+    [ void:sparqlEndpoint <http://www.lotico.com:3030/lotico/sparql> ;
+            rdfs:label "Lotico" ] ,
+    [ void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/euraxess/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://fintrans.publicdata.eu/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://dati.camera.it/sparql> ;
+            rdfs:label "main sparql EndPoint" ] ,
+    [ void:sparqlEndpoint <http://vocab.nerc.ac.uk/sparql/> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://47.97.223.173:3030> ;
+            rdfs:label "Chinese Red Classic Song Linked Data Dataset endpoint" ] ,
+    [ void:sparqlEndpoint <http://semanticweb.cs.vu.nl/verrijktkoninkrijk/sparql/> ;
+            rdfs:label "VK SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://xula.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.kasabi.com/dataset/un-hazardous-material-numbers/apis/sparql> ;
+            rdfs:label "Sparql" ] ,
+    [ void:sparqlEndpoint <http://data.cervantesvirtual.com/sparql> ;
+            rdfs:label "BVMC SPARQL endpoint " ] ,
+    [ void:sparqlEndpoint <http://data.rism.info/sparql> ;
+            rdfs:label "RISM SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://api.talis.com/stores/bbc-backstage/services/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://futurewavehosting.com:3030/my-family-lineage/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://linked.opendata.cz/sparql> ;
+            rdfs:label "Opendata.cz SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://id.eaufrance.fr/sparql> ] ,
+    [ void:sparqlEndpoint <http://ckan.eurohelp.es:8890/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://ctd.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://hcls.deri.org:8080/openrdf-sesame/repositories/tcga> ;
+            rdfs:label "SPARQL endpoint for TCGA" ] ,
+    [ void:sparqlEndpoint <http://doc.metalex.eu:8000/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://www.rdfabout.com/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://linked-data.org/sparql> ;
+            rdfs:label "SPARQL end point" ] ,
+    [ void:sparqlEndpoint <http://smartlink.open.ac.uk/smartlink/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://wordnet.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://data.nobelprize.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://pharmgkb.bio2rdf.org/sparql> ;
+            rdfs:label "SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <https://data.epo.org/linked-data/> ;
+            rdfs:label "SPARQL endpoint for the CPC" ] ,
+    [ void:sparqlEndpoint <http://purl.org/twc/hub/sparql> ;
+            rdfs:label "SPARQL Endpoint" ] ,
+    [ void:sparqlEndpoint <http://opendatacommunities.org/sparql> ] ,
+
+    [ void:sparqlEndpoint <http://courseware.rkbexplorer.com/sparql/> ] ,
+
+    [ void:sparqlEndpoint <http://montana.eagle-i.net/sparqler/sparql> ;
+            rdfs:label "Sparql Endpoint" ] ,
+    [ void:sparqlEndpoint <http://wasabi.inria.fr/sparql> ;
+            rdfs:label "WASABI SPARQL endpoint" ] ,
+    [ void:sparqlEndpoint <http://sensormeasurement.appspot.com/dataset/naturopathy-dataset> ;
+            rdfs:label "Naturopathy knowledge Graph (Ontology and Dataset) - RDF distribution of the naturopathy dataset." ] ,
+    [ void:sparqlEndpoint <https://data.ascdc.tw/en/sparql.php> ;
+            rdfs:label "ASCDC LODDatasets - SPARQL Queries" ] ,
+    [ void:sparqlEndpoint <https://data.cinematheque.qc.ca/sparql> ;
+            rdfs:label "SPARQL Query Service" ] ,
+    [ void:sparqlEndpoint <https://data.ascdc.tw/en/sparql.php> ;
+            rdfs:label "ASCDC LODDatasets - SPARQL Queries" ] ,
+    [ void:sparqlEndpoint <https://linkedart.ascdc.tw/live_sparql.php> ;
+            rdfs:label "ASCDC-Linked Taiwan Artists - SPARQL Endpoint" ] .
