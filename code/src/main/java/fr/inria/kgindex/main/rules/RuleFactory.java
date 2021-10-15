@@ -42,9 +42,9 @@ public class RuleFactory {
 
         // Fonction d'application adaptée
         if (resTestQueryList.isEmpty() && !resShapeList.isEmpty() && resDummyTestList.isEmpty()) {
-            interactionType = TestExecution.TYPE.SPARQL;
-        } else if (!resTestQueryList.isEmpty() && resShapeList.isEmpty() && resDummyTestList.isEmpty()) {
             interactionType = TestExecution.TYPE.SHACL;
+        } else if (!resTestQueryList.isEmpty() && resShapeList.isEmpty() && resDummyTestList.isEmpty()) {
+            interactionType = TestExecution.TYPE.SPARQL;
         } else if (resTestQueryList.isEmpty() && resShapeList.isEmpty() && ! resDummyTestList.isEmpty()) {
             interactionType = TestExecution.TYPE.DUMMY;
         } else {
@@ -96,6 +96,9 @@ public class RuleFactory {
                 List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(entryNode.asResource(), KGIndex.endpoint).toList();
                 if (!actionEndpointUrlList.isEmpty()) {
                     actionEndpointUrl = actionEndpointUrlList.get(0).toString();
+                    if(actionEndpointUrl.equals(KGIndex.federation.getURI())) {
+                        actionEndpointUrl = RuleApplication.federationserver;
+                    }
                 }
 
                 NodeIterator actionStrings = entryModel.listObjectsOfProperty(entryNode.asResource(), Manifest.action);
@@ -126,14 +129,17 @@ public class RuleFactory {
         String testEndpointUrl = describedDataset.getEndpointUrl();
         if(! testEndpointNodeList.isEmpty()) {
             testEndpointUrl = testEndpointNodeList.get(0).toString();
+            if(testEndpointUrl.equals(KGIndex.federation.getURI())) {
+                testEndpointUrl = RuleApplication.federationserver;
+            }
         }
         testModel.close();
 
         TestExecution testExec = null;
         if(interactionType.equals(TestExecution.TYPE.SPARQL)) {
-            testExec = new SHACLTestExecution(tests, testEndpointUrl);
-        } else if(interactionType.equals(TestExecution.TYPE.SHACL)) {
             testExec = new QueryTestExecution(tests, testEndpointUrl);
+        } else if(interactionType.equals(TestExecution.TYPE.SHACL)) {
+            testExec = new SHACLTestExecution(tests, testEndpointUrl);
         } else if(interactionType.equals(TestExecution.TYPE.DUMMY)) {
             testExec = new DummyTestExecution(tests, testEndpointUrl);
         } else {
