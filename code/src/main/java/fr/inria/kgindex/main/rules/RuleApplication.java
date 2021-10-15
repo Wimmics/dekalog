@@ -130,23 +130,25 @@ public class RuleApplication {
                                         .setConnectionRequestTimeout(Math.toIntExact(Utils.queryTimeout))
                                         .build();
                                 org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
-                                        .setUserAgent(RulesUtils.USER_AGENT)
                                         .useSystemProperties()
                                         .setDefaultRequestConfig(requestConfig)
+                                        .setUserAgent(RulesUtils.USER_AGENT)
                                         .build();
                                 QueryEngineHTTP actionExecution = new QueryEngineHTTP(action.getEndpointUrl(), constructQuery, client);
                                 actionExecution.addParam("timeout", String.valueOf(Utils.queryTimeout));
                                 actionExecution.addParam("format", Lang.TRIG.getContentType().getContentTypeStr());
                                 actionExecution.setTimeout(Utils.queryTimeout, TimeUnit.MILLISECONDS, Utils.queryTimeout, TimeUnit.MILLISECONDS);
-                                actionExecution.setAcceptHeader(Lang.TRIG.getContentType().getContentTypeStr());
+//                                actionExecution.setAcceptHeader(Lang.TRIG.getContentType().getContentTypeStr());
                                 try {
                                     Dataset constructData = actionExecution.execConstructDataset();
                                     result = DatasetUtils.addDataset(result, constructData);
                                 } catch (RiotException e) {
                                     logger.error(e);
+                                    e.printStackTrace();
                                     logger.trace(this._entry.getFileResource() + " action could not be added because of RiotException");
                                 } catch(QueryException e) {
                                     logger.error(e);
+                                    e.printStackTrace();
                                     logger.trace(this._entry.getFileResource() + " action could not be added because of QueryException");
                                 }
                                 actionExecution.close();

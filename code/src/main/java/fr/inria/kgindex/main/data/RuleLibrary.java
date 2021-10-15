@@ -1,6 +1,5 @@
 package fr.inria.kgindex.main.data;
 
-import fr.inria.kgindex.main.util.Manifest;
 import org.apache.jena.rdf.model.RDFNode;
 
 import java.util.HashMap;

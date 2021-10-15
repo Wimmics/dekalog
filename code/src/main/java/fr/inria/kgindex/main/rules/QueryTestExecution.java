@@ -7,7 +7,6 @@ import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Utils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.QueryException;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
@@ -68,9 +67,9 @@ public class QueryTestExecution extends TestExecution {
                             .setConnectionRequestTimeout(Math.toIntExact(Utils.queryTimeout))
                             .build();
                     org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
-                            .setUserAgent(RulesUtils.USER_AGENT)
                             .useSystemProperties()
                             .setDefaultRequestConfig(requestConfig)
+                            .setUserAgent(RulesUtils.USER_AGENT)
                             .build();
                     QueryEngineHTTP testQueryExecution = new QueryEngineHTTP(this.getEndpointUrl(), queryString, client);
                     testQueryExecution.addParam("timeout", String.valueOf(Utils.queryTimeout));
@@ -83,7 +82,8 @@ public class QueryTestExecution extends TestExecution {
                     }
                     testQueryExecution.close();
                 } catch(Exception e) {
-                    logger.info(e);
+                    logger.error(e);
+                    e.printStackTrace();
                     errorMessage = e.getMessage();
                     passed = false;
                 }
