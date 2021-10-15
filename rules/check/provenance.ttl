@@ -6,70 +6,31 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
-<> rdf:type sh:NodeShape ,
-        earl:TestCase ;
+<> a kgi:TestQuery ;
     dcterms:isReferencedBy <manifest.ttl> ;
-    sh:targetClass void:Dataset ;
-    sh:name "Provenance information"@en ;
-	sh:description "We need information about the authors, the licensing and the creation process." ;
-    # Who ?
-    sh:or (
-		[ sh:property [
-    		sh:path dcterms:creator ;
-    		sh:minCount 1 ;
-	       ]  ]
-		[ sh:property [
-    		sh:path  dcterms:contributor ;
-    		sh:minCount 1 ;
-	       ] ]
-		[ sh:property [
-    		sh:path  dcterms:publisher ;
-    		sh:minCount 1 ;
-	       ] ]
-		[ sh:property [
-    		sh:path  prov:wasAttributedTo ;
-    		sh:minCount 1 ;
-	       ] ]
-    ) ;
-    # What ?
-    sh:or (
-		[ sh:property [
-    		sh:path  dcterms:licence ;
-    		sh:minCount 1 ;
-	       ] ]
-		[ sh:property [
-    		sh:path  dcterms:conformsTo ;
-    		sh:minCount 1 ;
-	       ] ]
-    ) ;
-    # How ?
-    sh:or (
-		[ sh:property [
-    		sh:path  dcterms:created ;
-    		sh:minCount 1 ;
-	       ] ]
-		[ sh:property [
-    		sh:path  dcterms:modified ;
-    		sh:minCount 1 ;
-	       ] ]
-		[ sh:property [
-    		sh:path  prov:wasGeneratedAtTime ;
-    		sh:minCount 1 ;
-	       ] ]
-		[ sh:property [
-    		sh:path  dcterms:issued ;
-    		sh:minCount 1 ;
-	       ] ]
-		[ sh:property [
-    		sh:path  dcterms:source ;
-    		sh:minCount 1 ;
-	       ] ]
-		[ sh:property [
-    		sh:path  prov:wasDerivedFrom ;
-    		sh:minCount 1 ;
-	       ] ]
-		[ sh:property [
-    		sh:path  dcterms:format ;
-    		sh:minCount 1 ;
-	       ] ]
-    ) .
+    dcterms:title "Provenance information"@en ;
+    kgi:endpoint kgi:federation ;
+	dcterms:description "We need information about the authors, the licensing and the creation process." ;
+    kgi:query """PREFIX dcterms: <http://purl.org/dc/terms/>
+        PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        ASK {
+            SERVICE $rawEndpointUrl {
+                { ?dataset a void:Dataset . }
+                UNION { ?dataset a dcat:Dataset }
+                { ?dataset dcterms:creator ?o }
+                UNION { ?dataset dcterms:contributor ?o }
+                UNION { ?dataset dcterms:publisher ?o }
+                UNION { ?dataset dcterms:creator ?o }
+                { ?dataset dcterms:license ?o }
+                UNION {?dataset dcterms:conformsTo ?o }
+                { ?dataset dcterms:license ?o }
+                UNION { ?dataset dcterms:modified ?o }
+                UNION { ?dataset prov:wasGeneratedAtTime ?o }
+                UNION { ?dataset dcterms:issued ?o }
+                UNION { ?dataset dcterms:source ?o }
+                UNION { ?dataset prov:wasDerivedFrom ?o }
+                UNION { ?dataset dcterms:format ?o }
+            }
+        }""" .

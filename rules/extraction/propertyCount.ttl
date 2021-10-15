@@ -4,20 +4,14 @@
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
-<> a sh:NodeShape  ,
-        earl:TestCase ;
+<> a kgi:TestQuery ;
     dcterms:isReferencedBy <manifest.ttl> ;
-    sh:targetNode kgi:dummyTarget ;
-    sh:sparql [
-    		rdf:type sh:SPARQLConstraint ;
-    		sh:message "There are as many properties as expected." ;
-            sh:select """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    dcterms:title "There are as many properties as expected."@en ;
+    kgi:query """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX owl: <http://www.w3.org/2002/07/owl#>
             PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX dcat: <http://www.w3.org/ns/dcat#>
-            SELECT  $this ?extractedValue ?value
-            $FROM
-            WHERE {
+            ASK {
                 ?res void:properties ?extractedValue .
                 ?res ?p $endpointUrl .
                 { ?res a dcat:Dataset }
@@ -28,5 +22,4 @@
                     }
                 }
                 FILTER ( ?value != ?extractedValue )
-            } """
-        ] .
+            } """ .
