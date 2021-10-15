@@ -80,7 +80,7 @@
                         prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResourceLocalhost.ttl> ;
                         sd:endpoint $rawEndpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                         prov:wasDerivedFrom $endpointUrl ;
+                         prov:wasDerivedFrom $rawEndpointUrl ;
                          kgi:curated $endpointDescription ;
                          kgi:original ?res .
                     GRAPH $endpointUrl {
