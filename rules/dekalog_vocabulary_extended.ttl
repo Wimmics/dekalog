@@ -84,7 +84,7 @@ kgi:CountableEndpoint a owl:Class ;
     rdfs:isDefinedBy kgi: ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty prov:wasGeneratedBy ;
+        owl:onProperty kgi:passedTest ;
         owl:hasValue <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELCOUNT.ttl>
     ] ;
     kgi:action <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELCOUNT.ttl> .
