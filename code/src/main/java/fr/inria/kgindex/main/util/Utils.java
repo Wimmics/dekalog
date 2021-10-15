@@ -14,6 +14,7 @@ public class Utils {
     public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
     public static long queryTimeout = 30000;
     public static String manifestRootFile = "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl";
+    public static final String vocabularyFile = "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/dekalog_vocabulary.ttl";
 
     public static String PLACEHOLDER_DATASETDESCRIPTION = "$datasetDescription";
     public static String PLACEHOLDER_ENDPOINTDESCRIPTION = "$endpointDescription";

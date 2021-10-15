@@ -61,36 +61,41 @@ public class DatasetDescriptionExtraction {
 			Set<ManifestEntry> testEntrySet = RuleLibrary.getLibrary().get(testNode);
 
 			for (ManifestEntry testEntry : testEntrySet) {
-				RuleApplication application = RuleFactory.create(testEntry, describedDataset, datasetDescription);
-				Dataset testResult = application.apply();
-				logger.trace("Result update START");
-				datasetDescription = DatasetUtils.addDataset(datasetDescription, testResult);
+				try {
+					RuleApplication application = RuleFactory.create(testEntry, describedDataset, datasetDescription);
+					Dataset testResult = application.apply();
+					logger.trace("Result update START");
+					datasetDescription = DatasetUtils.addDataset(datasetDescription, testResult);
 
-				// Keeping the list of the dataset namespaces up to date
-				if (describedDataset.getNamespaces().isEmpty()
-						&& (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
-						|| datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
-					NodeIterator namespaceIt = null;
-					if (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
-						namespaceIt = datasetDescription.getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
+					// Keeping the list of the dataset namespaces up to date
+					if (describedDataset.getNamespaces().isEmpty()
+							&& (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
+							|| datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
+						NodeIterator namespaceIt = null;
+						if (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
+							namespaceIt = datasetDescription.getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
+						}
+						if (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
+							namespaceIt = datasetDescription.getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
+						}
+
+						assert namespaceIt != null;
+						describedDataset.addNamespaces(namespaceIt.toList()
+								.stream()
+								.map(RDFNode::toString)
+								.collect(Collectors.toList()));
 					}
-					if (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
-						namespaceIt = datasetDescription.getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
+
+					// Checking if the graph list is necessary according to the endpoint description
+					if (!datasetDescription.getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
+							&& datasetDescription.getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
+						describedDataset.setGraphsAreRequired(true);
 					}
-
-					assert namespaceIt != null;
-					describedDataset.addNamespaces(namespaceIt.toList()
-							.stream()
-							.map(RDFNode::toString)
-							.collect(Collectors.toList()));
+					logger.trace("Result update END");
+				} catch (Exception e) {
+					logger.error(testEntry.getTestResource().getURI());
+					logger.error(e);
 				}
-
-				// Checking if the graph list is necessary according to the endpoint description
-				if (!datasetDescription.getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
-						&& datasetDescription.getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
-					describedDataset.setGraphsAreRequired(true);
-				}
-				logger.trace("Result update END");
 			}
 		}
 

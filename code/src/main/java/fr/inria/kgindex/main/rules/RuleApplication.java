@@ -246,8 +246,13 @@ public class RuleApplication {
             } else if(action.getType() == Action.TYPE.Manifest) {
                 Set<ManifestEntry> entrySet = RuleLibrary.getLibrary().get(action.getActionNode());
                 for(ManifestEntry entry : entrySet) {
-                    RuleApplication application = RuleFactory.create(entry, this._describedDataset, this._datasetDescription);
-                    application.apply();
+                    try {
+                        RuleApplication application = RuleFactory.create(entry, this._describedDataset, this._datasetDescription);
+                        application.apply();
+                    } catch (Exception e) {
+                        logger.error(entry.getTestResource().getURI());
+                        logger.error(e);
+                    }
                 };
             }
         };

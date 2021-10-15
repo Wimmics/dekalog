@@ -2,6 +2,8 @@ package fr.inria.kgindex.main.data;
 
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Manifest;
+import fr.inria.kgindex.main.util.Utils;
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.vocabulary.EARL;
@@ -114,9 +116,13 @@ public class ManifestEntry {
 
 		result.forEach(modelUri -> {
 			Model includedSubManifestModel = ModelFactory.createDefaultModel();
-
-			includedSubManifestModel.read(modelUri.toString(), "TTL");
-			tmpList.addAll(extractIncludedFromManifest(includedSubManifestModel));
+			try{
+				includedSubManifestModel.read(modelUri.toString(), "TTL");
+				tmpList.addAll(extractIncludedFromManifest(includedSubManifestModel));
+			} catch(HttpException e) {
+				logger.error(e);
+				logger.error(modelUri.toString() + " could not be reached");
+			}
 
 			includedSubManifestModel.close();
 		});
@@ -203,10 +209,20 @@ public class ManifestEntry {
 
 			// Traitement du fichier du test associé à l'entrée
 			Model kgiVocabulary = ModelFactory.createDefaultModel();
-			kgiVocabulary.read("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/dekalog_vocabulary.ttl", "TTL");
+			try {
+				kgiVocabulary.read(Utils.vocabularyFile, "TTL");
+			} catch(HttpException e) {
+				logger.error(e);
+				logger.error(Utils.vocabularyFile + " could not be reached");
+			}
 			InfModel testModelWithInference = ModelFactory.createRDFSModel(kgiVocabulary);
 			Model testModel = ModelFactory.createDefaultModel();
-			testModel.read(entryName.getURI(), "TTL");
+			try{
+				testModel.read(entryName.getURI(), "TTL");
+			} catch(HttpException e) {
+				logger.error(e);
+				logger.error(entryName.getURI() + " could not be reached");
+			}
 			testModelWithInference.add(testModel);
 
 			ResIterator testResourceIterator = testModelWithInference.listSubjectsWithProperty(RDF.type, EARL.TestCase);
@@ -218,6 +234,8 @@ public class ManifestEntry {
 				entrySet.add(resultEntry);
 			});
 			result.put(entryName, entrySet);
+			testModel.close();
+			testModelWithInference.close();
 
 		} catch (RiotException e) {
 			logger.error(e);

@@ -4,6 +4,7 @@ import fr.inria.kgindex.main.data.DescribedDataset;
 import fr.inria.kgindex.main.data.ManifestEntry;
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Manifest;
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -28,7 +29,12 @@ public class RuleFactory {
 
         // Identifier le type d'interaction: dkg/SHACL
         Model testModel = ModelFactory.createDefaultModel();
-        testModel.read(testFileResource.getURI(), "TTL");
+        try {
+            testModel.read(testFileResource.getURI(), "TTL");
+        } catch(HttpException e) {
+            logger.error(e);
+            logger.error(testFileResource.getURI() + " could not be reached");
+        }
         List<Resource> resTestQueryList = testModel.listSubjectsWithProperty(RDF.type, KGIndex.TestQuery).toList();
         List<Resource> resShapeList = testModel.listSubjectsWithProperty(RDF.type, testModel.createProperty(SHACL.NodeShape.getURI())).toList();
         List<Resource> resDummyTestList = testModel.listSubjectsWithProperty(RDF.type, KGIndex.DummyTest).toList();
