@@ -28,7 +28,10 @@
                 CONSTRUCT {
                     $endpointDescription ?p ?o .
                     $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResource.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResource.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:endpoint $rawEndpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                          prov:wasDerivedFrom $endpointUrl ;
@@ -77,7 +80,10 @@
                 CONSTRUCT {
                     $endpointDescription ?p ?o .
                         a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResourceLocalhost.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResourceLocalhost.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:endpoint $rawEndpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                          prov:wasDerivedFrom $rawEndpointUrl ;
@@ -99,7 +105,10 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                    ?s ?p $endpointDescription .
-                   $endpointDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResourceLocalhost.ttl> .
+                   $endpointDescription prov:wasGeneratedBy [
+                           prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResourceLocalhost.ttl> ;
+                           prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                       ] .
                    $metadataDescription kgi:original ?res .
                    GRAPH $endpointUrl {
                         ?s ?p ?res .
@@ -143,7 +152,10 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         ?pp ?o .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                         prov:wasDerivedFrom $endpointUrl ;
@@ -173,7 +185,10 @@
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl> .
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] .
                     ?s ?pp $datasetDescription .
                     GRAPH $endpointUrl {
                         ?s ?pp ?res .
@@ -214,7 +229,10 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
                     $datasetDescription schema:availableLanguage ?lang ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl> .
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] .
                 }
                 WHERE {
                     SELECT DISTINCT (lang(?o) as ?lang)  WHERE {
@@ -241,7 +259,10 @@
                     prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $endpointDescription .
                 $endpointDescription sd:availableGraphs $graphList ;
-                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/graphList.ttl> .
+                    prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/graphList.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
                 $graphList sd:namedGraph [
                         a sd:NamedGraph ;
                         sd:name ?graph
@@ -270,7 +291,10 @@
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             CONSTRUCT {
                 $endpointDescription sd:availableGraphs $graphList ;
-                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/graphListCorese.ttl> .
+                    prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/graphListCorese.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
                 $graphList sd:namedGraph [
                         a sd:NamedGraph ;
                         sd:name ?graph
@@ -300,7 +324,10 @@
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription .
                 $datasetDescription void:vocabulary ?ns ;
-                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl> .
+                    prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
             }
             WHERE {
                 ?s a ?elem .
@@ -318,7 +345,10 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl> ;
+                $datasetDescription prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] ;
                      void:vocabulary ?ns .
             }
             WHERE {
@@ -346,7 +376,10 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl> ;
+                $datasetDescription prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] ;
                     void:vocabulary ?ns .
             }
             WHERE {
@@ -369,7 +402,10 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl> ;
+                $datasetDescription prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] ;
                     void:vocabulary ?ns .
             }
             WHERE {
@@ -400,7 +436,10 @@
                         $metadataDescription a prov:Entity , earl:TestSubject ;
                             prov:wasDerivedFrom $rawEndpointUrl ;
                             kgi:curated $datasetDescription .
-                        $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCoreseLOV.ttl> ;
+                        $datasetDescription prov:wasGeneratedBy [
+                                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCoreseLOV.ttl> ;
+                                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                                ] ;
                             void:vocabulary ?vocabURI .
                         ?vocabURI a voaf:Vocabulary ;
                             vann:preferredNamespaceUri ?uri ;
@@ -436,7 +475,10 @@
                         $metadataDescription a prov:Entity , earl:TestSubject ;
                             prov:wasDerivedFrom $rawEndpointUrl ;
                             kgi:curated $datasetDescription .
-                        $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCoreseLOV.ttl> ;
+                        $datasetDescription prov:wasGeneratedBy [
+                                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCoreseLOV.ttl> ;
+                                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                                ] ;
                             void:vocabulary ?vocabURI .
                         ?vocabURI a voaf:Vocabulary ;
                             vann:preferredNamespaceUri ?uri ;
@@ -484,7 +526,10 @@
                 PREFIX owl: <http://www.w3.org/2002/07/owl#>
                 CONSTRUCT {
                     $datasetDescription void:classes ?count ;
-                         prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/classCount.ttl> .
+                         prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/classCount.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] .
                 }
                 WHERE {
                     SELECT (count(?class) AS ?count)
@@ -523,7 +568,10 @@
                 PREFIX owl: <http://www.w3.org/2002/07/owl#>
                 CONSTRUCT {
                     $datasetDescription void:properties ?count ;
-                         prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/propertyCount.ttl> .
+                         prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/propertyCount.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] .
                 }
                 WHERE {
                     SELECT (count(?p) AS ?count)
@@ -558,7 +606,10 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     $datasetDescription void:triples ?count ;
-                         prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/propertyCount.ttl> .
+                         prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/propertyCount.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] .
                 }
                 WHERE {
                     SELECT (count(*) AS ?count) WHERE {

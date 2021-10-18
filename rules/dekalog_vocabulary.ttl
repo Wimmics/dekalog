@@ -73,4 +73,5 @@ kgi:DummyTest rdf:type rdf:Class ;
 
 kgi:catalogRoot rdf:type rdfs:Resource ;
     rdfs:label "Root of a catalog." ;
+    rdfs:isDefinedBy kgi: ;
     rdfs:comment "Default resource used to represent the catalog at the root of the index." .

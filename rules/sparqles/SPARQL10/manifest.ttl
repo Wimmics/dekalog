@@ -40,7 +40,10 @@
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT DATA {
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
-                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_ASK.ttl> ;
+                    prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_ASK.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] ;
                     sd:feature sparqles:ASK .
             }
             """
@@ -60,7 +63,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_CON.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_CON.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:CON .
                 }
                 """
@@ -80,7 +86,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_CONOPT.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_CONOPT.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:CONOPT .
                 }
                 """
@@ -100,7 +109,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_CONJOIN.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_CONJOIN.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:CONJOIN .
                 }
                 """
@@ -120,7 +132,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SEL-DISTINCT.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SEL-DISTINCT.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SEL-DISTINCT .
                 }
                 """
@@ -140,7 +155,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SEL-REDUCED.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SEL-REDUCED.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SEL-REDUCED .
                 }
                 """
@@ -160,7 +178,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SEL.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SEL.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SEL .
                 }
                 """
@@ -180,7 +201,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELBNODE.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELBNODE.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELBNODE .
                 }
                 """
@@ -200,7 +224,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELEMPTY.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELEMPTY.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELEMPTY .
                 }
                 """
@@ -220,7 +247,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILNOTBOUND.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILNOTBOUND.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELFILNOTBOUND .
                 }
                 """
@@ -240,7 +270,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILBLANK.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILBLANK.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELFILBLANK .
                 }
                 """
@@ -260,7 +293,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILBOOL.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILBOOL.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELFILBOOL .
                 }
                 """
@@ -280,7 +316,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILIRI.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILIRI.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELFILIRI .
                 }
                 """
@@ -300,7 +339,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILNUM.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILNUM.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELFILNUM .
                 }
                 """
@@ -320,7 +362,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILREGEX-i.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILREGEX-i.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELFILREGEX-i .
                 }
                 """
@@ -340,7 +385,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILREGEX.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILREGEX.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELFILREGEX .
                 }
                 """
@@ -360,7 +408,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILSTR.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILSTR.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELFILSTR .
                 }
                 """
@@ -380,7 +431,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFROM.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFROM.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELFROM .
                 }
                 """
@@ -400,7 +454,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELGRAPHJOIN.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELGRAPHJOIN.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELGRAPHJOIN .
                 }
                 """
@@ -420,7 +477,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELGRAPHUNION.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELGRAPHUNION.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELGRAPHUNION .
                 }
                 """
@@ -440,7 +500,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELGRAPH.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELGRAPH.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELGRAPH .
                 }
                 """
@@ -460,7 +523,10 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELJOIN.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELJOIN.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELJOIN .
                 }
                 """
@@ -480,7 +546,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELOPT.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELOPT.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELOPT .
                 }
                 """
@@ -500,7 +569,10 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT DATA {
                     $endpointDescription sd:endpoint $rawEndpointUrl ;
-                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELUNION.ttl> ;
+                        prov:wasGeneratedBy [
+                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELUNION.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                            ] ;
                         sd:feature sparqles:SELUNION .
                 }
                 """
@@ -520,9 +592,9 @@
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT {
                     $metadataDescription prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SPARQL10.ttl>
-                    ] .
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SPARQL10.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
                     $endpointDescription sd:feature sd:SPARQL10Query .
                 } WHERE {
                     $endpointDescription sd:feature
