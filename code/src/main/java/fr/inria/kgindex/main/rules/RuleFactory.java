@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RuleFactory {
@@ -77,8 +78,8 @@ public class RuleFactory {
                 currentAction.setPriority(successPriorityCount.getAndIncrement());
                 testActionListSuccess.add(currentAction);
             } else {
-                logger.error(entry.getFileResource());
-                throw new Error("Unexcepted action");
+                logger.error(entry.getFileResource().getURI());
+                throw new NoSuchElementException("Unexcepted action for " + entry.getFileResource().getURI());
             }
 
         }
