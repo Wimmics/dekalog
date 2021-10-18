@@ -19,6 +19,19 @@
 <endpointDescResource.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResource.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
+                }
+                """
+        ]
+        [
             mf:action """
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -28,10 +41,6 @@
                 CONSTRUCT {
                     $endpointDescription ?p ?o .
                     $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                        prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResource.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] ;
                         sd:endpoint $rawEndpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                          prov:wasDerivedFrom $endpointUrl ;
@@ -71,6 +80,19 @@
 <endpointDescResourceLocalhost.ttl>
     kgi:onSuccess (
         [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResourceLocalhost.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
+            }
+            """
+        ]
+        [
             mf:action """
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -80,10 +102,6 @@
                 CONSTRUCT {
                     $endpointDescription ?p ?o .
                         a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                        prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResourceLocalhost.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] ;
                         sd:endpoint $rawEndpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                          prov:wasDerivedFrom $rawEndpointUrl ;
@@ -105,10 +123,6 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                    ?s ?p $endpointDescription .
-                   $endpointDescription prov:wasGeneratedBy [
-                           prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/endpointDescResourceLocalhost.ttl> ;
-                           prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                       ] .
                    $metadataDescription kgi:original ?res .
                    GRAPH $endpointUrl {
                         ?s ?p ?res .
@@ -144,6 +158,19 @@
 
 <datasetDescResource.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
+            }
+            """
+        ]
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -152,10 +179,6 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
-                        prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] ;
                         ?pp ?o .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                         prov:wasDerivedFrom $rawEndpointUrl ;
@@ -184,11 +207,7 @@
                         prov:wasDerivedFrom $rawEndpointUrl ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
-                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
-                        prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] .
+                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
                     ?s ?pp $datasetDescription .
                     GRAPH $rawEndpointUrl {
                         ?s ?pp ?res .
@@ -205,25 +224,24 @@
         <../meta/equivalences.ttl>
         ) ;
         kgi:onFailure (
-            [
-                mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-                    PREFIX dcat: <http://www.w3.org/ns/dcat#>
-                    PREFIX prov: <http://www.w3.org/ns/prov#>
-                    PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-                    PREFIX earl: <http://www.w3.org/ns/earl#>
-                    PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                    INSERT DATA {
-                        $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
-                        $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $endpointUrl ;
-                            kgi:curated $datasetDescription .
-                    }"""
-            ]
-            <../meta/modifiedUpdate.ttl>
+            <datasetDescResourceLocalhost.ttl>
         ) .
 
-<datasetDescResource.ttl> a mf:ManifestEntry ;
+<datasetDescResourceLocalhost.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResourceLocalhost.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
+            }
+            """
+        ]
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -232,10 +250,6 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
-                        prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] ;
                         ?pp ?o .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                         prov:wasDerivedFrom $rawEndpointUrl ;
@@ -265,11 +279,7 @@
                         prov:wasDerivedFrom $endpointUrl ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
-                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
-                        prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] .
+                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
                     ?s ?pp $datasetDescription .
                     GRAPH $endpointUrl {
                         ?s ?pp ?res .
@@ -307,14 +317,23 @@
 <languages.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/languages.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
+            }
+            """
+        ]
+        [
             mf:action """PREFIX schema: <http://schema.org/>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $datasetDescription schema:availableLanguage ?lang ;
-                        prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/datasetDescResource.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] .
+                    $datasetDescription schema:availableLanguage ?lang .
                 }
                 WHERE {
                     SELECT DISTINCT (lang(?o) as ?lang)  WHERE {
@@ -331,6 +350,19 @@
     kgi:onSuccess (
         [
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/graphList.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
+            }
+            """
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX dcat: <http://www.w3.org/ns/dcat#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
@@ -340,11 +372,7 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $endpointUrl ;
                     kgi:curated $endpointDescription .
-                $endpointDescription sd:availableGraphs $graphList ;
-                    prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/graphList.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] .
+                $endpointDescription sd:availableGraphs $graphList .
                 $graphList sd:namedGraph [
                         a sd:NamedGraph ;
                         sd:name ?graph
@@ -366,17 +394,26 @@
 <graphListCorese.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/graphListCorese.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
+            }
+            """
+        ]
+        [
             kgi:endpoint kgi:federation ;
             mf:action """PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             CONSTRUCT {
-                $endpointDescription sd:availableGraphs $graphList ;
-                    prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/graphListCorese.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] .
+                $endpointDescription sd:availableGraphs $graphList .
                 $graphList sd:namedGraph [
                         a sd:NamedGraph ;
                         sd:name ?graph
@@ -401,15 +438,24 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
+            }
+            """
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription void:vocabulary ?ns ;
-                    prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] .
+                $datasetDescription void:vocabulary ?ns .
             }
             WHERE {
                 ?s a ?elem .
@@ -427,11 +473,7 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
-                     void:vocabulary ?ns .
+                $datasetDescription void:vocabulary ?ns .
             }
             WHERE {
                 ?s ?elem ?o .
@@ -449,6 +491,19 @@
 <vocabularyListCorese.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyList.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
+            }
+            """
+        ]
+        [
             kgi:endpoint kgi:federation ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -458,11 +513,7 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
-                    void:vocabulary ?ns .
+                $datasetDescription void:vocabulary ?ns .
             }
             WHERE {
                 SERVICE $endpointUrl {
@@ -484,11 +535,7 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCorese.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
-                    void:vocabulary ?ns .
+                $datasetDescription void:vocabulary ?ns .
             }
             WHERE {
                 SERVICE $endpointUrl {
@@ -506,6 +553,19 @@
 <vocabularyListCoreseLOV.ttl> a mf:ManifestEntry ;
         kgi:onSuccess (
             [
+                mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                    PREFIX prov: <http://www.w3.org/ns/prov#>
+                    PREFIX earl: <http://www.w3.org/ns/earl#>
+                    PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                    INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy [
+                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCoreseLOV.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                        ] .
+                }
+                """
+            ]
+            [
                 kgi:endpoint kgi:federation ;
                 mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                     PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -518,11 +578,7 @@
                         $metadataDescription a prov:Entity , earl:TestSubject ;
                             prov:wasDerivedFrom $rawEndpointUrl ;
                             kgi:curated $datasetDescription .
-                        $datasetDescription prov:wasGeneratedBy [
-                                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCoreseLOV.ttl> ;
-                                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                                ] ;
-                            void:vocabulary ?vocabURI .
+                        $datasetDescription void:vocabulary ?vocabURI .
                         ?vocabURI a voaf:Vocabulary ;
                             vann:preferredNamespaceUri ?uri ;
                             vann:preferredNamespacePrefix ?prefix ;
@@ -557,11 +613,7 @@
                         $metadataDescription a prov:Entity , earl:TestSubject ;
                             prov:wasDerivedFrom $rawEndpointUrl ;
                             kgi:curated $datasetDescription .
-                        $datasetDescription prov:wasGeneratedBy [
-                                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/vocabularyListCoreseLOV.ttl> ;
-                                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                                ] ;
-                            void:vocabulary ?vocabURI .
+                        $datasetDescription void:vocabulary ?vocabURI .
                         ?vocabURI a voaf:Vocabulary ;
                             vann:preferredNamespaceUri ?uri ;
                             vann:preferredNamespacePrefix ?prefix ;
@@ -599,6 +651,19 @@
         ]
         [
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                $datasetDescription prov:wasGeneratedBy [
+                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/classCount.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                    ] .
+            }
+            """
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
@@ -607,11 +672,7 @@
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX owl: <http://www.w3.org/2002/07/owl#>
                 CONSTRUCT {
-                    $datasetDescription void:classes ?count ;
-                         prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/classCount.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] .
+                    $datasetDescription void:classes ?count .
                 }
                 WHERE {
                     SELECT (count(?class) AS ?count)
@@ -641,6 +702,19 @@
         ]
         [
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                $datasetDescription prov:wasGeneratedBy [
+                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/propertyCount.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                    ] .
+            }
+            """
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
@@ -649,11 +723,7 @@
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX owl: <http://www.w3.org/2002/07/owl#>
                 CONSTRUCT {
-                    $datasetDescription void:properties ?count ;
-                         prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/propertyCount.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] .
+                    $datasetDescription void:properties ?count .
                 }
                 WHERE {
                     SELECT (count(?p) AS ?count)
@@ -681,17 +751,26 @@
         ]
         [
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                $datasetDescription prov:wasGeneratedBy [
+                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/tripleCount.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
+                    ] .
+            }
+            """
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                    $datasetDescription void:triples ?count ;
-                         prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/propertyCount.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] .
+                    $datasetDescription void:triples ?count .
                 }
                 WHERE {
                     SELECT (count(*) AS ?count) WHERE {
