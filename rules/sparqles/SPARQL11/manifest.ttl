@@ -412,28 +412,6 @@
                 PREFIX dcterms: <http://purl.org/dc/terms/>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
-                DELETE {
-                    $endpointDescription sd:feature
-                        sparqles:ASKFILNOTIN ,
-                        sparqles:CON- ,
-                        sparqles:SELAVG ,
-                        sparqles:SELBIND ,
-                        sparqles:SELFILNOTEXISTS ,
-                        sparqles:SELFILABS ,
-                        sparqles:SELFILCONTAINS ,
-                        sparqles:SELFILNOTEXISTS ,
-                        sparqles:SELFILSTART ,
-                        sparqles:SELMAX ,
-                        sparqles:SELMIN ,
-                        sparqles:SELCOUNT ,
-                        sparqles:SELMINUS ,
-                        sparqles:SELPATHS ,
-                        sparqles:SELSERVICE ,
-                        sparqles:SELSUBQGRAPH ,
-                        sparqles:SELSUBQ ,
-                        sparqles:SELSUM ,
-                        sparqles:SELVALUES .
-                }
                 INSERT {
                     $metadataDescription prov:wasGeneratedBy [
                         a prov:Activity ;
