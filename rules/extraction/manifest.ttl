@@ -14,6 +14,7 @@
             <classCount.ttl>
             <propertyCount.ttl>
             <languages.ttl>
+            <timezone.ttl>
         ) .
 
 <endpointDescResource.ttl> a mf:ManifestEntry ;
@@ -784,6 +785,19 @@
             """
         ]
         <../meta/modifiedUpdate.ttl>
+    ) .
+
+<timezone.ttl> a mf:ManifestEntry ;
+    onSuccess (
+        [
+            mf:action """PREFIX schema: <https://schema.org/>
+                CONSTRUCT {
+                    $endpointDescription schema:broadcastTimezone ?timezone .
+                } WHERE {
+                    BIND(TZ(NOW()) AS ?timezone)
+                    FILTER(?timezone != "")
+                }"""
+        ]
     ) .
 
 # Miscanellous statistics from SPORTAL using a vocabulary created for SPORTAL only
