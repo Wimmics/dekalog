@@ -292,4 +292,15 @@
                         dcterms:description "Returns the SPARQL features and the number of endpoints they are supported by." .
                 }"""
         ]
+        [
+            mf:action """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    kgi:catalogRoot skos:example kgi:example20 .
+                    kgi:example20 dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#>  PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>  PREFIX dcat: <http://www.w3.org/ns/dcat#>  PREFIX earl: <http://www.w3.org/ns/earl#>  PREFIX kgi: <http://ns.inria.fr/kg/index#>  PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#> SELECT (COUNT(DISTINCT ?base) AS ?count) {   ?metadata kgi:curated ?base .   ?base a dcat:Dataset .   ?base void:classPartition ?classPartition .   ?classPartition void:propertyPartition ?classPropPartition . } ORDER BY DESC(?count)" ;
+                        dcterms:description "Count the number of dataset description containing the list of properties appearing around the instances of each class." .
+                }"""
+        ]
     )
