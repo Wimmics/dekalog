@@ -1,6 +1,11 @@
 # DeKaloG changelog
 
-## [2.3.1]2021-10-11
+## [2.4] 2021-10-21
+* Generation of a proper DCAT catalog
+* Addition of numerous example queries to the root of the catalog
+* Multiple bug and rule fixes
+
+## [2.3.1] 2021-10-11
 * More bugfixes
 * re-factoring for the index generation
 
