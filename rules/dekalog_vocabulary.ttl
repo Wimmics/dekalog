@@ -31,11 +31,6 @@ kgi:trace rdf:type rdf:Property ;
     rdfs:domain prov:Entity ;
     rdfs:range earl:Assertion .
 
-kgi:dummyTarget rdf:type rdfs:Resource ;
-    rdfs:label "Placeholder SHACL shape target"@en ;
-    rdfs:comment "Placeholder for the target of a shape that do not need a target."@en ;
-    rdfs:isDefinedBy kgi: .
-
 kgi:sentQuery rdf:type rdf:Property ;
     rdfs:comment "String representation of the SPARQL query sent to the server after transformation to adapt it to the endpoint, if necessary." ;
     rdfs:label "Query sent to the server" ;
