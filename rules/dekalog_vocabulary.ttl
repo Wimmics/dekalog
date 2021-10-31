@@ -14,7 +14,7 @@
 kgi: dcterms:creator "Pierre Maillot" ;
     dcterms:publisher "INRIA, Team WIMMICS" ;
     dcterms:title  "IndeGx vocabulary" ;
-    dcterms:description "Vocabulary to complete the manifest and EARL vocabularies for the declaration of the IndeGx vocabulary" ;
+    dcterms:description "Vocabulary to complete the manifest and EARL vocabularies for the declaration of the IndeGx framework" ;
     dcterms:date "2021-10" ;
     dcterms:format "RDF" ;
     dcterms:identifier kgi: .
