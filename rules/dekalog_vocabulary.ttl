@@ -6,9 +6,18 @@
 @prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
 @prefix http: <http://www.w3.org/2011/http> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix sp: <http://spinrdf.org/sp> .
 @prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+
+kgi: dcterms:creator "Pierre Maillot" ;
+    dcterms:publisher "INRIA, Team WIMMICS" ;
+    dcterms:title  "IndeGx vocabulary" ;
+    dcterms:description "Vocabulary to complete the manifest and EARL vocabularies for the declaration of the IndeGx vocabulary" ;
+    dcterms:date "2021-10" ;
+    dcterms:format "RDF" ;
+    dcterms:identifier kgi: .
 
 kgi:original rdf:type rdf:Property ;
     rdfs:label "Original description resources." ;
