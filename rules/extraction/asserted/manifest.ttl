@@ -18,8 +18,8 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResource.ttl-activity> .
-                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResource.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResource.ttl> ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResource.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResource.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResource.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 """
@@ -78,8 +78,8 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResourceLocalhost.ttl-activity> .
-                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResourceLocalhost.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResourceLocalhost.ttl> ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResourceLocalhost.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResourceLocalhost.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResourceLocalhost.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
@@ -156,8 +156,8 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl-activity> .
-                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl> ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
@@ -226,8 +226,8 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl-activity> .
-                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl> ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """

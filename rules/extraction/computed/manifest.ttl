@@ -23,8 +23,8 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl-activity> .
-                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl> ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
@@ -54,8 +54,8 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphList.ttl-activity> .
-                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphList.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphList.ttl> ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphList.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphList.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphList.ttl> ;
                             prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
@@ -98,8 +98,8 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphListCorese.ttl-activity> .
-                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphListCorese.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphListCorese.ttl> ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphListCorese.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphListCorese.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphListCorese.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
@@ -137,8 +137,8 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl-activity> .
-                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl> ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
@@ -193,8 +193,8 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl-activity> .
-                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl> ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
@@ -254,7 +254,7 @@
                     PREFIX earl: <http://www.w3.org/ns/earl#>
                     PREFIX kgi: <http://ns.inria.fr/kg/index#>
                     INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyListCoreseLOV.ttl-activity> .
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyListCoreseLOV.ttl#activity> .
                         prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyListCoreseLOV.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>  .
                 }
@@ -350,8 +350,8 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/classCount.ttl-activity> .
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/classCount.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/classCount.ttl> ;
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/classCount.ttl#activity> .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/classCount.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/classCount.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
@@ -400,10 +400,9 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
-                $datasetDescription prov:wasGeneratedBy [
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/propertyCount.ttl> ;
-                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                    ] .
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/propertyCount.ttl#activity> .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/propertyCount.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/propertyCount.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
         ]
@@ -449,10 +448,9 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
-                $datasetDescription prov:wasGeneratedBy [
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/tripleCount.ttl> ;
-                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                    ] .
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/tripleCount.ttl#activity> .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/tripleCount.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/tripleCount.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
         ]

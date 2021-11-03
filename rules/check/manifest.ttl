@@ -17,10 +17,9 @@
                 INSERT DATA {
                     $endpointDescription sd:endpoint $endpointUrl ;
                         sd:feature sd:basicFederatedQuery .
-                $metadataDescription prov:wasGeneratedBy [
-                        a prov:Activity ;
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicFederatedQuery.ttl>
-                    ] .
+                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicFederatedQuery.ttl#activity> .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicFederatedQuery.ttl#activity> a prov:Activity ;
+                    prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicFederatedQuery.ttl> .
                 }
             """
         ]
@@ -48,11 +47,10 @@
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset $datasetDescription ;
                     dcat:endpointUrl $rawEndpointUrl ;
-                    prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
+                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>  ;
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription , $endpointDescription ;
@@ -90,11 +88,10 @@
                 $endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset $datasetDescription ;
                     dcat:endpointUrl $rawEndpointUrl ;
-                    prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
+                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription , $endpointDescription ;
@@ -120,17 +117,16 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             INSERT DATA {
-                $metadataDescription prov:wasGeneratedBy [
-                        prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
-                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                    ] ;
-                dqv:hasQualityMeasurement [
-                        a dqv:QualityMeasurement ;
-                        rdfs:label "Provenance information are present in the metadata"@en ;
-                        dqv:computedOn $endpointDescription ;
-                        dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
-                        dqv:value "true"^^xsd:boolean
-                    ] .
+                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> ;
+                    dqv:hasQualityMeasurement [
+                            a dqv:QualityMeasurement ;
+                            rdfs:label "Provenance information are present in the metadata"@en ;
+                            dqv:computedOn $endpointDescription ;
+                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
+                            dqv:value "true"^^xsd:boolean
+                        ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
         ]
@@ -143,10 +139,7 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             INSERT DATA {
-                $metadataDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
+                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> ;
                     dqv:hasQualityMeasurement [
                             a dqv:QualityMeasurement ;
                             rdfs:label "Provenance information are absent from the metadata"@en ;
@@ -154,6 +147,8 @@
                             dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
                             dqv:value "false"^^xsd:boolean
                         ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
         ]

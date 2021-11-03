@@ -32,14 +32,13 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/classPopulation.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/classPopulation.ttl#activity> ;
                         void:classPartition [
                             void:class ?class ;
                             void:entities ?count
                         ] .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/classPopulation.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/classPopulation.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     { SELECT ?class (count(?instance) AS ?count)
@@ -61,11 +60,10 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctRDFNodes.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctRDFNodes.ttl#activity> ;
                         voidex:distinctRDFNodes ?x .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctRDFNodes.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctRDFNodes.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))}
@@ -81,11 +79,10 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisObjects.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisObjects.ttl#activity> ;
                          voidex:distinctIRIReferenceObjects ?x .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisObjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisObjects.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE {
@@ -103,11 +100,10 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisSubjects.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] ;
-                        voidex:distinctIRIReferenceSubjects ?x
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisSubjects.ttl#activity> ;
+                        voidex:distinctIRIReferenceSubjects ?x .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisSubjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisSubjects.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isIRI(?s))} }
             """
@@ -121,11 +117,10 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeSubjects.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] ;
-                          voidex:distinctBlankNodeSubjects ?x
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeSubjects.ttl#activity> ;
+                        voidex:distinctBlankNodeSubjects ?x .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeSubjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeSubjects.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} }
             """
@@ -139,11 +134,10 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeObjects.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] ;
-                          voidex:distinctBlankNodeSubjects ?x
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeObjects.ttl#activity> ;
+                        voidex:distinctBlankNodeSubjects ?x .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeObjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeObjects.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} }
             """
@@ -157,11 +151,10 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodes.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
-                      voidex:distinctBlankNodes ?x .
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodes.ttl#activity> ;
+                    voidex:distinctBlankNodes ?x .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodes.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodes.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x)
             WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } }
@@ -176,11 +169,10 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctIRIReferences.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
-                      voidex:distinctIRIReferences ?x
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctIRIReferences.ttl#activity> ;
+                    voidex:distinctIRIReferences ?x .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctIRIReferences.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctIRIReferences.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x)
             WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u)) } }
@@ -195,11 +187,10 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctLiterals.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
-                      voidex:distinctLiterals ?x
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctLiterals.ttl#activity> ;
+                    voidex:distinctLiterals ?x .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctLiterals.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctLiterals.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} }
             """
@@ -219,14 +210,13 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl#activity> ;
                           void:classPartition [
                             void:class ?c ;
                             void:triples ?x
-                        ]
+                        ] .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
@@ -243,13 +233,12 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy [
-                                prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl> ;
-                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                            ] ;
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl#activity> ;
                           void:classPartition [
                             void:class ?c
-                        ]
+                        ] .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     { ?s a ?c . }
@@ -266,14 +255,13 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
-                      void:classPartition [
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl#activity> ;
+                    void:classPartition [
                         void:class ?c ;
                         void:classes ?x
-                    ]
+                    ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
                 { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }
@@ -289,14 +277,13 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl#activity> ;
                       void:classPartition [
                         void:class ?c ;
                         void:properties ?x
-                    ]
+                    ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
                 { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
@@ -312,14 +299,13 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl#activity> ;
                     void:classPartition [
                         void:class ?c ;
                         void:distinctSubjects ?x
                     ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
                 { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }
@@ -335,14 +321,13 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl#activity> ;
                     void:classPartition [
                         void:class ?c ;
                         void:distinctObjects ?x
-                    ]
+                    ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
                 { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
@@ -364,17 +349,16 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl#activity> ;
                      void:classPartition [
                         void:class ?c ;
                         void:propertyPartition [
                                 void:property ?p ;
                                 void:triples ?x
                             ]
-                    ]
+                    ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
                 { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
@@ -388,16 +372,15 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> ;
                      void:classPartition [
                         void:class ?c ;
                         void:propertyPartition [
                                 void:property ?p
                                     ]
-                            ]
+                            ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
                 { ?s a ?c ; ?p ?o }
@@ -413,17 +396,16 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl#activity> ;
                      void:classPartition [
                         void:class ?c ;
                         void:propertyPartition [
                                 void:property ?p ;
                                 void:distinctSubjects ?x
                             ]
-                    ]
+                    ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
                 { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
@@ -437,16 +419,15 @@
         PREFIX kgi: <http://ns.inria.fr/kg/index#>
         PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> ;
                     void:classPartition [
                         void:class ?c ;
                         void:propertyPartition [
                                 void:property ?p
                             ]
-                    ]
+                    ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
                 { ?s a ?c ; ?p ?o . }
@@ -467,14 +448,13 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl#activity> ;
                     void:propertyPartition [
                         void:property ?p ;
                         void:triples ?x
-                    ]
+                    ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
                 { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }
@@ -488,13 +468,12 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> ;
                     void:propertyPartition [
                         void:property ?p
-                    ]
+                    ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
                 { SELECT DISTINCT ?p WHERE { ?s ?p ?o } }
@@ -510,14 +489,13 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctSubject.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctSubject.ttl#activity> ;
                     void:propertyPartition [
-                        void:property ?p ;
-                        void:distinctSubjects ?x
-                    ]
+                            void:property ?p ;
+                            void:distinctSubjects ?x
+                        ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctSubject.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctSubject.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             } WHERE {
                 { SELECT (COUNT(DISTINCT ?s) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }
             }"""
@@ -532,14 +510,13 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy [
-                            prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctObject.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>
-                        ] ;
+                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctObject.ttl#activity> ;
                     void:propertyPartition [
-                        void:property ?p ;
-                        void:distinctObjects ?x
-                    ]
+                            void:property ?p ;
+                            void:distinctObjects ?x
+                        ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctObject.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctObject.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             } WHERE {
                 { SELECT (COUNT(DISTINCT ?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }
             }"""
