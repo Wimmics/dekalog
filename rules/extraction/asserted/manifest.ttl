@@ -1,0 +1,305 @@
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix kgi: <http://ns.inria.fr/kg/index#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+<> a mf:Manifest ;
+    mf:entries  (
+            <endpointDescResource.ttl>
+            <datasetDescResource.ttl>
+        ) .
+
+<endpointDescResource.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResource.ttl-activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResource.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResource.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                """
+        ]
+        [
+            mf:action """
+                PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    $endpointDescription ?p ?o .
+                    $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
+                        sd:endpoint $rawEndpointUrl .
+                    $metadataDescription a prov:Entity , earl:TestSubject ;
+                         prov:wasDerivedFrom $endpointUrl ;
+                         kgi:curated $endpointDescription ;
+                         kgi:original ?res .
+                    GRAPH $endpointUrl {
+                        ?res sd:endpoint $endpointUrl .
+                        ?res ?p ?o .
+                    }
+                } WHERE {
+                    ?res sd:endpoint $endpointUrl .
+                    ?res ?p ?o .
+                }"""
+        ]
+        [
+            mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                   ?s ?p $endpointDescription .
+                   $metadataDescription kgi:original ?res .
+                   GRAPH $endpointUrl {
+                        ?s ?p ?res .
+                   }
+                } WHERE {
+                   ?res sd:endpoint $endpointUrl .
+                   ?s ?p ?res .
+                }"""
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <../../meta/equivalences.ttl>
+    ) ;
+    kgi:onFailure (
+        <endpointDescResourceLocalhost.ttl>
+    ).
+
+<endpointDescResourceLocalhost.ttl>
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResourceLocalhost.ttl-activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResourceLocalhost.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/endpointDescResourceLocalhost.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            """
+        ]
+        [
+            mf:action """
+                PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    $endpointDescription ?p ?o .
+                        a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
+                        sd:endpoint $rawEndpointUrl .
+                    $metadataDescription a prov:Entity , earl:TestSubject ;
+                         prov:wasDerivedFrom $rawEndpointUrl ;
+                         kgi:curated $endpointDescription ;
+                         kgi:original ?res .
+                    GRAPH $endpointUrl {
+                        ?res sd:endpoint $rawEndpointUrl .
+                        ?res ?p ?o .
+                    }
+                } WHERE {
+                    ?res sd:endpoint ?endpoint .
+                    ?res ?p ?o .
+                    FILTER(CONTAINS(str(?endpoint), "locahost"))
+                }"""
+        ]
+        [
+            mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                   ?s ?p $endpointDescription .
+                   $metadataDescription kgi:original ?res .
+                   GRAPH $endpointUrl {
+                        ?s ?p ?res .
+                   }
+                } WHERE {
+                    ?res sd:endpoint ?endpoint .
+                   ?s ?p ?res .
+                   FILTER(CONTAINS(str(?endpoint), "locahost"))
+                }"""
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <../../meta/equivalences.ttl>
+    ) ;
+    kgi:onFailure (
+        [
+            mf:action """
+                PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
+                        sd:endpoint $rawEndpointUrl .
+                    $metadataDescription a prov:Entity , earl:TestSubject ;
+                         prov:wasDerivedFrom $endpointUrl ;
+                         kgi:curated $endpointDescription .
+                }"""
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <../../meta/equivalences.ttl>
+    ) .
+
+<datasetDescResource.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl-activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            """
+        ]
+        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
+                        ?pp ?o .
+                    $metadataDescription a prov:Entity , earl:TestSubject ;
+                        prov:wasDerivedFrom $rawEndpointUrl ;
+                        kgi:curated $datasetDescription ;
+                        kgi:original ?res .
+                    GRAPH $rawEndpointUrl {
+                        ?res ?pp ?o .
+                    }
+                }
+                WHERE {
+                    { ?res a dcat:Dataset }
+                    UNION { ?res a void:Dataset }
+                    ?res ?p $endpointUrl .
+                    ?res ?pp ?o .
+                 }"""
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    $metadataDescription a prov:Entity , earl:TestSubject ;
+                        prov:wasDerivedFrom $rawEndpointUrl ;
+                        kgi:curated $datasetDescription ;
+                        kgi:original ?res .
+                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
+                    ?s ?pp $datasetDescription .
+                    GRAPH $rawEndpointUrl {
+                        ?s ?pp ?res .
+                    }
+                }
+                WHERE {
+                    { ?res a dcat:Dataset }
+                    UNION { ?res a void:Dataset }
+                    ?res ?p $endpointUrl .
+                    ?s ?pp ?res .
+                 }"""
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <../../meta/equivalences.ttl>
+        ) ;
+        kgi:onFailure (
+            <datasetDescResourceLocalhost.ttl>
+        ) .
+
+<datasetDescResourceLocalhost.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT DATA {
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl-activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl-activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            """
+        ]
+        [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
+                        ?pp ?o .
+                    $metadataDescription a prov:Entity , earl:TestSubject ;
+                        prov:wasDerivedFrom $rawEndpointUrl ;
+                        kgi:curated $datasetDescription ;
+                        kgi:original ?res .
+                    GRAPH $rawEndpointUrl {
+                        ?res ?pp ?o .
+                    }
+                }
+                WHERE {
+                    { ?res a dcat:Dataset }
+                    UNION { ?res a void:Dataset }
+                    ?res ?p ?endpoint .
+                    ?res ?pp ?o .
+                    FILTER( CONTAINS( str(?endpoint), "localhost") )
+                 }"""
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    $metadataDescription a prov:Entity , earl:TestSubject ;
+                        prov:wasDerivedFrom $endpointUrl ;
+                        kgi:curated $datasetDescription ;
+                        kgi:original ?res .
+                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
+                    ?s ?pp $datasetDescription .
+                    GRAPH $endpointUrl {
+                        ?s ?pp ?res .
+                    }
+                }
+                WHERE {
+                    { ?res a dcat:Dataset }
+                    UNION { ?res a void:Dataset }
+                    ?res ?p ?endpoint .
+                    ?s ?pp ?res .
+                    FILTER( CONTAINS( str(?endpoint), "localhost") )
+                 }"""
+        ]
+        <../../meta/modifiedUpdate.ttl>
+        <../../meta/equivalences.ttl>
+    ) ;
+        kgi:onFailure (
+            [
+                mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                    PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                    PREFIX prov: <http://www.w3.org/ns/prov#>
+                    PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                    PREFIX earl: <http://www.w3.org/ns/earl#>
+                    PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                    INSERT DATA {
+                        $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
+                        $metadataDescription a prov:Entity , earl:TestSubject ;
+                            prov:wasDerivedFrom $rawEndpointUrl ;
+                            kgi:curated $datasetDescription .
+                    }"""
+            ]
+            <../../meta/modifiedUpdate.ttl>
+        ) .
