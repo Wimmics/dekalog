@@ -12,6 +12,7 @@
 @prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 
 kgi: dcterms:creator "Pierre Maillot" ;
+    dcterms:creator <https://orcid.org/0000-0002-9814-439X> ;
     dcterms:publisher "INRIA, Team WIMMICS" ;
     dcterms:title  "IndeGx vocabulary" ;
     dcterms:description "Vocabulary to complete the manifest and EARL vocabularies for the declaration of the IndeGx framework" ;
