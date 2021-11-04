@@ -5,3 +5,7 @@ code/target/
 code/.idea/
 
 *.iml
+
+code/out/artifacts/catalogIndex/kgindex.log
+
+code/out/artifacts/catalogIndex/output.trig
