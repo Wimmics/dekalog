@@ -188,7 +188,7 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
                     kgi:catalogRoot skos:example kgi:example10 .
-                    kgi:example10 dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> SELECT DISTINCT ?base ?test ?info WHERE { ?base a dcat:Dataset . ?metadata kgi:curated ?base . ?metadata kgi:trace ?trace . ?trace earl:result ?result . ?result earl:outcome earl:failed . ?result earl:info ?info . ?trace earl:test ?test . } GROUP BY ?metadata ?result ORDER BY DESC( ?base) ASC(?test)" ;
+                    kgi:example10 dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> SELECT DISTINCT ?base ?test ?info WHERE { ?base a dcat:Dataset . ?metadata kgi:curated ?base . ?metadata kgi:trace ?trace . ?trace earl:result ?result . ?result earl:outcome earl:failed . ?result earl:info ?info . ?trace earl:test ?test . } GROUP BY ?base ?test ?info ORDER BY DESC( ?base) ASC(?test)" ;
                         dcterms:description "Returns the message associated with failed tests." .
                 }
             """
