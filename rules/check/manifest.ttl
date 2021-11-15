@@ -50,7 +50,7 @@
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
                     prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
-                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>  ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>  .
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription , $endpointDescription ;
