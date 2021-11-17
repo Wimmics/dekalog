@@ -152,43 +152,47 @@ public class CatalogInputMain {
 
             assert catalogConnection != null;
             String finalOutputFilename = outputFilename;
-            catalogConnection.querySelect(datasetEndpointQuery, querySolution -> {
-                logger.debug(querySolution.get("?datasetUri") + " " + querySolution.get("?endpointUrl") + " " + querySolution.get("?datasetName"));
-                try {
-                    String datasetUri = querySolution.get("?datasetUri").toString();
-                    String endpointUrl = querySolution.get("?endpointUrl").asResource().getURI();
-                    String datasetName = "";
-                    if(querySolution.get("?datasetName") == null) {
-                        datasetName = URLEncoder.encode(datasetUri, StandardCharsets.UTF_8.toString());
-                    } else {
-                        datasetName = URLEncoder.encode(querySolution.get("?datasetName").toString(), StandardCharsets.UTF_8.toString());;
-                    }
-                    logger.trace("START dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
-
-                    // Faire l'extraction de description selon nos regles
-                    Path tmpDatasetDescFile = Files.createTempFile(null, ".trig");
-
-                    DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetName);
-                    describedDataset.setDatasetDescriptionResource(result.getDefaultModel().createResource(datasetUri));
-                    result.getDefaultModel().add(KGIndex.catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());
-                    DatasetDescriptionExtraction.extractIndexDescriptionForDataset(describedDataset, tmpDatasetDescFile.toString());
-                    logger.trace("END dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
-                    logger.trace("Transfert to result START");
-                    InputStream inputStream = new FileInputStream(tmpDatasetDescFile.toString());
-                    RDFDataMgr.read(result, inputStream, Lang.TRIG);
-                    Files.deleteIfExists(tmpDatasetDescFile);
+            try {
+                catalogConnection.querySelect(datasetEndpointQuery, querySolution -> {
+                    logger.debug(querySolution.get("?datasetUri") + " " + querySolution.get("?endpointUrl") + " " + querySolution.get("?datasetName"));
                     try {
-                        OutputStream outputStream = new FileOutputStream(finalOutputFilename);
-                        RDFDataMgr.write(outputStream, result, Lang.TRIG);
-                    } catch (FileNotFoundException e) {
-                        logger.error(e);
+                        String datasetUri = querySolution.get("?datasetUri").toString();
+                        String endpointUrl = querySolution.get("?endpointUrl").asResource().getURI();
+                        String datasetName = "";
+                        if(querySolution.get("?datasetName") == null) {
+                            datasetName = URLEncoder.encode(datasetUri, StandardCharsets.UTF_8.toString());
+                        } else {
+                            datasetName = URLEncoder.encode(querySolution.get("?datasetName").toString(), StandardCharsets.UTF_8.toString());;
+                        }
+                        logger.trace("START dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
+
+                        // Faire l'extraction de description selon nos regles
+                        Path tmpDatasetDescFile = Files.createTempFile(null, ".trig");
+
+                        DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetName);
+                        describedDataset.setDatasetDescriptionResource(result.getDefaultModel().createResource(datasetUri));
+                        result.getDefaultModel().add(KGIndex.catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());
+                        DatasetDescriptionExtraction.extractIndexDescriptionForDataset(describedDataset, tmpDatasetDescFile.toString());
+                        logger.trace("END dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
+                        logger.trace("Transfert to result START");
+                        InputStream inputStream = new FileInputStream(tmpDatasetDescFile.toString());
+                        RDFDataMgr.read(result, inputStream, Lang.TRIG);
+                        Files.deleteIfExists(tmpDatasetDescFile);
+                        try {
+                            OutputStream outputStream = new FileOutputStream(finalOutputFilename);
+                            RDFDataMgr.write(outputStream, result, Lang.TRIG);
+                        } catch (FileNotFoundException e) {
+                            logger.error(e);
+                        }
+                        describedDataset.close();
+                        logger.trace("Transfert to result END");
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    describedDataset.close();
-                    logger.trace("Transfert to result END");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
+                });
+            } catch(Exception e) {
+                logger.error(e);
+            }
             logger.trace("END of catalog processing");
             RDFDataMgr.write(System.err, result, Lang.TRIG);
             try {
