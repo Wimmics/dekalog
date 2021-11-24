@@ -11,13 +11,12 @@
 <basicFederatedQuery.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
-            mf:action """
-                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-                    PREFIX prov: <http://www.w3.org/ns/prov#>
+            mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
                 INSERT DATA {
-                    $endpointDescription sd:endpoint $endpointUrl ;
-                        sd:feature sd:basicFederatedQuery .
-                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicFederatedQuery.ttl#activity> .
+                    $endpointDescription sd:endpoint $rawEndpointUrl ;
+                        sd:feature sd:basicFederatedQuery ;
+                        prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicFederatedQuery.ttl#activity> .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicFederatedQuery.ttl#activity> a prov:Activity ;
                     prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicFederatedQuery.ttl> .
                 }
