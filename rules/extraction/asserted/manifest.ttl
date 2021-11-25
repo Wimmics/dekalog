@@ -39,7 +39,7 @@
                          prov:wasDerivedFrom $endpointUrl ;
                          kgi:curated $endpointDescription ;
                          kgi:original ?res .
-                    GRAPH $endpointUrl {
+                    GRAPH $rawEndpointUrl {
                         ?res sd:endpoint $endpointUrl .
                         ?res ?p ?o .
                     }
@@ -55,7 +55,7 @@
                 CONSTRUCT {
                    ?s ?p $endpointDescription .
                    $metadataDescription kgi:original ?res .
-                   GRAPH $endpointUrl {
+                   GRAPH $rawEndpointUrl {
                         ?s ?p ?res .
                    }
                 } WHERE {
@@ -99,7 +99,7 @@
                          prov:wasDerivedFrom $rawEndpointUrl ;
                          kgi:curated $endpointDescription ;
                          kgi:original ?res .
-                    GRAPH $endpointUrl {
+                    GRAPH $rawEndpointUrl {
                         ?res sd:endpoint $rawEndpointUrl .
                         ?res ?p ?o .
                     }
@@ -116,7 +116,7 @@
                 CONSTRUCT {
                    ?s ?p $endpointDescription .
                    $metadataDescription kgi:original ?res .
-                   GRAPH $endpointUrl {
+                   GRAPH $rawEndpointUrl {
                         ?s ?p ?res .
                    }
                 } WHERE {
@@ -271,7 +271,7 @@
                         kgi:original ?res .
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
                     ?s ?pp $datasetDescription .
-                    GRAPH $endpointUrl {
+                    GRAPH $rawEndpointUrl {
                         ?s ?pp ?res .
                     }
                 }
