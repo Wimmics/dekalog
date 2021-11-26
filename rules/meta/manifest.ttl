@@ -50,7 +50,6 @@
         [ mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $endpointDescription dcat:endpointUrl ?o . } WHERE { $datasetDescription void:sparqlEndpoint ?o . } """ ]
         [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s rdfs:comment ?o . } WHERE { ?s skos:definition ?o . } """ ]
         [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s skos:definition ?o . } WHERE { ?s rdfs:comment ?o . } """ ]
-        <modifiedUpdate.ttl>
     ) .
 
 <modifiedUpdate.ttl> a mf:ManifestEntry ;

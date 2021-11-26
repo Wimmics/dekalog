@@ -10,6 +10,6 @@
     kgi:query """SELECT DISTINCT ?ns
         WHERE {
             { ?s ?elem ?o . }
-            UNION { ?s ?p ?elem . }
+                UNION { ?s a ?elem . }
             BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
         }""" .
