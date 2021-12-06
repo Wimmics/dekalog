@@ -11,8 +11,9 @@
     kgi:query """ASK
         WHERE {
             SERVICE $endpointUrl {
-                { ?s ?elem ?o . }
-                UNION { ?s ?p ?elem . }
-                BIND( REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" ) AS ?ns ) .
+                { SELECT DISTINCT ?elem { { ?s ?elem ?o . }
+                     UNION { ?s a ?elem . }
+                } }
+                BIND(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1") AS ?ns) .
             }
         }""" .

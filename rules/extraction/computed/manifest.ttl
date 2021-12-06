@@ -155,8 +155,9 @@
                 $datasetDescription void:vocabulary ?ns .
             }
             WHERE {
-                ?s a ?elem .
-                BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+                { SELECT DISTINCT ?elem { ?s ?elem ?o .
+                } }
+                BIND(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1") AS ?ns) .
             }
         """
         ]
@@ -173,8 +174,9 @@
                 $datasetDescription void:vocabulary ?ns .
             }
             WHERE {
-                ?s ?elem ?o .
-                BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+                { SELECT DISTINCT ?elem { ?s a ?elem .
+                } }
+                BIND(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1") AS ?ns) .
             }
             """
         ]
