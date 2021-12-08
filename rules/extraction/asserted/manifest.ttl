@@ -34,9 +34,9 @@
                 CONSTRUCT {
                     $endpointDescription ?p ?o .
                     $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
+                        prov:wasDerivedFrom ?res ;
                         sd:endpoint $rawEndpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                         prov:wasDerivedFrom $endpointUrl ;
                          kgi:curated $endpointDescription ;
                          kgi:original ?res .
                     GRAPH $rawEndpointUrl {
@@ -92,11 +92,11 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                    $endpointDescription ?p ?o .
+                    $endpointDescription ?p ?o ;
                         a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
+                        prov:wasDerivedFrom ?res ;
                         sd:endpoint $rawEndpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                         prov:wasDerivedFrom $rawEndpointUrl ;
                          kgi:curated $endpointDescription ;
                          kgi:original ?res .
                     GRAPH $rawEndpointUrl {
@@ -140,7 +140,6 @@
                     $endpointDescription a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
                         sd:endpoint $rawEndpointUrl .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                         prov:wasDerivedFrom $endpointUrl ;
                          kgi:curated $endpointDescription .
                 }"""
         ]
@@ -170,9 +169,9 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
+                        prov:wasDerivedFrom ?res ;
                         ?pp ?o .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $rawEndpointUrl ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
                     GRAPH $rawEndpointUrl {
@@ -195,10 +194,10 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $rawEndpointUrl ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
-                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
+                    $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
+                        prov:wasDerivedFrom ?res .
                     ?s ?pp $datasetDescription .
                     GRAPH $rawEndpointUrl {
                         ?s ?pp ?res .
@@ -240,9 +239,9 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
+                        prov:wasDerivedFrom ?res ;
                         ?pp ?o .
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $rawEndpointUrl ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
                     GRAPH $rawEndpointUrl {
@@ -266,7 +265,7 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     $metadataDescription a prov:Entity , earl:TestSubject ;
-                        prov:wasDerivedFrom $endpointUrl ;
+                        prov:wasDerivedFrom ?res ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
@@ -297,7 +296,6 @@
                     INSERT DATA {
                         $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
                         $metadataDescription a prov:Entity , earl:TestSubject ;
-                            prov:wasDerivedFrom $rawEndpointUrl ;
                             kgi:curated $datasetDescription .
                     }"""
             ]
