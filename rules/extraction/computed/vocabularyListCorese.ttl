@@ -14,6 +14,6 @@
                 { SELECT DISTINCT ?elem { { ?s ?elem ?o . }
                      UNION { ?s a ?elem . }
                 } }
-                BIND(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1") AS ?ns) .
-            }
+        }
+        BIND(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1") AS ?ns) .
         }""" .
