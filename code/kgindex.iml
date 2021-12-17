@@ -24,7 +24,7 @@
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.14.1" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.30" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.14.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.15.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-arq:4.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-core:4.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-base:4.1.0" level="project" />
