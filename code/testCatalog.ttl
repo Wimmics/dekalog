@@ -33,3 +33,6 @@ kgi:TestDataset void:sparqlEndpoint <http://localhost:8890/sparql> ;
 
 kgi:orkg void:sparqlEndpoint <https://www.orkg.org/orkg/triplestore> ;
     rdfs:label "Open Research Knowledge Graph (ORKG)" .
+
+kgi:dekalog void:sparqlEndpoint <http://prod-dekalog.inria.fr/sparql> ;
+    rdfs:label "IndeGx" .
