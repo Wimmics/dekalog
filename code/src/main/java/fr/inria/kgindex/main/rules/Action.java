@@ -1,5 +1,6 @@
 package fr.inria.kgindex.main.rules;
 
+import fr.inria.kgindex.main.util.Utils;
 import org.apache.jena.rdf.model.RDFNode;
 
 public class Action {
@@ -14,6 +15,7 @@ public class Action {
     private RDFNode _actionNode = null;
     private TYPE _type = TYPE.UNKNOWN;
     private int _priority = 0;
+    private long _timeout = Utils.queryTimeout;
 
     public Action(RDFNode actionNode, String url, TYPE type) {
         this._endpointUrl = url;
@@ -48,6 +50,10 @@ public class Action {
     public void setPriority(int priority) {
         this._priority = priority;
     }
+
+    public void setTimeout(long timeout) { this._timeout = timeout; }
+
+    public long getTimeout() { return this._timeout; }
 
     @Override
     public String toString() {

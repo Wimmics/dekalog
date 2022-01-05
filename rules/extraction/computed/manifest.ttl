@@ -3,6 +3,7 @@
 @prefix kgi: <http://ns.inria.fr/kg/index#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <> a mf:Manifest ;
     mf:entries  (
@@ -62,6 +63,7 @@
             """
         ]
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX dcat: <http://www.w3.org/ns/dcat#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -106,6 +108,7 @@
             """
         ]
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             kgi:endpoint kgi:federation ;
             mf:action """PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
@@ -145,6 +148,7 @@
             """
         ]
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
@@ -163,6 +167,7 @@
         """
         ]
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
@@ -264,6 +269,7 @@
                 """
             ]
             [
+                kgi:timeout "PT120S"^^xsd:duration ;
                 kgi:endpoint kgi:federation ;
                 mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                     PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -301,6 +307,7 @@
                 """
             ]
             [
+                kgi:timeout "PT120S"^^xsd:duration ;
                 kgi:endpoint kgi:federation ;
                 mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                     PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -361,6 +368,7 @@
             """
         ]
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -411,6 +419,7 @@
             """
         ]
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -459,6 +468,7 @@
             """
         ]
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>

@@ -3,6 +3,7 @@
 @prefix kgi: <http://ns.inria.fr/kg/index#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <> a mf:Manifest ;
     mf:entries  (
@@ -27,6 +28,7 @@
 <classPopulation.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
@@ -57,6 +59,7 @@
 <sportalDistinctRDFNodes.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
@@ -76,6 +79,7 @@
 <sportalDistinctUrisObjects.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
@@ -97,6 +101,7 @@
 <sportalDistinctUrisSubjects.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
@@ -114,6 +119,7 @@
 <sportalDistinctBlankNodeSubjects.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
@@ -131,6 +137,7 @@
 <sportalDistinctBlankNodeObjects.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
@@ -148,6 +155,7 @@
 <sportalDistinctBlankNodes.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
@@ -166,6 +174,7 @@
 <sportalDistinctIRIReferences.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
@@ -184,6 +193,7 @@
 <sportalDistinctLiterals.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
@@ -206,6 +216,7 @@
 <sportalClassPartitionTriples.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
@@ -227,6 +238,7 @@
     ) ;
     kgi:onFailure (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
@@ -250,89 +262,101 @@
 
 <sportalClassPartitionClasses.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kg/index#>
-        PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl#activity> ;
-                    void:classPartition [
-                        void:class ?c ;
-                        void:classes ?x
-                    ] .
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl> ;
-                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-            }
-            WHERE {
-                { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }
-            }
-        """ ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+                CONSTRUCT {
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl#activity> ;
+                        void:classPartition [
+                            void:class ?c ;
+                            void:classes ?x
+                        ] .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }
+                }
+            """
+        ]
         <../meta/modifiedUpdate.ttl>
     ) .
 
 <sportalClassPartitionProperties.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kg/index#>
-        PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl#activity> ;
-                      void:classPartition [
-                        void:class ?c ;
-                        void:properties ?x
-                    ] .
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl> ;
-                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-            }
-            WHERE {
-                { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
-            }
-        """ ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+                CONSTRUCT {
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl#activity> ;
+                          void:classPartition [
+                            void:class ?c ;
+                            void:properties ?x
+                        ] .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+                }
+            """
+        ]
         <../meta/modifiedUpdate.ttl>
     ) .
 
 <sportalClassPartitionDistinctSubjects.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kg/index#>
-        PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl#activity> ;
-                    void:classPartition [
-                        void:class ?c ;
-                        void:distinctSubjects ?x
-                    ] .
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-            }
-            WHERE {
-                { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }
-            }
-        """ ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+                CONSTRUCT {
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl#activity> ;
+                        void:classPartition [
+                            void:class ?c ;
+                            void:distinctSubjects ?x
+                        ] .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }
+                }
+            """
+        ]
         <../meta/modifiedUpdate.ttl>
     ) .
 
 <sportalClassPartitionDistinctObjects.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kg/index#>
-        PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl#activity> ;
-                    void:classPartition [
-                        void:class ?c ;
-                        void:distinctObjects ?x
-                    ] .
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-            }
-            WHERE {
-                { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
-            }
-        """  ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+                CONSTRUCT {
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl#activity> ;
+                        void:classPartition [
+                            void:class ?c ;
+                            void:distinctObjects ?x
+                        ] .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+                }
+            """
+        ]
         <../meta/modifiedUpdate.ttl>
     ) .
 
@@ -344,95 +368,107 @@
 
 <sportalClassPartitionPropertyPartitionTriples.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kg/index#>
-        PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl#activity> ;
-                     void:classPartition [
-                        void:class ?c ;
-                        void:propertyPartition [
-                                void:property ?p ;
-                                void:triples ?x
-                            ]
-                    ] .
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl> ;
-                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-            }
-            WHERE {
-                { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
-            }
-        """  ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+                CONSTRUCT {
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl#activity> ;
+                         void:classPartition [
+                            void:class ?c ;
+                            void:propertyPartition [
+                                    void:property ?p ;
+                                    void:triples ?x
+                                ]
+                        ] .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
+                }
+            """
+        ]
         <../meta/modifiedUpdate.ttl>
     ) ;
     kgi:onFailure (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kg/index#>
-        PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> ;
-                     void:classPartition [
-                        void:class ?c ;
-                        void:propertyPartition [
-                                void:property ?p
-                                    ]
-                            ] .
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-            }
-            WHERE {
-                { ?s a ?c ; ?p ?o }
-            }
-        """  ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+                CONSTRUCT {
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> ;
+                         void:classPartition [
+                            void:class ?c ;
+                            void:propertyPartition [
+                                    void:property ?p
+                                        ]
+                                ] .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    { ?s a ?c ; ?p ?o }
+                }
+            """
+        ]
         <../meta/modifiedUpdate.ttl>
     ) .
 
 <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kg/index#>
-        PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl#activity> ;
-                     void:classPartition [
-                        void:class ?c ;
-                        void:propertyPartition [
-                                void:property ?p ;
-                                void:distinctSubjects ?x
-                            ]
-                    ] .
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-            }
-            WHERE {
-                { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
-            }
-        """ ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+                CONSTRUCT {
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl#activity> ;
+                         void:classPartition [
+                            void:class ?c ;
+                            void:propertyPartition [
+                                    void:property ?p ;
+                                    void:distinctSubjects ?x
+                                ]
+                        ] .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
+                }
+            """
+        ]
         <../meta/modifiedUpdate.ttl>
     ) ;
     kgi:onFailure (
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX earl: <http://www.w3.org/ns/earl#>
-        PREFIX kgi: <http://ns.inria.fr/kg/index#>
-        PREFIX void: <http://rdfs.org/ns/void#>
-            CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> ;
-                    void:classPartition [
-                        void:class ?c ;
-                        void:propertyPartition [
-                                void:property ?p
-                            ]
-                    ] .
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl> ;
-                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-            }
-            WHERE {
-                { ?s a ?c ; ?p ?o . }
-            }
-        """  ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+                CONSTRUCT {
+                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> ;
+                        void:classPartition [
+                            void:class ?c ;
+                            void:propertyPartition [
+                                    void:property ?p
+                                ]
+                        ] .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl> ;
+                                prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    { ?s a ?c ; ?p ?o . }
+                }
+            """
+        ]
         <../meta/modifiedUpdate.ttl>
     ) .
 
@@ -444,6 +480,7 @@
 <sportalPropertyPartitionTriples.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
@@ -464,6 +501,7 @@
     ) ;
     kgi:onFailure (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -485,6 +523,7 @@
 <sportalPropertyPartitionDistinctSubject.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
@@ -506,6 +545,7 @@
 <sportalPropertyPartitionDistinctObject.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
