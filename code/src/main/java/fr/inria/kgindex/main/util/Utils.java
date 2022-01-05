@@ -21,7 +21,6 @@ public class Utils {
     public static String PLACEHOLDER_METADATADESCRIPTION = "$metadataDescription";
     public static String PLACEHOLDER_GRAPHLIST = "$graphList";
     public static String PLACEHOLDER_LIMIT = "$LIMIT";
-    public static String PLACEHOLDER_DATASETNAME = "$name$";
     public static String PLACEHOLDER_DATETIME = "$dateLiteral";
     public static String PLACEHOLDER_FROM = "$FROM";
     public static String PLACEHOLDER_NAMESPACE = "$namespace";
@@ -34,7 +33,6 @@ public class Utils {
                 || queryString.contains(PLACEHOLDER_METADATADESCRIPTION)
                 || queryString.contains(PLACEHOLDER_GRAPHLIST)
                 || queryString.contains(PLACEHOLDER_LIMIT)
-                || queryString.contains(PLACEHOLDER_DATASETNAME)
                 || queryString.contains(PLACEHOLDER_DATETIME)
                 || queryString.contains(PLACEHOLDER_FROM)
                 || queryString.contains(PLACEHOLDER_NAMESPACE)
@@ -43,7 +41,7 @@ public class Utils {
     }
 
     /**
-     * Replace the placeholders in tests and queries. Placeholders include "$datasetDescription", "$endpointDescription", "$metadataDescription", "$graphList", "$LIMIT", "FROM", "$namespace", "$endpoint", "$name$", $dateLiteral.
+     * Replace the placeholders in tests and queries. Placeholders include "$datasetDescription", "$endpointDescription", "$metadataDescription", "$graphList", "$LIMIT", "FROM", "$namespace", "$endpoint", $dateLiteral.
      * To take into account the usage of HTTP or HTTPS in endpoint URL, the result can be two different strings with endoint url variants instead of one.
      * @param queryString
      * @param describedDataset
@@ -58,7 +56,6 @@ public class Utils {
             queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_METADATADESCRIPTION), "<" + describedDataset.getMetadataDescriptionResource().getURI() + ">");
             queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_GRAPHLIST), "<" + describedDataset.getGraphListResource().getURI() + ">");
             queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_LIMIT), "");
-            queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_DATASETNAME), describedDataset.getName());
             queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_RAWENDPOINTURL), "<" + describedDataset.getEndpointUrl() + ">");
             Date date = new Date();
             Model tmpModel = ModelFactory.createDefaultModel();

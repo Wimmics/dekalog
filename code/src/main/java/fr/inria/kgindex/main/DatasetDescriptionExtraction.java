@@ -31,8 +31,8 @@ public class DatasetDescriptionExtraction {
 
 	private static final Logger logger = LogManager.getLogger(DatasetDescriptionExtraction.class);
 
-	public static void extractIndexDescriptionForDataset(String datasetName, String endpointUrl, String outputFilename) {
-		DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetName);
+	public static void extractIndexDescriptionForDataset(String endpointUrl, String outputFilename) {
+		DescribedDataset describedDataset = new DescribedDataset(endpointUrl);
 		extractIndexDescriptionForDataset(describedDataset, outputFilename);
 		describedDataset.close();
 	}
