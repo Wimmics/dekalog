@@ -77,14 +77,6 @@
             <version>3.2.4</version>
         </dependency>
 
-        <dependency>
-            <groupId>fr.inria.corese</groupId>
-            <artifactId>corese-gui</artifactId>
-            <version>4.1.1</version>
-            <scope>system</scope>
-            <systemPath>/user/pmaillot/home/git/dekalog/code/corese-gui-4.1.1-jar-with-dependencies.jar</systemPath>
-        </dependency>
-
 
     </dependencies>
 

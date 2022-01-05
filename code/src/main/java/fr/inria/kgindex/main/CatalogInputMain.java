@@ -6,16 +6,15 @@ import fr.inria.kgindex.main.rules.RuleApplication;
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Utils;
 import org.apache.commons.cli.*;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +23,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedList;
 
 public class CatalogInputMain {
 
@@ -135,64 +135,74 @@ public class CatalogInputMain {
                     "PREFIX dcat: <http://www.w3.org/ns/dcat#>" +
                     "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> " +
                     "PREFIX dcat: <http://www.w3.org/ns/dcat#> " +
-                    " SELECT DISTINCT ?datasetUri ?endpointUrl ?datasetName WHERE { " +
+                    "SELECT DISTINCT ?endpointUrl WHERE { " +
                     " ?datasetCatalog a dcat:Catalog ;" +
                     " dcat:dataset ?datasetUri . " +
                     " { ?datasetUri void:sparqlEndpoint ?endpointUrl . }" +
                     " UNION { ?datasetUri sd:endpoint ?endpointUrl . }" +
                     " UNION { ?datasetUri dcat:endpointUrl ?endpointUrl . }" +
-                    "OPTIONAL {" +
-                    "   { ?datasetUri rdfs:label ?datasetName } " +
-                    "   UNION { ?datasetUri schema:name ?datasetName }" +
-                    "   UNION { ?datasetUri dcterms:title ?datasetName }" +
-                    "}" +
                     "FILTER(isIRI(?endpointUrl) && ! isBlank(?endpointUrl) )" +
                     "}";
             Query datasetEndpointQuery = QueryFactory.create(datasetEndpointQueryString);
 
             assert catalogConnection != null;
             String finalOutputFilename = outputFilename;
-            try {
-                catalogConnection.querySelect(datasetEndpointQuery, querySolution -> {
-                    logger.debug(querySolution.get("?datasetUri") + " " + querySolution.get("?endpointUrl") + " " + querySolution.get("?datasetName"));
+            RDFConnection finalCatalogConnection = catalogConnection;
+            catalogConnection.querySelect(datasetEndpointQuery, querydatasetEndpointSolution -> {
+                String endpointUrl = querydatasetEndpointSolution.get("?endpointUrl").asResource().getURI();
+                logger.debug(endpointUrl);
+
+                ParameterizedSparqlString datasetEndpointURILabelQueryString = new ParameterizedSparqlString("PREFIX void: <http://rdfs.org/ns/void#>" +
+                        "PREFIX schema: <http://schema.org/>" +
+                        "PREFIX dcterms: <http://purl.org/dc/terms/>" +
+                        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+                        "PREFIX dcat: <http://www.w3.org/ns/dcat#>" +
+                        "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> " +
+                        "PREFIX dcat: <http://www.w3.org/ns/dcat#> " +
+                        "SELECT DISTINCT ?datasetName WHERE { " +
+                        " { ?datasetUri void:sparqlEndpoint ?endpointUrl . }" +
+                        " UNION { ?datasetUri sd:endpoint ?endpointUrl . }" +
+                        " UNION { ?datasetUri dcat:endpointUrl ?endpointUrl . }" +
+                        "   { ?datasetUri rdfs:label ?datasetName } " +
+                        "   UNION { ?datasetUri schema:name ?datasetName }" +
+                        "   UNION { ?datasetUri dcterms:title ?datasetName }" +
+                        "}");
+                datasetEndpointURILabelQueryString.setIri("endpointUrl", endpointUrl);
+
+                try {
+                    LinkedList<String> datasetNames = new LinkedList<>();
+                    finalCatalogConnection.querySelect(datasetEndpointURILabelQueryString.asQuery(), queryDatasetLabelSolution -> {
+                        datasetNames.add(queryDatasetLabelSolution.get("?datasetName").toString());
+                    });
+                    logger.trace("START dataset " + endpointUrl );
+
+                    // Faire l'extraction de description selon nos regles
+                    Path tmpDatasetDescFile = Files.createTempFile(null, ".trig");
+
+                    DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetNames);
+                    result.getDefaultModel().add(KGIndex.catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());
+                    describedDataset.getNames().forEach(name -> {
+                        result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), RDFS.label, name);
+                    });
+                    DatasetDescriptionExtraction.extractIndexDescriptionForDataset(describedDataset, tmpDatasetDescFile.toString());
+                    logger.trace("END dataset " + endpointUrl);
+                    logger.trace("Transfert to result START");
+                    InputStream inputStream = new FileInputStream(tmpDatasetDescFile.toString());
+                    RDFDataMgr.read(result, inputStream, Lang.TRIG);
+                    Files.deleteIfExists(tmpDatasetDescFile);
                     try {
-                        String datasetUri = querySolution.get("?datasetUri").toString();
-                        String endpointUrl = querySolution.get("?endpointUrl").asResource().getURI();
-                        String datasetName = "";
-                        if(querySolution.get("?datasetName") == null) {
-                            datasetName = URLEncoder.encode(datasetUri, StandardCharsets.UTF_8.toString());
-                        } else {
-                            datasetName = URLEncoder.encode(querySolution.get("?datasetName").toString(), StandardCharsets.UTF_8.toString());;
-                        }
-                        logger.trace("START dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
-
-                        // Faire l'extraction de description selon nos regles
-                        Path tmpDatasetDescFile = Files.createTempFile(null, ".trig");
-
-                        DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetName);
-                        describedDataset.setDatasetDescriptionResource(result.getDefaultModel().createResource(datasetUri));
-                        result.getDefaultModel().add(KGIndex.catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());
-                        DatasetDescriptionExtraction.extractIndexDescriptionForDataset(describedDataset, tmpDatasetDescFile.toString());
-                        logger.trace("END dataset " + datasetName + " " + datasetUri + " : " + endpointUrl);
-                        logger.trace("Transfert to result START");
-                        InputStream inputStream = new FileInputStream(tmpDatasetDescFile.toString());
-                        RDFDataMgr.read(result, inputStream, Lang.TRIG);
-                        Files.deleteIfExists(tmpDatasetDescFile);
-                        try {
-                            OutputStream outputStream = new FileOutputStream(finalOutputFilename);
-                            RDFDataMgr.write(outputStream, result, Lang.TRIG);
-                        } catch (FileNotFoundException e) {
-                            logger.error(e);
-                        }
-                        describedDataset.close();
-                        logger.trace("Transfert to result END");
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        OutputStream outputStream = new FileOutputStream(finalOutputFilename);
+                        RDFDataMgr.write(outputStream, result, Lang.TRIG);
+                    } catch (FileNotFoundException e) {
+                        logger.error(e);
                     }
-                });
-            } catch(Exception e) {
-                logger.error(e);
-            }
+                    describedDataset.close();
+                    logger.trace("Transfert to result END");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
             logger.trace("END of catalog processing");
             RDFDataMgr.write(System.err, result, Lang.TRIG);
             try {

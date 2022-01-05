@@ -17,10 +17,6 @@ public class RuleLibrary {
     }
 
     public static void closeLibrary() {
-        __library.entrySet().forEach(entrySet -> {
-            entrySet.getValue().forEach(entry -> {
-                entry.close();
-            });
-        });
+        getLibrary().forEach((key, value) -> value.forEach(ManifestEntry::close));
     }
 }

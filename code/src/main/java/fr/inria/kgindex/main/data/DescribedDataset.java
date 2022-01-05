@@ -1,18 +1,22 @@
 package fr.inria.kgindex.main.data;
 
 import fr.inria.kgindex.main.util.KGIndex;
+import org.apache.jena.rdf.model.AnonId;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class DescribedDataset {
 
 	private String _endpointUrl = "";
-	private String _name = "";
-	private Model _model = ModelFactory.createDefaultModel();
+	private List<String> _names = null;
+	private final Model _model = ModelFactory.createDefaultModel();
+	private final AnonId _anonId = AnonId.create();
 	private ArrayList<String> _datasetNamespaces = new ArrayList<String>();
 	private ArrayList<Resource> _graphList = new ArrayList<Resource>();
 	private Resource _datasetDescriptionResource = null;
@@ -20,15 +24,27 @@ public class DescribedDataset {
 	private Resource _metadataDescriptionResource = null;
 	private Resource _graphListResource = null;
 	private boolean _graphsAreRequiredFlag = false;
+
+	public DescribedDataset(String endpoint) {
+		this._endpointUrl = endpoint;
+		String endpointDescResourceString = KGIndex.kgindexNamespace + this._anonId.getLabelString() + "Endpoint";
+		String datasetDescResourceString = KGIndex.kgindexNamespace + this._anonId.getLabelString() + "Dataset";
+		String metadataDescResourceString = KGIndex.kgindexNamespace + this._anonId.getLabelString() + "Metadata";
+		String graphListDescResourceString = endpointDescResourceString + "GraphList";
+		this.setEndpointDescriptionResource(this._model.createResource(endpointDescResourceString));
+		this.setDatasetDescriptionResource(this._model.createResource(datasetDescResourceString));
+		this.setMetadataDescriptionResource(this._model.createResource(metadataDescResourceString));
+		this.setGraphListResource(this._model.createResource(graphListDescResourceString));
+		this._names = new LinkedList<>();
+	}
 	
-	public DescribedDataset(String endpoint, String name) {
-		this(endpoint, KGIndex.kgindexNamespace + name + "Endpoint", KGIndex.kgindexNamespace + name + "Dataset", KGIndex.kgindexNamespace + name + "Metadata");
-		this._name = name;
+	public DescribedDataset(String endpoint, List<String> names) {
+		this(endpoint);
+		this._names = names;
 	}
 
 	public DescribedDataset(String endpoint, String endpointResourceUrl, String datasetResourceUrl, String metadataResourceUrl) {
 		this(endpoint);
-
 		Resource endpointDescResource = this._model.createResource(endpointResourceUrl);
 		this.setEndpointDescriptionResource(endpointDescResource);
 		Resource datasetDescResource = this._model.createResource(datasetResourceUrl);
@@ -37,10 +53,6 @@ public class DescribedDataset {
 		this.setMetadataDescriptionResource(metadataDescResource);
 		Resource graphListResource = this._model.createResource(endpointResourceUrl + "GraphList");
 		this.setGraphListResource(graphListResource);
-	}
-
-	private DescribedDataset(String endpoint) {
-		this._endpointUrl = endpoint;
 	}
 	
 	public String getEndpointUrl() {
@@ -51,12 +63,16 @@ public class DescribedDataset {
 		this._endpointUrl = url;
 	}
 	
-	public String getName() {
-		return this._name;
+	public List<String> getNames() {
+		return this._names;
 	}
 	
-	public void setName(String name) {
-		this._name = name;
+	public void setNames(List<String> names) {
+		this._names = names;
+	}
+
+	public void addName(String name) {
+		this._names.add(name);
 	}
 
 	public ArrayList<String> getNamespaces() {
