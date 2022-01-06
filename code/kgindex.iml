@@ -10,37 +10,41 @@
     </content>
     <orderEntry type="jdk" jdkName="openjdk-16" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-shacl:4.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-tdb:4.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-tdb2:4.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-dboe-storage:4.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-dboe-trans-data:4.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-dboe-transaction:4.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-dboe-base:4.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-dboe-index:4.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-rdfconnection:4.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-shacl:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-shex:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-tdb:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-tdb2:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-dboe-storage:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-dboe-trans-data:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-dboe-transaction:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-dboe-base:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-dboe-index:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-rdfconnection:4.3.2" level="project" />
     <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.4" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.14.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.14.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.16.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.16.0" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.30" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.15.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-arq:4.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-core:4.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-base:4.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-shaded-guava:4.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-csv:1.8" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-compress:1.20" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-arq:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-core:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-base:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-shaded-guava:4.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-csv:1.9.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-compress:1.21" level="project" />
     <orderEntry type="library" name="Maven: com.github.andrewoma.dexx:collection:0.7" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-iri:4.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jena:jena-iri:4.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5.13" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.13" level="project" />
     <orderEntry type="library" name="Maven: com.github.jsonld-java:jsonld-java:0.13.3" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.12.3" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.12.3" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.12.3" level="project" />
+    <orderEntry type="library" name="Maven: com.apicatalog:titanium-json-ld:1.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish:jakarta.json:2.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient-cache:4.5.13" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.thrift:libthrift:0.14.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.17.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.thrift:libthrift:0.15.0" level="project" />
     <orderEntry type="library" name="Maven: javax.annotation:javax.annotation-api:1.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.12.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-api:5.8.1" level="project" />
