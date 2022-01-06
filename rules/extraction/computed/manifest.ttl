@@ -162,7 +162,7 @@
             WHERE {
                 { SELECT DISTINCT ?elem { ?s ?elem ?o .
                 } }
-                BIND(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1") AS ?ns) .
+                BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
             }
         """
         ]
@@ -177,12 +177,12 @@
                 $metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated $datasetDescription .
-                $datasetDescription void:vocabulary ?ns .
+                $datasetDescription void:vocabulary IRI(?ns) .
             }
             WHERE {
                 { SELECT DISTINCT ?elem { ?s a ?elem .
                 } }
-                BIND(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1") AS ?ns) .
+                BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
             }
             """
         ]
@@ -225,7 +225,7 @@
                         ?s a ?elem .
                     }
                 }
-                BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+                BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
             }
             """
         ]
@@ -247,7 +247,7 @@
                         ?s ?elem ?o .
                     }
                 }
-                BIND( IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1" )) AS ?ns ) .
+                BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
             }"""
         ]
         <../../meta/modifiedUpdate.ttl>

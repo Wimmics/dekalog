@@ -17,5 +17,5 @@
                      UNION { ?s a ?elem . }
                 } }
         }
-        BIND(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1") AS ?ns) .
+        BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
         }""" .
