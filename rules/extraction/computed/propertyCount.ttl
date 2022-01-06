@@ -3,10 +3,12 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <> a kgi:TestQuery ;
     dcterms:isReferencedBy <manifest.ttl> ;
     dcterms:title "There are as many properties as expected."@en ;
+    kgi:timeout "PT120S"^^xsd:duration ;
     kgi:query """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX owl: <http://www.w3.org/2002/07/owl#>
             PREFIX void: <http://rdfs.org/ns/void#>

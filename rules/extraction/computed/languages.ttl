@@ -6,11 +6,13 @@
 @prefix void: <http://rdfs.org/ns/void#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <> rdf:type kgi:TestQuery ;
     dcterms:isReferencedBy <manifest.ttl> ;
     dcterms:title "Presence of language tags in the content." ;
     dcterms:description "Check if there are langage tags to make the content of the KB multilingual." ;
+    kgi:timeout "PT120S"^^xsd:duration ;
     kgi:query """ASK {
             SELECT DISTINCT (lang(?o) as ?lang) WHERE {
                 ?s ?p ?o . FILTER( isLiteral(?o) )
