@@ -5,8 +5,11 @@ import fr.inria.kgindex.main.data.EarlReport;
 import fr.inria.kgindex.main.util.DatasetUtils;
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Utils;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.datatypes.xsd.XSDDuration;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
@@ -50,6 +53,14 @@ public class QueryTestExecution extends TestExecution {
             if(testModel.contains(testResource, RDFS.label)) {
                 testTitleTmp = testModel.listObjectsOfProperty(testResource, RDFS.label).toList().get(0).asLiteral().getString();
             }
+            long testTimeout = Utils.queryTimeout;
+            if(testModel.contains(testResource, KGIndex.timeout)) {
+                List<RDFNode> actionTimeoutList = testModel.listObjectsOfProperty(testResource.asResource(), KGIndex.timeout).toList();
+                if(actionTimeoutList.size() == 1) {
+                    Literal actionTimeoutLiteral = actionTimeoutList.get(0).asLiteral();
+                    testTimeout = ((XSDDuration) XSDDatatype.XSDduration.parse(actionTimeoutLiteral.getString())).getFullSeconds() * 1000L;
+                }
+            }
 
             String queryStringRaw = queryResource.getString();
 
@@ -62,9 +73,9 @@ public class QueryTestExecution extends TestExecution {
                 // Execution de la requête
                 try {
                     org.apache.http.client.config.RequestConfig requestConfig = org.apache.http.client.config.RequestConfig.copy(org.apache.http.client.config.RequestConfig.DEFAULT)
-                            .setSocketTimeout(Math.toIntExact(Utils.queryTimeout))
-                            .setConnectTimeout(Math.toIntExact(Utils.queryTimeout))
-                            .setConnectionRequestTimeout(Math.toIntExact(Utils.queryTimeout))
+                            .setSocketTimeout(Math.toIntExact(testTimeout))
+                            .setConnectTimeout(Math.toIntExact(testTimeout))
+                            .setConnectionRequestTimeout(Math.toIntExact(testTimeout))
                             .build();
                     org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
                             .useSystemProperties()
@@ -72,11 +83,11 @@ public class QueryTestExecution extends TestExecution {
                             .setUserAgent(RulesUtils.USER_AGENT)
                             .build();
                     QueryEngineHTTP testQueryExecution = new QueryEngineHTTP(this.getEndpointUrl(), queryString, client);
-                    testQueryExecution.addParam("timeout", String.valueOf(Utils.queryTimeout));
-                    testQueryExecution.setTimeout(Utils.queryTimeout, Utils.queryTimeout);
-                    if(queryString.contains("ASK")) {
+                    testQueryExecution.addParam("timeout", String.valueOf(testTimeout));
+                    testQueryExecution.setTimeout(testTimeout, testTimeout);
+                    if(QueryFactory.create(queryString).isAskType()) {
                         passed = testQueryExecution.execAsk();
-                    } else if (queryString.contains("SELECT")) {
+                    } else if (QueryFactory.create(queryString).isSelectType()) {
                         ResultSet testResults = testQueryExecution.execSelect();
                         passed = true;
                     }

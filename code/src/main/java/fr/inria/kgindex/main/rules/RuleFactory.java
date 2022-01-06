@@ -4,14 +4,20 @@ import fr.inria.kgindex.main.data.DescribedDataset;
 import fr.inria.kgindex.main.data.ManifestEntry;
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.Manifest;
+import fr.inria.kgindex.main.util.Utils;
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.datatypes.xsd.XSDDuration;
+import org.apache.jena.datatypes.xsd.impl.XSDDurationType;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.XSD;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -56,68 +62,14 @@ public class RuleFactory {
         for (RDFNode entryNode : entry.getActionsOnSuccess().keySet()) {
             Model entryModel = entry.getActionsOnSuccess().get(entryNode);
 
-            // Récupérer les actions
-            String actionEndpointUrl = describedDataset.getEndpointUrl();
-
-            if(entryNode.isAnon() && entryModel.contains(entryNode.asResource(), Manifest.action)) {
-                // Identifier l'endpoint visé
-                List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(entryNode.asResource(), KGIndex.endpoint).toList();
-                if (!actionEndpointUrlList.isEmpty()) {
-                    actionEndpointUrl = actionEndpointUrlList.get(0).toString();
-                }
-
-                NodeIterator actionStrings = entryModel.listObjectsOfProperty(entryNode.asResource(), Manifest.action);
-                String finalActionEndpointUrl = actionEndpointUrl;
-                actionStrings.forEach(actionString -> {
-                    Action currentAction = new Action(actionString, finalActionEndpointUrl, Action.TYPE.SPARQL);
-                    currentAction.setPriority(successPriorityCount.getAndIncrement());
-                    testActionListSuccess.add(currentAction);
-                });
-            } else if(! entryNode.isAnon() && entryNode.isResource() && entryModel.isEmpty()) {
-                Action currentAction = new Action(entryNode, actionEndpointUrl, Action.TYPE.Manifest);
-                currentAction.setPriority(successPriorityCount.getAndIncrement());
-                testActionListSuccess.add(currentAction);
-            } else {
-                logger.error(entry.getFileResource().getURI());
-                throw new NoSuchElementException("Unexcepted action for " + entry.getFileResource().getURI());
-            }
-
+            testActionListSuccess.addAll(extractActionList(entryModel, entryNode, describedDataset, successPriorityCount));
         }
-
 
         AtomicInteger failurePriorityCount = new AtomicInteger();
         for (RDFNode entryNode : entry.getActionsOnFailure().keySet()) {
             Model entryModel = entry.getActionsOnFailure().get(entryNode);
 
-            // Récupérer les actions
-            String actionEndpointUrl = describedDataset.getEndpointUrl();
-
-            if(entryNode.isAnon() && entryModel.contains(entryNode.asResource(), Manifest.action)) { // C'est une requête
-                // Identifier l'endpoint visé
-                List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(entryNode.asResource(), KGIndex.endpoint).toList();
-                if (!actionEndpointUrlList.isEmpty()) {
-                    actionEndpointUrl = actionEndpointUrlList.get(0).toString();
-                    if(actionEndpointUrl.equals(KGIndex.federation.getURI())) {
-                        actionEndpointUrl = RuleApplication.federationserver;
-                    }
-                }
-
-                NodeIterator actionStrings = entryModel.listObjectsOfProperty(entryNode.asResource(), Manifest.action);
-                String finalActionEndpointUrl = actionEndpointUrl;
-                actionStrings.forEach(actionString -> {
-                    Action currentAction = new Action(actionString, finalActionEndpointUrl, Action.TYPE.SPARQL);
-                    currentAction.setPriority(failurePriorityCount.getAndIncrement());
-                    testActionListFailure.add(currentAction);
-                });
-            } else if(! entryNode.isAnon() && entryNode.isResource() ) { // C'est un test à faire suivre
-                Action currentAction = new Action(entryNode, actionEndpointUrl, Action.TYPE.Manifest);
-                currentAction.setPriority(failurePriorityCount.getAndIncrement());
-                testActionListFailure.add(currentAction);
-            } else {
-                logger.error(entry.getFileResource());
-                throw new Error("Unexcepted action");
-            }
-
+            testActionListFailure.addAll(extractActionList(entryModel, entryNode, describedDataset, failurePriorityCount));
         }
 
         Tests tests = new Tests(entry);
@@ -149,6 +101,49 @@ public class RuleFactory {
 
         RuleApplication result =  new RuleApplication(entry, testExec, testActionListSuccess, testActionListFailure, describedDataset, datasetDescription);
         result.setType(interactionType);
+
+        return result;
+    }
+
+    private static List<Action> extractActionList(Model entryModel, RDFNode entryNode, DescribedDataset describedDataset, AtomicInteger priorityCount) {
+        ArrayList<Action> result = new ArrayList<>();
+
+        // Récupérer les actions
+        String actionEndpointUrl = describedDataset.getEndpointUrl();
+
+        if(entryNode.isAnon() && entryModel.contains(entryNode.asResource(), Manifest.action)) {
+            // Identifier l'endpoint visé
+            List<RDFNode> actionEndpointUrlList = entryModel.listObjectsOfProperty(entryNode.asResource(), KGIndex.endpoint).toList();
+            if (actionEndpointUrlList.size() == 1) {
+                actionEndpointUrl = actionEndpointUrlList.get(0).toString();
+            } else if (actionEndpointUrlList.size() > 1) {
+                throw new Error("Not expecting more that one endpoint: " + actionEndpointUrlList);
+            }
+
+            // Récupérer le timeout de l'action
+            long actionTimeout = Utils.queryTimeout;
+            List<RDFNode> actionTimeoutList = entryModel.listObjectsOfProperty(entryNode.asResource(), KGIndex.timeout).toList();
+            if(actionTimeoutList.size() == 1) {
+                Literal actionTimeoutLiteral = actionTimeoutList.get(0).asLiteral();
+                actionTimeout = ((XSDDuration) XSDDatatype.XSDduration.parse(actionTimeoutLiteral.getString())).getFullSeconds() * 1000L;
+            }
+
+            NodeIterator actionStrings = entryModel.listObjectsOfProperty(entryNode.asResource(), Manifest.action);
+            String finalActionEndpointUrl = actionEndpointUrl;
+            long finalActionTimeout = actionTimeout;
+            actionStrings.forEach(actionString -> {
+                Action currentAction = new Action(actionString, finalActionEndpointUrl, Action.TYPE.SPARQL);
+                currentAction.setPriority(priorityCount.getAndIncrement());
+                currentAction.setTimeout(finalActionTimeout);
+                result.add(currentAction);
+            });
+        } else if(! entryNode.isAnon() && entryNode.isResource() && entryModel.isEmpty()) {
+            Action currentAction = new Action(entryNode, actionEndpointUrl, Action.TYPE.Manifest);
+            currentAction.setPriority(priorityCount.getAndIncrement());
+            result.add(currentAction);
+        } else {
+            throw new NoSuchElementException("Unexcepted action ");
+        }
 
         return result;
     }

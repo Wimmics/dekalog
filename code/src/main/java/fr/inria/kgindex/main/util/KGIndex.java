@@ -19,5 +19,6 @@ public class KGIndex {
 	public static final Property endpoint = model.createProperty(kgindexNamespace + "endpoint");
 	public static final Property onSuccess = model.createProperty(kgindexNamespace + "onSuccess");
 	public static final Property onFailure = model.createProperty(kgindexNamespace + "onFailure");
+	public static final Property timeout = model.createProperty(kgindexNamespace + "timeout");
 	public static final Resource catalogRoot = model.createResource(kgindexNamespace + "catalogRoot");
 }

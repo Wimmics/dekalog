@@ -121,13 +121,14 @@ public class RuleApplication {
                         Model tmpModel = ModelFactory.createDefaultModel();
                         Literal startDateLiteral = tmpModel.createLiteral(dateFormatter.format(startDate));
                         tmpModel.close();
+
                         try {
                             if (queryString.contains("CONSTRUCT") && ! queryString.contains("GRAPH")) {
                                 Query constructQuery = QueryFactory.create(queryString);
                                 org.apache.http.client.config.RequestConfig requestConfig = org.apache.http.client.config.RequestConfig.copy(org.apache.http.client.config.RequestConfig.DEFAULT)
-                                        .setSocketTimeout(Math.toIntExact(Utils.queryTimeout))
-                                        .setConnectTimeout(Math.toIntExact(Utils.queryTimeout))
-                                        .setConnectionRequestTimeout(Math.toIntExact(Utils.queryTimeout))
+                                        .setSocketTimeout(Math.toIntExact(action.getTimeout()))
+                                        .setConnectTimeout(Math.toIntExact(action.getTimeout()))
+                                        .setConnectionRequestTimeout(Math.toIntExact(action.getTimeout()))
                                         .build();
                                 org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
                                         .useSystemProperties()
@@ -135,10 +136,10 @@ public class RuleApplication {
                                         .setUserAgent(RulesUtils.USER_AGENT)
                                         .build();
                                 QueryEngineHTTP actionExecution = new QueryEngineHTTP(action.getEndpointUrl(), constructQuery, client);
-                                actionExecution.addParam("timeout", String.valueOf(Utils.queryTimeout));
+                                actionExecution.addParam("timeout", String.valueOf(action.getTimeout()));
                                 actionExecution.addParam("format", Lang.TRIG.getContentType().getContentTypeStr());
-                                actionExecution.setTimeout(Utils.queryTimeout, TimeUnit.MILLISECONDS, Utils.queryTimeout, TimeUnit.MILLISECONDS);
-//                                actionExecution.setAcceptHeader(Lang.TRIG.getContentType().getContentTypeStr());
+                                actionExecution.setTimeout(action.getTimeout(), TimeUnit.MILLISECONDS, action.getTimeout(), TimeUnit.MILLISECONDS);
+
                                 try {
                                     Dataset constructData = actionExecution.execConstructDataset();
                                     result = DatasetUtils.addDataset(result, constructData);
@@ -162,12 +163,12 @@ public class RuleApplication {
                                     HttpClient client = RulesUtils.getHttpClient();
                                     URI queryURL = URI.create(action.getEndpointUrl()
                                             + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString())
-                                            + "&timeout=" + Utils.queryTimeout
+                                            + "&timeout=" + action.getTimeout()
                                             + "&format=" + Lang.TRIG.getContentType().getContentTypeStr());
                                     HttpRequest request = HttpRequest.newBuilder()
                                             .uri(queryURL)
                                             .GET()
-                                            .timeout(Duration.of(Utils.queryTimeout, ChronoUnit.MILLIS))
+                                            .timeout(Duration.of(action.getTimeout(), ChronoUnit.MILLIS))
                                             .header("Accept", Lang.TRIG.getContentType().getContentTypeStr())
                                             .build();
                                     Dataset bodyData = DatasetFactory.create();
@@ -203,7 +204,7 @@ public class RuleApplication {
                                         request = HttpRequest.newBuilder()
                                                 .uri(queryURL)
                                                 .GET()
-                                                .timeout(Duration.of(Utils.queryTimeout, ChronoUnit.MILLIS))
+                                                .timeout(Duration.of(action.getTimeout(), ChronoUnit.MILLIS))
                                                 .header("Accept", "application/x-trig")
                                                 .build();
                                     } catch (UnsupportedEncodingException e1) {

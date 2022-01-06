@@ -3,11 +3,13 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix kgi: <http://ns.inria.fr/kg/index#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <> rdf:type kgi:TestQuery ;
     dcterms:isReferencedBy <manifest.ttl> ;
     dcterms:title "Extraction of the namespaces of properties and classes."@en ;
     kgi:endpoint kgi:federation ;
+    kgi:timeout "PT120S"^^xsd:duration ;
     kgi:query """ASK
         WHERE {
             SERVICE $endpointUrl {
