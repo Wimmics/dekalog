@@ -1,5 +1,11 @@
 # DeKaloG changelog
 
+## [2.5] 2022-01-06
+* Possibility to define a timeout for tests and actions
+* Redone handling of the input catalog
+* Security fix for LOG4J
+* Multiple bug and rule fixes
+
 ## [2.4] 2021-10-21
 * Generation of a proper DCAT catalog
 * Addition of numerous example queries to the root of the catalog
