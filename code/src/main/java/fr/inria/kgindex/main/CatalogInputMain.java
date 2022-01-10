@@ -4,6 +4,8 @@ import fr.inria.kgindex.main.data.DescribedDataset;
 import fr.inria.kgindex.main.data.RuleLibrary;
 import fr.inria.kgindex.main.rules.RuleApplication;
 import fr.inria.kgindex.main.util.KGIndex;
+import fr.inria.kgindex.main.util.PROV;
+import fr.inria.kgindex.main.util.SPARQL_SD;
 import fr.inria.kgindex.main.util.Utils;
 import org.apache.commons.cli.*;
 import org.apache.jena.query.*;
@@ -12,6 +14,7 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
@@ -150,7 +153,6 @@ public class CatalogInputMain {
             RDFConnection finalCatalogConnection = catalogConnection;
             catalogConnection.querySelect(datasetEndpointQuery, querydatasetEndpointSolution -> {
                 String endpointUrl = querydatasetEndpointSolution.get("?endpointUrl").asResource().getURI();
-                logger.debug(endpointUrl);
 
                 ParameterizedSparqlString datasetEndpointURILabelQueryString = new ParameterizedSparqlString("PREFIX void: <http://rdfs.org/ns/void#>" +
                         "PREFIX schema: <http://schema.org/>" +
@@ -181,6 +183,28 @@ public class CatalogInputMain {
 
                     DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetNames);
                     result.getDefaultModel().add(KGIndex.catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());
+                    result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), RDF.type, DCAT.Dataset);
+                    result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), RDF.type, PROV.Entity);
+                    result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), RDF.type, EARL.TestSubject);
+                    result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), DCAT.service, describedDataset.getEndpointDescriptionResource());
+                    Resource distributionResource = result.getDefaultModel().createResource();
+                    result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), DCAT.distribution, distributionResource);
+                    result.getDefaultModel().add(distributionResource, RDF.type, DCAT.Distribution);
+                    result.getDefaultModel().add(distributionResource, DCAT.accessURL, result.getDefaultModel().createResource(endpointUrl));
+                    result.getDefaultModel().add(distributionResource, DCAT.mediaType, result.getDefaultModel().createTypedLiteral("application/sparql-query"));
+                    result.getDefaultModel().add(describedDataset.getEndpointDescriptionResource(), RDF.type, SPARQL_SD.Service);
+                    result.getDefaultModel().add(describedDataset.getEndpointDescriptionResource(), RDF.type, DCAT.DataService);
+                    result.getDefaultModel().add(describedDataset.getEndpointDescriptionResource(), RDF.type, PROV.Entity);
+                    result.getDefaultModel().add(describedDataset.getEndpointDescriptionResource(), RDF.type, EARL.TestSubject);
+                    result.getDefaultModel().add(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.endpoint, result.getDefaultModel().createResource(endpointUrl));
+                    result.getDefaultModel().add(describedDataset.getEndpointDescriptionResource(), DCAT.servesDataset, describedDataset.getDatasetDescriptionResource());
+                    result.getDefaultModel().add(describedDataset.getEndpointDescriptionResource(), DCAT.endpointURL, result.getDefaultModel().createResource(endpointUrl));
+                    result.getDefaultModel().add(describedDataset.getMetadataDescriptionResource(), RDF.type, PROV.Entity);
+                    result.getDefaultModel().add(describedDataset.getMetadataDescriptionResource(), RDF.type, EARL.TestSubject);
+                    result.getDefaultModel().add(describedDataset.getMetadataDescriptionResource(), PROV.wasDerivedFrom, result.getDefaultModel().createResource(endpointUrl));
+                    result.getDefaultModel().add(describedDataset.getMetadataDescriptionResource(), KGIndex.curated, describedDataset.getDatasetDescriptionResource());
+                    result.getDefaultModel().add(describedDataset.getMetadataDescriptionResource(), KGIndex.curated, describedDataset.getEndpointDescriptionResource());
+
                     describedDataset.getNames().forEach(name -> {
                         result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), RDFS.label, name);
                     });

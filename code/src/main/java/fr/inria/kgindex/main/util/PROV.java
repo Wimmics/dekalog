@@ -14,4 +14,6 @@ public class PROV {
 	public static final Property generatedAtTime = model.createProperty(provNamespace + "generatedAtTime");
 	public static final Property startedAtTime = model.createProperty(provNamespace + "startedAtTime");
 	public static final Property endedAtTime = model.createProperty(provNamespace + "endedAtTime");
+	public static final Resource Entity = model.createResource(provNamespace + "Entity");
+	public static final Property wasDerivedFrom = model.createProperty(provNamespace + "wasDerivedFrom");
 }

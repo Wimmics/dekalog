@@ -13,4 +13,6 @@ public class SPARQL_SD {
 	public static final Property feature = model.createProperty(sparqlsdNamespace + "feature");
 	public static final Resource UnionDefaultGraph = model.createResource(sparqlsdNamespace + "UnionDefaultGraph");
 	public static final Resource RequiresDataset = model.createResource(sparqlsdNamespace + "RequiresDataset");
+	public static final Resource Service = model.createResource(sparqlsdNamespace + "Service");
+	public static final Property endpoint = model.createProperty(sparqlsdNamespace + "endpoint");
 }
