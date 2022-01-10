@@ -5,7 +5,7 @@ import fr.inria.kgindex.main.util.Utils;
 import java.net.http.HttpClient;
 import java.time.Duration;
 
-public class RulesUtils {
+public class InteractionsUtils {
 
     private static HttpClient __client = null;
     public static String USER_AGENT = "Semantic Knowledge Graph Index Agent, INRIA WIMMICS, Contact:pierre.maillot@inria.fr";

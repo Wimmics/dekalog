@@ -80,7 +80,7 @@ public class QueryTestExecution extends TestExecution {
                     org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
                             .useSystemProperties()
                             .setDefaultRequestConfig(requestConfig)
-                            .setUserAgent(RulesUtils.USER_AGENT)
+                            .setUserAgent(InteractionsUtils.USER_AGENT)
                             .build();
                     QueryEngineHTTP testQueryExecution = new QueryEngineHTTP(this.getEndpointUrl(), queryString, client);
                     testQueryExecution.addParam("timeout", String.valueOf(testTimeout));

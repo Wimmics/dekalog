@@ -42,9 +42,9 @@ import java.util.concurrent.TimeUnit;
 
 import static fr.inria.kgindex.main.util.Utils.dateFormatter;
 
-public class RuleApplication {
+public class InteractionApplication {
 
-    private static final Logger logger = LogManager.getLogger(RuleApplication.class);
+    private static final Logger logger = LogManager.getLogger(InteractionApplication.class);
 
     public static String federationserver = null;
 
@@ -56,7 +56,7 @@ public class RuleApplication {
     private TestExecution _tests = null;
     private TestExecution.TYPE _type = TestExecution.TYPE.SHACL;
 
-    public RuleApplication(ManifestEntry entry, TestExecution tests, Actions actionsSuccess, Actions actionsFailure, DescribedDataset describedDataset, Dataset datasetDescription) {
+    public InteractionApplication(ManifestEntry entry, TestExecution tests, Actions actionsSuccess, Actions actionsFailure, DescribedDataset describedDataset, Dataset datasetDescription) {
         this._entry = entry;
         this._describedDataset = describedDataset;
         this._datasetDescription = datasetDescription;
@@ -112,10 +112,10 @@ public class RuleApplication {
                 String queryStringRaw = action.getActionNode().asLiteral().getString();
                 Set<String> queryStringSet = Utils.rewriteQueryPlaceholders(queryStringRaw, this._describedDataset);
                 for(String queryString : queryStringSet) {
-                    if((action.getEndpointUrl().equals(KGIndex.federation.getURI()) && (RuleApplication.federationserver != null))
+                    if((action.getEndpointUrl().equals(KGIndex.federation.getURI()) && (InteractionApplication.federationserver != null))
                             || (! action.getEndpointUrl().equals(KGIndex.federation.getURI()))) {
                         if(action.getEndpointUrl().equals(KGIndex.federation.getURI())) {
-                            action.setEndpointUrl(RuleApplication.federationserver);
+                            action.setEndpointUrl(InteractionApplication.federationserver);
                         }
                         Date startDate = new Date();
                         Model tmpModel = ModelFactory.createDefaultModel();
@@ -133,7 +133,7 @@ public class RuleApplication {
                                 org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
                                         .useSystemProperties()
                                         .setDefaultRequestConfig(requestConfig)
-                                        .setUserAgent(RulesUtils.USER_AGENT)
+                                        .setUserAgent(InteractionsUtils.USER_AGENT)
                                         .build();
                                 QueryEngineHTTP actionExecution = new QueryEngineHTTP(action.getEndpointUrl(), constructQuery, client);
                                 actionExecution.addParam("timeout", String.valueOf(action.getTimeout()));
@@ -160,7 +160,7 @@ public class RuleApplication {
                             } else if (queryString.contains("CONSTRUCT") && queryString.contains("GRAPH")) {
                                 // Tentative d'envoyer la requête sans passer par Jena
                                 try {
-                                    HttpClient client = RulesUtils.getHttpClient();
+                                    HttpClient client = InteractionsUtils.getHttpClient();
                                     URI queryURL = URI.create(action.getEndpointUrl()
                                             + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString())
                                             + "&timeout=" + action.getTimeout()
@@ -197,7 +197,7 @@ public class RuleApplication {
                             try {
                                 if (queryString.contains("CONSTRUCT")) {
                                     // Tentative d'envoyer la requête sans passer par Jena
-                                    HttpClient client = RulesUtils.getHttpClient();
+                                    HttpClient client = InteractionsUtils.getHttpClient();
                                     HttpRequest request = null;
                                     try {
                                         URI queryURL = URI.create(action.getEndpointUrl() + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
@@ -250,7 +250,7 @@ public class RuleApplication {
                 Set<ManifestEntry> entrySet = RuleLibrary.getLibrary().get(action.getActionNode());
                 for(ManifestEntry entry : entrySet) {
                     try {
-                        RuleApplication application = RuleFactory.create(entry, this._describedDataset, this._datasetDescription);
+                        InteractionApplication application = InteractionFactory.create(entry, this._describedDataset, this._datasetDescription);
                         application.apply();
                     } catch (Exception e) {
                         logger.error(entry.getTestResource().getURI());

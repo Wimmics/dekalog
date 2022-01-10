@@ -8,12 +8,10 @@ import fr.inria.kgindex.main.util.Utils;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.datatypes.xsd.XSDDuration;
-import org.apache.jena.datatypes.xsd.impl.XSDDurationType;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.XSD;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,11 +20,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RuleFactory {
+public class InteractionFactory {
 
-    private static final Logger logger = LogManager.getLogger(RuleFactory.class);
+    private static final Logger logger = LogManager.getLogger(InteractionFactory.class);
 
-    public static RuleApplication create(ManifestEntry entry, DescribedDataset describedDataset, Dataset datasetDescription) {
+    public static InteractionApplication create(ManifestEntry entry, DescribedDataset describedDataset, Dataset datasetDescription) {
 
         Actions testActionListSuccess = new Actions();
         Actions testActionListFailure = new Actions();
@@ -83,7 +81,7 @@ public class RuleFactory {
         if(! testEndpointNodeList.isEmpty()) {
             testEndpointUrl = testEndpointNodeList.get(0).toString();
             if(testEndpointUrl.equals(KGIndex.federation.getURI())) {
-                testEndpointUrl = RuleApplication.federationserver;
+                testEndpointUrl = InteractionApplication.federationserver;
             }
         }
         testModel.close();
@@ -99,7 +97,7 @@ public class RuleFactory {
             throw new Error("Unexpected interaction type");
         }
 
-        RuleApplication result =  new RuleApplication(entry, testExec, testActionListSuccess, testActionListFailure, describedDataset, datasetDescription);
+        InteractionApplication result =  new InteractionApplication(entry, testExec, testActionListSuccess, testActionListFailure, describedDataset, datasetDescription);
         result.setType(interactionType);
 
         return result;
@@ -137,12 +135,14 @@ public class RuleFactory {
                 currentAction.setTimeout(finalActionTimeout);
                 result.add(currentAction);
             });
-        } else if(! entryNode.isAnon() && entryNode.isResource() && entryModel.isEmpty()) {
+        } else if(! entryNode.isAnon() && entryNode.isResource() ) {
             Action currentAction = new Action(entryNode, actionEndpointUrl, Action.TYPE.Manifest);
             currentAction.setPriority(priorityCount.getAndIncrement());
             result.add(currentAction);
         } else {
-            throw new NoSuchElementException("Unexcepted action ");
+            logger.error(entryNode);
+            entryModel.write(System.err, "TTL");
+            throw new NoSuchElementException("Unexpected action ");
         }
 
         return result;

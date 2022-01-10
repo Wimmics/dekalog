@@ -2,7 +2,7 @@ package fr.inria.kgindex.main;
 
 import fr.inria.kgindex.main.data.DescribedDataset;
 import fr.inria.kgindex.main.data.RuleLibrary;
-import fr.inria.kgindex.main.rules.RuleApplication;
+import fr.inria.kgindex.main.rules.InteractionApplication;
 import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.PROV;
 import fr.inria.kgindex.main.util.SPARQL_SD;
@@ -22,8 +22,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
@@ -102,7 +100,7 @@ public class CatalogInputMain {
                 Utils.manifestRootFile = cmd.getOptionValue(OPT_MANIFEST, DEFAULT_MANIFEST);
             }
             if(cmd.hasOption(OPT_FEDERATION)) {
-                RuleApplication.federationserver = cmd.getOptionValue(OPT_FEDERATION, null);
+                InteractionApplication.federationserver = cmd.getOptionValue(OPT_FEDERATION, null);
             }
 
             RDFConnection catalogConnection = null;

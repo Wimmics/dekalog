@@ -86,12 +86,8 @@ public class ManifestEntry {
 	}
 
 	public void close() {
-		this._actionsFailure.entrySet().forEach(action -> {
-			action.getValue().close();
-		});
-		this._actionsSuccess.entrySet().forEach(action -> {
-			action.getValue().close();
-		});
+		this._actionsFailure.forEach((key, value) -> value.close());
+		this._actionsSuccess.forEach((key, value) -> value.close());
 	}
 
 	/**

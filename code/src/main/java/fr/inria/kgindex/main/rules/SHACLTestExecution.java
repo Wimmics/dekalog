@@ -108,7 +108,7 @@ public class SHACLTestExecution extends TestExecution {
                                     .setConnectionRequestTimeout(Math.toIntExact(Utils.queryTimeout))
                                     .build();
                             org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
-                                    .setUserAgent(RulesUtils.USER_AGENT)
+                                    .setUserAgent(InteractionsUtils.USER_AGENT)
                                     .useSystemProperties()
                                     .setDefaultRequestConfig(requestConfig)
                                     .build();

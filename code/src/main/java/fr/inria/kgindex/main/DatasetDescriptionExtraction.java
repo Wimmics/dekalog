@@ -3,8 +3,8 @@ package fr.inria.kgindex.main;
 import fr.inria.kgindex.main.data.DescribedDataset;
 import fr.inria.kgindex.main.data.ManifestEntry;
 import fr.inria.kgindex.main.data.RuleLibrary;
-import fr.inria.kgindex.main.rules.RuleApplication;
-import fr.inria.kgindex.main.rules.RuleFactory;
+import fr.inria.kgindex.main.rules.InteractionApplication;
+import fr.inria.kgindex.main.rules.InteractionFactory;
 import fr.inria.kgindex.main.util.DatasetUtils;
 import fr.inria.kgindex.main.util.SPARQL_SD;
 import fr.inria.kgindex.main.util.Utils;
@@ -62,7 +62,7 @@ public class DatasetDescriptionExtraction {
 
 			for (ManifestEntry testEntry : testEntrySet) {
 				try {
-					RuleApplication application = RuleFactory.create(testEntry, describedDataset, datasetDescription);
+					InteractionApplication application = InteractionFactory.create(testEntry, describedDataset, datasetDescription);
 					Dataset testResult = application.apply();
 					logger.trace("Result update START");
 					datasetDescription = DatasetUtils.addDataset(datasetDescription, testResult);
