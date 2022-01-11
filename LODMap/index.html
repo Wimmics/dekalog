@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <link rel="stylesheet" type="text/javascript" href="./index.js" />
+
+<title>LODMap</title>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="col">
+        <div id="map"></div>
+        <div id="info"></div>
+    </div>
+  </div>
+</div>
+<script src="file:///home/pmaillot/git/dekalog/LODMap/sparql_sparqlEndpoint_list_result.js"></script>
+    <script>
+    var map = L.map('map').setView([51.505, -0.09], 13);
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: 'your.mapbox.access.token'
+    }).addTo(map);
+
+    // var marker = L.marker([51.5, -0.09]).addTo(map);
+
+    // List of IP addresses to query, up to 100
+    var data = [ ];
+    queryResult.results.bindings.forEach((binding, i) => {
+        console.log(binding.endpointUrl.value);
+        data.push(binding.endpointUrl.value);
+    });
+
+    var endpointIpMap = new Map();
+
+    data.forEach(endpointAddress => {
+        endpointAddress =  (new URL(endpointAddress)).hostname;
+        var xhrIp = new XMLHttpRequest();
+        xhrIp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+            	var responseIp = JSON.parse(this.responseText);
+                console.log(responseIp);
+                if(responseIp.Status == 0) {
+                    endpointIpMap.set(endpointAddress, responseIp.Answer[0].data);
+                    console.log(endpointAddress + " " + responseIp.Answer[0].data)
+
+                    var xhrGeo = new XMLHttpRequest();
+                    xhrGeo.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            // Result array
+                            var responseGeo = JSON.parse(this.responseText);
+                            console.log(responseGeo);
+                            if(responseGeo.status == "success") {
+                                L.marker([responseGeo.lat, responseGeo.lon]).addTo(map);
+                            }
+                        }
+                    };
+
+                    xhrGeo.open('GET', 'http://ip-api.com/json/'+endpointAddress, true);
+                    xhrGeo.send();
+
+                }
+            }
+        };
+        xhrIp.open('GET', 'https://dns.google/resolve?name='+endpointAddress, true);
+        xhrIp.send();
+    })
+
+
+    /*data.forEach(endpointAddress => {
+
+    })*/
+
+    </script>
+
+</body>
+</html>
