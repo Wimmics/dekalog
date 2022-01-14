@@ -25,17 +25,21 @@
             <div class="row"><h1>KartoGraphI: Knowledge graph cartography and index</h1><br/><h5>Visualisation of the results obtained by <a href="http://prod-dekalog.inria.fr/sparql">IndeGx</a><h5></div>
                 <div class="row border border-dark rounded justify-content-center">
                     <h6> Geolocation of the indexed endpoint</h6>
-                    <div id="map"></div>
+                    <div class="container justify-content-center" id="map"></div>
                 </div>
                 <div class="row border border-dark rounded justify-content-center">
-                    <h6>Graph of the bases connected to their vocabularies*</h6>
-                    <div id="vocabs"></div>
-                    <span> *: Only the vocabularies listed in LOV are displayed.</span>
+                    <div class="col-12 justify-content-center">
+                        <div class="container justify-content-center"><h6>Graph of the bases connected to their vocabularies*</h6></div>
+                        <div class="container justify-content-center" id="vocabs"></div>
+                        <span> *: Only the vocabularies listed in <a href="https://lov.linkeddata.es/dataset/lov">LOV</a> are displayed.</span>
+                    </div>
                 </div>
                 <div class="row border border-dark rounded justify-content-center">
-                    <h6> SPARQL norm coverage by the endpoint</h6>
-                    <div id="histo1"></div>
-                    <div id="histo2"></div>
+                    <div class="col-12 justify-content-center">
+                        <h6>Estimation of the SPARQL norm coverage by the endpoints</h6>
+                        <div class="container justify-content-center" id="histo1"></div>
+                        <div class="container justify-content-center" id="histo2"></div>
+                    </div>
                 </div>
                 <!--<div class="row border border-dark rounded justify-content-center">
                 <span> Size of the indexed bases</span>
@@ -44,7 +48,6 @@
         </div>
         <div class="col-1"></div>
     </div>
-    <script src="file:///home/pmaillot/git/dekalog/LODMap/sparql_sparqlEndpoint_list_result.js"></script>
     <script>
     // Initialization of the map
     var map = L.map('map').setView([24.5271348225978, 62.22656250000001], 2);
@@ -90,7 +93,11 @@
         endpointMarker.on('click', clickEvent => {
             var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + item.key + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } }";
                 sparqlQueryJSON(labelQuery, responseLabels => {
-                    console.log(responseLabels);
+                    var popupString = item.key + "<br/>" + item.value.geoloc.country + "<br/>" + item.value.geoloc.regionName + "<br/>" + item.value.geoloc.city + "<br/>" + item.value.geoloc.org ;
+                    if(responseLabels.results.bindings.size > 0) {
+                        popupString += responseLabels ;
+                    }
+                    endpointMarker.bindPopup(popupString).openPopup();
                 });
             });
             endpointMarker.addTo(map);
