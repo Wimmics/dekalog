@@ -11,6 +11,7 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
     crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js" integrity="sha256-iJxB0L7blNZTAFBu/ESTfVaVTqFrTeISeWk7RUEePFY=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.3"></script>
     <link rel="stylesheet" type="text/css" href="./style.css" />
@@ -24,203 +25,270 @@
         <div class="col-10 justify-content-center">
             <div class="row"><h1>KartoGraphI: Knowledge graph cartography and index</h1><br/><h5>Visualisation of the results obtained by <a href="http://prod-dekalog.inria.fr/sparql">IndeGx</a><h5></div>
                 <div class="row border border-dark rounded justify-content-center">
-                    <h6> Geolocation of the indexed endpoint</h6>
-                    <div class="container justify-content-center" id="map"></div>
-                </div>
-                <div class="row border border-dark rounded justify-content-center">
                     <div class="col-12 justify-content-center">
-                        <div class="container justify-content-center"><h6>Graph of the bases connected to their vocabularies*</h6></div>
-                        <div class="container justify-content-center" id="vocabs"></div>
-                        <span> *: Only the vocabularies listed in <a href="https://lov.linkeddata.es/dataset/lov">LOV</a> are displayed.</span>
+                        <div class="container justify-content-center"><h5> Geolocation of the indexed endpoints</h6></div>
+                            <div class="container justify-content-center" id="map"></div>
+                        </div>
                     </div>
-                </div>
-                <div class="row border border-dark rounded justify-content-center">
-                    <div class="col-12 justify-content-center">
-                        <h6>Estimation of the SPARQL norm coverage by the endpoints</h6>
-                        <div class="container justify-content-center" id="histo1"></div>
-                        <div class="container justify-content-center" id="histo2"></div>
+                    <div class="row border border-dark rounded justify-content-center">
+                        <div class="col-12 justify-content-center">
+                            <div class="container justify-content-center"><h5>Graph of the endpoints connected to their vocabularies*</h6></div>
+                                <div class="container justify-content-center" id="vocabs"></div>
+                                <span> *: Only the vocabularies listed in <a href="https://lov.linkeddata.es/dataset/lov">Linked Open Vocabularies</a> are displayed.</span>
+                            </div>
+                        </div>
+                        <div class="row border border-dark rounded justify-content-center">
+                            <div class="col-12 justify-content-center">
+                                <div class="container justify-content-center"><h5>Estimation of the SPARQL norm coverage by the endpoints</h6></div>
+                                    <div class="container justify-content-center" id="histo1"><h5>SPARQL 1.0</h5></div>
+                                    <div class="container justify-content-center" id="histo2"><h5>SPARQL 1.1</h5></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1"></div>
                     </div>
-                </div>
-                <!--<div class="row border border-dark rounded justify-content-center">
-                <span> Size of the indexed bases</span>
-                <div id="sizes"></div>
-            </div> -->
-        </div>
-        <div class="col-1"></div>
-    </div>
-    <script>
-    // Initialization of the map
-    var map = L.map('map').setView([24.5271348225978, 62.22656250000001], 2);
-    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 18,
-        id: 'mapbox/streets-v11',
-        tileSize: 512,
-        zoomOffset: -1,
-        accessToken: 'pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q'
-    }).addTo(map);
 
-    function sparqlQueryJSON(query, callback) {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                var response = JSON.parse(this.responseText);
-                callback(response);
-            }
-        }
-        xhr.open('GET', 'http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", true);
-        xhr.send();
-    };
+                    <script>
+                    // Initialization of the map
+                    var map = L.map('map').setView([24.5271348225978, 62.22656250000001], 2);
+                    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
+                        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                        maxZoom: 18,
+                        id: 'mapbox/streets-v11',
+                        tileSize: 512,
+                        zoomOffset: -1,
+                        accessToken: 'pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q'
+                    }).addTo(map);
 
-    function intersection(setA, setB) {
-        var intersection = new Set();
-        for (var elem of setB) {
-            if (setA.has(elem)) {
-                intersection.add(elem);
-            }
-        }
-        return intersection;
-    }
+                    function sparqlQueryJSON(query, callback) {
+                        var xhr = new XMLHttpRequest();
+                        xhr.onreadystatechange = function() {
+                            if (this.readyState == 4 && this.status == 200) {
+                                var response = JSON.parse(this.responseText);
+                                callback(response);
+                            }
+                        }
+                        xhr.open('GET', 'http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", true);
+                        xhr.send();
+                    };
 
-    function haveIntersection(setA, setB) {
-        return intersection(setA, setB).size > 0;
-    }
-
-    // Marked map with the geoloc of each endpoint
-    endpointIpMap.forEach((item, i) => {
-        // Add the markers for each endpoints.
-        var endpointMarker = L.marker([item.value.geoloc.lat, item.value.geoloc.lon]);
-        endpointMarker.on('click', clickEvent => {
-            var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + item.key + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } }";
-                sparqlQueryJSON(labelQuery, responseLabels => {
-                    var popupString = item.key + "<br/>" + item.value.geoloc.country + "<br/>" + item.value.geoloc.regionName + "<br/>" + item.value.geoloc.city + "<br/>" + item.value.geoloc.org ;
-                    if(responseLabels.results.bindings.size > 0) {
-                        popupString += responseLabels ;
+                    function intersection(setA, setB) {
+                        var intersection = new Set();
+                        for (var elem of setB) {
+                            if (setA.has(elem)) {
+                                intersection.add(elem);
+                            }
+                        }
+                        return intersection;
                     }
-                    endpointMarker.bindPopup(popupString).openPopup();
-                });
-            });
-            endpointMarker.addTo(map);
 
-        });
-
-        // Create an histogram of the SPARQLES rules passed by endpoint.
-        var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) WHERE { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . FILTER(CONTAINS(str(?activity), ?sparqlNorm)) VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } } } GROUP BY ?endpoint ?sparqlNorm ORDER BY DESC( ?endpoint)';
-            sparqlQueryJSON(sparqlesFeatureQuery, json => {
-                var jsonBaseFeatureSparqles = [];
-                var sparql10Map = new Map();
-                var sparql11Map = new Map();
-                json.results.bindings.forEach((bindingItem, i) => {
-                    var endpointUrl = bindingItem.endpoint.value;
-                    var feature = bindingItem.sparqlNorm.value;
-                    var count = bindingItem.count.value;
-                    if(feature == "SPARQL10") {
-                        sparql10Map.set(endpointUrl, Number(count));
-                    } else if (feature == "SPARQL11") {
-                        sparql11Map.set(endpointUrl, Number(count));
+                    function haveIntersection(setA, setB) {
+                        return intersection(setA, setB).size > 0;
                     }
-                });
-                sparql10Map.forEach((value, key, map) => {
-                    var sparql10 = value;
-                    var sparql11 = sparql11Map.get(key);
-                    if(sparql10 == undefined || sparql11 == undefined) {
-                        console.log(key);
-                    }
-                    jsonBaseFeatureSparqles.push({'endpoint':key, 'sparql10':sparql10/24, 'sparql11':sparql11/19});
-                });
 
-                var histo1Html = document.getElementById('histo1');
-                var barPlot = BarChart(jsonBaseFeatureSparqles, {
-                    x: d => d.endpoint,
-                    y: d => d.sparql10,
-                    xDomain: d3.groupSort(jsonBaseFeatureSparqles, ([d]) => d.sparql10, d => d.endpoint), // sort by descending frequency
-                    yFormat: "%",
-                    yLabel: "↑ Coverage",
-                    width: 1200,
-                    height: 500,
-                    color: "steelblue"
-                })
-                histo1Html.appendChild(barPlot);
-
-                var histo2Html = document.getElementById('histo2');
-                var barPlot = BarChart(jsonBaseFeatureSparqles, {
-                    x: d => d.endpoint,
-                    y: d => d.sparql11,
-                    xDomain: d3.groupSort(jsonBaseFeatureSparqles, ([d]) => d.sparql11, d => d.endpoint), // sort by descending frequency
-                    yFormat: "%",
-                    yLabel: "↑ Coverage",
-                    width: 1200,
-                    height: 500,
-                    color: "orange"
-                })
-                histo2Html.appendChild(barPlot);
-            });
-
-            // Create an force graph with the graph linked by co-ocurrence of vocabularies
-            var sparqlesVocabularies = "SELECT DISTINCT ?endpoint ?vocabulary  WHERE { GRAPH ?g { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary } } GROUP BY ?endpoint";
-                sparqlQueryJSON(sparqlesVocabularies, json => {
-                    // Retrieval of the list of LOV vocabularies to filter the ones retrived in the index
-                    var LOVVocabularies = new Set();
-                    var xhr = new XMLHttpRequest();
-                    xhr.onreadystatechange = function() {
-                        if (this.readyState == 4 && this.status == 200) {
-                            var response = JSON.parse(this.responseText);
-                            response.forEach((item, i) => {
-                                LOVVocabularies.add(item.uri)
-                            });
-
-                            var gatherVocab = new Map(); // List of vocab per endpoint
-                            var endpointSet = new Set();
-                            var vocabSet = new Set();
-                            json.results.bindings.forEach((bindingItem, i) => {
-                                var vocabulariUri = bindingItem.vocabulary.value;
-                                var endpointUri = bindingItem.endpoint.value;
-                                if(LOVVocabularies.has(vocabulariUri)) {
-                                    endpointSet.add(endpointUri);
-                                    vocabSet.add(vocabulariUri);
-                                    if(! gatherVocab.has(endpointUri)) {
-                                        gatherVocab.set(endpointUri, new Set());
+                    // Marked map with the geoloc of each endpoint
+                    endpointIpMap.forEach((item, i) => {
+                        // Add the markers for each endpoints.
+                        var endpointMarker = L.marker([item.value.geoloc.lat, item.value.geoloc.lon]);
+                        endpointMarker.on('click', clickEvent => {
+                            var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + item.key + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } }";
+                                sparqlQueryJSON(labelQuery, responseLabels => {
+                                    var popupString = item.key + "<br/>" + item.value.geoloc.country + "<br/>" + item.value.geoloc.regionName + "<br/>" + item.value.geoloc.city + "<br/>" + item.value.geoloc.org ;
+                                    if(responseLabels.results.bindings.size > 0) {
+                                        popupString += responseLabels ;
                                     }
-                                    gatherVocab.get(endpointUri).add(vocabulariUri);
-                                }
+                                    endpointMarker.bindPopup(popupString).openPopup();
+                                });
                             });
+                            endpointMarker.addTo(map);
 
-                            var jsonVocabLinks = new Set();
-                            var jsonVocabNodes = new Set();
+                        });
 
-                            endpointSet.forEach((item, i) => {
-                                jsonVocabNodes.add({'id':item, 'group':'Knowledge base', 'radius':'1'})
-                            });
-                            vocabSet.forEach((item, i) => {
-                                jsonVocabNodes.add({'id':item, 'group':'Vocabulary', 'radius':'1'})
-                            });
-                            gatherVocab.forEach(( value1, key1, map1) => {
-                                value1.forEach((item, i) => {
-                                    jsonVocabLinks.add({'source':key1, 'target':item, 'value':1})
+                        // Create an histogram of the SPARQLES rules passed by endpoint.
+                        var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) WHERE { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . FILTER(CONTAINS(str(?activity), ?sparqlNorm)) VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } } } GROUP BY ?endpoint ?sparqlNorm ORDER BY DESC( ?endpoint)';
+                            sparqlQueryJSON(sparqlesFeatureQuery, json => {
+                                var sparql10Chart = echarts.init(document.getElementById('histo1'));
+                                var sparql11Chart = echarts.init(document.getElementById('histo2'));
+                                var jsonBaseFeatureSparqles = [];
+                                var sparql10Map = new Map();
+                                var sparql11Map = new Map();
+                                json.results.bindings.forEach((bindingItem, i) => {
+                                    var endpointUrl = bindingItem.endpoint.value;
+                                    var feature = bindingItem.sparqlNorm.value;
+                                    var count = bindingItem.count.value;
+                                    if(feature == "SPARQL10") {
+                                        sparql10Map.set(endpointUrl, Number(count));
+                                    } else if (feature == "SPARQL11") {
+                                        sparql11Map.set(endpointUrl, Number(count));
+                                    }
+                                });
+                                sparql10Map.forEach((value, key, map) => {
+                                    var sparql10 = value;
+                                    var sparql11 = sparql11Map.get(key);
+                                    jsonBaseFeatureSparqles.push({'endpoint':key, 'sparql10':sparql10/24, 'sparql11':sparql11/19});
                                 });
 
+                                var chart10ValueMap = new Map();
+                                var chart11ValueMap = new Map();
+
+                                for(var i = 1; i <= 10 ; i++) {
+                                    chart10ValueMap.set(i, 0);
+                                    chart11ValueMap.set(i, 0);
+                                }
+                                jsonBaseFeatureSparqles.forEach((item, i) => {
+                                    for(var i = 1; i <= 10 ; i++) {
+                                        if(item.sparql10 >= (i/10) && item.sparql10 < ((i+1)/10)) {
+                                            chart10ValueMap.set(i, chart10ValueMap.get(i)+1);
+                                        }
+                                        if(item.sparql11 >= (i/10) && item.sparql11 < ((i+1)/10)) {
+                                            chart11ValueMap.set(i, chart11ValueMap.get(i)+1);
+                                        }
+                                    }
+                                });
+
+                                var chart10Data = [];
+                                var chart11Data = [];
+                                chart10ValueMap.forEach((value, key, map) => {
+                                    if(value > 0) {
+                                        chart10Data.push({'value':value, 'name':(key*10).toString() + " % : " + value.toString()})
+                                    }
+                                });
+                                chart11ValueMap.forEach((value, key, map) => {
+                                    if(value > 0) {
+                                        chart11Data.push({'value':value, 'name':(key*10).toString() + " % : " + value.toString()})
+                                    }
+                                });
+                                console.log(chart10Data);
+                                console.log(chart11Data);
+
+                                var option10 = {
+                                    title: {
+                                        text:"Number of endpoints covering a percentage of the SPARQL 1.0 features"
+                                    },
+                                    legend: {
+                                        show: true,
+                                        top: 'bottom'
+                                    },
+                                    toolbox: {
+                                        show: false
+                                    },
+                                    color: ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6","#ee9b00","#ca6702","#bb3e03","#ae2012","#9b2226"],
+                                    series: [
+                                        {
+                                            name: 'SPARQL 1.0 coverage',
+                                            type: 'pie',
+                                            radius: ['40%', '70%'],
+                                            center: ['50%', '50%'],
+                                            //roseType: 'area',
+                                            itemStyle: {
+                                                borderRadius: 5
+                                            },
+                                            data: chart10Data,
+                                            label: {
+                                                show:false,
+                                                fontWeight: 'bold'
+                                            }
+                                        }
+                                    ]
+                                };
+                                var option11 = {
+                                    title: {
+                                        text:"Number of endpoints covering a percentage of the SPARQL 1.1 features"
+                                    },
+                                    legend: {
+                                        top: 'bottom'
+                                    },
+                                    toolbox: {
+                                        show: false
+                                    },
+                                    color: ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6","#ee9b00","#ca6702","#bb3e03","#ae2012","#9b2226"],
+                                    series: [
+                                        {
+                                            name: 'SPARQL 1.1 coverage',
+                                            type: 'pie',
+                                            radius: ['40%', '70%'],
+                                            center: ['50%', '50%'],
+                                            //roseType: 'area',
+                                            itemStyle: {
+                                                borderRadius: 8
+                                            },
+                                            data: chart11Data,
+                                            label: {
+                                                show:false,
+                                                fontWeight: 'bold'
+                                            }
+                                        }
+                                    ],
+                                };
+                                option10 && sparql10Chart.setOption(option10);
+                                option11 && sparql11Chart.setOption(option11);
                             });
 
-                            var vocabsHtml = document.getElementById('vocabs');
-                            var chart = ForceGraph({'links':[...jsonVocabLinks], 'nodes':[...jsonVocabNodes]} , {
-                                nodeId: d => d.id,
-                                nodeGroup: d => d.group,
-                                nodeTitle: d => `${d.id}\n${d.group}`,
-                                linkStrokeWidth: l => Math.sqrt(l.value),
-                                width:1200,
-                                height: 600
-                            });
+                            // Create an force graph with the graph linked by co-ocurrence of vocabularies
+                            var sparqlesVocabularies = "SELECT DISTINCT ?endpoint ?vocabulary  WHERE { GRAPH ?g { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary } } GROUP BY ?endpoint";
+                                sparqlQueryJSON(sparqlesVocabularies, json => {
+                                    // Retrieval of the list of LOV vocabularies to filter the ones retrived in the index
+                                    var LOVVocabularies = new Set();
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.onreadystatechange = function() {
+                                        if (this.readyState == 4 && this.status == 200) {
+                                            var response = JSON.parse(this.responseText);
+                                            response.forEach((item, i) => {
+                                                LOVVocabularies.add(item.uri)
+                                            });
 
-                            vocabsHtml.appendChild(chart);
+                                            var gatherVocab = new Map(); // List of vocab per endpoint
+                                            var endpointSet = new Set();
+                                            var vocabSet = new Set();
+                                            json.results.bindings.forEach((bindingItem, i) => {
+                                                var vocabulariUri = bindingItem.vocabulary.value;
+                                                var endpointUri = bindingItem.endpoint.value;
+                                                if(LOVVocabularies.has(vocabulariUri)) {
+                                                    endpointSet.add(endpointUri);
+                                                    vocabSet.add(vocabulariUri);
+                                                    if(! gatherVocab.has(endpointUri)) {
+                                                        gatherVocab.set(endpointUri, new Set());
+                                                    }
+                                                    gatherVocab.get(endpointUri).add(vocabulariUri);
+                                                }
+                                            });
 
-                        }
-                    }
-                    xhr.open('GET', 'https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list', true);
-                    xhr.send();
+                                            var jsonVocabLinks = new Set();
+                                            var jsonVocabNodes = new Set();
 
-                });
+                                            endpointSet.forEach((item, i) => {
+                                                jsonVocabNodes.add({'id':item, 'group':'Knowledge base', 'radius':'1'})
+                                            });
+                                            vocabSet.forEach((item, i) => {
+                                                jsonVocabNodes.add({'id':item, 'group':'Vocabulary', 'radius':'1'})
+                                            });
+                                            gatherVocab.forEach(( value1, key1, map1) => {
+                                                value1.forEach((item, i) => {
+                                                    jsonVocabLinks.add({'source':key1, 'target':item, 'value':1})
+                                                });
 
-                </script>
+                                            });
 
-            </body>
-            </html>
+                                            var vocabsHtml = document.getElementById('vocabs');
+                                            var chart = ForceGraph({'links':[...jsonVocabLinks], 'nodes':[...jsonVocabNodes]} , {
+                                                nodeId: d => d.id,
+                                                nodeGroup: d => d.group,
+                                                nodeTitle: d => `${d.id}\n${d.group}`,
+                                                linkStrokeWidth: l => Math.sqrt(l.value),
+                                                width:1200,
+                                                height: 600
+                                            });
+
+                                            vocabsHtml.appendChild(chart);
+
+                                        }
+                                    }
+                                    xhr.open('GET', 'https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list', true);
+                                    xhr.send();
+
+                                });
+
+                                </script>
+
+                            </body>
+                            </html>
