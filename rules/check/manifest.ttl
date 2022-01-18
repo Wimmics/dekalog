@@ -153,3 +153,141 @@
         ]
         <../meta/modifiedUpdate.ttl>
     ) .
+
+<shortUris.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                CONSTRUCT {
+                    $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl#activity> ;
+                        dqv:hasQualityMeasurement [
+                                a dqv:QualityMeasurement ;
+                                rdfs:label "Majority of URIs are not parametrized and below 80 characters"@en ;
+                                dqv:computedOn $endpointDescription ;
+                                dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> ;
+                                dqv:value ?measure
+                            ] .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                } WHERE {
+                    {
+                        SELECT (COUNT(?uris) AS ?countShort) {
+                            { ?uris ?p ?o } UNION { ?s ?p ?uris }
+                            FILTER(isIRI(?uris))
+                            FILTER( ?p != rdf:type )
+                            FILTER(! CONTAINS(str(?uris), "?") )
+                            BIND(strlen(str(?uris)) AS ?uriLen)
+                            FILTER(?uriLen < 80)
+                        }
+                    }
+                    {
+                        SELECT (COUNT(?uris) AS ?countNormal) {
+                            { ?uris ?p ?o } UNION { ?s ?p ?uris }
+                            FILTER( ?p != rdf:type )
+                            FILTER(isIRI(?uris))
+                        }
+                    }
+                    BIND( (?countShort/?countNormal) AS ?measure)
+                }
+                """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) ;
+
+<RDFDataStructures.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                CONSTRUCT {
+                    $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl#activity> ;
+                        dqv:hasQualityMeasurement [
+                                a dqv:QualityMeasurement ;
+                                rdfs:label "RDF data structures are not widely used in the dataset."@en ;
+                                dqv:computedOn $endpointDescription ;
+                                dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> ;
+                                dqv:value ?measure
+                            ] .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                } WHERE {
+                    {
+                        SELECT (COUNT(DISTINCT *) AS ?countStruct) {
+                            {
+                                ?s ?p ?o .
+                                VALUES ?p { rdf:type rdf:subject rdf:predicate rdf:object rdfs:member rdf:first rdf:rest }
+                                VALUES ?o { rdf:Statement rdf:Alt rdf:Bag rdf:Seq rdf:Container rdf:List }
+                            } UNION {
+                                ?s ?p ?o .
+                                FILTER(CONTAINS(str(?p), "http://www.w3.org/1999/02/22-rdf-syntax-ns#_"))
+                            }
+                        }
+                    }
+                    {
+                        SELECT (COUNT(DISTINCT *) AS ?count) {
+                            ?s ?p ?o
+                        }
+                    }
+                    BIND( (1 - ?countStruct/?count) AS ?measure)
+                }
+                """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) ;
+
+<knownVocabularies.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            kgi:endpoint kgi:federation ;
+            mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            CONSTRUCT {
+                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/knownVocabularies.ttl#activity> ;
+                    dqv:hasQualityMeasurement [
+                            a dqv:QualityMeasurement ;
+                            rdfs:label "Known vocabularies are used in the dataset."@en ;
+                            dqv:computedOn $endpointDescription ;
+                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/knownVocabularies.ttl> ;
+                            dqv:value ?measure
+                        ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/knownVocabularies.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            } WHERE {
+                SERVICE $rawEndpointUrl {
+                    {
+                        SELECT (COUNT(DISTINCT ?p) AS ?countProp) {
+                            ?s ?p ?o .
+                        }
+                    }
+                    {
+                        SELECT (COUNT(DISTINCT ?c) AS ?countClass) {
+                            ?s ?p ?c .
+                        }
+                    }
+                }
+                SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> {
+                    GRAPH <https://lov.linkeddata.es/dataset/lov> {
+                        ?vocabURI a voaf:Vocabulary.
+                        ?vocabURI vann:preferredNamespaceUri ?vocabPrefix.
+                    }
+                }
+                BIND( (1 - ?countStruct/(?countProp + ?countClass)) AS ?measure)
+            }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) ;
