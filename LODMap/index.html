@@ -14,8 +14,9 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js" integrity="sha256-iJxB0L7blNZTAFBu/ESTfVaVTqFrTeISeWk7RUEePFY=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.3"></script>
+    <script src="./js/leaflet-color-markers.js"></script>
     <link rel="stylesheet" type="text/css" href="./style.css" />
-    <script type="text/javascript" src="./index.js"></script>
+    <script type="text/javascript" src="./js/index.js"></script>
 
     <title>KartoGraphI: Knowledge graph cartography and index</title>
 </head>
@@ -39,11 +40,12 @@
                         </div>
                         <div class="row border border-dark rounded justify-content-center">
                             <div class="col-12 justify-content-center">
-                                <div class="container justify-content-center"><h5>Estimation of the SPARQL norm coverage by the endpoints</h6></div>
+                                <div class="container justify-content-center"><h5>Estimation of the SPARQL features covered by the endpoints</h6></div>
                                     <div class="container justify-content-center" id="histo1"><h5>SPARQL 1.0</h5></div>
                                     <div class="container justify-content-center" id="histo2"><h5>SPARQL 1.1</h5></div>
                                 </div>
                             </div>
+                                <div class="row border border-dark rounded"><span>This website was created as part of the <a href="https://dekalog.univ-nantes.fr/">ANR project DeKaloG</a>. The code of this site and of the application that generated the RDF data it exploits, are hosted on <a href="https://github.com/Wimmics/dekalog">Github</a></span></div>
                         </div>
                         <div class="col-1"></div>
                     </div>
@@ -61,14 +63,20 @@
                     }).addTo(map);
 
                     function sparqlQueryJSON(query, callback) {
+                        xmlhttpRequestJSON('http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", callback);
+                    };
+
+                    function xmlhttpRequestJSON(url, callback, errorCallback) {
                         var xhr = new XMLHttpRequest();
                         xhr.onreadystatechange = function() {
                             if (this.readyState == 4 && this.status == 200) {
                                 var response = JSON.parse(this.responseText);
                                 callback(response);
+                            } else if(errorCallback != undefined) {
+                                errorCallback(this);
                             }
                         }
-                        xhr.open('GET', 'http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", true);
+                        xhr.open('GET', url, true);
                         xhr.send();
                     };
 
@@ -89,150 +97,183 @@
                     // Marked map with the geoloc of each endpoint
                     endpointIpMap.forEach((item, i) => {
                         // Add the markers for each endpoints.
-                        var endpointMarker = L.marker([item.value.geoloc.lat, item.value.geoloc.lon]);
-                        endpointMarker.on('click', clickEvent => {
-                            var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + item.key + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } }";
-                                sparqlQueryJSON(labelQuery, responseLabels => {
-                                    var popupString = item.key + "<br/>" + item.value.geoloc.country + "<br/>" + item.value.geoloc.regionName + "<br/>" + item.value.geoloc.city + "<br/>" + item.value.geoloc.org ;
-                                    if(responseLabels.results.bindings.size > 0) {
-                                        popupString += responseLabels ;
-                                    }
-                                    endpointMarker.bindPopup(popupString).openPopup();
-                                });
+                        var endpoint = item.key;
+
+
+
+                        // Study of the timezones
+                        // http://worldtimeapi.org/pages/examples
+                        var markerIcon = greenIcon;
+                        var endpointTimezoneSPARQL = new Map();
+                        sparqlQueryJSON("SELECT DISTINCT ?timezone { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <"+endpoint+"> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone }", jsonResponse => {
+                            jsonResponse.results.bindings.forEach((itemResponse, i) => {
+                                endpointTimezoneSPARQL.set(endpoint, itemResponse.timezone.value);
                             });
-                            endpointMarker.addTo(map);
 
-                        });
-
-                        // Create an histogram of the SPARQLES rules passed by endpoint.
-                        var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) WHERE { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . FILTER(CONTAINS(str(?activity), ?sparqlNorm)) VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } } } GROUP BY ?endpoint ?sparqlNorm ORDER BY DESC( ?endpoint)';
-                            sparqlQueryJSON(sparqlesFeatureQuery, json => {
-                                var sparql10Chart = echarts.init(document.getElementById('histo1'));
-                                var sparql11Chart = echarts.init(document.getElementById('histo2'));
-                                var jsonBaseFeatureSparqles = [];
-                                var sparql10Map = new Map();
-                                var sparql11Map = new Map();
-                                json.results.bindings.forEach((bindingItem, i) => {
-                                    var endpointUrl = bindingItem.endpoint.value;
-                                    var feature = bindingItem.sparqlNorm.value;
-                                    var count = bindingItem.count.value;
-                                    if(feature == "SPARQL10") {
-                                        sparql10Map.set(endpointUrl, Number(count));
-                                    } else if (feature == "SPARQL11") {
-                                        sparql11Map.set(endpointUrl, Number(count));
-                                    }
-                                });
-                                sparql10Map.forEach((value, key, map) => {
-                                    var sparql10 = value;
-                                    var sparql11 = sparql11Map.get(key);
-                                    jsonBaseFeatureSparqles.push({'endpoint':key, 'sparql10':sparql10/24, 'sparql11':sparql11/19});
-                                });
-
-                                var chart10ValueMap = new Map();
-                                var chart11ValueMap = new Map();
-
-                                for(var i = 1; i <= 10 ; i++) {
-                                    chart10ValueMap.set(i, 0);
-                                    chart11ValueMap.set(i, 0);
+                            var ipTimezoneArrayFiltered = timezoneMap.filter(itemtza => itemtza.key == item.value.geoloc.timezone);
+                            var ipTimezone;
+                            if(ipTimezoneArrayFiltered.length > 0) {
+                                ipTimezone = ipTimezoneArrayFiltered[0].value.utc_offset;
+                            }
+                            var sparqlTimezone = endpointTimezoneSPARQL.get(endpoint);
+                            var badTimezone = false;
+                            if(sparqlTimezone != undefined
+                                && ipTimezone != undefined
+                                && (ipTimezone.padStart(6, '-') != sparqlTimezone.padStart(6, '-') )
+                                && (ipTimezone.padStart(6, '+') != sparqlTimezone.padStart(6, '+') ) ) {
+                                    badTimezone = true;
+                                    markerIcon = orangeIcon;
                                 }
-                                jsonBaseFeatureSparqles.forEach((item, i) => {
-                                    for(var i = 1; i <= 10 ; i++) {
-                                        if(item.sparql10 >= (i/10) && item.sparql10 < ((i+1)/10)) {
-                                            chart10ValueMap.set(i, chart10ValueMap.get(i)+1);
-                                        }
-                                        if(item.sparql11 >= (i/10) && item.sparql11 < ((i+1)/10)) {
-                                            chart11ValueMap.set(i, chart11ValueMap.get(i)+1);
-                                        }
-                                    }
+
+                                var endpointMarker = L.marker([item.value.geoloc.lat, item.value.geoloc.lon], { icon:markerIcon });
+                                endpointMarker.on('click', clickEvent => {
+                                    var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + item.key + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } }";
+                                        sparqlQueryJSON(labelQuery, responseLabels => {
+                                            var popupString = item.key + "<br/>" + item.value.geoloc.country + "<br/>" + item.value.geoloc.regionName + "<br/>" + item.value.geoloc.city + "<br/>" + item.value.geoloc.org;
+                                            if(badTimezone) {
+                                                 popupString += "<br/>Timezone of endpoint URL: " + ipTimezone;
+                                                 popupString += "<br/>Timezone declared by endpoint: " + sparqlTimezone;
+                                            }
+                                            if(responseLabels.results.bindings.size > 0) {
+                                                popupString += responseLabels ;
+                                            }
+                                            endpointMarker.bindPopup(popupString).openPopup();
+                                        });
+                                    });
+                                    endpointMarker.addTo(map);
                                 });
 
-                                var chart10Data = [];
-                                var chart11Data = [];
-                                chart10ValueMap.forEach((value, key, map) => {
-                                    if(value > 0) {
-                                        chart10Data.push({'value':value, 'name':(key*10).toString() + " % : " + value.toString()})
-                                    }
-                                });
-                                chart11ValueMap.forEach((value, key, map) => {
-                                    if(value > 0) {
-                                        chart11Data.push({'value':value, 'name':(key*10).toString() + " % : " + value.toString()})
-                                    }
-                                });
-                                console.log(chart10Data);
-                                console.log(chart11Data);
-
-                                var option10 = {
-                                    title: {
-                                        text:"Number of endpoints covering a percentage of the SPARQL 1.0 features"
-                                    },
-                                    legend: {
-                                        show: true,
-                                        top: 'bottom'
-                                    },
-                                    toolbox: {
-                                        show: false
-                                    },
-                                    color: ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6","#ee9b00","#ca6702","#bb3e03","#ae2012","#9b2226"],
-                                    series: [
-                                        {
-                                            name: 'SPARQL 1.0 coverage',
-                                            type: 'pie',
-                                            radius: ['40%', '70%'],
-                                            center: ['50%', '50%'],
-                                            //roseType: 'area',
-                                            itemStyle: {
-                                                borderRadius: 5
-                                            },
-                                            data: chart10Data,
-                                            label: {
-                                                show:false,
-                                                fontWeight: 'bold'
-                                            }
-                                        }
-                                    ]
-                                };
-                                var option11 = {
-                                    title: {
-                                        text:"Number of endpoints covering a percentage of the SPARQL 1.1 features"
-                                    },
-                                    legend: {
-                                        top: 'bottom'
-                                    },
-                                    toolbox: {
-                                        show: false
-                                    },
-                                    color: ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6","#ee9b00","#ca6702","#bb3e03","#ae2012","#9b2226"],
-                                    series: [
-                                        {
-                                            name: 'SPARQL 1.1 coverage',
-                                            type: 'pie',
-                                            radius: ['40%', '70%'],
-                                            center: ['50%', '50%'],
-                                            //roseType: 'area',
-                                            itemStyle: {
-                                                borderRadius: 8
-                                            },
-                                            data: chart11Data,
-                                            label: {
-                                                show:false,
-                                                fontWeight: 'bold'
-                                            }
-                                        }
-                                    ],
-                                };
-                                option10 && sparql10Chart.setOption(option10);
-                                option11 && sparql11Chart.setOption(option11);
                             });
 
-                            // Create an force graph with the graph linked by co-ocurrence of vocabularies
-                            var sparqlesVocabularies = "SELECT DISTINCT ?endpoint ?vocabulary  WHERE { GRAPH ?g { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary } } GROUP BY ?endpoint";
-                                sparqlQueryJSON(sparqlesVocabularies, json => {
-                                    // Retrieval of the list of LOV vocabularies to filter the ones retrived in the index
-                                    var LOVVocabularies = new Set();
-                                    var xhr = new XMLHttpRequest();
-                                    xhr.onreadystatechange = function() {
-                                        if (this.readyState == 4 && this.status == 200) {
-                                            var response = JSON.parse(this.responseText);
+                            // Create an histogram of the SPARQLES rules passed by endpoint.
+                            var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) WHERE { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . FILTER(CONTAINS(str(?activity), ?sparqlNorm)) VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } } } GROUP BY ?endpoint ?sparqlNorm ORDER BY DESC( ?endpoint)';
+                                sparqlQueryJSON(sparqlesFeatureQuery, json => {
+                                    var sparql10Chart = echarts.init(document.getElementById('histo1'));
+                                    var sparql11Chart = echarts.init(document.getElementById('histo2'));
+                                    var jsonBaseFeatureSparqles = [];
+                                    var sparql10Map = new Map();
+                                    var sparql11Map = new Map();
+                                    json.results.bindings.forEach((bindingItem, i) => {
+                                        var endpointUrl = bindingItem.endpoint.value;
+                                        var feature = bindingItem.sparqlNorm.value;
+                                        var count = bindingItem.count.value;
+                                        if(feature == "SPARQL10") {
+                                            sparql10Map.set(endpointUrl, Number(count));
+                                        } else if (feature == "SPARQL11") {
+                                            sparql11Map.set(endpointUrl, Number(count));
+                                        }
+                                    });
+                                    sparql10Map.forEach((value, key, map) => {
+                                        var sparql10 = value;
+                                        var sparql11 = sparql11Map.get(key);
+                                        jsonBaseFeatureSparqles.push({'endpoint':key, 'sparql10':sparql10/24, 'sparql11':sparql11/19});
+                                    });
+
+                                    var chart10ValueMap = new Map();
+                                    var chart11ValueMap = new Map();
+
+                                    for(var i = 1; i <= 10 ; i++) {
+                                        chart10ValueMap.set(i, 0);
+                                        chart11ValueMap.set(i, 0);
+                                    }
+                                    jsonBaseFeatureSparqles.forEach((item, i) => {
+                                        for(var i = 1; i <= 10 ; i++) {
+                                            if(item.sparql10 >= (i/10) && item.sparql10 < ((i+1)/10)) {
+                                                chart10ValueMap.set(i, chart10ValueMap.get(i)+1);
+                                            }
+                                            if(item.sparql11 >= (i/10) && item.sparql11 < ((i+1)/10)) {
+                                                chart11ValueMap.set(i, chart11ValueMap.get(i)+1);
+                                            }
+                                        }
+                                    });
+
+                                    var chart10Data = [];
+                                    var chart11Data = [];
+                                    chart10ValueMap.forEach((value, key, map) => {
+                                        //if(value > 0) {
+                                        chart10Data.push({'value':value, 'name':(key*10).toString() + " %" })
+                                        //}
+                                    });
+                                    chart11ValueMap.forEach((value, key, map) => {
+                                        //if(value > 0) {
+                                        chart11Data.push({'value':value, 'name':(key*10).toString() + " %" })
+                                        //}
+                                    });
+
+                                    var option10 = {
+                                        title: {
+                                            text:"Number of endpoints covering a percentage of the SPARQL 1.0 features",
+                                        },
+                                        legend: {
+                                            show: true,
+                                            top: 'bottom'
+                                        },
+                                        toolbox: {
+                                            show: false
+                                        },
+                                        color: ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6","#ee9b00","#ca6702","#bb3e03","#ae2012","#9b2226"],
+                                        tooltip: {
+                                            show:true
+                                        },
+                                        series: [
+                                            {
+                                                name: 'SPARQL 1.0 coverage',
+                                                type: 'pie',
+                                                radius: ['40%', '70%'],
+                                                center: ['50%', '50%'],
+                                                //roseType: 'area',
+                                                itemStyle: {
+                                                    borderRadius: 5
+                                                },
+                                                data: chart10Data,
+                                                label: {
+                                                    show:false
+                                                }
+                                            }
+                                        ]
+                                    };
+                                    var option11 = {
+                                        title: {
+                                            text:"Number of endpoints covering a percentage of the SPARQL 1.1 features",
+                                        },
+                                        legend: {
+                                            top: 'bottom'
+                                        },
+                                        toolbox: {
+                                            show: false
+                                        },
+                                        tooltip: {
+                                            show:true
+                                        },
+                                        color: ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6","#ee9b00","#ca6702","#bb3e03","#ae2012","#9b2226"],
+                                        series: [
+                                            {
+                                                name: 'SPARQL 1.1 coverage',
+                                                type: 'pie',
+                                                radius: ['40%', '70%'],
+                                                center: ['50%', '50%'],
+                                                //roseType: 'area',
+                                                itemStyle: {
+                                                    borderRadius: 8
+                                                },
+                                                data: chart11Data,
+                                                label: {
+                                                    show:false
+                                                }
+                                            }
+                                        ],
+                                    };
+                                    option10 && sparql10Chart.setOption(option10);
+                                    option11 && sparql11Chart.setOption(option11);
+                                });
+
+                                // Create an force graph with the graph linked by co-ocurrence of vocabularies
+                                var sparqlesVocabularies = "SELECT DISTINCT ?endpoint ?vocabulary  WHERE { GRAPH ?g { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary } } GROUP BY ?endpoint";
+                                    sparqlQueryJSON(sparqlesVocabularies, json => {
+                                        // Retrieval of the list of LOV vocabularies to filter the ones retrived in the index
+                                        var LOVVocabularies = new Set();
+                                        var xhr = new XMLHttpRequest();
+                                        xmlhttpRequestJSON("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list", response => {
                                             response.forEach((item, i) => {
                                                 LOVVocabularies.add(item.uri)
                                             });
@@ -266,7 +307,6 @@
                                                 value1.forEach((item, i) => {
                                                     jsonVocabLinks.add({'source':key1, 'target':item, 'value':1})
                                                 });
-
                                             });
 
                                             var vocabsHtml = document.getElementById('vocabs');
@@ -280,15 +320,11 @@
                                             });
 
                                             vocabsHtml.appendChild(chart);
+                                        });
+                                    });
 
-                                        }
-                                    }
-                                    xhr.open('GET', 'https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list', true);
-                                    xhr.send();
 
-                                });
+                                    </script>
 
-                                </script>
-
-                            </body>
-                            </html>
+                                </body>
+                                </html>
