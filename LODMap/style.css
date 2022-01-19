@@ -1,3 +1,3 @@
-#map { width: 1200px; height: 900px; }
-#histo1 { width: 700px; height: 700px; }
-#histo2 { width: 700px; height: 700px; }
+#map { width: 100%; height: 900px; }
+#histo1 { width: 100%; height: 700px; }
+#histo2 { width: 100%; height: 700px; }
