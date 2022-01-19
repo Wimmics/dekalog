@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin=""/>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
@@ -14,8 +15,9 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js" integrity="sha256-iJxB0L7blNZTAFBu/ESTfVaVTqFrTeISeWk7RUEePFY=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.3"></script>
+    <script src="./js/leaflet-color-markers.js"></script>
     <link rel="stylesheet" type="text/css" href="./style.css" />
-    <script type="text/javascript" src="./index.js"></script>
+    <script type="text/javascript" src="./js/index.js"></script>
 
     <title>KartoGraphI: Knowledge graph cartography and index</title>
 </head>
@@ -29,78 +31,163 @@
                         <div class="container justify-content-center"><h5> Geolocation of the indexed endpoints</h6></div>
                             <div class="container justify-content-center" id="map"></div>
                         </div>
+                        <span> <img src="./img/marker-icon-green.png">: Marker used for endpoints.</span><br/>
+                        <span> <img src="./img/marker-icon-orange.png">: Marker used for endpoints that are using a timezone different to the one corresponding to their IP.</span>
                     </div>
                     <div class="row border border-dark rounded justify-content-center">
                         <div class="col-12 justify-content-center">
-                            <div class="container justify-content-center"><h5>Graph of the endpoints connected to their vocabularies*</h6></div>
+                            <div class="container justify-content-center"><h5>Graph of the endpoints connected to their vocabularies*</h5></div>
                                 <div class="container justify-content-center" id="vocabs"></div>
+                                <span> <img src="./img/orange_node_endpoint.png" alt="Orange nodes" >: Vocabularies </span> <br/>
+                                <span> <img src="./img/blue_node_endpoint.png" alt="Orange nodes" >: Endpoint </span> <br/>
                                 <span> *: Only the vocabularies listed in <a href="https://lov.linkeddata.es/dataset/lov">Linked Open Vocabularies</a> are displayed.</span>
                             </div>
                         </div>
                         <div class="row border border-dark rounded justify-content-center">
                             <div class="col-12 justify-content-center">
-                                <div class="container justify-content-center"><h5>Estimation of the SPARQL norm coverage by the endpoints</h6></div>
+                                <div class="container justify-content-center"><h5>Estimation of the SPARQL features covered by the endpoints</h5></div>
                                     <div class="container justify-content-center" id="histo1"><h5>SPARQL 1.0</h5></div>
                                     <div class="container justify-content-center" id="histo2"><h5>SPARQL 1.1</h5></div>
                                 </div>
                             </div>
+                            <div class="row border border-dark rounded justify-content-center"><h5>Quality measures</h5>
+                                <table class="table table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Measure</th>
+                                            <th scope="col">Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row" title="Proportion of URIs under 80 characters and without parameters">Short URIs</th> <td id="shortUrisMeasure"> TBD</td><td id="shortUrisDetails">Details</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" title="Minimal usage of RDF data structures such as sets, bags, etc.">Minimal usage of RDF data structures</th> <td id="RDFdataStructuresMeasure">TBD</td><td id="RDFdataStructuresDetails">Details</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" title="Use of vocabularies registered in the Linked Open Vocabularies repository.">Use of known vocabularies*</th> <td id="KnownVocabulariesMeasure"></td><td><button id="KnownVocabulariesDetails" type="button" class="btn btn-link">Details</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="collapse" id="knowVocabEndpointTable">
+                                                <table class="table table-responsive table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th id="knownVocabEndpointHeader" scope="col">Endpoint</th>
+                                                            <th id="knownVocabMeasureHeader" scope="col">Score</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="endpointKnownVocabsTableBody">
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <span>*: This measure can only be computed for the endpoints that return their list of used vocabularies.</span>
                         </div>
-                        <div class="col-1"></div>
+                        <div class="row border border-dark rounded"><span>This website was created as part of the <a href="https://dekalog.univ-nantes.fr/">ANR project DeKaloG</a>. The code of this site and of the application that generated the RDF data it exploits, are hosted on <a href="https://github.com/Wimmics/dekalog">Github</a></span></div>
                     </div>
+                    <div class="col-1"></div>
+                </div>
 
-                    <script>
-                    // Initialization of the map
-                    var map = L.map('map').setView([24.5271348225978, 62.22656250000001], 2);
-                    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
-                        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                        maxZoom: 18,
-                        id: 'mapbox/streets-v11',
-                        tileSize: 512,
-                        zoomOffset: -1,
-                        accessToken: 'pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q'
-                    }).addTo(map);
+                <script>
+                // Initialization of the map
+                var map = L.map('map').setView([24.5271348225978, 62.22656250000001], 2);
+                L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
+                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                    maxZoom: 18,
+                    id: 'mapbox/streets-v11',
+                    tileSize: 512,
+                    zoomOffset: -1,
+                    accessToken: 'pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q'
+                }).addTo(map);
 
-                    function sparqlQueryJSON(query, callback) {
-                        var xhr = new XMLHttpRequest();
-                        xhr.onreadystatechange = function() {
-                            if (this.readyState == 4 && this.status == 200) {
-                                var response = JSON.parse(this.responseText);
-                                callback(response);
-                            }
+                function sparqlQueryJSON(query, callback) {
+                    xmlhttpRequestJSON('http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", callback);
+                };
+
+                function xmlhttpRequestJSON(url, callback, errorCallback) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            var response = JSON.parse(this.responseText);
+                            callback(response);
+                        } else if(errorCallback != undefined) {
+                            errorCallback(this);
                         }
-                        xhr.open('GET', 'http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", true);
-                        xhr.send();
-                    };
+                    }
+                    xhr.open('GET', url, true);
+                    xhr.send();
+                };
 
-                    function intersection(setA, setB) {
-                        var intersection = new Set();
-                        for (var elem of setB) {
-                            if (setA.has(elem)) {
-                                intersection.add(elem);
-                            }
+                function intersection(setA, setB) {
+                    var intersection = new Set();
+                    for (var elem of setB) {
+                        if (setA.has(elem)) {
+                            intersection.add(elem);
                         }
-                        return intersection;
                     }
+                    return intersection;
+                }
 
-                    function haveIntersection(setA, setB) {
-                        return intersection(setA, setB).size > 0;
-                    }
+                function haveIntersection(setA, setB) {
+                    return intersection(setA, setB).size > 0;
+                }
 
-                    // Marked map with the geoloc of each endpoint
-                    endpointIpMap.forEach((item, i) => {
-                        // Add the markers for each endpoints.
-                        var endpointMarker = L.marker([item.value.geoloc.lat, item.value.geoloc.lon]);
-                        endpointMarker.on('click', clickEvent => {
-                            var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + item.key + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } }";
-                                sparqlQueryJSON(labelQuery, responseLabels => {
-                                    var popupString = item.key + "<br/>" + item.value.geoloc.country + "<br/>" + item.value.geoloc.regionName + "<br/>" + item.value.geoloc.city + "<br/>" + item.value.geoloc.org ;
-                                    if(responseLabels.results.bindings.size > 0) {
-                                        popupString += responseLabels ;
-                                    }
-                                    endpointMarker.bindPopup(popupString).openPopup();
+                function precise(x) {
+                    return Number.parseFloat(x).toPrecision(2);
+                }
+
+                // Marked map with the geoloc of each endpoint
+                endpointIpMap.forEach((item, i) => {
+                    // Add the markers for each endpoints.
+                    var endpoint = item.key;
+
+
+
+                    // Study of the timezones
+                    // http://worldtimeapi.org/pages/examples
+                    var markerIcon = greenIcon;
+                    var endpointTimezoneSPARQL = new Map();
+                    sparqlQueryJSON("SELECT DISTINCT ?timezone { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <"+endpoint+"> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone }", jsonResponse => {
+                        jsonResponse.results.bindings.forEach((itemResponse, i) => {
+                            endpointTimezoneSPARQL.set(endpoint, itemResponse.timezone.value);
+                        });
+
+                        var ipTimezoneArrayFiltered = timezoneMap.filter(itemtza => itemtza.key == item.value.geoloc.timezone);
+                        var ipTimezone;
+                        if(ipTimezoneArrayFiltered.length > 0) {
+                            ipTimezone = ipTimezoneArrayFiltered[0].value.utc_offset;
+                        }
+                        var sparqlTimezone = endpointTimezoneSPARQL.get(endpoint);
+                        var badTimezone = false;
+                        if(sparqlTimezone != undefined
+                            && ipTimezone != undefined
+                            && (ipTimezone.padStart(6, '-') != sparqlTimezone.padStart(6, '-') )
+                            && (ipTimezone.padStart(6, '+') != sparqlTimezone.padStart(6, '+') ) ) {
+                                badTimezone = true;
+                                markerIcon = orangeIcon;
+                            }
+
+                            var endpointMarker = L.marker([item.value.geoloc.lat, item.value.geoloc.lon], { icon:markerIcon });
+                            endpointMarker.on('click', clickEvent => {
+                                var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + item.key + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } }";
+                                    sparqlQueryJSON(labelQuery, responseLabels => {
+                                        var popupString = item.key + "<br/>" + item.value.geoloc.country + "<br/>" + item.value.geoloc.regionName + "<br/>" + item.value.geoloc.city + "<br/>" + item.value.geoloc.org;
+                                        if(badTimezone) {
+                                            popupString += "<br/>Timezone of endpoint URL: " + ipTimezone;
+                                            popupString += "<br/>Timezone declared by endpoint: " + sparqlTimezone;
+                                        }
+                                        if(responseLabels.results.bindings.size > 0) {
+                                            popupString += responseLabels ;
+                                        }
+                                        endpointMarker.bindPopup(popupString).openPopup();
+                                    });
                                 });
+                                endpointMarker.addTo(map);
                             });
-                            endpointMarker.addTo(map);
 
                         });
 
@@ -149,21 +236,15 @@
                                 var chart10Data = [];
                                 var chart11Data = [];
                                 chart10ValueMap.forEach((value, key, map) => {
-                                    if(value > 0) {
-                                        chart10Data.push({'value':value, 'name':(key*10).toString() + " % : " + value.toString()})
-                                    }
+                                    chart10Data.push({'value':value, 'name':(key*10).toString() + " %" })
                                 });
                                 chart11ValueMap.forEach((value, key, map) => {
-                                    if(value > 0) {
-                                        chart11Data.push({'value':value, 'name':(key*10).toString() + " % : " + value.toString()})
-                                    }
+                                    chart11Data.push({'value':value, 'name':(key*10).toString() + " %" })
                                 });
-                                console.log(chart10Data);
-                                console.log(chart11Data);
 
                                 var option10 = {
                                     title: {
-                                        text:"Number of endpoints covering a percentage of the SPARQL 1.0 features"
+                                        text:"Number of endpoints covering a percentage of the SPARQL 1.0 features",
                                     },
                                     legend: {
                                         show: true,
@@ -173,6 +254,9 @@
                                         show: false
                                     },
                                     color: ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6","#ee9b00","#ca6702","#bb3e03","#ae2012","#9b2226"],
+                                    tooltip: {
+                                        show:true
+                                    },
                                     series: [
                                         {
                                             name: 'SPARQL 1.0 coverage',
@@ -185,21 +269,23 @@
                                             },
                                             data: chart10Data,
                                             label: {
-                                                show:false,
-                                                fontWeight: 'bold'
+                                                show:false
                                             }
                                         }
                                     ]
                                 };
                                 var option11 = {
                                     title: {
-                                        text:"Number of endpoints covering a percentage of the SPARQL 1.1 features"
+                                        text:"Number of endpoints covering a percentage of the SPARQL 1.1 features",
                                     },
                                     legend: {
                                         top: 'bottom'
                                     },
                                     toolbox: {
                                         show: false
+                                    },
+                                    tooltip: {
+                                        show:true
                                     },
                                     color: ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6","#ee9b00","#ca6702","#bb3e03","#ae2012","#9b2226"],
                                     series: [
@@ -214,8 +300,7 @@
                                             },
                                             data: chart11Data,
                                             label: {
-                                                show:false,
-                                                fontWeight: 'bold'
+                                                show:false
                                             }
                                         }
                                     ],
@@ -227,66 +312,140 @@
                             // Create an force graph with the graph linked by co-ocurrence of vocabularies
                             var sparqlesVocabularies = "SELECT DISTINCT ?endpoint ?vocabulary  WHERE { GRAPH ?g { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary } } GROUP BY ?endpoint";
                                 sparqlQueryJSON(sparqlesVocabularies, json => {
-                                    // Retrieval of the list of LOV vocabularies to filter the ones retrived in the index
+                                    // Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
                                     var LOVVocabularies = new Set();
-                                    var xhr = new XMLHttpRequest();
-                                    xhr.onreadystatechange = function() {
-                                        if (this.readyState == 4 && this.status == 200) {
-                                            var response = JSON.parse(this.responseText);
-                                            response.forEach((item, i) => {
-                                                LOVVocabularies.add(item.uri)
-                                            });
+                                    var sumVocabSetSize = 0;
+                                    var sumRawVocabSetSize = 0;
+                                    xmlhttpRequestJSON("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list", response => {
+                                        response.forEach((item, i) => {
+                                            LOVVocabularies.add(item.uri)
+                                        });
 
-                                            var gatherVocab = new Map(); // List of vocab per endpoint
-                                            var endpointSet = new Set();
-                                            var vocabSet = new Set();
-                                            json.results.bindings.forEach((bindingItem, i) => {
-                                                var vocabulariUri = bindingItem.vocabulary.value;
-                                                var endpointUri = bindingItem.endpoint.value;
-                                                if(LOVVocabularies.has(vocabulariUri)) {
-                                                    endpointSet.add(endpointUri);
-                                                    vocabSet.add(vocabulariUri);
-                                                    if(! gatherVocab.has(endpointUri)) {
-                                                        gatherVocab.set(endpointUri, new Set());
-                                                    }
-                                                    gatherVocab.get(endpointUri).add(vocabulariUri);
+                                        var gatherVocab = new Map(); // List of vocab per endpoint
+                                        var endpointSet = new Set();
+                                        var vocabSet = new Set();
+                                        var rawVocabSet = new Set();
+                                        var rawGatherVocab = new Map();
+                                        json.results.bindings.forEach((bindingItem, i) => {
+                                            var vocabulariUri = bindingItem.vocabulary.value;
+                                            var endpointUri = bindingItem.endpoint.value;
+                                            rawVocabSet.add(vocabulariUri);
+                                            if(! rawGatherVocab.has(endpointUri)) {
+                                                rawGatherVocab.set(endpointUri, new Set());
+                                            }
+                                            rawGatherVocab.get(endpointUri).add(vocabulariUri);
+                                            if(LOVVocabularies.has(vocabulariUri)) {
+                                                endpointSet.add(endpointUri);
+                                                vocabSet.add(vocabulariUri);
+                                                if(! gatherVocab.has(endpointUri)) {
+                                                    gatherVocab.set(endpointUri, new Set());
                                                 }
-                                            });
+                                                gatherVocab.get(endpointUri).add(vocabulariUri);
+                                            }
+                                        });
 
-                                            var jsonVocabLinks = new Set();
-                                            var jsonVocabNodes = new Set();
+                                        var jsonVocabLinks = new Set();
+                                        var jsonVocabNodes = new Set();
 
-                                            endpointSet.forEach((item, i) => {
-                                                jsonVocabNodes.add({'id':item, 'group':'Knowledge base', 'radius':'1'})
+                                        endpointSet.forEach((item, i) => {
+                                            jsonVocabNodes.add({'id':item, 'group':'Knowledge base', 'radius':'1'})
+                                        });
+                                        vocabSet.forEach((item, i) => {
+                                            jsonVocabNodes.add({'id':item, 'group':'Vocabulary', 'radius':'1'})
+                                        });
+                                        var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
+                                        var sumknowVocabMeasure = 0;
+                                        var knowVocabsData = [];
+                                        gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
+                                            var measure = (endpointVocabs.size/rawGatherVocab.get(endpointUrl).size);
+                                            knowVocabsData.push({ 'endpoint':endpointUrl, 'measure':measure })
+
+                                            endpointVocabs.forEach((vocab, i) => {
+                                                jsonVocabLinks.add({'source':endpointUrl, 'target':vocab, 'value':1})
                                             });
-                                            vocabSet.forEach((item, i) => {
-                                                jsonVocabNodes.add({'id':item, 'group':'Vocabulary', 'radius':'1'})
+                                        });
+
+                                        function endpointKnowVocabsMeasureFill() {
+                                            knowVocabsData.forEach((item, i) => {
+                                                var endpointUrl = item.endpoint;
+                                                var measure = item.measure;
+                                                sumknowVocabMeasure += measure;
+                                                var endpointRow = document.createElement("tr");
+                                                var endpointCell = document.createElement('td');
+                                                endpointCell.appendChild( document.createTextNode(endpointUrl));
+                                                endpointRow.appendChild(endpointCell);
+                                                var knownVocabMeasureCell = document.createElement('td');
+                                                knownVocabMeasureCell.appendChild( document.createTextNode(precise(measure)));
+                                                endpointRow.appendChild(knownVocabMeasureCell);
+                                                endpointKnownVocabulariestableBody.append(endpointRow);
                                             });
-                                            gatherVocab.forEach(( value1, key1, map1) => {
-                                                value1.forEach((item, i) => {
-                                                    jsonVocabLinks.add({'source':key1, 'target':item, 'value':1})
+                                        };
+                                            var tableBody = $('#endpointKnownVocabsTableBody');
+                                        $('#knownVocabEndpointHeader').click(function() {
+                                            tableBody.empty();
+                                            if(tableBody.hasClass('sortByKnownVocabEndpointDesc')) {
+                                                tableBody.removeClass('sortByKnownVocabEndpointDesc');
+                                                tableBody.addClass('sortByKnownVocabEndpointAsc');
+                                                knowVocabsData.sort((a,b) => {
+                                                    return a.endpoint.localeCompare(b.endpoint);
                                                 });
+                                            } else {
+                                                tableBody.addClass('sortByKnownVocabEndpointDesc');
+                                                tableBody.removeClass('sortByKnownVocabEndpointAsc');
+                                                knowVocabsData.sort((a,b) => {
+                                                    return - a.endpoint.localeCompare(b.endpoint);
+                                                });
+                                            }
+                                            endpointKnowVocabsMeasureFill();
+                                        });
 
-                                            });
+                                        endpointKnowVocabsMeasureFill();
+                                        $('#knownVocabMeasureHeader').click(function() {
+                                            $('#endpointKnownVocabsTableBody').empty();
+                                            if(tableBody.hasClass('sortByKnownVocabMeasureDesc')) {
+                                                tableBody.removeClass('sortByKnownVocabMeasureDesc');
+                                                tableBody.addClass('sortByKnownVocabMeasureAsc');
+                                                knowVocabsData.sort((a,b) => {
+                                                    return a.measure - b.measure;
+                                                });
+                                            } else {
+                                                tableBody.addClass('sortByKnownVocabMeasureDesc');
+                                                tableBody.removeClass('sortByKnownVocabMeasureAsc');
+                                                knowVocabsData.sort((a,b) => {
+                                                    return b.measure - a.measure;
+                                                });
+                                            }
+                                            endpointKnowVocabsMeasureFill();
+                                        });
 
-                                            var vocabsHtml = document.getElementById('vocabs');
-                                            var chart = ForceGraph({'links':[...jsonVocabLinks], 'nodes':[...jsonVocabNodes]} , {
-                                                nodeId: d => d.id,
-                                                nodeGroup: d => d.group,
-                                                nodeTitle: d => `${d.id}\n${d.group}`,
-                                                linkStrokeWidth: l => Math.sqrt(l.value),
-                                                width:1200,
-                                                height: 600
-                                            });
+                                        $('#KnownVocabulariesDetails').click(function() {
+                                            if($('#knowVocabEndpointTable').hasClass("show")) {
+                                                $('#knowVocabEndpointTable').removeClass("show");
+                                                $('#knowVocabEndpointTable').addClass("collapse");
+                                            } else {
+                                                $('#knowVocabEndpointTable').addClass("show");
+                                                $('#knowVocabEndpointTable').removeClass("collapse");
+                                            }
+                                        })
 
-                                            vocabsHtml.appendChild(chart);
+                                        var chart = ForceGraph({'links':[...jsonVocabLinks], 'nodes':[...jsonVocabNodes]} , {
+                                            nodeId: d => d.id,
+                                            nodeGroup: d => d.group,
+                                            nodeTitle: d => `${d.id}\n${d.group}`,
+                                            linkStrokeWidth: l => Math.sqrt(l.value),
+                                            width:1200,
+                                            height: 600
+                                        });
 
-                                        }
-                                    }
-                                    xhr.open('GET', 'https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list', true);
-                                    xhr.send();
+                                        var vocabsHtml = document.getElementById('vocabs');
+                                        vocabsHtml.appendChild(chart);
 
+                                        // compputation of the know vocabularies measure
+                                        var knownVocabulariesMeasureHtml = document.getElementById('KnownVocabulariesMeasure');
+                                        knownVocabulariesMeasureHtml.appendChild( document.createTextNode(precise(sumknowVocabMeasure / endpointSet.size)));
+                                    });
                                 });
+
 
                                 </script>
 
