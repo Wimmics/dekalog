@@ -21,69 +21,74 @@
                 <div class="row border border-dark rounded justify-content-center">
                     <div class="col-12 justify-content-center">
                         <div class="container justify-content-center"><h5> Geolocation of the indexed endpoints</h6></div>
-                            <div class="container justify-content-center" id="map"></div>
-                        </div>
-                        <span> <img src="./img/marker-icon-green.png">: Marker used for endpoints.</span><br/>
-                        <span> <img src="./img/marker-icon-orange.png">: Marker used for endpoints that are using a timezone different to the one corresponding to their IP.</span>
+                        <div class="container justify-content-center" id="map"></div>
                     </div>
-                    <div class="row border border-dark rounded justify-content-center">
-                        <div class="col-12 justify-content-center">
-                            <div class="container justify-content-center"><h5>Graph of the endpoints connected to their vocabularies*</h5></div>
-                            <div class="container justify-content-center" id="vocabs"></div>
-                            <span> <img src="./img/orange_node_endpoint.png" alt="Orange nodes" >: Vocabularies </span> <br/>
-                            <span> <img src="./img/blue_node_endpoint.png" alt="Blue nodes" >: Endpoint </span> <br/>
-                            <span> *: Only the vocabularies listed in <a href="https://lov.linkeddata.es/dataset/lov">Linked Open Vocabularies</a> are displayed.</span>
-                        </div>
+                    <span> <img src="./img/marker-icon-green.png">: Marker used for endpoints.</span><br/>
+                    <span> <img src="./img/marker-icon-orange.png">: Marker used for endpoints that are using a timezone different to the one corresponding to their IP.</span>
+                </div>
+                <div class="row border border-dark rounded justify-content-center">
+                    <div class="col-12 justify-content-center">
+                        <div class="container justify-content-center"><h5>Graph of the endpoints connected to their vocabularies*</h5></div>
+                        <div class="container justify-content-center" id="vocabs"></div>
+                        <span> <img src="./img/orange_node_endpoint.png" alt="Orange nodes" >: Vocabularies </span> <br/>
+                        <span> <img src="./img/blue_node_endpoint.png" alt="Blue nodes" >: Endpoint </span> <br/>
+                        <span> *: Only the vocabularies listed in <a href="https://lov.linkeddata.es/dataset/lov">Linked Open Vocabularies</a> are displayed.</span>
                     </div>
-                    <div class="row border border-dark rounded justify-content-center">
-                        <div class="col-12 justify-content-center">
-                            <div class="container justify-content-center"><h5>Estimation of the SPARQL features covered by the endpoints</h5></div>
+                </div>
+                <div class="row border border-dark rounded justify-content-center">
+                    <div class="col-12 justify-content-center">
+                        <div class="container justify-content-center"><h5>Estimation of the SPARQL features covered by the endpoints</h5></div>
+                        <div class="row">
                             <div class="container justify-content-center" id="histo1"><h5>SPARQL 1.0</h5></div>
                             <div class="container justify-content-center" id="histo2"><h5>SPARQL 1.1</h5></div>
                         </div>
+                        <div class="row">
+                            <div class="container justify-content-center" id="histo3"><h5>SPARQL</h5></div>
+                        </div>
                     </div>
-                    <div class="row border border-dark rounded justify-content-center"><h5>Quality measures</h5>
-                        <table class="table table-responsive">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Measure</th>
-                                    <th scope="col">Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row" title="Proportion of URIs under 80 characters and without parameters">Short URIs</th> <td id="shortUrisMeasure"> TBD</td><td id="shortUrisDetails">Details</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" title="Minimal usage of RDF data structures such as sets, bags, etc.">Minimal usage of RDF data structures</th> <td id="RDFdataStructuresMeasure">TBD</td><td id="RDFdataStructuresDetails">Details</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" title="Use of vocabularies registered in the Linked Open Vocabularies repository.">Use of known vocabularies*</th> <td id="KnownVocabulariesMeasure"></td><td><button id="KnownVocabulariesDetails" type="button" class="btn btn-link">Details</button></td>
-                                </tr>
-                                <tr>
-                                    <td class="collapse" id="knowVocabEndpointTable">
-                                        <table class="table table-responsive table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th id="knownVocabEndpointHeader" scope="col">Endpoint</th>
-                                                    <th id="knownVocabMeasureHeader" scope="col">Score</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="endpointKnownVocabsTableBody">
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <span>*: This measure can only be computed for the endpoints that return their list of used vocabularies.</span>
                 </div>
-                <div class="row border border-dark rounded"><span>This website was created as part of the <a href="https://dekalog.univ-nantes.fr/">ANR project DeKaloG</a>. The code of this site and of the application that generated the RDF data it exploits, are hosted on <a href="https://github.com/Wimmics/dekalog">Github</a></span></div>
+                <div class="row border border-dark rounded justify-content-center"><h5>Quality measures</h5>
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th scope="col">Measure</th>
+                                <th scope="col">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row" title="Proportion of URIs under 80 characters and without parameters">Short URIs</th> <td id="shortUrisMeasure"> TBD</td><td id="shortUrisDetails">Details</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" title="Minimal usage of RDF data structures such as sets, bags, etc.">Minimal usage of RDF data structures</th> <td id="RDFdataStructuresMeasure">TBD</td><td id="RDFdataStructuresDetails">Details</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" title="Use of vocabularies registered in the Linked Open Vocabularies repository.">Use of known vocabularies*</th> <td id="KnownVocabulariesMeasure"></td><td><button id="KnownVocabulariesDetails" type="button" class="btn btn-link">Details</button></td>
+                            </tr>
+                            <tr>
+                                <td class="collapse" id="knowVocabEndpointTable">
+                                    <table class="table table-responsive table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th id="knownVocabEndpointHeader" scope="col">Endpoint</th>
+                                                <th id="knownVocabMeasureHeader" scope="col">Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="endpointKnownVocabsTableBody">
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tr>
+                    </tbody>
+                </table>
+                <span>*: This measure can only be computed for the endpoints that return their list of used vocabularies.</span>
             </div>
-            <div class="col-1"></div>
+            <div class="row border border-dark rounded"><span>This website was created as part of the <a href="https://dekalog.univ-nantes.fr/">ANR project DeKaloG</a>. The code of this site and of the application that generated the RDF data it exploits, are hosted on <a href="https://github.com/Wimmics/dekalog">Github</a></span></div>
         </div>
+        <div class="col-1"></div>
+    </div>
 
 
-    </body>
-    </html>
+</body>
+</html>

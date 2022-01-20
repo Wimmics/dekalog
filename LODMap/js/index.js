@@ -107,6 +107,7 @@ var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINC
 sparqlQueryJSON(sparqlesFeatureQuery, json => {
     var sparql10Chart = echarts.init(document.getElementById('histo1'));
     var sparql11Chart = echarts.init(document.getElementById('histo2'));
+    var sparqlTotalChart = echarts.init(document.getElementById('histo3'));
     var jsonBaseFeatureSparqles = [];
     var sparql10Map = new Map();
     var sparql11Map = new Map();
@@ -123,15 +124,17 @@ sparqlQueryJSON(sparqlesFeatureQuery, json => {
     sparql10Map.forEach((value, key, map) => {
         var sparql10 = value;
         var sparql11 = sparql11Map.get(key);
-        jsonBaseFeatureSparqles.push({'endpoint':key, 'sparql10':sparql10/24, 'sparql11':sparql11/19});
+        jsonBaseFeatureSparqles.push({'endpoint':key, 'sparql10':sparql10/24, 'sparql11':sparql11/19, 'sparqlTotal':(sparql10 + sparql11)/43});
     });
 
     var chart10ValueMap = new Map();
     var chart11ValueMap = new Map();
+    var chartSPARQLValueMap = new Map();
 
     for(var i = 1; i <= 10 ; i++) {
         chart10ValueMap.set(i, 0);
         chart11ValueMap.set(i, 0);
+        chartSPARQLValueMap.set(i, 0);
     }
     jsonBaseFeatureSparqles.forEach((item, i) => {
         for(var i = 1; i <= 10 ; i++) {
@@ -141,21 +144,33 @@ sparqlQueryJSON(sparqlesFeatureQuery, json => {
             if(item.sparql11 >= (i/10) && item.sparql11 < ((i+1)/10)) {
                 chart11ValueMap.set(i, chart11ValueMap.get(i)+1);
             }
+            if(item.sparqlTotal >= (i/10) && item.sparqlTotal < ((i+1)/10)) {
+                chartSPARQLValueMap.set(i, chartSPARQLValueMap.get(i)+1);
+            }
         }
     });
 
     var chart10Data = [];
     var chart11Data = [];
+    var chartSPARQLData = [];
     chart10ValueMap.forEach((value, key, map) => {
         chart10Data.push({'value':value, 'name':(key*10).toString() + " %" })
     });
     chart11ValueMap.forEach((value, key, map) => {
         chart11Data.push({'value':value, 'name':(key*10).toString() + " %" })
     });
+    chartSPARQLValueMap.forEach((value, key, map) => {
+        chartSPARQLData.push({'value':value, 'name':(key*10).toString() + " %" })
+    });
+
+    console.log(chartSPARQLData);
 
     var option10 = {
         title: {
-            text:"Number of endpoints covering a percentage of the SPARQL 1.0 features",
+            align: 'center',
+            textalign: 'center',
+            left: 'center',
+            text:"Coverage of the SPARQL 1.0 features",
         },
         legend: {
             show: true,
@@ -187,7 +202,10 @@ sparqlQueryJSON(sparqlesFeatureQuery, json => {
     };
     var option11 = {
         title: {
-            text:"Number of endpoints covering a percentage of the SPARQL 1.1 features",
+            align: 'center',
+            textalign: 'center',
+            left: 'center',
+            text:"Coverage of the SPARQL 1.1 features",
         },
         legend: {
             top: 'bottom'
@@ -216,8 +234,43 @@ sparqlQueryJSON(sparqlesFeatureQuery, json => {
             }
         ],
     };
-    option10 && sparql10Chart.setOption(option10);
-    option11 && sparql11Chart.setOption(option11);
+    var optionTotal = {
+        title: {
+            align: 'center',
+            textalign: 'center',
+            left: 'center',
+            text:"Coverage of SPARQL features",
+        },
+        legend: {
+            top: 'bottom'
+        },
+        toolbox: {
+            show: false
+        },
+        tooltip: {
+            show:true
+        },
+        color: ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6","#ee9b00","#ca6702","#bb3e03","#ae2012","#9b2226"],
+        series: [
+            {
+                name: 'Total SPARQL coverage',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                center: ['50%', '50%'],
+                //roseType: 'area',
+                itemStyle: {
+                    borderRadius: 8
+                },
+                data: chartSPARQLData,
+                label: {
+                    show:false
+                }
+            }
+        ],
+    };
+    sparql10Chart.setOption(option10);
+    sparql11Chart.setOption(option11);
+    sparqlTotalChart.setOption(optionTotal);
 });
 
 // Create an force graph with the graph linked by co-ocurrence of vocabularies
