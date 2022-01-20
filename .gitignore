@@ -23,3 +23,7 @@ code/out/artifacts/catalogIndex/GeneralIndex_20211013_complete.trig.zip
 code/out/artifacts/catalogIndex/LinkedWiki.trig
 
 code/out/artifacts/catalogIndex/LOD-CloudIndex.trig
+
+LODMap/node_modules/
+
+LODMap/package-lock.json
