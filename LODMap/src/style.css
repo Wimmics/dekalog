@@ -2,3 +2,8 @@
 #histo1 { width: 49%; height: 500px; }
 #histo2 { width: 49%; height: 500px; }
 #histo3 { width: 100%; height: 500px; }
+#tripleScatter { width: 33%; height: 300px; }
+#classScatter { width: 33%; height: 300px; }
+#propertyScatter { width: 33%; height: 300px; }
+#testCategoryScatter { width: 100%; height: 300px; }
+#descriptionSizeScatter { width: 100%; height: 500px; }
