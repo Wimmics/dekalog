@@ -9,6 +9,7 @@
             <shortUris.ttl>
             <RDFDataStructures.ttl>
             <blankNodeUsage.ttl>
+            <readableLabels.ttl>
         ) .
 
 <basicFederatedQuery.ttl> a mf:ManifestEntry ;
