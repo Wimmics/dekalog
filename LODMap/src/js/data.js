@@ -4116,7 +4116,7 @@ const endpointIpMap = [
     }
 ];
 
-var timezoneMap = [
+const timezoneMap = [
     {
         "key": "Europe/Dublin",
         "value": {

@@ -4,6 +4,7 @@ import $ from 'jquery';
 import 'leaflet';
 import {greenIcon, orangeIcon} from "./leaflet-color-markers.js";
 import {endpointIpMap, timezoneMap} from "./data.js";
+import {ForceGraph} from './graphics.js'
 
 // Initialization of the map
 var map = L.map('map').setView([24.5271348225978, 62.22656250000001], 2);
@@ -62,7 +63,8 @@ endpointIpMap.forEach((item, i) => {
 // http://worldtimeapi.org/pages/examples
 var markerIcon = greenIcon;
 var endpointTimezoneSPARQL = new Map();
-sparqlQueryJSON("SELECT DISTINCT ?timezone { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <"+endpoint+"> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone }", jsonResponse => {
+var timezoneSPARQLquery = "SELECT DISTINCT ?timezone { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <"+endpoint+"> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone }";
+sparqlQueryJSON(timezoneSPARQLquery, jsonResponse => {
     jsonResponse.results.bindings.forEach((itemResponse, i) => {
         endpointTimezoneSPARQL.set(endpoint, itemResponse.timezone.value);
     });
@@ -154,16 +156,14 @@ sparqlQueryJSON(sparqlesFeatureQuery, json => {
     var chart11Data = [];
     var chartSPARQLData = [];
     chart10ValueMap.forEach((value, key, map) => {
-        chart10Data.push({'value':value, 'name':(key*10).toString() + " %" })
+        chart10Data.push({'value':value, 'name':"[ " + ((key-1)*10).toString() + "%, "+ (key*10).toString() + " % ]" })
     });
     chart11ValueMap.forEach((value, key, map) => {
-        chart11Data.push({'value':value, 'name':(key*10).toString() + " %" })
+        chart11Data.push({'value':value, 'name':"[ " + ((key-1)*10).toString() + "%, "+ (key*10).toString() + " % ]" })
     });
     chartSPARQLValueMap.forEach((value, key, map) => {
-        chartSPARQLData.push({'value':value, 'name':(key*10).toString() + " %" })
+        chartSPARQLData.push({'value':value, 'name':"[ " + ((key-1)*10).toString() + "%, "+ (key*10).toString() + " % ]" })
     });
-
-    console.log(chartSPARQLData);
 
     var option10 = {
         title: {
@@ -401,244 +401,67 @@ sparqlQueryJSON(sparqlesVocabularies, json => {
             height: 600
         });
 
-        var vocabsHtml = document.getElementById('vocabs');
-        vocabsHtml.appendChild(chart);
+        var vocabsHtml = $('#vocabs');
+        vocabsHtml.append(chart);
 
         // compputation of the know vocabularies measure
-        var knownVocabulariesMeasureHtml = document.getElementById('KnownVocabulariesMeasure');
-        knownVocabulariesMeasureHtml.appendChild( document.createTextNode(precise(sumknowVocabMeasure / endpointSet.size)));
+        var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
+        knownVocabulariesMeasureHtml.append( document.createTextNode(precise(sumknowVocabMeasure / endpointSet.size)));
     });
 });
 
 
+var triplesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl ?o ?modifDate { " +
+    "GRAPH ?g {" +
+    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+    "?metadata <http://purl.org/dc/terms/modified> ?modifDate ." +
+    "?base <http://rdfs.org/ns/void#triples> ?o ." +
+    "}" +
+    "} GROUP BY ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl) DESC(?modifDate)";
+sparqlQueryJSON(triplesSPARQLquery, json => {
+    json.results.bindings.forEach((itemResult, i) => {
+        var graph = itemResult.g;
+        var endpointUrl = itemResult.endpointtUrl;
+        var triples = itemResult.o;
+        var date = itemResult.modifDate;
+    });
 
+    var tripleScatterChart = echarts.init(document.getElementById('tripleScatter'));
+    var optionTriples = {
+      xAxis: {},
+      yAxis: {},
+      series: [
+        {
+          symbolSize: 20,
+          data: [
+            [10.0, 8.04],
+            [8.07, 6.95],
+            [13.0, 7.58],
+            [9.05, 8.81],
+            [11.0, 8.33],
+            [14.0, 7.66],
+            [13.4, 6.81],
+            [10.0, 6.33],
+            [14.0, 8.96],
+            [12.5, 6.82],
+            [9.15, 7.2],
+            [11.5, 7.2],
+            [3.03, 4.23],
+            [12.2, 7.83],
+            [2.02, 4.47],
+            [1.05, 3.33],
+            [4.05, 4.96],
+            [6.03, 7.24],
+            [12.0, 6.26],
+            [12.0, 8.84],
+            [7.08, 5.82],
+            [5.02, 5.68]
+          ],
+          type: 'scatter'
+        }
+      ]
+    };
+    tripleScatterChart.setOption(optionTriples);
 
-
-
-
-
-
-                // Copyright 2021 Observable, Inc.
-                // Released under the ISC license.
-                // https://observablehq.com/@d3/force-directed-graph
-                function ForceGraph({
-                    nodes, // an iterable of node objects (typically [{id}, …])
-                    links // an iterable of link objects (typically [{source, target}, …])
-                }, {
-                    nodeId = d => d.id, // given d in nodes, returns a unique identifier (string)
-                    nodeGroup, // given d in nodes, returns an (ordinal) value for color
-                    nodeGroups, // an array of ordinal values representing the node groups
-                    nodeTitle, // given d in nodes, a title string
-                    nodeFill = "currentColor", // node stroke fill (if not using a group color encoding)
-                    nodeStroke = "#fff", // node stroke color
-                    nodeStrokeWidth = 1.5, // node stroke width, in pixels
-                    nodeStrokeOpacity = 1, // node stroke opacity
-                    nodeRadius = 5, // node radius, in pixels
-                    nodeStrength,
-                    linkSource = ({source}) => source, // given d in links, returns a node identifier string
-                    linkTarget = ({target}) => target, // given d in links, returns a node identifier string
-                    linkStroke = "#999", // link stroke color
-                    linkStrokeOpacity = 0.6, // link stroke opacity
-                    linkStrokeWidth = 1.5, // given d in links, returns a stroke width in pixels
-                    linkStrokeLinecap = "round", // link stroke linecap
-                    linkStrength,
-                    colors = d3.schemeTableau10, // an array of color strings, for the node groups
-                    width = 640, // outer width, in pixels
-                    height = 400, // outer height, in pixels
-                    invalidation // when this promise resolves, stop the simulation
-                } = {}) {
-                    // Compute values.
-                    const N = d3.map(nodes, nodeId).map(intern);
-                    const LS = d3.map(links, linkSource).map(intern);
-                    const LT = d3.map(links, linkTarget).map(intern);
-                    if (nodeTitle === undefined) nodeTitle = (_, i) => N[i];
-                    const T = nodeTitle == null ? null : d3.map(nodes, nodeTitle);
-                    const G = nodeGroup == null ? null : d3.map(nodes, nodeGroup).map(intern);
-                    const W = typeof linkStrokeWidth !== "function" ? null : d3.map(links, linkStrokeWidth);
-
-                    // Replace the input nodes and links with mutable objects for the simulation.
-                    nodes = d3.map(nodes, (_, i) => ({id: N[i]}));
-                    links = d3.map(links, (_, i) => ({source: LS[i], target: LT[i]}));
-
-                    // Compute default domains.
-                    if (G && nodeGroups === undefined) nodeGroups = d3.sort(G);
-
-                    // Construct the scales.
-                    const color = nodeGroup == null ? null : d3.scaleOrdinal(nodeGroups, colors);
-
-                    // Construct the forces.
-                    const forceNode = d3.forceManyBody();
-                    const forceLink = d3.forceLink(links).id(({index: i}) => N[i]);
-                    if (nodeStrength !== undefined) forceNode.strength(nodeStrength);
-                    if (linkStrength !== undefined) forceLink.strength(linkStrength);
-
-                    const simulation = d3.forceSimulation(nodes)
-                    .force("link", forceLink)
-                    .force("charge", forceNode)
-                    .force("center",  d3.forceCenter())
-                    .on("tick", ticked);
-
-                    const svg = d3.create("svg")
-                    .attr("width", width)
-                    .attr("height", height)
-                    .attr("viewBox", [-width / 2, -height / 2, width, height])
-                    .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
-
-                    const link = svg.append("g")
-                    .attr("stroke", linkStroke)
-                    .attr("stroke-opacity", linkStrokeOpacity)
-                    .attr("stroke-width", typeof linkStrokeWidth !== "function" ? linkStrokeWidth : null)
-                    .attr("stroke-linecap", linkStrokeLinecap)
-                    .selectAll("line")
-                    .data(links)
-                    .join("line");
-
-                    const node = svg.append("g")
-                    .attr("fill", nodeFill)
-                    .attr("stroke", nodeStroke)
-                    .attr("stroke-opacity", nodeStrokeOpacity)
-                    .attr("stroke-width", nodeStrokeWidth)
-                    .selectAll("circle")
-                    .data(nodes)
-                    .join("circle")
-                    .attr("r", nodeRadius)
-                    .call(drag(simulation));
-
-                    if (W) link.attr("stroke-width", ({index: i}) => W[i]);
-                    if (G) node.attr("fill", ({index: i}) => color(G[i]));
-                    if (T) node.append("title").text(({index: i}) => T[i]);
-                    if (invalidation != null) invalidation.then(() => simulation.stop());
-
-                    function intern(value) {
-                        return value !== null && typeof value === "object" ? value.valueOf() : value;
-                    }
-
-                    function ticked() {
-                        link
-                        .attr("x1", d => d.source.x)
-                        .attr("y1", d => d.source.y)
-                        .attr("x2", d => d.target.x)
-                        .attr("y2", d => d.target.y);
-
-                        node
-                        .attr("cx", d => d.x)
-                        .attr("cy", d => d.y);
-                    }
-
-                    function drag(simulation) {
-                        function dragstarted(event) {
-                            if (!event.active) simulation.alphaTarget(0.3).restart();
-                            event.subject.fx = event.subject.x;
-                            event.subject.fy = event.subject.y;
-                        }
-
-                        function dragged(event) {
-                            event.subject.fx = event.x;
-                            event.subject.fy = event.y;
-                        }
-
-                        function dragended(event) {
-                            if (!event.active) simulation.alphaTarget(0);
-                            event.subject.fx = null;
-                            event.subject.fy = null;
-                        }
-
-                        return d3.drag()
-                        .on("start", dragstarted)
-                        .on("drag", dragged)
-                        .on("end", dragended);
-                    }
-
-                    return Object.assign(svg.node(), {scales: {color}});
-                }
-
-                // Copyright 2021 Observable, Inc.
-                // Released under the ISC license.
-                // https://observablehq.com/@d3/bar-chart
-                function BarChart(data, {
-                    x = (d, i) => i, // given d in data, returns the (ordinal) x-value
-                    y = d => d, // given d in data, returns the (quantitative) y-value
-                    title, // given d in data, returns the title text
-                    marginTop = 20, // the top margin, in pixels
-                    marginRight = 0, // the right margin, in pixels
-                    marginBottom = 30, // the bottom margin, in pixels
-                    marginLeft = 40, // the left margin, in pixels
-                    width = 640, // the outer width of the chart, in pixels
-                    height = 400, // the outer height of the chart, in pixels
-                    xDomain, // an array of (ordinal) x-values
-                    xRange = [marginLeft, width - marginRight], // [left, right]
-                    yType = d3.scaleLinear, // y-scale type
-                    yDomain, // [ymin, ymax]
-                    yRange = [height - marginBottom, marginTop], // [bottom, top]
-                    xPadding = 0.1, // amount of x-range to reserve to separate bars
-                    yFormat, // a format specifier string for the y-axis
-                    yLabel, // a label for the y-axis
-                    color = "currentColor" // bar fill color
-                } = {}) {
-                    // Compute values.
-                    const X = d3.map(data, x);
-                    const Y = d3.map(data, y);
-
-                    // Compute default domains, and unique the x-domain.
-                    if (xDomain === undefined) xDomain = X;
-                    if (yDomain === undefined) yDomain = [0, d3.max(Y)];
-                    xDomain = new d3.InternSet(xDomain);
-
-                    // Omit any data not present in the x-domain.
-                    const I = d3.range(X.length).filter(i => xDomain.has(X[i]));
-
-                    // Construct scales, axes, and formats.
-                    const xScale = d3.scaleBand(xDomain, xRange).padding(xPadding);
-                    const yScale = yType(yDomain, yRange);
-                    const xAxis = d3.axisBottom(xScale).tickSizeOuter(0);
-                    const yAxis = d3.axisLeft(yScale).ticks(height / 40, yFormat);
-
-                    // Compute titles.
-                    if (title === undefined) {
-                        const formatValue = yScale.tickFormat(100, yFormat);
-                        title = i => `${X[i]}\n${formatValue(Y[i])}`;
-                    } else {
-                        const O = d3.map(data, d => d);
-                        const T = title;
-                        title = i => T(O[i], i, data);
-                    }
-
-                    const svg = d3.create("svg")
-                    .attr("width", width)
-                    .attr("height", height)
-                    .attr("viewBox", [0, 0, width, height])
-                    .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
-
-                    svg.append("g")
-                    .attr("transform", `translate(${marginLeft},0)`)
-                    .call(yAxis)
-                    .call(g => g.select(".domain").remove())
-                    .call(g => g.selectAll(".tick line").clone()
-                    .attr("x2", width - marginLeft - marginRight)
-                    .attr("stroke-opacity", 0.1))
-                    .call(g => g.append("text")
-                    .attr("x", -marginLeft)
-                    .attr("y", 10)
-                    .attr("fill", "currentColor")
-                    .attr("text-anchor", "start")
-                    .text(yLabel));
-
-                    const bar = svg.append("g")
-                    .attr("fill", color)
-                    .selectAll("rect")
-                    .data(I)
-                    .join("rect")
-                    .attr("x", i => xScale(X[i]))
-                    .attr("y", i => yScale(Y[i]))
-                    .attr("height", i =>  yScale(0) - yScale(Y[i]))
-                    .attr("width", xScale.bandwidth());
-
-                    if (title) bar.append("title")
-                    .text(title);
-
-                    svg.append("g")
-                    .attr("transform", `translate(0,${height - marginBottom})`)
-                    .call(xAxis);
-
-                    return svg.node();
-                }
+});
