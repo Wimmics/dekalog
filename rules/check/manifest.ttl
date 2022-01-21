@@ -395,5 +395,4 @@
             """
         ]
         <../meta/modifiedUpdate.ttl>
-        ]
     ) .
