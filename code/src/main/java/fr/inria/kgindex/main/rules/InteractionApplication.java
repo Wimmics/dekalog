@@ -151,6 +151,10 @@ public class InteractionApplication {
                                     logger.error(e);
                                     e.printStackTrace();
                                     logger.trace(this._entry.getFileResource() + " action could not be added because of QueryException");
+                                } catch(Exception e) {
+                                    logger.error(e);
+                                    e.printStackTrace();
+                                    logger.trace(this._entry.getFileResource() + " action could not be added because of unknown Exception");
                                 }
                                 actionExecution.close();
                             } else if (queryString.contains("INSERT") || queryString.contains("DELETE")) {
@@ -242,6 +246,9 @@ public class InteractionApplication {
                             } catch (RiotException e) {
                                 logger.error(e);
                                 logger.trace(this._entry.getFileResource() + " action could not be added because of RiotException");
+                            } catch (Exception e) {
+                                logger.error(e);
+                                logger.trace(this._entry.getFileResource() + " action could not be added because of unknown Exception");
                             }
                         }
                     }
