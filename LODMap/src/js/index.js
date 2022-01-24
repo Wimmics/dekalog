@@ -448,8 +448,9 @@ sparqlQueryJSON(triplesSPARQLquery, json => {
         var triples = Number.parseInt(itemResult.o.value);
         var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
         var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
-
-        endpointDataSerieMap.get(endpointUrl).push([date,triples])
+        if(graph != "http://ns.inria.fr/indegx") {
+            endpointDataSerieMap.get(endpointUrl).push([date,triples])
+        }
     });
 
     var triplesSeries = [];
@@ -511,7 +512,9 @@ sparqlQueryJSON(classesSPARQLquery, json => {
         var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
         var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
 
-        endpointDataSerieMap.get(endpointUrl).push([ date, triples ])
+        if(graph != "http://ns.inria.fr/indegx") {
+            endpointDataSerieMap.get(endpointUrl).push([ date, triples ])
+        }
     });
 
     var triplesSeries = [];
@@ -568,12 +571,15 @@ sparqlQueryJSON(propertiesSPARQLquery, json => {
     });
     json.results.bindings.forEach((itemResult, i) => {
         var graph = itemResult.g;
-        var endpointUrl = itemResult.endpointUrl.value;
-        var triples = Number.parseInt(itemResult.o.value);
-        var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
-        var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
+        if(graph != "http://ns.inria.fr/indegx") {
+            var graph = itemResult.g;
+            var endpointUrl = itemResult.endpointUrl.value;
+            var triples = Number.parseInt(itemResult.o.value);
+            var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
+            var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
 
-        endpointDataSerieMap.get(endpointUrl).push([ date, triples ])
+            endpointDataSerieMap.get(endpointUrl).push([ date, triples ])
+        }
     });
 
     var triplesSeries = [];
@@ -609,46 +615,82 @@ sparqlQueryJSON(propertiesSPARQLquery, json => {
 });
 
 // Number of tests passed by test categories
-var testCategoryQuery = "SELECT DISTINCT ?category (count(DISTINCT ?test) AS ?count) ?modifDate { " +
-    "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-    "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
-    "?metadata <http://purl.org/dc/terms/modified> ?modifDate . " +
-    "?trace <http://www.w3.org/ns/earl#test> ?test . " +
-    "?trace <http://www.w3.org/ns/earl#result> ?result . " +
-    "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . " +
-    "FILTER(STRSTARTS(str(?test), ?category)) " +
-    "VALUES ?category { " +
-    "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/' " +
-    "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/' " +
-    "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/' " +
-    "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/' " +
-    "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/' " +
-    "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' " +
-    "} }  " +
-    "} GROUP BY ?category ?modifDate ORDER BY ?modifDate";
+var testCategoryQuery = "SELECT DISTINCT ?g ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
+        "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
+            "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
+            "?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl ." +
+            "?metadata <http://purl.org/dc/terms/modified> ?modifDate . " +
+            "?trace <http://www.w3.org/ns/earl#test> ?test . " +
+            "?trace <http://www.w3.org/ns/earl#result> ?result . " +
+            "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . " +
+            "FILTER(STRSTARTS(str(?test), ?category)) " +
+            "VALUES ?category { " +
+                "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/' " +
+                "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/' " +
+                "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/' " +
+                "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/' " +
+                "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/' " +
+                "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' " +
+            "}" +
+        "}  " +
+    "} GROUP BY ?g ?category ?endpointUrl";
 sparqlQueryJSON(testCategoryQuery, json => {
     var endpointDataSerieMap = new Map();
     json.results.bindings.forEach((itemResult, i) => {
-        var category = itemResult.category.value.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/", "");
+        var category = itemResult.category.value;
 
-        endpointDataSerieMap.set(category, []);
+        endpointDataSerieMap.set(category, new Map());
     });
     json.results.bindings.forEach((itemResult, i) => {
-        var category = itemResult.category.value.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/", "");
+        var category = itemResult.category.value;
         var count = itemResult.count.value;
-        var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
-        var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
+//        var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
+//        var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
+        var endpoint = itemResult.endpointUrl.value:
+        var graph = itemResult.g.value;
 
-        endpointDataSerieMap.get(category).push([ date, count ])
+        if(endpointDataSerieMap.get(category).get(graph) == undefined) {
+            endpointDataSerieMap.get(category).set(graph, new Map());
+        }
+        endpointDataSerieMap.get(category).get( graph).set(endpoint, count);
     });
 
     var triplesSeries = [];
-    endpointDataSerieMap.forEach((value, key, map) => {
+    endpointDataSerieMap.forEach((gemap, category, map1) => {
+        var dataCategory = [];
+        gemap.forEach((endpointMap, graph, map2) => {
+            if(graph != "http://ns.inria.fr/indegx") {
+                var totalEndpointGraph = 0;
+                endpointMap.forEach((count, endpoint, map3) => {
+                    totalEndpointGraph = totalEndpointGraph + Number.parseInt(count);
+                });
+                var numberOfEndpoint = endpointMap.size;
+                var avgEndpointGraph = precise(totalEndpointGraph / numberOfEndpoint);
+                var percentageAvrEndpointCategory = avgEndpointGraph;
+                if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/")) {
+                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 3);
+                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/")) {
+                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 4);
+                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/")) {
+                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 10);
+                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/")) {
+                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 23);
+                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/")) {
+                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 25);
+                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/")) {
+                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 20);
+                }
+
+                dataCategory.push([graph, percentageAvrEndpointCategory]);
+            }
+        });
+
+        dataCategory.sort((a, b) => a[0].localeCompare(b[0]));
         var chartSerie = {
-            name:key,
+            name:category.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/", "").replace("/", ""),
             label:'show',
             symbolSize: 5,
-            data:value,
+            data:dataCategory,
             type: 'line'
         };
 
@@ -724,7 +766,7 @@ sparqlQueryJSON(testDescSizeQuery, json => {
                 text:"Size of the descriptions",
             },
             xAxis: {
-                type:'category'
+                type:'time'
             },
             yAxis: {
                 type:'log'
