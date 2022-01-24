@@ -14,6 +14,7 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.RDF;
@@ -209,18 +210,24 @@ public class CatalogInputMain {
                     DatasetDescriptionExtraction.extractIndexDescriptionForDataset(describedDataset, tmpDatasetDescFile.toString());
                     logger.trace("END dataset " + endpointUrl);
                     logger.trace("Transfert to result START");
-                    InputStream inputStream = new FileInputStream(tmpDatasetDescFile.toString());
-                    RDFDataMgr.read(result, inputStream, Lang.TRIG);
-                    Files.deleteIfExists(tmpDatasetDescFile);
                     try {
-                        OutputStream outputStream = new FileOutputStream(finalOutputFilename);
-                        RDFDataMgr.write(outputStream, result, Lang.TRIG);
-                    } catch (FileNotFoundException e) {
+                        InputStream inputStream = new FileInputStream(tmpDatasetDescFile.toString());
+                        RDFDataMgr.read(result, inputStream, Lang.TRIG);
+                        Files.deleteIfExists(tmpDatasetDescFile);
+                        try {
+                            OutputStream outputStream = new FileOutputStream(finalOutputFilename);
+                            RDFDataMgr.write(outputStream, result, Lang.TRIG);
+                        } catch (FileNotFoundException e) {
+                            logger.error(e);
+                        }
+                    } catch (RiotException e) {
                         logger.error(e);
+                        e.printStackTrace();
                     }
                     describedDataset.close();
                     logger.trace("Transfert to result END");
                 } catch (IOException e) {
+                    logger.error(e);
                     e.printStackTrace();
                 }
             });
