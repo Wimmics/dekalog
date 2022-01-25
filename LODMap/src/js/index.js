@@ -81,7 +81,6 @@ function parseDate(input, format) {
 
 function refresh() {
     graphValuesURIList = generateGraphValuesURI(graphList);
-        console.log(graphValuesURIList)
     clear();
     mapFill();
     sparqlesHistoFill();
@@ -95,6 +94,13 @@ function refresh() {
 function clear() {
     layerGroup.clearLayers();
     $('#vocabs').empty();
+    sparql10Chart.setOption({series:[]}, true);
+    sparql11Chart.setOption({series:[]}, true);
+    sparqlTotalChart.setOption({series:[]}, true);
+    tripleScatterChart.setOption({series:[]}, true);
+    classScatterChart.setOption({series:[]}, true);
+    propertyScatterChart.setOption({series:[]}, true);
+    categoryScatterChart.setOption({series:[]}, true);
     $('#shortUrisMeasure').empty();
     $('#RDFdataStructuresMeasure').empty();
     $('#KnownVocabulariesMeasure').empty();
@@ -681,7 +687,6 @@ function propertyNumberFill() {
 
             triplesSeries.push(chartSerie);
         });
-
 
         var optionTriples = {
             title: {

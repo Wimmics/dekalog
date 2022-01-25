@@ -235,19 +235,25 @@ const graphLists = [
             "http://ns.inria.fr/indegx#Experiment_20211209",
             "http://ns.inria.fr/indegx#Experiment_20211118"
         ]
-    }/*,
+    },
     {
         name:"D2KAB",
         graphs:[
-
+            "http://ns.inria.fr/indegx#D2KAB_20220125"
         ]
-    },
+    },/*
     {
         name:"LODCloud",
         graphs:[
 
         ]
     }*/
+    {
+        name:"Self-description",
+        graphs:[
+            "http://ns.inria.fr/indegx"
+        ]
+    }
 ]
 
 const endpointIpMap = [
