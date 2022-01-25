@@ -102,14 +102,29 @@ sparqlQueryJSON(timezoneSPARQLquery, jsonResponse => {
         endpointMarker.on('click', clickEvent => {
             var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + item.key + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } }";
                 sparqlQueryJSON(labelQuery, responseLabels => {
-                    var popupString = item.key + "<br/>" + item.value.geoloc.country + "<br/>" + item.value.geoloc.regionName + "<br/>" + item.value.geoloc.city + "<br/>" + item.value.geoloc.org;
+                    var popupString = "<table> <thead> <tr> <th colspan='2'> <a href='" + item.key + "' >" + item.key + "</a> </th> </tr> </thead>" ;
+                    popupString += "</body>"
+                    if(item.value.geoloc.country != undefined) {
+                        popupString += "<tr><td>Country: </td><td>" + item.value.geoloc.country + "</td></tr>" ;
+                    }
+                    if(item.value.geoloc.regionName != undefined) {
+                        popupString += "<tr><td>Region: </td><td>" + item.value.geoloc.regionName  + "</td></tr>";
+                    }
+                    if(item.value.geoloc.city != undefined) {
+                        popupString += "<tr><td>City: </td><td>" + item.value.geoloc.city  + "</td></tr>";
+                    }
+                    if(item.value.geoloc.org != undefined) {
+                        popupString += "<tr><td>Organization: </td><td>" + item.value.geoloc.org + "</td></tr>";
+                    }
                     if(badTimezone) {
-                        popupString += "<br/>Timezone of endpoint URL: " + ipTimezone;
-                        popupString += "<br/>Timezone declared by endpoint: " + sparqlTimezone;
+                        popupString += "<tr><td>Timezone of endpoint URL: </td><td>" + ipTimezone + "</td></tr>";
+                        popupString += "<tr><td>Timezone declared by endpoint: </td><td>" + sparqlTimezone + "</td></tr>";
                     }
                     if(responseLabels.results.bindings.size > 0) {
-                        popupString += responseLabels ;
+                        popupString += "<tr><td colspan='2'>" + responseLabels  + "</td></tr>" ;
                     }
+                    popupString += "</tbody>"
+                    popupString += "</table>"
                     endpointMarker.bindPopup(popupString).openPopup();
                 });
             });
