@@ -17,6 +17,10 @@
         <div class="col-10 justify-content-center">
             <div class="row"><h1>KartoGraphI: Knowledge graph cartography and index</h1><br/><h5>Visualisation of the results obtained by <a href="http://prod-dekalog.inria.fr/sparql">IndeGx</a><h5></div>
                 <div class="row border border-dark rounded justify-content-center">
+                    <div class='col-12'>
+                        <select id="endpoint-list-select" class="form-select" aria-label="Endpoint list selection">
+                        </select>
+                    </div>
                     <div class="col-12 justify-content-center">
                         <div class="container justify-content-center"><h5> Geolocation of the indexed endpoints</h6></div>
                         <div class="container justify-content-center" id="map"></div>
@@ -55,7 +59,7 @@
                     </div>
                         <div class="col-12 justify-content-center">
                             <div class="container justify-content-center" id="testCategoryScatter"><h5>Number of tests passed by categories through time</h5></div>
-                            <div class="container justify-content-center" id="descriptionSizeScatter"><h5>Size of the descriptions of each endpoint through time</h5></div>
+                        <!--    <div class="container justify-content-center" id="descriptionSizeScatter"><h5>Size of the descriptions of each endpoint through time</h5></div> -->
                         </div>
                 </div>
                 <div class="row border border-dark rounded justify-content-center"><h5>Quality measures</h5>
