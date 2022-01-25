@@ -664,10 +664,12 @@ sparqlQueryJSON(testCategoryQuery, json => {
         var endpoint = itemResult.endpointUrl.value:
         var graph = itemResult.g.value;
 
-        if(endpointDataSerieMap.get(category).get(graph) == undefined) {
-            endpointDataSerieMap.get(category).set(graph, new Map());
+        if(graph != "http://ns.inria.fr/indegx") {
+            if(endpointDataSerieMap.get(category).get(graph) == undefined) {
+                endpointDataSerieMap.get(category).set(graph, new Map());
+            }
+            endpointDataSerieMap.get(category).get( graph).set(endpoint, count);
         }
-        endpointDataSerieMap.get(category).get( graph).set(endpoint, count);
     });
 
     var triplesSeries = [];
@@ -728,151 +730,4 @@ sparqlQueryJSON(testCategoryQuery, json => {
         }
     };
     categoryScatterChart.setOption(optionTriples);
-});
-
-// Number of triples in the description of each endpoint
-var testDescSizeQuery = "SELECT DISTINCT ?endpointUrl (count(*) AS ?count) ?modifDate { SELECT DISTINCT ?modifDate ?endpointUrl ?p ?o { GRAPH ?graph { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . ?metadata <http://ns.inria.fr/kg/index#curated> ?curated , ?endpoint . ?metadata <http://purl.org/dc/terms/modified> ?modifDate . ?curated ?p ?o . } } } GROUP BY ?endpointUrl ?modifDate ORDER BY ASC(?modifDate)";
-sparqlQueryJSON(testDescSizeQuery, json => {
-    var endpointDataSerieMap = new Map();
-    var endpointDescSizeCountMap = new Map();
-    json.results.bindings.forEach((itemResult, i) => {
-        var category = itemResult.endpointUrl.value;
-
-        endpointDataSerieMap.set(category, []);
-        endpointDescSizeCountMap.set(category, new Map());
-    });
-
-    json.results.bindings.forEach((itemResult, i) => {
-        var category = itemResult.endpointUrl.value;
-        var count = itemResult.count.value;
-        var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
-        var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
-
-        endpointDescSizeCountMap.get(category).forEach((value, key, map) => {
-            if(endpointDescSizeCountMap.get(category).get(date) == undefined) {
-                endpointDescSizeCountMap.get(category).set(date, 0);
-            }
-        });
-        endpointDescSizeCountMap.get(category).set(date, count);
-    });
-
-    function displayDescriptionSizeChart() {
-        var triplesSeries = [];
-        endpointDescSizeCountMap.forEach((value1, endpointUrl, map1) => {
-            var serieData = [];
-            value1.forEach((value2, date, map2) => {
-                serieData.push([date, value2]);
-            });
-
-            var chartSerie = {
-                name:endpointUrl,
-                label:'show',
-                symbolSize: 5,
-                data:serieData,
-                type: 'line'
-            };
-            triplesSeries.push(chartSerie);
-        });
-
-        var categoryScatterChart = echarts.init(document.getElementById('descriptionSizeScatter'));
-        var optionTriples = {
-            title: {
-                left: 'center',
-                text:"Size of the descriptions",
-            },
-            xAxis: {
-                type:'time'
-            },
-            yAxis: {
-                type:'log'
-            },
-            series: triplesSeries,
-            tooltip:{
-                show:'true'
-            }
-        };
-        categoryScatterChart.setOption(optionTriples);
-    }
-
-    var testDescSizeRank2Query = "SELECT DISTINCT ?graph ?endpointUrl (count(*) AS ?count) { SELECT DISTINCT ?graph ?endpointUrl ?pp ?oo { GRAPH ?graph { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated , ?endpoint . ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . ?curated <http://rdfs.org/ns/void#classPartition> ?o . ?o ?pp ?oo . VALUES ?pp { <http://www.w3.org/ns/dcat#distribution> <http://www.w3.org/ns/sparql-service-description#namedGraph> <http://rdfs.org/ns/void#classPartition> <http://rdfs.org/ns/void#propertyPartition> } } } } GROUP BY ?endpointUrl ?graph";
-    sparqlQueryJSON(testDescSizeRank2Query, json => {
-        json.results.bindings.forEach((itemResult, i) => {
-            var category = itemResult.endpointUrl.value;
-            var count = itemResult.count.value;
-            var graph = itemResult.graph.value;
-
-            endpointDescSizeCountMap.get(category).forEach((value, key, map) => {
-                if(endpointDescSizeCountMap.get(category).get(graph) == undefined) {
-                    endpointDescSizeCountMap.get(category).set(graph, 0);
-                }
-            });
-            var currentCount = endpointDescSizeCountMap.get(category).get(graph);
-            endpointDescSizeCountMap.get(category).set(graph, currentCount + count);
-        });
-
-        var testDescSizeRank3Query = "SELECT DISTINCT ?endpointUrl ?graph (count(*) AS ?count) { SELECT DISTINCT ?graph ?endpointUrl ?ppp ?ooo { GRAPH ?graph { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated , ?endpoint . ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . ?metadata ?p ?o . ?o <http://rdfs.org/ns/void#propertyPartition> ?oo . ?oo ?ppp ?ooo . } } } GROUP BY ?endpointUrl ?graph";
-        sparqlQueryJSON(testDescSizeRank3Query, json => {
-            json.results.bindings.forEach((itemResult, i) => {
-                var category = itemResult.endpointUrl.value;
-                var count = itemResult.count.value;
-                var graph = itemResult.graph.value;
-
-                endpointDescSizeCountMap.get(category).forEach((value, key, map) => {
-                    if(endpointDescSizeCountMap.get(category).get(graph) == undefined) {
-                        endpointDescSizeCountMap.get(category).set(graph, 0);
-                    }
-                });
-                var currentCount = endpointDescSizeCountMap.get(category).get(graph);
-                endpointDescSizeCountMap.get(category).set(graph, currentCount + count);
-            });
-
-            var testDescSizeMetadataQuery = "SELECT DISTINCT ?graph ?endpointUrl (count(*) AS ?count) { SELECT DISTINCT ?graph ?dataset ?p ?o ?pp ?oo { GRAPH ?graph { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated , ?endpoint . ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . ?metadata ?p ?o . OPTIONAL { ?o ?pp ?oo . VALUES ?p { <http://www.w3.org/ns/dqv#hasQualityMeasurement> } } FILTER(?p != <http://ns.inria.fr/kg/index#trace>) } } } GROUP BY ?endpointUrl ?graph";
-            sparqlQueryJSON(testDescSizeMetadataQuery, json => {
-                json.results.bindings.forEach((itemResult, i) => {
-                    var category = itemResult.endpointUrl.value;
-                    var count = itemResult.count.value;
-                    var graph = itemResult.graph.value;
-
-                    endpointDescSizeCountMap.get(category).forEach((value, key, map) => {
-                        if(endpointDescSizeCountMap.get(category).get(graph) == undefined) {
-                            endpointDescSizeCountMap.get(category).set(graph, 0);
-                        }
-                    });
-                    var currentCount = endpointDescSizeCountMap.get(category).get(graph);
-                    endpointDescSizeCountMap.get(category).set(graph, currentCount + count);
-                });
-
-                var testDescSizeMetadataRankNQuery = "SELECT DISTINCT ?graph ?endpointUrl (count(*) AS ?count) { SELECT DISTINCT ?graph ?dataset ?p ?o ?pp ?oo { GRAPH ?graph { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated , ?endpoint . ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . ?metadata ?p ?o . OPTIONAL { ?o ?pp ?oo . OPTIONAL { ?oo ?ppp ?ooo OPTIONAL { ?ooo ?pppp ?oooo } } } FILTER(?p != <http://ns.inria.fr/kg/index#curated>) FILTER(?p != <http://ns.inria.fr/kg/index#original>) FILTER(?p != <http://www.w3.org/ns/dcat#servesDataset>) FILTER(?p != <http://www.w3.org/ns/dcat#service>) FILTER(?p != <http://www.w3.org/ns/earl#subject>) FILTER(?pp != <http://ns.inria.fr/kg/index#curated>) FILTER(?pp != <http://ns.inria.fr/kg/index#original>) FILTER(?pp != <http://www.w3.org/ns/dcat#servesDataset>) FILTER(?pp != <http://www.w3.org/ns/dcat#service>) FILTER(?pp != <http://www.w3.org/ns/earl#subject>) FILTER(?ppp != <http://ns.inria.fr/kg/index#curated>) FILTER(?ppp != <http://ns.inria.fr/kg/index#original>) FILTER(?ppp != <http://www.w3.org/ns/dcat#servesDataset>) FILTER(?ppp != <http://www.w3.org/ns/dcat#service>) FILTER(?ppp != <http://www.w3.org/ns/earl#subject>) FILTER(?pppp != <http://ns.inria.fr/kg/index#curated>) FILTER(?pppp != <http://ns.inria.fr/kg/index#original>) FILTER(?pppp != <http://www.w3.org/ns/dcat#servesDataset>) FILTER(?pppp != <http://www.w3.org/ns/dcat#service>) FILTER(?pppp != <http://www.w3.org/ns/earl#subject>) } } FILTER(?p != <http://ns.inria.fr/kg/index#trace>) } } } GROUP BY ?endpointUrl ?graph";
-                sparqlQueryJSON(testDescSizeMetadataRankNQuery, json => {
-                    json.results.bindings.forEach((itemResult, i) => {
-                        var category = itemResult.endpointUrl.value;
-                        var count = itemResult.count.value;
-                        var graph = itemResult.graph.value;
-
-                        endpointDescSizeCountMap.get(category).forEach((value, key, map) => {
-                            if(endpointDescSizeCountMap.get(category).get(graph) == undefined) {
-                                endpointDescSizeCountMap.get(category).set(graph, 0);
-                            }
-                        });
-                        var currentCount = endpointDescSizeCountMap.get(category).get(graph);
-                        endpointDescSizeCountMap.get(category).set(graph, currentCount + count);
-                    });
-                    displayDescriptionSizeChart();
-                }, () => {
-                    displayDescriptionSizeChart();
-                });
-
-
-            }, () => {
-                displayDescriptionSizeChart();
-            });
-
-        }, () => {
-            displayDescriptionSizeChart();
-        });
-
-    }, () => {
-        displayDescriptionSizeChart();
-    });
-
 });
