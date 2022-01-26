@@ -1,227 +1,273 @@
-// Copyright 2021 Observable, Inc.
-// Released under the ISC license.
-// https://observablehq.com/@d3/force-directed-graph
-function ForceGraph({
-  nodes, // an iterable of node objects (typically [{id}, …])
-  links // an iterable of link objects (typically [{source, target}, …])
-}, {
-  nodeId = d => d.id, // given d in nodes, returns a unique identifier (string)
-  nodeGroup, // given d in nodes, returns an (ordinal) value for color
-  nodeGroups, // an array of ordinal values representing the node groups
-  nodeTitle, // given d in nodes, a title string
-  nodeFill = "currentColor", // node stroke fill (if not using a group color encoding)
-  nodeStroke = "#fff", // node stroke color
-  nodeStrokeWidth = 1.5, // node stroke width, in pixels
-  nodeStrokeOpacity = 1, // node stroke opacity
-  nodeRadius = 5, // node radius, in pixels
-  nodeStrength,
-  linkSource = ({source}) => source, // given d in links, returns a node identifier string
-  linkTarget = ({target}) => target, // given d in links, returns a node identifier string
-  linkStroke = "#999", // link stroke color
-  linkStrokeOpacity = 0.6, // link stroke opacity
-  linkStrokeWidth = 1.5, // given d in links, returns a stroke width in pixels
-  linkStrokeLinecap = "round", // link stroke linecap
-  linkStrength,
-  colors = d3.schemeTableau10, // an array of color strings, for the node groups
-  width = 640, // outer width, in pixels
-  height = 400, // outer height, in pixels
-  invalidation // when this promise resolves, stop the simulation
-} = {}) {
-  // Compute values.
-  const N = d3.map(nodes, nodeId).map(intern);
-  const LS = d3.map(links, linkSource).map(intern);
-  const LT = d3.map(links, linkTarget).map(intern);
-  if (nodeTitle === undefined) nodeTitle = (_, i) => N[i];
-  const T = nodeTitle == null ? null : d3.map(nodes, nodeTitle);
-  const G = nodeGroup == null ? null : d3.map(nodes, nodeGroup).map(intern);
-  const W = typeof linkStrokeWidth !== "function" ? null : d3.map(links, linkStrokeWidth);
 
-  // Replace the input nodes and links with mutable objects for the simulation.
-  nodes = d3.map(nodes, (_, i) => ({id: N[i]}));
-  links = d3.map(links, (_, i) => ({source: LS[i], target: LT[i]}));
+/*
+const endpointLists = [
+        {
+            name:"Experiment dataset",
+            endpoints: [
+                "https://data.ordnancesurvey.co.uk/datasets/os-linked-data/apis/sparql",
+                "http://genome.microbedb.jp/sparql",
+                "https://opendata.mfcr.cz/lod/sparql",
+                "https://data.europa.eu/euodp/sparqlep",
+                "http://dbtune.org/musicbrainz/sparql",
+                "http://datos.bne.es/sparql",
+                "http://rdf.disgenet.org/sparql/",
+                "http://linkeddata.econstor.eu/beta/snorql/",
+                "http://lod.openaire.eu/sparql",
+                "https://sophox.org/sparql",
+                "https://data.epo.org/linked-data/query",
+                "http://factforge.net/repositories/ff-news",
+                "http://data.cervantesvirtual.com/bvmc-lod/repositories/data",
+                "https://zbw.eu/beta/sparql/econ_pers/query",
+                "http://data.americanartcollaborative.org/sparql",
+                "http://patho.phenomebrowser.net/sparql/",
+                "https://zbw.eu/beta/sparql/pm20/query",
+                "https://query.wikidata.org",
+                "http://ontology.irstea.fr/weather",
+                "https://yago-knowledge.org/sparql",
+                "https://labs.onb.ac.at/en/tool/sparql/",
+                "http://lod.kipo.kr/data/thesaurus/sparql",
+                "http://id.nlm.nih.gov/mesh/sparql",
+                "http://data.fondazionezeri.unibo.it/sparql/",
+                "http://collection.britishart.yale.edu/sparql/",
+                "https://zbw.eu/beta/sparql/gnd/query",
+                "http://sparql.europeana.eu/",
+                "http://147.100.179.235:8082/blazegraph/namespace/undefined/sparql",
+                "http://sparql.archives-ouvertes.fr/sparql",
+                "http://dati.camera.it/sparql",
+                "https://lov.linkeddata.es/dataset/lov/sparql",
+                "http://sparql.bioontology.org/sparql",
+                "http://www.europeandataportal.eu/sparql",
+                "https://datos-abertos.galiciana.gal/pt/sparql",
+                "http://ldf.fi/SERVICE/sparql",
+                "https://lod.abes.fr/sparql",
+                "https://rdf.pathwaycommons.org/sparql/",
+                "http://lov.okfn.org/dataset/lov/sparql",
+                "https://semantic.eea.europa.eu/sparql",
+                "https://cs.dbpedia.org/sparql",
+                "http://db.artsdata.ca/repositories/artsdata",
+                "https://linkedlifedata.com/sparql",
+                "https://api.parliament.uk/sparql",
+                "https://xn--slovnk-7va.gov.cz/sparql",
+                "http://ldf.fi/kirjasampo/sparql",
+                "http://vocabs.ands.org.au/repository/api/sparql/ga_geologic-unit-type_v0-1",
+                "https://data.ordnancesurvey.co.uk/datasets/code-point-open/apis/sparql",
+                "http://lod.kipo.kr/data/oversea_patent/sparql",
+                "http://www.genome.jp/sparql/linkdb",
+                "https://vocabs.ands.org.au/repository/api/sparql/",
+                "https://www.orpha.net/sparql",
+                "http://vulcan.cs.uga.edu/sparql",
+                "http://collection.britishmuseum.org/sparql",
+                "https://slod.fiz-karlsruhe.de/sparql",
+                "https://sparql.uniprot.org/sparql",
+                "https://isidore.science/sparql",
+                "http://tadirah.dariah.eu/vocab/sparql.php",
+                "http://wifo5-04.informatik.uni-mannheim.de/drugbank/snorql/",
+                "https://zbw.eu/beta/sparql/econ_corp/query",
+                "http://data.allie.dbcls.jp/sparql",
+                "http://wordnet.rkbexplorer.com/sparql/",
+                "http://zbw.eu/beta/sparql/stw/query",
+                "https://ld.cultural.jp/sparql",
+                "http://virhp07.libris.kb.se/sparql/",
+                "http://agrovoc.uniroma2.it/sparql",
+                "http://data.culture.fr/thesaurus/sparql",
+                "http://nomisma.org/query",
+                "http://ldf.fi/folklore/sparql",
+                "http://geco.ecophytopic.fr:8890/sparql",
+                "http://lod.kipo.kr/data/classification/sparql",
+                "http://dbtune.org/jamendo/sparql",
+                "https://identifiers.org/services/sparql",
+                "https://data.ordnancesurvey.co.uk/datasets/50k-gazetteer/apis/sparql",
+                "http://linkedgeodata.org/sparql",
+                "http://dblp.l3s.de/d2r/sparql",
+                "https://data.escr.fr/sparql",
+                "http://sparql.kpath.khaos.uma.es/",
+                "https://data.nationallibrary.fi/bib/sparql",
+                "https://ldf.fi/mufi/sparql",
+                "https://triplestore.sireneld.io/sirene/sparql",
+                "http://data.bnf.fr/sparql/",
+                "https://io.datascience-paris-saclay.fr/sparql",
+                "http://vocab.getty.edu/sparql",
+                "http://lod.nl.go.kr/sparql",
+                "https://www.dictionnairedesfrancophones.org/sparql",
+                "http://dati.beniculturali.it/",
+                "http://digital-agenda-data.eu/data/sparql",
+                "http://ieee.rkbexplorer.com/sparql/",
+                "https://linkedwiki.com/sparql",
+                "http://www.scholarlydata.org/sparql",
+                "https://sparql.nextprot.org/",
+                "https://digits2.mainzed.org/covid19/sparql",
+                "http://uriburner.com/sparql/",
+                "http://rdf.pathwaycommons.org/sparql/",
+                "http://data.mimo-db.eu/sparql",
+                "http://www.scholarlydata.org/sparql/",
+                "https://colil.dbcls.jp/sparql",
+                "http://vocabs.ands.org.au/repository/api/sparql/anzsrc-for",
+                "http://zbw.eu/beta/sparql/gnd/query",
+                "https://dati.camera.it/sparql",
+                "http://hkcan.julac.org/lod/sparql",
+                "http://lod.kipo.kr/data/patent/sparql",
+                "http://data.digitalculture.tw/taichung/sparql",
+                "https://id.nlm.nih.gov/mesh/sparql",
+                "https://www.genome.jp/sparql/linkdb",
+                "https://www.europeandataportal.eu/sparql",
+                "http://sparql.europeana.eu",
+                "http://opencitations.net/sparql",
+                "http://data.ordnancesurvey.co.uk/datasets/os-linked-data/apis/sparql",
+                "http://data.nobelprize.org/sparql",
+                "http://ontology.inrae.fr/frenchcropusage/query",
+                "https://wcqs-beta.wmflabs.org/",
+                "http://vocabs.ands.org.au/repository/api/sparql/csiro_international-chronostratigraphic-chart_international-chronostratigraphic-chart",
+                "https://linkeddata.uriburner.com/sparql",
+                "https://tora.entryscape.net/snorql",
+                "http://de.dbpedia.org/sparql",
+                "https://rdf.insee.fr/sparql",
+                "https://opendatacommunities.org/sparql",
+                "http://www4.wiwiss.fu-berlin.de/dailymed/sparql",
+                "http://dbtune.org/bbc/peel/sparql",
+                "http://collection.britishart.yale.edu/openrdf-sesame/repositories/ycba",
+                "http://data.archaeologydataservice.ac.uk/sparql/repositories/archives",
+                "http://opendatacommunities.org/sparql",
+                "https://bnb.data.bl.uk/sparql",
+                "https://www.govdata.de/sparql",
+                "http://ja.dbpedia.org/sparql",
+                "https://zbw.eu/beta/sparql/stwv/query",
+                "http://data.archiveshub.ac.uk/sparql",
+                "http://statistics.data.gov.uk/sparql",
+                "https://jpsearch.go.jp/rdf/sparql/",
+                "http://publications.europa.eu/webapi/rdf/sparql",
+                "http://landregistry.data.gov.uk/landregistry/query",
+                "http://bnb.data.bl.uk/sparql",
+                "https://query.inventaire.io",
+                "http://sparql.wikipathways.org/sparql",
+                "https://idsm.elixir-czech.cz/sparql/",
+                "https://lod.nl.go.kr/sparql",
+                "https://w3id.org/oc/sparql",
+                "https://data.ordnancesurvey.co.uk/datasets/opennames/apis/sparql",
+                "https://query.wikidata.org/sparql",
+                "https://datos.gob.es/virtuoso/sparql",
+                "http://vocabs.ands.org.au/repository/api/sparql/csiro_international-chronostratigraphic-chart_2018",
+                "http://agrold.southgreen.fr/sparql",
+                "https://lingualibre.org/bigdata/namespace/wdq/sparql",
+                "http://sparql.kupkb.org/sparql",
+                "http://data.nationallibrary.fi/bib/sparql",
+                "http://fr.dbpedia.org/sparql",
+                "https://data.idref.fr/sparql",
+                "https://rpp-opendata.egon.gov.cz/odrpp/sparql",
+                "http://citeseer.rkbexplorer.com/sparql/",
+                "https://ico.iate.inra.fr/fuseki/annotation/query",
+                "https://sparql.rhea-db.org/sparql",
+                "https://opendata.mfcr.cz/pages/sparql",
+                "https://ico.iate.inra.fr/fuseki/ontology/query",
+                "http://dbtune.org/magnatune/sparql",
+                "http://ma-graph.org/sparql",
+                "https://linkeddata1.calcul.u-psud.fr/sparql",
+                "https://edh-www.adw.uni-heidelberg.de/data/query",
+                "https://www.orkg.org/orkg/triplestore",
+                "http://semantic.eea.europa.eu/sparql",
+                "http://lod.kipo.kr/data/admin_processes/sparql",
+                "http://lod.kipo.kr/data/sparql",
+                "http://vocabulary.curriculum.edu.au/PoolParty/sparql/scot",
+                "http://id.sgcb.mcu.es/sparql",
+                "https://bgee.org/sparql",
+                "https://zbw.eu/beta/sparql/stw/query",
+                "http://bio2rdf.org/sparql",
+                "http://data.odw.tw/sparql",
+                "https://lingualibre.fr/bigdata/namespace/wdq/sparql",
+                "https://data.cssz.cz/sparql",
+                "http://data.cervantesvirtual.com/openrdf-sesame/repositories/data",
+                "http://dbpedia.org/sparql",
+                "http://bfs.270a.info/sparql",
+                "https://es.dbpedia.org/sparql",
+                "https://www.ebi.ac.uk/rdf/services/sparql",
+                "http://sparql.odw.tw/",
+                "http://collection.britishart.yale.edu/sparql",
+                "http://quantum.agroparistech.fr/graphdb/repositories/Composite_making_process",
+                "https://sparql.orthodb.org/sparql",
+                "https://data.ordnancesurvey.co.uk/datasets/boundary-line/apis/sparql",
+                "https://data.gov.cz/sparql",
+                "https://sparql.proconsortium.org/virtuoso/sparql",
+                "http://data.persee.fr/sparql",
+                "http://api.finto.fi/sparql",
+                "https://cedropendata.mfcr.cz/c3lod/cedr/sparql",
+                "https://www.data.gouv.fr/catalog.rdf",
+                "http://bbc.openlinksw.com/sparql",
+                "http://sparql.agroportal.lirmm.fr/sparql/",
+                "http://edan.si.edu/saam/sparql",
+                "https://datos.gob.es/es/sparql",
+                "https://fuseki.gwascentral.org/gc/query",
+                "https://opendata.aragon.es/sparql"
+            ]
+        } ,
+        {
+            name: "D2KAB",
+            endpoints: [
+                "http://147.100.179.235:8082/blazegraph/namespace/AnaEE_sites/sparql",
+                "https://ico.iate.inra.fr/fuseki/annotation/query",
+                "https://ico.iate.inra.fr/fuseki/ontology/query",
+                "http://taxref-graphdb.i3s.unice.fr/repositories/geco",
+                "http://quantum.agroparistech.fr/graphdb/repositories/Composite_making_process",
+                "http://ontology.irstea.fr/ppdo/sparql",
+                "https://opendata.inra.fr/openrdf-sesame/repositories/Ahol",
+                "http://agrold.southgreen.fr/sparql",
+                "http://ontology.inrae.fr/frenchcropusage/sparql",
+                "http://ontology.inrae.fr/bsv_test/sparql",
+                "http://ontology.irstea.fr/bsv/sparql",
+                "http://ontology.irstea.fr/weather/sparql",
+                "http://sparql.agroportal.lirmm.fr/sparql/",
+                "http://geco.ecophytopic.fr:8890/sparql"
+            ]
+        },
+        {
+            name:"LODCloud",
+            endpoints:[
 
-  // Compute default domains.
-  if (G && nodeGroups === undefined) nodeGroups = d3.sort(G);
+            ]
+        }
+];
+*/
+const graphLists = [
+    {
+        name:"All datasets",
+        graphs:[
+            "http://ns.inria.fr/indegx#Experiment_20211203",
+            "http://ns.inria.fr/indegx#Experiment_20211129",
+            "http://ns.inria.fr/indegx#Experiment_20211206",
+            "http://ns.inria.fr/indegx#Experiment_20211209",
+            "http://ns.inria.fr/indegx#Experiment_20211118",
+            "http://ns.inria.fr/indegx#D2KAB_20220125",
+            "http://ns.inria.fr/indegx#D2KAB_20220126"
+        ]
+    },
+    {
+        name:"Experiment dataset",
+        graphs:[
+            "http://ns.inria.fr/indegx#Experiment_20211203",
+            "http://ns.inria.fr/indegx#Experiment_20211129",
+            "http://ns.inria.fr/indegx#Experiment_20211206",
+            "http://ns.inria.fr/indegx#Experiment_20211209",
+            "http://ns.inria.fr/indegx#Experiment_20211118"
+        ]
+    },
+    {
+        name:"D2KAB",
+        graphs:[
+            "http://ns.inria.fr/indegx#D2KAB_20220125",
+            "http://ns.inria.fr/indegx#D2KAB_20220126"
+        ]
+    },/*
+    {
+        name:"LODCloud",
+        graphs:[
 
-  // Construct the scales.
-  const color = nodeGroup == null ? null : d3.scaleOrdinal(nodeGroups, colors);
-
-  // Construct the forces.
-  const forceNode = d3.forceManyBody();
-  const forceLink = d3.forceLink(links).id(({index: i}) => N[i]);
-  if (nodeStrength !== undefined) forceNode.strength(nodeStrength);
-  if (linkStrength !== undefined) forceLink.strength(linkStrength);
-
-  const simulation = d3.forceSimulation(nodes)
-      .force("link", forceLink)
-      .force("charge", forceNode)
-      .force("center",  d3.forceCenter())
-      .on("tick", ticked);
-
-  const svg = d3.create("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("viewBox", [-width / 2, -height / 2, width, height])
-      .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
-
-  const link = svg.append("g")
-      .attr("stroke", linkStroke)
-      .attr("stroke-opacity", linkStrokeOpacity)
-      .attr("stroke-width", typeof linkStrokeWidth !== "function" ? linkStrokeWidth : null)
-      .attr("stroke-linecap", linkStrokeLinecap)
-    .selectAll("line")
-    .data(links)
-    .join("line");
-
-  const node = svg.append("g")
-      .attr("fill", nodeFill)
-      .attr("stroke", nodeStroke)
-      .attr("stroke-opacity", nodeStrokeOpacity)
-      .attr("stroke-width", nodeStrokeWidth)
-    .selectAll("circle")
-    .data(nodes)
-    .join("circle")
-      .attr("r", nodeRadius)
-      .call(drag(simulation));
-
-  if (W) link.attr("stroke-width", ({index: i}) => W[i]);
-  if (G) node.attr("fill", ({index: i}) => color(G[i]));
-  if (T) node.append("title").text(({index: i}) => T[i]);
-  if (invalidation != null) invalidation.then(() => simulation.stop());
-
-  function intern(value) {
-    return value !== null && typeof value === "object" ? value.valueOf() : value;
-  }
-
-  function ticked() {
-    link
-      .attr("x1", d => d.source.x)
-      .attr("y1", d => d.source.y)
-      .attr("x2", d => d.target.x)
-      .attr("y2", d => d.target.y);
-
-    node
-      .attr("cx", d => d.x)
-      .attr("cy", d => d.y);
-  }
-
-  function drag(simulation) {
-    function dragstarted(event) {
-      if (!event.active) simulation.alphaTarget(0.3).restart();
-      event.subject.fx = event.subject.x;
-      event.subject.fy = event.subject.y;
+        ]
+    },*/
+    {
+        name:"Self-description",
+        graphs:[
+            "http://ns.inria.fr/indegx"
+        ]
     }
-
-    function dragged(event) {
-      event.subject.fx = event.x;
-      event.subject.fy = event.y;
-    }
-
-    function dragended(event) {
-      if (!event.active) simulation.alphaTarget(0);
-      event.subject.fx = null;
-      event.subject.fy = null;
-    }
-
-    return d3.drag()
-      .on("start", dragstarted)
-      .on("drag", dragged)
-      .on("end", dragended);
-  }
-
-  return Object.assign(svg.node(), {scales: {color}});
-}
-
-// Copyright 2021 Observable, Inc.
-// Released under the ISC license.
-// https://observablehq.com/@d3/bar-chart
-function BarChart(data, {
-  x = (d, i) => i, // given d in data, returns the (ordinal) x-value
-  y = d => d, // given d in data, returns the (quantitative) y-value
-  title, // given d in data, returns the title text
-  marginTop = 20, // the top margin, in pixels
-  marginRight = 0, // the right margin, in pixels
-  marginBottom = 30, // the bottom margin, in pixels
-  marginLeft = 40, // the left margin, in pixels
-  width = 640, // the outer width of the chart, in pixels
-  height = 400, // the outer height of the chart, in pixels
-  xDomain, // an array of (ordinal) x-values
-  xRange = [marginLeft, width - marginRight], // [left, right]
-  yType = d3.scaleLinear, // y-scale type
-  yDomain, // [ymin, ymax]
-  yRange = [height - marginBottom, marginTop], // [bottom, top]
-  xPadding = 0.1, // amount of x-range to reserve to separate bars
-  yFormat, // a format specifier string for the y-axis
-  yLabel, // a label for the y-axis
-  color = "currentColor" // bar fill color
-} = {}) {
-  // Compute values.
-  const X = d3.map(data, x);
-  const Y = d3.map(data, y);
-
-  // Compute default domains, and unique the x-domain.
-  if (xDomain === undefined) xDomain = X;
-  if (yDomain === undefined) yDomain = [0, d3.max(Y)];
-  xDomain = new d3.InternSet(xDomain);
-
-  // Omit any data not present in the x-domain.
-  const I = d3.range(X.length).filter(i => xDomain.has(X[i]));
-
-  // Construct scales, axes, and formats.
-  const xScale = d3.scaleBand(xDomain, xRange).padding(xPadding);
-  const yScale = yType(yDomain, yRange);
-  const xAxis = d3.axisBottom(xScale).tickSizeOuter(0);
-  const yAxis = d3.axisLeft(yScale).ticks(height / 40, yFormat);
-
-  // Compute titles.
-  if (title === undefined) {
-    const formatValue = yScale.tickFormat(100, yFormat);
-    title = i => `${X[i]}\n${formatValue(Y[i])}`;
-  } else {
-    const O = d3.map(data, d => d);
-    const T = title;
-    title = i => T(O[i], i, data);
-  }
-
-  const svg = d3.create("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
-      .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
-
-  svg.append("g")
-      .attr("transform", `translate(${marginLeft},0)`)
-      .call(yAxis)
-      .call(g => g.select(".domain").remove())
-      .call(g => g.selectAll(".tick line").clone()
-          .attr("x2", width - marginLeft - marginRight)
-          .attr("stroke-opacity", 0.1))
-      .call(g => g.append("text")
-          .attr("x", -marginLeft)
-          .attr("y", 10)
-          .attr("fill", "currentColor")
-          .attr("text-anchor", "start")
-          .text(yLabel));
-
-  const bar = svg.append("g")
-      .attr("fill", color)
-    .selectAll("rect")
-    .data(I)
-    .join("rect")
-      .attr("x", i => xScale(X[i]))
-      .attr("y", i => yScale(Y[i]))
-      .attr("height", i =>  yScale(0) - yScale(Y[i]))
-      .attr("width", xScale.bandwidth());
-
-  if (title) bar.append("title")
-      .text(title);
-
-  svg.append("g")
-      .attr("transform", `translate(0,${height - marginBottom})`)
-      .call(xAxis);
-
-  return svg.node();
-}
+]
 
 const endpointIpMap = [
     {
@@ -4340,7 +4386,7 @@ const endpointIpMap = [
     }
 ];
 
-var timezoneMap = [
+const timezoneMap = [
     {
         "key": "Europe/Dublin",
         "value": {
@@ -4862,3 +4908,5 @@ var timezoneMap = [
         }
     }
 ];
+
+module.exports = {endpointIpMap, timezoneMap, graphLists};

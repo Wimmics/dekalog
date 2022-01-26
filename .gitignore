@@ -24,8 +24,12 @@ code/out/artifacts/catalogIndex/LinkedWiki.trig
 
 code/out/artifacts/catalogIndex/LOD-CloudIndex.trig
 
+LODMap/node_modules/
+
+LODMap/package-lock.json
+
 LODMap/.parcel-cache/
 
 LODMap/dist/
 
-LODMap/node_modules/
+*.out
