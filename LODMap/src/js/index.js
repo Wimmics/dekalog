@@ -29,6 +29,7 @@ var propertyScatterChart = echarts.init(document.getElementById('propertyScatter
 var categoryScatterChart = echarts.init(document.getElementById('testCategoryScatter'));
 var totalRuntimeChart = echarts.init(document.getElementById('totalRuntimeScatter'));
 var averageRuntimeChart = echarts.init(document.getElementById('averageRuntimeScatter'));
+var vocabForceGraph = echarts.init(document.getElementById('vocabs'));
 
 function sparqlQueryJSON(query, callback, errorCallback) {
     xmlhttpRequestJSON('http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", callback, errorCallback);
@@ -96,7 +97,7 @@ function refresh() {
 
 function clear() {
     layerGroup.clearLayers();
-    $('#vocabs').empty();
+    //$('#vocabs').empty();
     sparql10Chart.setOption({series:[]}, true);
     sparql11Chart.setOption({series:[]}, true);
     sparqlTotalChart.setOption({series:[]}, true);
@@ -105,6 +106,7 @@ function clear() {
     propertyScatterChart.setOption({series:[]}, true);
     categoryScatterChart.setOption({series:[]}, true);
     totalRuntimeChart.setOption({series:[]}, true);
+    vocabForceGraph.setOption({series:[]}, true);
     $('#shortUrisMeasure').empty();
     $('#RDFdataStructuresMeasure').empty();
     $('#KnownVocabulariesMeasure').empty();
@@ -424,10 +426,10 @@ function vocabEndpointGraphFill() {
             var jsonVocabNodes = new Set();
 
             endpointSet.forEach((item, i) => {
-                jsonVocabNodes.add({'id':item, 'group':'Knowledge base', 'radius':'1'})
+                jsonVocabNodes.add({name:item, category:'Knowledge base', x:i*100, y:100, symbolSize:5})
             });
             vocabSet.forEach((item, i) => {
-                jsonVocabNodes.add({'id':item, 'group':'Vocabulary', 'radius':'1'})
+                jsonVocabNodes.add({name:item,  category:'Vocabulary', x:100, y:i*100, symbolSize:5})
             });
             var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
             var sumknowVocabMeasure = 0;
@@ -437,9 +439,42 @@ function vocabEndpointGraphFill() {
                 knowVocabsData.push({ 'endpoint':endpointUrl, 'measure':measure })
 
                 endpointVocabs.forEach((vocab, i) => {
-                    jsonVocabLinks.add({'source':endpointUrl, 'target':vocab, 'value':1})
+                    jsonVocabLinks.add({source:endpointUrl, target:vocab})
                 });
             });
+
+            var vocabGraphOptions = {
+                title: {
+                  text: 'Endpoints and knowledge bases',
+                  top: 'bottom',
+                  left: 'center'
+                },
+                tooltip: {},
+                legend: [
+                  {
+                    data: ["Vocabulary", "Knowledge base"]
+                }
+            ],
+                series: [
+                  {
+                    //name: 'Vocabulary',
+                    type: 'graph',
+                    layout: 'force',
+                    data: [...jsonVocabNodes],
+                    links: [...jsonVocabLinks],
+                    categories: [{name:"Vocabulary"}, {name:"Knowledge base"}],
+                    roam: true,
+                    draggable:true,
+                    label: {
+                      position: 'right'
+                    },
+                    force: {
+                      repulsion: 100
+                    }
+                }
+                ]
+            };
+            vocabForceGraph.setOption(vocabGraphOptions);
 
             function endpointKnowVocabsMeasureFill() {
                 knowVocabsData.forEach((item, i) => {
@@ -503,18 +538,6 @@ function vocabEndpointGraphFill() {
                     $('#knowVocabEndpointTable').removeClass("collapse");
                 }
             })
-
-            var chart = ForceGraph({'links':[...jsonVocabLinks], 'nodes':[...jsonVocabNodes]} , {
-                nodeId: d => d.id,
-                nodeGroup: d => d.group,
-                nodeTitle: d => `${d.id}\n${d.group}`,
-                linkStrokeWidth: l => Math.sqrt(l.value),
-                width:1200,
-                height: 600
-            });
-
-            var vocabsHtml = $('#vocabs');
-            vocabsHtml.append(chart);
 
             // compputation of the know vocabularies measure
             var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
