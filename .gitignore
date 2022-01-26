@@ -31,3 +31,5 @@ LODMap/package-lock.json
 LODMap/.parcel-cache/
 
 LODMap/dist/
+
+*.out

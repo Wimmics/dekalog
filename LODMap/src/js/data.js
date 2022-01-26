@@ -227,6 +227,17 @@ const endpointLists = [
 */
 const graphLists = [
     {
+        name:"All datasets",
+        graphs:[
+            "http://ns.inria.fr/indegx#Experiment_20211203",
+            "http://ns.inria.fr/indegx#Experiment_20211129",
+            "http://ns.inria.fr/indegx#Experiment_20211206",
+            "http://ns.inria.fr/indegx#Experiment_20211209",
+            "http://ns.inria.fr/indegx#Experiment_20211118",
+            "http://ns.inria.fr/indegx#D2KAB_20220125"
+        ]
+    },
+    {
         name:"Experiment dataset",
         graphs:[
             "http://ns.inria.fr/indegx#Experiment_20211203",
@@ -247,7 +258,7 @@ const graphLists = [
         graphs:[
 
         ]
-    }*/
+    },*/
     {
         name:"Self-description",
         graphs:[

@@ -145,62 +145,70 @@ function mapFill() {
         // Add the markers for each endpoints.
         var endpoint = item.key;
 
-        // Study of the timezones
-        // http://worldtimeapi.org/pages/examples
-        var markerIcon = greenIcon;
-        var endpointTimezoneSPARQL = new Map();
-        var timezoneSPARQLquery = "SELECT DISTINCT ?timezone { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <"+endpoint+"> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone }";
-        sparqlQueryJSON(timezoneSPARQLquery, jsonResponse => {
-            jsonResponse.results.bindings.forEach((itemResponse, i) => {
-                endpointTimezoneSPARQL.set(endpoint, itemResponse.timezone.value);
-            });
+        // Filter the endpoints according to their graphs
+        var endpointInGraphQuery = "ASK { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <"+ endpoint +"> . } VALUES ?g { "+ graphValuesURIList +" } }";
+        sparqlQueryJSON(endpointInGraphQuery, jsonAskResponse => {
+            var booleanResponse = jsonAskResponse.boolean;
 
-            var ipTimezoneArrayFiltered = timezoneMap.filter(itemtza => itemtza.key == item.value.geoloc.timezone);
-            var ipTimezone;
-            if(ipTimezoneArrayFiltered.length > 0) {
-                ipTimezone = ipTimezoneArrayFiltered[0].value.utc_offset;
-            }
-            var sparqlTimezone = endpointTimezoneSPARQL.get(endpoint);
-            var badTimezone = false;
-            if(sparqlTimezone != undefined
-                && ipTimezone != undefined
-                && (ipTimezone.padStart(6, '-') != sparqlTimezone.padStart(6, '-') ) // addding + and - at the beginnig in case they are missing
-                && (ipTimezone.padStart(6, '+') != sparqlTimezone.padStart(6, '+') ) ) {
-                badTimezone = true;
-                markerIcon = orangeIcon;
-            }
-
-            var endpointMarker = L.marker([item.value.geoloc.lat, item.value.geoloc.lon], { icon:markerIcon });
-            endpointMarker.on('click', clickEvent => {
-                var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + item.key + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } VALUES ?g { "+ graphValuesURIList +" } }";
-                    sparqlQueryJSON(labelQuery, responseLabels => {
-                        var popupString = "<table> <thead> <tr> <th colspan='2'> <a href='" + item.key + "' >" + item.key + "</a> </th> </tr> </thead>" ;
-                        popupString += "</body>"
-                        if(item.value.geoloc.country != undefined) {
-                            popupString += "<tr><td>Country: </td><td>" + item.value.geoloc.country + "</td></tr>" ;
-                        }
-                        if(item.value.geoloc.regionName != undefined) {
-                            popupString += "<tr><td>Region: </td><td>" + item.value.geoloc.regionName  + "</td></tr>";
-                        }
-                        if(item.value.geoloc.city != undefined) {
-                            popupString += "<tr><td>City: </td><td>" + item.value.geoloc.city  + "</td></tr>";
-                        }
-                        if(item.value.geoloc.org != undefined) {
-                            popupString += "<tr><td>Organization: </td><td>" + item.value.geoloc.org + "</td></tr>";
-                        }
-                        if(badTimezone) {
-                            popupString += "<tr><td>Timezone of endpoint URL: </td><td>" + ipTimezone + "</td></tr>";
-                            popupString += "<tr><td>Timezone declared by endpoint: </td><td>" + sparqlTimezone + "</td></tr>";
-                        }
-                        if(responseLabels.results.bindings.size > 0) {
-                            popupString += "<tr><td colspan='2'>" + responseLabels  + "</td></tr>" ;
-                        }
-                        popupString += "</tbody>"
-                        popupString += "</table>"
-                        endpointMarker.bindPopup(popupString).openPopup();
+            if(booleanResponse) {
+                // Study of the timezones
+                // http://worldtimeapi.org/pages/examples
+                var markerIcon = greenIcon;
+                var endpointTimezoneSPARQL = new Map();
+                var timezoneSPARQLquery = "SELECT DISTINCT ?timezone { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <"+ endpoint +"> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone } VALUES ?g { "+ graphValuesURIList +" } }";
+                sparqlQueryJSON(timezoneSPARQLquery, jsonResponse => {
+                    jsonResponse.results.bindings.forEach((itemResponse, i) => {
+                        endpointTimezoneSPARQL.set(endpoint, itemResponse.timezone.value);
                     });
-                });
-                endpointMarker.addTo(layerGroup);
+
+                    var ipTimezoneArrayFiltered = timezoneMap.filter(itemtza => itemtza.key == item.value.geoloc.timezone);
+                    var ipTimezone;
+                    if(ipTimezoneArrayFiltered.length > 0) {
+                        ipTimezone = ipTimezoneArrayFiltered[0].value.utc_offset;
+                    }
+                    var sparqlTimezone = endpointTimezoneSPARQL.get(endpoint);
+                    var badTimezone = false;
+                    if(sparqlTimezone != undefined
+                        && ipTimezone != undefined
+                        && (ipTimezone.padStart(6, '-') != sparqlTimezone.padStart(6, '-') ) // addding + and - at the beginnig in case they are missing
+                        && (ipTimezone.padStart(6, '+') != sparqlTimezone.padStart(6, '+') ) ) {
+                        badTimezone = true;
+                        markerIcon = orangeIcon;
+                    }
+
+                    var endpointMarker = L.marker([item.value.geoloc.lat, item.value.geoloc.lon], { icon:markerIcon });
+                    endpointMarker.on('click', clickEvent => {
+                        var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + endpoint + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } VALUES ?g { "+ graphValuesURIList +" } }";
+                            sparqlQueryJSON(labelQuery, responseLabels => {
+                                var popupString = "<table> <thead> <tr> <th colspan='2'> <a href='" + endpoint + "' >" + endpoint + "</a> </th> </tr> </thead>" ;
+                                popupString += "</body>"
+                                if(item.value.geoloc.country != undefined) {
+                                    popupString += "<tr><td>Country: </td><td>" + item.value.geoloc.country + "</td></tr>" ;
+                                }
+                                if(item.value.geoloc.regionName != undefined) {
+                                    popupString += "<tr><td>Region: </td><td>" + item.value.geoloc.regionName  + "</td></tr>";
+                                }
+                                if(item.value.geoloc.city != undefined) {
+                                    popupString += "<tr><td>City: </td><td>" + item.value.geoloc.city  + "</td></tr>";
+                                }
+                                if(item.value.geoloc.org != undefined) {
+                                    popupString += "<tr><td>Organization: </td><td>" + item.value.geoloc.org + "</td></tr>";
+                                }
+                                if(badTimezone) {
+                                    popupString += "<tr><td>Timezone of endpoint URL: </td><td>" + ipTimezone + "</td></tr>";
+                                    popupString += "<tr><td>Timezone declared by endpoint: </td><td>" + sparqlTimezone + "</td></tr>";
+                                }
+                                if(responseLabels.results.bindings.size > 0) {
+                                    popupString += "<tr><td colspan='2'>" + responseLabels  + "</td></tr>" ;
+                                }
+                                popupString += "</tbody>"
+                                popupString += "</table>"
+                                endpointMarker.bindPopup(popupString).openPopup();
+                            });
+                        });
+                        endpointMarker.addTo(layerGroup);
+                    });
+                }
             });
 
         });
@@ -513,34 +521,32 @@ function vocabEndpointGraphFill() {
 
 function tripleNumberScatter() {
     // Scatter plot of the number of triples through time
-    var triplesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl ?o ?modifDate { " +
+    var triplesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl ?o { " +
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
-        "?metadata <http://purl.org/dc/terms/modified> ?modifDate ." +
+        //"?metadata <http://purl.org/dc/terms/modified> ?modifDate ." +
         "?base <http://rdfs.org/ns/void#triples> ?o ." +
         "}" +
-        " VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl) DESC(?modifDate)";
+        " VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl)"; //+" DESC(?modifDate)";
     sparqlQueryJSON(triplesSPARQLquery, json => {
         var endpointDataSerieMap = new Map();
         var xAxisDataSet = new Set();
         json.results.bindings.forEach((itemResult, i) => {
             var endpointUrl = itemResult.endpointUrl.value;
-            var graphModifiedDate = itemResult.modifDate.value;
+            //var graphModifiedDate = itemResult.modifDate.value;
             var graph = itemResult.g.value;
 
             endpointDataSerieMap.set(endpointUrl, []);
             xAxisDataSet.add(graph);
         });
         json.results.bindings.forEach((itemResult, i) => {
-            var graph = itemResult.g;
+            var graph = itemResult.g.value;
             var endpointUrl = itemResult.endpointUrl.value;
             var triples = Number.parseInt(itemResult.o.value);
-            var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
-            var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
-            if(graph != "http://ns.inria.fr/indegx") {
-                endpointDataSerieMap.get(endpointUrl).push([date,triples])
-            }
+            //var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
+            //var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
+            endpointDataSerieMap.get(endpointUrl).push([graph,triples])
         });
 
         var triplesSeries = [];
@@ -562,7 +568,7 @@ function tripleNumberScatter() {
                 text:"Size of the datasets",
             },
             xAxis: {
-                type:'time'
+                type:'category'
             },
             yAxis: {},
             series: triplesSeries,
@@ -587,25 +593,23 @@ function classNumberFill() {
         "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl) DESC(?modifDate)";
     sparqlQueryJSON(classesSPARQLquery, json => {
         var endpointDataSerieMap = new Map();
-        var xAxisDataSet = new Set();
+        //var xAxisDataSet = new Set();
         json.results.bindings.forEach((itemResult, i) => {
             var endpointUrl = itemResult.endpointUrl.value;
             var graphModifiedDate = itemResult.modifDate.value;
             var graph = itemResult.g.value;
 
             endpointDataSerieMap.set(endpointUrl, []);
-            xAxisDataSet.add(graph);
+            //xAxisDataSet.add(graph);
         });
         json.results.bindings.forEach((itemResult, i) => {
-            var graph = itemResult.g;
+            var graph = itemResult.g.value;
             var endpointUrl = itemResult.endpointUrl.value;
             var triples = Number.parseInt(itemResult.o.value);
-            var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
-            var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
+            //var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
+            //var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
 
-            if(graph != "http://ns.inria.fr/indegx") {
-                endpointDataSerieMap.get(endpointUrl).push([ date, triples ])
-            }
+            endpointDataSerieMap.get(endpointUrl).push([ graph, triples ])
         });
 
         var triplesSeries = [];
@@ -628,7 +632,7 @@ function classNumberFill() {
                 text:"Number of classes in the datasets",
             },
             xAxis: {
-                type:'time'
+                type:'category'
             },
             yAxis: {},
             series: triplesSeries,
@@ -643,36 +647,32 @@ function classNumberFill() {
 
 function propertyNumberFill() {
 // scatter plot of the number of properties through time
-    var propertiesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl ?o ?modifDate { " +
+    var propertiesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl ?o { " +
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
-        "?metadata <http://purl.org/dc/terms/modified> ?modifDate . " +
+        //"?metadata <http://purl.org/dc/terms/modified> ?modifDate . " +
         "?base <http://rdfs.org/ns/void#properties> ?o ." +
         "}" +
-        "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl) DESC(?modifDate)";
+        "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";// +
+        //"DESC(?modifDate)";
     sparqlQueryJSON(propertiesSPARQLquery, json => {
         var endpointDataSerieMap = new Map();
-        var xAxisDataSet = new Set();
         json.results.bindings.forEach((itemResult, i) => {
             var endpointUrl = itemResult.endpointUrl.value;
-            var graphModifiedDate = itemResult.modifDate.value;
+            //var graphModifiedDate = itemResult.modifDate.value;
             var graph = itemResult.g.value;
 
             endpointDataSerieMap.set(endpointUrl, []);
-            xAxisDataSet.add(graph);
         });
         json.results.bindings.forEach((itemResult, i) => {
-            var graph = itemResult.g;
-            if(graph != "http://ns.inria.fr/indegx") {
-                var graph = itemResult.g;
-                var endpointUrl = itemResult.endpointUrl.value;
-                var triples = Number.parseInt(itemResult.o.value);
-                var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
-                var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
+            var graph = itemResult.g.value;
+            var endpointUrl = itemResult.endpointUrl.value;
+            var triples = Number.parseInt(itemResult.o.value);
+            //var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
+            //var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
 
-                endpointDataSerieMap.get(endpointUrl).push([ date, triples ])
-            }
+            endpointDataSerieMap.get(endpointUrl).push([ graph, triples ])
         });
 
         var triplesSeries = [];
@@ -694,7 +694,7 @@ function propertyNumberFill() {
                 text:"Number of properties in the datasets",
             },
             xAxis: {
-                type:'time'
+                type:'category'
             },
             yAxis: {},
             series: triplesSeries,
@@ -764,7 +764,7 @@ function categoryTestNumberFill() {
                     var avgEndpointGraph = precise(totalEndpointGraph / numberOfEndpoint);
                     var percentageAvrEndpointCategory = avgEndpointGraph;
                     if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/")) {
-                        percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 3);
+                        percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 8);
                     } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/")) {
                         percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 4);
                     } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/")) {
