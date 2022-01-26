@@ -388,6 +388,16 @@ function sparqlesHistoFill() {
     });
 }
 
+
+$('#KnownVocabulariesDetails').click(function() {
+    if($('#knowVocabEndpointTable').hasClass("show")) {
+        $('#knowVocabEndpointTable').removeClass("show");
+        $('#knowVocabEndpointTable').addClass("collapse");
+    } else {
+        $('#knowVocabEndpointTable').removeClass("collapse");
+        $('#knowVocabEndpointTable').addClass("show");
+    }
+})
 function vocabEndpointGraphFill() {
 // Create an force graph with the graph linked by co-ocurrence of vocabularies
     var sparqlesVocabularies = "SELECT DISTINCT ?endpoint ?vocabulary  WHERE { GRAPH ?g { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary }  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpoint";
@@ -530,16 +540,6 @@ function vocabEndpointGraphFill() {
                 }
                 endpointKnowVocabsMeasureFill();
             });
-
-            $('#KnownVocabulariesDetails').click(function() {
-                if($('#knowVocabEndpointTable').hasClass("show")) {
-                    $('#knowVocabEndpointTable').removeClass("show");
-                    $('#knowVocabEndpointTable').addClass("collapse");
-                } else {
-                    $('#knowVocabEndpointTable').addClass("show");
-                    $('#knowVocabEndpointTable').removeClass("collapse");
-                }
-            })
 
             // compputation of the know vocabularies measure
             var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
@@ -830,7 +830,19 @@ function categoryTestNumberFill() {
     });
 }
 
+
+$('#tableRuleDetails').click(function() {
+    var table = $('#rulesTable');
+    if(table.hasClass("show")) {
+        table.removeClass("show");
+        table.addClass("collapse");
+    } else {
+        table.removeClass("collapse");
+        table.addClass("show");
+    }
+});
 function testTableFill() {
+
     var appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?rule { " +
             "GRAPH ?g { "+
                 "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?curated . " +
@@ -891,6 +903,7 @@ function testTableFill() {
 
         var tableBody = $('#ruleTableBody');
         $('#rulesTableEndpointHeader').click(function() {
+            console.log("click")
             tableBody.empty();
             if(tableBody.hasClass('sortEndpointDesc')) {
                 tableBody.removeClass('sortEndpointDesc');
@@ -906,16 +919,6 @@ function testTableFill() {
                 });
             }
             fillTestTable();
-        });
-
-        $('#tableRuleDetails').click(function() {
-            if($('#ruleTable').hasClass("show")) {
-                $('#ruleTable').removeClass("show");
-                $('#ruleTable').addClass("collapse");
-            } else {
-                $('#ruleTable').addClass("show");
-                $('#ruleTable').removeClass("collapse");
-            }
         });
 
         fillTestTable();
