@@ -7,3 +7,5 @@
 #propertyScatter { width: 33%; height: 300px; }
 #testCategoryScatter { width: 100%; height: 300px; }
 #descriptionSizeScatter { width: 100%; height: 500px; }
+#totalRuntimeScatter { width: 100%; height: 250px; }
+#averageRuntimeScatter { width: 100%; height: 250px; }

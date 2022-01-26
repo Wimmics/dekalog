@@ -234,7 +234,8 @@ const graphLists = [
             "http://ns.inria.fr/indegx#Experiment_20211206",
             "http://ns.inria.fr/indegx#Experiment_20211209",
             "http://ns.inria.fr/indegx#Experiment_20211118",
-            "http://ns.inria.fr/indegx#D2KAB_20220125"
+            "http://ns.inria.fr/indegx#D2KAB_20220125",
+            "http://ns.inria.fr/indegx#D2KAB_20220126"
         ]
     },
     {
@@ -250,7 +251,8 @@ const graphLists = [
     {
         name:"D2KAB",
         graphs:[
-            "http://ns.inria.fr/indegx#D2KAB_20220125"
+            "http://ns.inria.fr/indegx#D2KAB_20220125",
+            "http://ns.inria.fr/indegx#D2KAB_20220126"
         ]
     },/*
     {

@@ -27,7 +27,8 @@ var tripleScatterChart = echarts.init(document.getElementById('tripleScatter'));
 var classScatterChart = echarts.init(document.getElementById('classScatter'));
 var propertyScatterChart = echarts.init(document.getElementById('propertyScatter'));
 var categoryScatterChart = echarts.init(document.getElementById('testCategoryScatter'));
-
+var totalRuntimeChart = echarts.init(document.getElementById('totalRuntimeScatter'));
+var averageRuntimeChart = echarts.init(document.getElementById('averageRuntimeScatter'));
 
 function sparqlQueryJSON(query, callback, errorCallback) {
     xmlhttpRequestJSON('http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", callback, errorCallback);
@@ -89,6 +90,8 @@ function refresh() {
     classNumberFill();
     propertyNumberFill();
     categoryTestNumberFill();
+    runtimeStatsFill();
+    averageRuntimeStatsFill()
 }
 
 function clear() {
@@ -101,6 +104,7 @@ function clear() {
     classScatterChart.setOption({series:[]}, true);
     propertyScatterChart.setOption({series:[]}, true);
     categoryScatterChart.setOption({series:[]}, true);
+    totalRuntimeChart.setOption({series:[]}, true);
     $('#shortUrisMeasure').empty();
     $('#RDFdataStructuresMeasure').empty();
     $('#KnownVocabulariesMeasure').empty();
@@ -798,5 +802,97 @@ function categoryTestNumberFill() {
             }
         };
         categoryScatterChart.setOption(optionTriples);
+    });
+}
+
+function runtimeStatsFill() {
+    var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?data . ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . }  VALUES ?g { "+ graphValuesURIList +" } }";
+    var runtimeDataSerie = []
+    var runtimeSerie = []
+    sparqlQueryJSON(maxMinTimeQuery, jsonResponse => {
+        jsonResponse.results.bindings.forEach((itemResult, i) => {
+            var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
+            var start = parseDate(itemResult.start.value, 'dd-mm-yyyyTHH:mm:ss');
+            var end = parseDate(itemResult.end.value, 'dd-mm-yyyyTHH:mm:ss');
+            var runtime = Math.abs((end - start)/1000);
+            //var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
+            //var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
+
+            runtimeDataSerie.push([ graph, runtime ])
+        });
+        var runtimeSerie = {
+            name:"Runtime in seconds",
+            label:'show',
+            symbolSize: 5,
+            data:runtimeDataSerie,
+            type: 'scatter'
+        };
+        var optionRuntime = {
+            title: {
+                left: 'center',
+                text:"Runtime of the framework for each run (in seconds)",
+            },
+            xAxis: {
+                type:'category'
+            },
+            yAxis: {},
+            series: [runtimeSerie],
+            tooltip:{
+                show:'true'
+            }
+        };
+        totalRuntimeChart.setOption(optionRuntime);
+    });
+}
+
+function averageRuntimeStatsFill() {
+    var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?data . ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . }  VALUES ?g { "+ graphValuesURIList +" } }";
+    var runtimeDataSerie = []
+    var runtimeSerie = []
+    sparqlQueryJSON(maxMinTimeQuery, jsonResponse => {
+
+        var numberOfEndpointQuery = "SELECT DISTINCT ?g (COUNT(?dataset) AS ?count) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . }  VALUES ?g { "+ graphValuesURIList +" } }";
+        sparqlQueryJSON(numberOfEndpointQuery, numberOfEndpointJson => {
+            var numberEndpointMap = new Map();
+            numberOfEndpointJson.results.bindings.forEach((numberEndpointItem, i) => {
+                var graph = numberEndpointItem.g.value.replace('http://ns.inria.fr/indegx#','');
+                var count = numberEndpointItem.count.value;
+
+                numberEndpointMap.set(graph, count);
+            });
+
+            jsonResponse.results.bindings.forEach((itemResult, i) => {
+                var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
+                var start = parseDate(itemResult.start.value, 'dd-mm-yyyyTHH:mm:ss');
+                var end = parseDate(itemResult.end.value, 'dd-mm-yyyyTHH:mm:ss');
+                var numberOfEndpoint = numberEndpointMap.get(graph);
+                var runtime = Math.floor(Math.abs((end - start)/1000)/numberOfEndpoint);
+
+                runtimeDataSerie.push([ graph, runtime ])
+            });
+            var runtimeSerie = {
+                name:"Average runtime in seconds",
+                label:'show',
+                symbolSize: 5,
+                data:runtimeDataSerie,
+                type: 'scatter'
+            };
+            var optionRuntime = {
+                title: {
+                    left: 'center',
+                    text:"Average runtime of the framework for each run (in seconds)",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                yAxis: {},
+                series: [runtimeSerie],
+                tooltip:{
+                    show:'true'
+                }
+            };
+            averageRuntimeChart.setOption(optionRuntime);
+
+        });
     });
 }
