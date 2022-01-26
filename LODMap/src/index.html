@@ -16,11 +16,12 @@
         <div class="col-1"></div>
         <div class="col-10 justify-content-center">
             <div class="row"><h1>KartoGraphI: Knowledge graph cartography and index</h1><br/><h5>Visualisation of the results obtained by <a href="http://prod-dekalog.inria.fr/sparql">IndeGx</a><h5></div>
-                <div class="row border border-dark rounded justify-content-center">
-                    <div class='col-12'>
-                        <select id="endpoint-list-select" class="form-select" aria-label="Endpoint list selection">
-                        </select>
-                    </div>
+                <div id="kgSelectionDiv" class='row border border-dark rounded-top justify-content-center'>
+                    <h5>Selection of the knowledge graphs sets:</h5>
+                    <select id="endpoint-list-select" class="form-select" aria-label="Endpoint list selection">
+                    </select>
+                </div>
+                <div class="row border border-dark  justify-content-center">
                     <div class="col-12 justify-content-center">
                         <div class="container justify-content-center"><h5> Geolocation of the indexed endpoints</h6></div>
                         <div class="container justify-content-center" id="map"></div>
@@ -28,14 +29,14 @@
                     <span> <img src="./img/marker-icon-green.png">: Marker used for endpoints.</span><br/>
                     <span> <img src="./img/marker-icon-orange.png">: Marker used for endpoints that are using a timezone different to the one corresponding to their IP.</span>
                 </div>
-                <div class="row border border-dark rounded justify-content-center">
+                <div class="row border border-dark justify-content-center">
                     <div class="col-12 justify-content-center">
                         <div class="container justify-content-center"><h5>Graph of the endpoints connected to their vocabularies*</h5></div>
                         <div class="container justify-content-center" id="vocabs"></div>
                         <span> *: Only the vocabularies listed in <a href="https://lov.linkeddata.es/dataset/lov">Linked Open Vocabularies</a> are displayed.</span>
                     </div>
                 </div>
-                <div class="row border border-dark rounded justify-content-center">
+                <div class="row border border-dark justify-content-center">
                     <div class="col-12 justify-content-center">
                         <div class="container justify-content-center"><h5>Estimation of the SPARQL features covered by the endpoints</h5></div>
                         <div class="row">
@@ -47,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row border border-dark rounded justify-content-center"><h5>Datasets populations</h5>
+                <div class="row border border-dark justify-content-center"><h5>Datasets populations</h5>
                     <div class="col-12 justify-content-center">
                         <div class="row">
                             <div class="container justify-content-center" id="tripleScatter"><h5>Size of datasets through time</h5></div>
@@ -60,7 +61,7 @@
                         <!--    <div class="container justify-content-center" id="descriptionSizeScatter"><h5>Size of the descriptions of each endpoint through time</h5></div> -->
                         </div>
                 </div>
-                <div class="row border border-dark rounded justify-content-center"><h5>Runtimes of the dataset description generation</h5>
+                <div class="row border border-dark justify-content-center"><h5>Runtimes of the dataset description generation</h5>
                     <div class="col-12 justify-content-center">
                         <div class="row">
                             <div class="container justify-content-center" id="totalRuntimeScatter"><h5>Total runtime of the framework for each run</h5></div>
@@ -68,7 +69,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row border border-dark rounded justify-content-center"><h5>Quality measures</h5>
+                <div class="row border border-dark justify-content-center"><h5>Quality measures</h5>
                     <table class="table table-responsive">
                         <thead>
                             <tr>
@@ -105,7 +106,7 @@
                 </table>
                 <span>*: This measure can only be computed for the endpoints that return their list of used vocabularies.</span>
             </div>
-            <div class="row border border-dark rounded"><span>This website was created as part of the <a href="https://dekalog.univ-nantes.fr/">ANR project DeKaloG</a>. The code of this site and of the application that generated the RDF data it exploits, are hosted on <a href="https://github.com/Wimmics/dekalog">Github</a></span></div>
+            <div class="row border border-dark  rounded-bottom"><span>This website was created as part of the <a href="https://dekalog.univ-nantes.fr/">ANR project DeKaloG</a>. The code of this site and of the application that generated the RDF data it exploits, are hosted on <a href="https://github.com/Wimmics/dekalog">Github</a></span></div>
         </div>
         <div class="col-1"></div>
     </div>
