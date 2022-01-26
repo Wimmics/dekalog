@@ -58,7 +58,18 @@
                     </div>
                         <div class="col-12 justify-content-center">
                             <div class="container justify-content-center" id="testCategoryScatter"><h5>Number of tests passed by categories through time</h5></div>
+                            <button id="tableRuleDetails" type="button" class="btn btn-link">Details</button>
                         <!--    <div class="container justify-content-center" id="descriptionSizeScatter"><h5>Size of the descriptions of each endpoint through time</h5></div> -->
+                            <table id="ruleTable" class="table table-responsive table-hover collapse">
+                                <thead>
+                                    <tr>
+                                        <th id="rulesTableEndpointHeader" scope="col">Endpoint</th>
+                                        <th id="rulesTableRuleHeader" scope="col">Rule applied</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rulesTableBody">
+                                </tbody>
+                            </table>
                         </div>
                 </div>
                 <div class="row border border-dark justify-content-center"><h5>Runtimes of the dataset description generation</h5>

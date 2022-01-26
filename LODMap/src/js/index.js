@@ -91,6 +91,7 @@ function refresh() {
     classNumberFill();
     propertyNumberFill();
     categoryTestNumberFill();
+    testTableFill();
     runtimeStatsFill();
     averageRuntimeStatsFill()
 }
@@ -111,6 +112,7 @@ function clear() {
     $('#RDFdataStructuresMeasure').empty();
     $('#KnownVocabulariesMeasure').empty();
     $('#endpointKnownVocabsTableBody').empty();
+    $('#rulesTableBody').empty();
 }
 
 function generateGraphValuesURI( graphs) {
@@ -825,6 +827,98 @@ function categoryTestNumberFill() {
             }
         };
         categoryScatterChart.setOption(optionTriples);
+    });
+}
+
+function testTableFill() {
+    var appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?rule { " +
+            "GRAPH ?g { "+
+                "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?curated . " +
+                "?curated <http://www.w3.org/ns/prov#wasGeneratedBy> ?rule . " +
+                "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "} " +
+        "VALUES ?g { "+ graphValuesURIList +" } " +
+        "} GROUP BY ?endpointUrl ?rule ORDER BY DESC(?endpointUrl) ";
+    sparqlQueryJSON(appliedTestQuery, json => {
+        console.log(json)
+        var appliedTestMap = new Map();
+        json.results.bindings.forEach((item, i) => {
+            var endpointUrl = item.endpointUrl.value;
+            var rule = item.rule.value;
+
+            if(appliedTestMap.get(endpointUrl) == undefined) {
+                appliedTestMap.set(endpointUrl, []);
+            }
+            appliedTestMap.get(endpointUrl).push(rule);
+        });
+
+        var appliedTestData = [];
+        appliedTestMap.forEach((rules, endpoint, map) => {
+            rules.sort((a,b) => a.localeCompare(b))
+            appliedTestData.push({'endpoint':endpoint, 'rules':rules})
+        });
+
+        appliedTestData.sort((a,b) => {
+            return a.endpoint.localeCompare(b.endpoint);
+        });
+
+        function fillTestTable() {
+            console.log(appliedTestData);
+            var tableBody = $('#rulesTableBody');
+            tableBody.empty();
+            appliedTestData.forEach((item, i) => {
+                var endpoint = item.endpoint;
+                var rules = item.rules;
+                var endpointRow = $(document.createElement("tr"));
+                var endpointCell = $(document.createElement("td"));
+                endpointCell.attr('rowspan', rules.length);
+                endpointCell.text(endpoint);
+                endpointRow.append(endpointCell);
+                tableBody.append(endpointRow);
+                rules.forEach((item, i) => {
+                    var ruleCell = $(document.createElement("td"));
+                    ruleCell.text(item);
+                    if(i == 0) {
+                        endpointRow.append(ruleCell);
+                    } else {
+                        var ruleRow = $(document.createElement("tr"));
+                        ruleRow.append(ruleCell);
+                        tableBody.append(ruleRow);
+                    }
+                });
+            });
+        }
+
+        var tableBody = $('#ruleTableBody');
+        $('#rulesTableEndpointHeader').click(function() {
+            tableBody.empty();
+            if(tableBody.hasClass('sortEndpointDesc')) {
+                tableBody.removeClass('sortEndpointDesc');
+                tableBody.addClass('sortEndpointAsc');
+                appliedTestData.sort((a,b) => {
+                    return a.endpoint.localeCompare(b.endpoint);
+                });
+            } else {
+                tableBody.addClass('sortEndpointDesc');
+                tableBody.removeClass('sortEndpointAsc');
+                appliedTestData.sort((a,b) => {
+                    return - a.endpoint.localeCompare(b.endpoint);
+                });
+            }
+            fillTestTable();
+        });
+
+        $('#tableRuleDetails').click(function() {
+            if($('#ruleTable').hasClass("show")) {
+                $('#ruleTable').removeClass("show");
+                $('#ruleTable').addClass("collapse");
+            } else {
+                $('#ruleTable').addClass("show");
+                $('#ruleTable').removeClass("collapse");
+            }
+        });
+
+        fillTestTable();
     });
 }
 
