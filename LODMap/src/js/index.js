@@ -531,17 +531,14 @@ function tripleNumberScatter() {
         " VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl)"; //+" DESC(?modifDate)";
     sparqlQueryJSON(triplesSPARQLquery, json => {
         var endpointDataSerieMap = new Map();
-        var xAxisDataSet = new Set();
         json.results.bindings.forEach((itemResult, i) => {
             var endpointUrl = itemResult.endpointUrl.value;
             //var graphModifiedDate = itemResult.modifDate.value;
-            var graph = itemResult.g.value;
 
             endpointDataSerieMap.set(endpointUrl, []);
-            xAxisDataSet.add(graph);
         });
         json.results.bindings.forEach((itemResult, i) => {
-            var graph = itemResult.g.value;
+            var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
             var endpointUrl = itemResult.endpointUrl.value;
             var triples = Number.parseInt(itemResult.o.value);
             //var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
@@ -596,14 +593,12 @@ function classNumberFill() {
         //var xAxisDataSet = new Set();
         json.results.bindings.forEach((itemResult, i) => {
             var endpointUrl = itemResult.endpointUrl.value;
-            var graphModifiedDate = itemResult.modifDate.value;
-            var graph = itemResult.g.value;
 
             endpointDataSerieMap.set(endpointUrl, []);
             //xAxisDataSet.add(graph);
         });
         json.results.bindings.forEach((itemResult, i) => {
-            var graph = itemResult.g.value;
+            var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
             var endpointUrl = itemResult.endpointUrl.value;
             var triples = Number.parseInt(itemResult.o.value);
             //var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
@@ -660,13 +655,11 @@ function propertyNumberFill() {
         var endpointDataSerieMap = new Map();
         json.results.bindings.forEach((itemResult, i) => {
             var endpointUrl = itemResult.endpointUrl.value;
-            //var graphModifiedDate = itemResult.modifDate.value;
-            var graph = itemResult.g.value;
 
             endpointDataSerieMap.set(endpointUrl, []);
         });
         json.results.bindings.forEach((itemResult, i) => {
-            var graph = itemResult.g.value;
+            var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
             var endpointUrl = itemResult.endpointUrl.value;
             var triples = Number.parseInt(itemResult.o.value);
             //var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
@@ -741,44 +734,40 @@ function categoryTestNumberFill() {
     //        var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
     //        var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
             var endpoint = itemResult.endpointUrl.value:
-            var graph = itemResult.g.value;
+            var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
 
-            if(graph != "http://ns.inria.fr/indegx") {
-                if(endpointDataSerieMap.get(category).get(graph) == undefined) {
-                    endpointDataSerieMap.get(category).set(graph, new Map());
-                }
-                endpointDataSerieMap.get(category).get( graph).set(endpoint, count);
+            if(endpointDataSerieMap.get(category).get(graph) == undefined) {
+                endpointDataSerieMap.get(category).set(graph, new Map());
             }
+            endpointDataSerieMap.get(category).get( graph).set(endpoint, count);
         });
 
         var triplesSeries = [];
         endpointDataSerieMap.forEach((gemap, category, map1) => {
             var dataCategory = [];
             gemap.forEach((endpointMap, graph, map2) => {
-                if(graph != "http://ns.inria.fr/indegx") {
-                    var totalEndpointGraph = 0;
-                    endpointMap.forEach((count, endpoint, map3) => {
-                        totalEndpointGraph = totalEndpointGraph + Number.parseInt(count);
-                    });
-                    var numberOfEndpoint = endpointMap.size;
-                    var avgEndpointGraph = precise(totalEndpointGraph / numberOfEndpoint);
-                    var percentageAvrEndpointCategory = avgEndpointGraph;
-                    if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/")) {
-                        percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 8);
-                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/")) {
-                        percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 4);
-                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/")) {
-                        percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 10);
-                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/")) {
-                        percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 23);
-                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/")) {
-                        percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 25);
-                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/")) {
-                        percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 20);
-                    }
-
-                    dataCategory.push([graph, percentageAvrEndpointCategory]);
+                var totalEndpointGraph = 0;
+                endpointMap.forEach((count, endpoint, map3) => {
+                    totalEndpointGraph = totalEndpointGraph + Number.parseInt(count);
+                });
+                var numberOfEndpoint = endpointMap.size;
+                var avgEndpointGraph = precise(totalEndpointGraph / numberOfEndpoint);
+                var percentageAvrEndpointCategory = avgEndpointGraph;
+                if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/")) {
+                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 8);
+                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/")) {
+                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 4);
+                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/")) {
+                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 10);
+                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/")) {
+                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 23);
+                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/")) {
+                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 25);
+                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/")) {
+                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 20);
                 }
+
+                dataCategory.push([graph, percentageAvrEndpointCategory]);
             });
 
             dataCategory.sort((a, b) => a[0].localeCompare(b[0]));
