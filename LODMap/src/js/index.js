@@ -98,7 +98,6 @@ function refresh() {
 
 function clear() {
     layerGroup.clearLayers();
-    //$('#vocabs').empty();
     sparql10Chart.setOption({series:[]}, true);
     sparql11Chart.setOption({series:[]}, true);
     sparqlTotalChart.setOption({series:[]}, true);
@@ -136,7 +135,6 @@ $( document ).ready(function() {
         const givenGraphSetIndex = urlParams.get(graphSetIndexParameter);
         if(givenGraphSetIndex >= 0 && givenGraphSetIndex < graphLists.length) {
             currentGraphSetIndex = givenGraphSetIndex;
-            changeGraphSetIndex(givenGraphSetIndex);
         }
     }
     var select = $('#endpoint-list-select');
@@ -147,10 +145,10 @@ $( document ).ready(function() {
         if(i == currentGraphSetIndex) {
             $(option).attr("selected","true")
             graphList = item.graphs;
-            refresh();
         }
         select.append(option);
     });
+    changeGraphSetIndex(currentGraphSetIndex);
     select.change(function() {
         $( "select option:selected" ).each(function() {
             var selectionIndex = $( this ).val();
