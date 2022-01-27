@@ -125,27 +125,46 @@ function generateGraphValuesURI( graphs) {
 
 var graphList = [];
 var graphValuesURIList = "";
-var select = $('#endpoint-list-select');
-graphLists.forEach((item, i) => {
-    var option = document.createElement('option');
-    $(option).text(item.name);
-    $(option).val(i);
-    if(i == 0) {
-        $(option).attr("selected","true")
-        graphList = item.graphs;
-        refresh();
+var currentGraphSetIndex = 0;
+const graphSetIndexParameter = "graphSetIndex";
+$( document ).ready(function() {
+    var url = new URL(window.location);
+    var urlParams = new URLSearchParams(url.search);
+    if(urlParams.has(graphSetIndexParameter) ) {
+        const givenGraphSetIndex = urlParams.get(graphSetIndexParameter);
+        if(givenGraphSetIndex >= 0 && givenGraphSetIndex < graphLists.length) {
+            currentGraphSetIndex = givenGraphSetIndex;
+            changeGraphSetIndex(givenGraphSetIndex);
+        }
     }
-    select.append(option);
+    var select = $('#endpoint-list-select');
+    graphLists.forEach((item, i) => {
+        var option = document.createElement('option');
+        $(option).text(item.name);
+        $(option).val(i);
+        if(i == currentGraphSetIndex) {
+            $(option).attr("selected","true")
+            graphList = item.graphs;
+            refresh();
+        }
+        select.append(option);
+    });
+    select.change(function() {
+        $( "select option:selected" ).each(function() {
+            var selectionIndex = $( this ).val();
+            changeGraphSetIndex(selectionIndex);
+        })
+    });
 });
 
-select.change(function() {
-    $( "select option:selected" ).each(function() {
-        var selectionIndex = $( this ).val();
-        graphList = graphLists[selectionIndex].graphs;
-    })
+function changeGraphSetIndex(index) {
+    urlParams = new URLSearchParams(window.location.search);
+    urlParams.delete(graphSetIndexParameter);
+    urlParams.append(graphSetIndexParameter, index);
+    history.pushState(null, null, '?'+urlParams.toString());
+    graphList = graphLists[index].graphs;
     refresh();
-});
-
+}
 
 function mapFill() {
     // Marked map with the geoloc of each endpoint
@@ -852,7 +871,6 @@ function testTableFill() {
         "VALUES ?g { "+ graphValuesURIList +" } " +
         "} GROUP BY ?endpointUrl ?rule ORDER BY DESC(?endpointUrl) ";
     sparqlQueryJSON(appliedTestQuery, json => {
-        console.log(json)
         var appliedTestMap = new Map();
         json.results.bindings.forEach((item, i) => {
             var endpointUrl = item.endpointUrl.value;
@@ -875,7 +893,6 @@ function testTableFill() {
         });
 
         function fillTestTable() {
-            console.log(appliedTestData);
             var tableBody = $('#rulesTableBody');
             tableBody.empty();
             appliedTestData.forEach((item, i) => {
@@ -903,7 +920,6 @@ function testTableFill() {
 
         var tableBody = $('#ruleTableBody');
         $('#rulesTableEndpointHeader').click(function() {
-            console.log("click")
             tableBody.empty();
             if(tableBody.hasClass('sortEndpointDesc')) {
                 tableBody.removeClass('sortEndpointDesc');
