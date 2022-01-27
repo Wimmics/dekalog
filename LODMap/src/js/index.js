@@ -66,7 +66,10 @@ function haveIntersection(setA, setB) {
 }
 
 // Set the precision of a float
-function precise(x) {
+function precise(x, n) {
+    if(n != undefined) {
+        return Number.parseFloat(x).toPrecision(n);
+    }
     return Number.parseFloat(x).toPrecision(2);
 }
 
@@ -404,19 +407,129 @@ function sparqlesHistoFill() {
         sparql10Chart.setOption(option10);
         sparql11Chart.setOption(option11);
         sparqlTotalChart.setOption(optionTotal);
+
+
+
+
+        jsonBaseFeatureSparqles.sort((a,b) => {
+            return a.endpoint.localeCompare(b.endpoint);
+        });
+
+        function fillTestTable() {
+            var tableBody = $('#SPARQLFeaturesTableBody');
+            tableBody.empty();
+            jsonBaseFeatureSparqles.forEach((item, i) => {
+                var endpoint = item.endpoint;
+                var sparql10 = precise(item.sparql10*100, 3);
+                var sparql11 = precise(item.sparql11*100, 3);
+                var endpointRow = $(document.createElement("tr"));
+                var endpointCell = $(document.createElement("td"));
+                var sparql10Cell = $(document.createElement("td"));
+                var sparql11Cell = $(document.createElement("td"));
+                endpointCell.text(endpoint);
+                sparql10Cell.text(sparql10+"%");
+                sparql11Cell.text(sparql11+"%");
+                endpointRow.append(endpointCell);
+                endpointRow.append(sparql10Cell);
+                endpointRow.append(sparql11Cell);
+                tableBody.append(endpointRow);
+            });
+        }
+
+        var tableBody = $('#SPARQLFeaturesTableBody');
+        $('#SPARQLFeaturesTableEndpointHeader').click(function() {
+            tableBody.empty();
+            if(tableBody.hasClass('sortEndpointDesc')) {
+                tableBody.removeClass('sortEndpointDesc');
+                tableBody.removeClass('sortSPARQL10Desc');
+                tableBody.removeClass('sortSPARQL11Desc');
+                tableBody.removeClass('sortSPARQL10Asc');
+                tableBody.removeClass('sortSPARQL11Asc');
+                tableBody.addClass('sortEndpointAsc');
+                jsonBaseFeatureSparqles.sort((a,b) => {
+                    return a.endpoint.localeCompare(b.endpoint);
+                });
+            } else {
+                tableBody.addClass('sortEndpointDesc');
+                tableBody.removeClass('sortEndpointAsc');
+                tableBody.removeClass('sortSPARQL10Desc');
+                tableBody.removeClass('sortSPARQL11Desc');
+                tableBody.removeClass('sortSPARQL10Asc');
+                tableBody.removeClass('sortSPARQL11Asc');
+                jsonBaseFeatureSparqles.sort((a,b) => {
+                    return - a.endpoint.localeCompare(b.endpoint);
+                });
+            }
+            fillTestTable();
+        });
+        $('#SPARQL10FeaturesTableRuleHeader').click(function() {
+            tableBody.empty();
+            if(tableBody.hasClass('sortSPARQL10Desc')) {
+                tableBody.removeClass('sortSPARQL10Desc');
+                tableBody.removeClass('sortSPARQL11Asc');
+                tableBody.removeClass('sortSPARQL11Desc');
+                tableBody.removeClass('sortEndpointDesc');
+                tableBody.removeClass('sortEndpointAsc');
+                tableBody.addClass('sortSPARQL10Asc');
+                jsonBaseFeatureSparqles.sort((a,b) => {
+                    return a.sparql10 - b.sparql10;
+                });
+            } else {
+                tableBody.addClass('sortSPARQL10Desc');
+                tableBody.removeClass('sortSPARQL10Asc');
+                tableBody.removeClass('sortSPARQL11Asc');
+                tableBody.removeClass('sortSPARQL11Desc');
+                tableBody.removeClass('sortEndpointDesc');
+                tableBody.removeClass('sortEndpointAsc');
+                jsonBaseFeatureSparqles.sort((a,b) => {
+                    return - a.sparql10 - b.sparql10;
+                });
+            }
+            fillTestTable();
+        });
+        $('#SPARQL11FeaturesTableRuleHeader').click(function() {
+            tableBody.empty();
+            if(tableBody.hasClass('sortSPARQL11Desc')) {
+                tableBody.removeClass('sortSPARQL11Desc');
+                tableBody.removeClass('sortSPARQL10Asc');
+                tableBody.removeClass('sortSPARQL10Desc');
+                tableBody.removeClass('sortEndpointDesc');
+                tableBody.removeClass('sortEndpointAsc');
+                tableBody.addClass('sortSPARQL11Asc');
+                jsonBaseFeatureSparqles.sort((a,b) => {
+                    return a.sparql11 - b.sparql11;
+                });
+            } else {
+                tableBody.addClass('sortSPARQL11Desc');
+                tableBody.removeClass('sortSPARQL11Asc');
+                tableBody.removeClass('sortSPARQL10Asc');
+                tableBody.removeClass('sortSPARQL10Desc');
+                tableBody.removeClass('sortEndpointDesc');
+                tableBody.removeClass('sortEndpointAsc');
+                jsonBaseFeatureSparqles.sort((a,b) => {
+                    return - a.sparql11 - b.sparql11;
+                });
+            }
+            fillTestTable();
+        });
+
+        fillTestTable();
+
+
+        jsonBaseFeatureSparqles
     });
 }
-
-
-$('#KnownVocabulariesDetails').click(function() {
-    if($('#knowVocabEndpointTable').hasClass("show")) {
-        $('#knowVocabEndpointTable').removeClass("show");
-        $('#knowVocabEndpointTable').addClass("collapse");
+$('#tableSPARQLFeaturesDetails').click(function() {
+    if($('#SPARQLFeaturesTable').hasClass("show")) {
+        $('#SPARQLFeaturesTable').removeClass("show");
+        $('#SPARQLFeaturesTable').addClass("collapse");
     } else {
-        $('#knowVocabEndpointTable').removeClass("collapse");
-        $('#knowVocabEndpointTable').addClass("show");
+        $('#SPARQLFeaturesTable').removeClass("collapse");
+        $('#SPARQLFeaturesTable').addClass("show");
     }
 })
+
+
 function vocabEndpointGraphFill() {
 // Create an force graph with the graph linked by co-ocurrence of vocabularies
     var sparqlesVocabularies = "SELECT DISTINCT ?endpoint ?vocabulary  WHERE { GRAPH ?g { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary }  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpoint";
@@ -566,6 +679,15 @@ function vocabEndpointGraphFill() {
         });
     });
 }
+$('#KnownVocabulariesDetails').click(function() {
+    if($('#knowVocabEndpointTable').hasClass("show")) {
+        $('#knowVocabEndpointTable').removeClass("show");
+        $('#knowVocabEndpointTable').addClass("collapse");
+    } else {
+        $('#knowVocabEndpointTable').removeClass("collapse");
+        $('#knowVocabEndpointTable').addClass("show");
+    }
+})
 
 function tripleNumberScatter() {
     // Scatter plot of the number of triples through time
