@@ -127,9 +127,11 @@ var graphList = [];
 var graphValuesURIList = "";
 var currentGraphSetIndex = 0;
 const graphSetIndexParameter = "graphSetIndex";
+var url = new URL(window.location);
+var urlParams = new URLSearchParams(url.search);
 $( document ).ready(function() {
     var url = new URL(window.location);
-    var urlParams = new URLSearchParams(url.search);
+    urlParams = new URLSearchParams(url.search);
     if(urlParams.has(graphSetIndexParameter) ) {
         const givenGraphSetIndex = urlParams.get(graphSetIndexParameter);
         if(givenGraphSetIndex >= 0 && givenGraphSetIndex < graphLists.length) {
