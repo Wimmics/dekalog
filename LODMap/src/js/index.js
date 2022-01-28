@@ -364,7 +364,11 @@ function sparqlesHistoFill() {
                 align: 'center',
                 textalign: 'center',
                 left: 'center',
-                text:"Coverage of SPARQL 1.0 features covered",
+                text:"Number of endpoints according to\n their coverage of SPARQL 1.0 features",
+                textStyle: {
+        		    overflow: 'break',
+                    width:"80%"
+                }
             },
             legend: {
                 data:[...categories],
@@ -387,10 +391,12 @@ function sparqlesHistoFill() {
         };
         var option11 = {
             title: {
-                align: 'center',
-                textalign: 'center',
                 left: 'center',
-                text:"Coverage of SPARQL 1.1 features covered",
+                text:"Number of endpoints according to\n their coverage of SPARQL 1.1 features",
+                textStyle: {
+        		    overflow: 'breakAll',
+                    width:"80%"
+                }
             },
             legend: {
                 data:[...categories],
