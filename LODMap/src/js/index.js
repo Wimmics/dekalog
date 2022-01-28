@@ -893,10 +893,12 @@ function categoryTestNumberFill() {
         "} GROUP BY ?g ?category ?endpointUrl";
     sparqlQueryJSON(testCategoryQuery, json => {
         var endpointDataSerieMap = new Map();
+        var categorySet = new Set();
         json.results.bindings.forEach((itemResult, i) => {
             var category = itemResult.category.value;
 
             endpointDataSerieMap.set(category, new Map());
+            categorySet.add(category.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/", "").replace("/", ""));
         });
         json.results.bindings.forEach((itemResult, i) => {
             var category = itemResult.category.value;
@@ -924,17 +926,17 @@ function categoryTestNumberFill() {
                 var avgEndpointGraph = precise(totalEndpointGraph / numberOfEndpoint);
                 var percentageAvrEndpointCategory = avgEndpointGraph;
                 if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/")) {
-                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 8);
+                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 8)*100);
                 } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/")) {
-                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 4);
+                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 4)*100);
                 } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/")) {
-                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 10);
+                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 10)*100);
                 } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/")) {
-                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 23);
+                    percentageAvrEndpointCategory = (precise(percentageAvrEndpointCategory / 23)*100);
                 } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/")) {
-                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 25);
+                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 25)*100);
                 } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/")) {
-                    percentageAvrEndpointCategory = precise(percentageAvrEndpointCategory / 20);
+                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 20)*100);
                 }
 
                 dataCategory.push([graph, percentageAvrEndpointCategory]);
@@ -946,7 +948,7 @@ function categoryTestNumberFill() {
                 label:'show',
                 symbolSize: 5,
                 data:dataCategory,
-                type: 'line'
+                type: 'bar'
             };
 
             triplesSeries.push(chartSerie);
@@ -956,12 +958,18 @@ function categoryTestNumberFill() {
         var optionTriples = {
             title: {
                 left: 'center',
-                text:"Number of tests passed by category",
+                text:"Proportion of tests passed by category",
             },
             xAxis: {
                 type:'category'
             },
-            yAxis: {},
+            legend: {
+                data:[...categorySet],
+                bottom:'bottom'
+            },
+            yAxis: {
+                max:100
+            },
             series: triplesSeries,
             tooltip:{
                 show:'true'
