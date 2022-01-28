@@ -169,6 +169,19 @@ function changeGraphSetIndex(index) {
     refresh();
 }
 
+function setButtonAsTableCollapse(buttonId, tableId) {
+    $('#'+buttonId).click(function() {
+        var table = $('#'+tableId);
+        if(table.hasClass("show")) {
+            table.removeClass("show");
+            table.addClass("collapse");
+        } else {
+            table.removeClass("collapse");
+            table.addClass("show");
+        }
+    });
+}
+
 function mapFill() {
     // Marked map with the geoloc of each endpoint
     endpointIpMap.forEach((item, i) => {
@@ -519,15 +532,7 @@ function sparqlesHistoFill() {
         jsonBaseFeatureSparqles
     });
 }
-$('#tableSPARQLFeaturesDetails').click(function() {
-    if($('#SPARQLFeaturesTable').hasClass("show")) {
-        $('#SPARQLFeaturesTable').removeClass("show");
-        $('#SPARQLFeaturesTable').addClass("collapse");
-    } else {
-        $('#SPARQLFeaturesTable').removeClass("collapse");
-        $('#SPARQLFeaturesTable').addClass("show");
-    }
-})
+setButtonAsTableCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
 
 
 function vocabEndpointGraphFill() {
@@ -679,15 +684,7 @@ function vocabEndpointGraphFill() {
         });
     });
 }
-$('#KnownVocabulariesDetails').click(function() {
-    if($('#knowVocabEndpointTable').hasClass("show")) {
-        $('#knowVocabEndpointTable').removeClass("show");
-        $('#knowVocabEndpointTable').addClass("collapse");
-    } else {
-        $('#knowVocabEndpointTable').removeClass("collapse");
-        $('#knowVocabEndpointTable').addClass("show");
-    }
-})
+setButtonAsTableCollapse('KnownVocabulariesDetails', 'knowVocabEndpointTable');
 
 function tripleNumberScatter() {
     // Scatter plot of the number of triples through time
@@ -979,17 +976,7 @@ function categoryTestNumberFill() {
     });
 }
 
-
-$('#tableRuleDetails').click(function() {
-    var table = $('#rulesTable');
-    if(table.hasClass("show")) {
-        table.removeClass("show");
-        table.addClass("collapse");
-    } else {
-        table.removeClass("collapse");
-        table.addClass("show");
-    }
-});
+setButtonAsTableCollapse('tableRuleDetails', 'rulesTable');
 function testTableFill() {
 
     var appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?rule { " +
