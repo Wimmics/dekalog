@@ -95,7 +95,8 @@ function refresh() {
     categoryTestNumberFill();
     testTableFill();
     runtimeStatsFill();
-    averageRuntimeStatsFill()
+    averageRuntimeStatsFill();
+    classAndPropertiesGraphFill();
 }
 
 function clear() {
@@ -1148,3 +1149,362 @@ function averageRuntimeStatsFill() {
         });
     });
 }
+
+function classAndPropertiesGraphFill() {
+    var classPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+            "?base <http://rdfs.org/ns/void#classPartition> ?classPartition . " +
+            "?classPartition <http://rdfs.org/ns/void#class> ?c . " +
+            "OPTIONAL { "+
+            "?classPartition <http://rdfs.org/ns/void#triples> ?ct . "+
+            "} " +
+            "OPTIONAL { "+
+            "?classPartition <http://rdfs.org/ns/void#classes> ?cc . "+
+            "} " +
+            "OPTIONAL { "+
+            "?classPartition <http://rdfs.org/ns/void#properties> ?cp . "+
+            "} " +
+            "OPTIONAL { "+
+            "?classPartition <http://rdfs.org/ns/void#distinctSubjects> ?cs . "+
+            "} " +
+            "OPTIONAL { "+
+            "?classPartition <http://rdfs.org/ns/void#distinctObjects> ?co . "+
+            "} " +
+            "FILTER(! isBlank(?c)) " +
+            "}" +
+            "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co ";
+    sparqlQueryJSON(classPartitionQuery, json => {
+        var classCountsEndpointsMap = new Map();
+        json.results.bindings.forEach((item, i) => {
+            var c = item.c.value;
+            var endpointUrl = item.endpointUrl.value;
+
+            if(classCountsEndpointsMap.get(c) == undefined) {
+                classCountsEndpointsMap.set(c, {class:c});
+            }
+            if(item.ct != undefined) {
+                var ct = Number.parseInt(item.ct.value);
+                var currentClassItem = classCountsEndpointsMap.get(c);
+                if(classCountsEndpointsMap.get(c).triples == undefined) {
+                    currentClassItem.triples = 0;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                currentClassItem.triples = currentClassItem.triples + ct;
+                classCountsEndpointsMap.set(c, currentClassItem);
+            }
+            if(item.cc != undefined) {
+                var cc = Number.parseInt(item.cc.value);
+                var currentClassItem = classCountsEndpointsMap.get(c);
+                if(classCountsEndpointsMap.get(c).classes == undefined) {
+                    currentClassItem.classes = 0;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                currentClassItem.classes = currentClassItem.classes + cc;
+                classCountsEndpointsMap.set(c, currentClassItem);
+            }
+            if(item.cp != undefined) {
+                var cp = Number.parseInt(item.cp.value);
+                var currentClassItem = classCountsEndpointsMap.get(c);
+                if(classCountsEndpointsMap.get(c).properties == undefined) {
+                    currentClassItem.properties = 0;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                currentClassItem.properties = currentClassItem.properties + cp;
+                classCountsEndpointsMap.set(c, currentClassItem);
+            }
+            if(item.cs != undefined) {
+                var cs = Number.parseInt(item.cs.value);
+                var currentClassItem = classCountsEndpointsMap.get(c);
+                if(classCountsEndpointsMap.get(c).distinctSubjects == undefined) {
+                    currentClassItem.distinctSubjects = 0;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + cs;
+                classCountsEndpointsMap.set(c, currentClassItem);
+            }
+            if(item.co != undefined) {
+                var co = Number.parseInt(item.co.value);
+                var currentClassItem = classCountsEndpointsMap.get(c);
+                if(classCountsEndpointsMap.get(c).distinctObjects == undefined) {
+                    currentClassItem.distinctObjects = 0;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                currentClassItem.distinctObjects = currentClassItem.distinctObjects + co;
+                classCountsEndpointsMap.set(c, currentClassItem);
+            }
+            if(classCountsEndpointsMap.get(c).endpoints == undefined) {
+                var currentClassItem = classCountsEndpointsMap.get(c);
+                currentClassItem.endpoints = new Set();
+                classCountsEndpointsMap.set(c, currentClassItem);
+            }
+            classCountsEndpointsMap.get(c).endpoints.add(endpointUrl);
+        });
+
+        var classDescriptionData = [];
+        classCountsEndpointsMap.forEach((countsItem, classKey, map) => {
+            classDescriptionData.push(countsItem);
+        });
+        classDescriptionData.sort((a,b) => a.class.localeCompare(b.class));
+        $('#classDescriptionTableClassHeader').click(() => {
+            classDescriptionData.sort((a,b) => a.class.localeCompare(b.class));
+            fillclassDescriptionTable();
+        });
+        $('#classDescriptionTableTriplesHeader').click(() => {
+            classDescriptionData.sort((a,b) => b.triples - a.triples);
+            fillclassDescriptionTable();
+        });
+        $('#classDescriptionTableClassesHeader').click(() => {
+            classDescriptionData.sort((a,b) => b.classes - a.classes);
+            fillclassDescriptionTable();
+        });
+        $('#classDescriptionTablePropertiesHeader').click(() => {
+            classDescriptionData.sort((a,b) => b.properties - a.properties);
+            fillclassDescriptionTable();
+        });
+        $('#classDescriptionTableDistinctSubjectsHeader').click(() => {
+            classDescriptionData.sort((a,b) => b.distinctSubjects - a.distinctSubjects);
+            fillclassDescriptionTable();
+        });
+        $('#classDescriptionTableDistinctObjectsHeader').click(() => {
+            classDescriptionData.sort((a,b) => b.distinctObjects - a.distinctObjects);
+            fillclassDescriptionTable();
+        });
+
+        function fillclassDescriptionTable() {
+            console.log(classDescriptionData)
+            var tableBody = $("#classDescriptionTableBody");
+            tableBody.empty();
+            classDescriptionData.forEach((countsItem, i) => {
+                var classRow = $(document.createElement("tr"))
+                var classCell = $(document.createElement("td"))
+                var classTriplesCell = $(document.createElement("td"))
+                var classClassesCell = $(document.createElement("td"))
+                var classPropertiesCell = $(document.createElement("td"))
+                var classDistinctSubjectsCell = $(document.createElement("td"))
+                var classDistinctObjectsCell = $(document.createElement("td"))
+
+                classCell.text(countsItem.class);
+                classTriplesCell.text(countsItem.triples);
+                classClassesCell.text(countsItem.classes);
+                classPropertiesCell.text(countsItem.properties);
+                classDistinctSubjectsCell.text(countsItem.distinctSubjects);
+                classDistinctObjectsCell.text(countsItem.distinctObjects);
+
+                classRow.append(classCell);
+                classRow.append(classTriplesCell);
+                classRow.append(classClassesCell);
+                classRow.append(classPropertiesCell);
+                classRow.append(classDistinctSubjectsCell);
+                classRow.append(classDistinctObjectsCell);
+                tableBody.append(classRow);
+            });
+        }
+        fillclassDescriptionTable()
+
+
+        // TBD
+    });
+
+    var classPropertyPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?p ?pt ?po ?ps { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+            "?base <http://rdfs.org/ns/void#classPartition> ?classPartition . " +
+            "?classPartition <http://rdfs.org/ns/void#class> ?c . " +
+            "?classPartition <http://rdfs.org/ns/void#propertyPartition> ?classPropertyPartition . " +
+            "?classPropertyPartition <http://rdfs.org/ns/void#property> ?p . " +
+            "OPTIONAL { "+
+            "?classPropertyPartition <http://rdfs.org/ns/void#triples> ?pt . "+
+            "} " +
+            "OPTIONAL { "+
+            "?classPropertyPartition <http://rdfs.org/ns/void#distinctSubjects> ?ps . "+
+            "} " +
+            "OPTIONAL { "+
+            "?classPropertyPartition <http://rdfs.org/ns/void#distinctObjects> ?po . "+
+            "} " +
+            "}" +
+            "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?c ?p ?pt ?po ?ps ";
+    sparqlQueryJSON(classPropertyPartitionQuery, json => {
+        console.log(json); // TBD
+    });
+}
+setButtonAsTableCollapse('classDescriptionDetails', 'classDescriptionTable');
+
+function descriptionElementFill() {
+    var provenanceWhoCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { "+
+        "GRAPH ?g { " +
+        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
+        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "OPTIONAL {" +
+        "{ ?dataset <http://purl.org/dc/terms/creator> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/contributor> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/publisher> ?o } " +
+        "} " +
+        "} " +
+        "VALUES ?g { "+ graphValuesURIList +" } " +
+        "} ";
+    var provenanceLicenseCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { "+
+        "GRAPH ?g { " +
+        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
+        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "OPTIONAL {" +
+        "{ ?dataset <http://purl.org/dc/terms/license> ?o } " +
+        "UNION {?dataset <http://purl.org/dc/terms/conformsTo> ?o } " +
+        "} " +
+        "} " +
+        "VALUES ?g { "+ graphValuesURIList +" } " +
+        "} ";
+    var provenanceDateCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { "+
+        "GRAPH ?g { " +
+        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
+        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "OPTIONAL {" +
+        " { ?dataset <http://purl.org/dc/terms/modified> ?o } " +
+        "UNION { ?dataset <http://www.w3.org/ns/prov#wasGeneratedAtTime> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/issued> ?o } " +
+        "{ ?dataset <http://purl.org/dc/terms/source> ?o } " +
+        "UNION { ?dataset <http://www.w3.org/ns/prov#wasDerivedFrom> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/format> ?o } " +
+        "} " +
+        "} " +
+        "VALUES ?g { "+ graphValuesURIList +" } " +
+        "} ";
+    var provenanceSourceCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { "+
+        "GRAPH ?g { " +
+        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
+        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "OPTIONAL {" +
+        " { ?dataset <http://purl.org/dc/terms/modified> ?o } " +
+        "UNION { ?dataset <http://www.w3.org/ns/prov#wasGeneratedAtTime> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/issued> ?o } " +
+        "{ ?dataset <http://purl.org/dc/terms/source> ?o } " +
+        "UNION { ?dataset <http://www.w3.org/ns/prov#wasDerivedFrom> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/format> ?o } " +
+        "} " +
+        "} " +
+        "VALUES ?g { "+ graphValuesURIList +" } " +
+        "} ";
+    var endpointDescriptionElementMap = new Map();
+    sparqlQueryJSON(provenanceWhoCheckQuery, json => {
+        json.results.bindings.forEach((item, i) => {
+            var endpointUrl = item.endpointUrl.value;
+            var who = (item.o != undefined);
+            var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+            if(currentEndpointItem == undefined) {
+                endpointDescriptionElementMap.set(endpointUrl, {endpoint:endpointUrl})
+                currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl);
+            }
+            currentEndpointItem.who = who;
+            if(who) {
+                currentEndpointItem.whoValue = item.o.value;
+            }
+            endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+        });
+        sparqlQueryJSON(provenanceLicenseCheckQuery, json => {
+            json.results.bindings.forEach((item, i) => {
+                var endpointUrl = item.endpointUrl.value;
+                var license = (item.o != undefined);
+                var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                currentEndpointItem.license = license;
+                if(license) {
+                    currentEndpointItem.licenseValue = item.o.value;
+                }
+                endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+            });
+            sparqlQueryJSON(provenanceDateCheckQuery, json => {
+                json.results.bindings.forEach((item, i) => {
+                    var endpointUrl = item.endpointUrl.value;
+                    var time = (item.o != undefined);
+                    var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                    currentEndpointItem.time = time;
+                    if(time) {
+                        currentEndpointItem.timeValue = item.o.value;
+                    }
+                    endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+                });
+                sparqlQueryJSON(provenanceSourceCheckQuery, json => {
+                    json.results.bindings.forEach((item, i) => {
+                        var endpointUrl = item.endpointUrl.value;
+                        var source = (item.o != undefined);
+                        var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                        currentEndpointItem.source = source;
+                        if(source) {
+                            currentEndpointItem.sourceValue = item.o.value;
+                        }
+                        endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+                    });
+
+                    var data = [];
+                    endpointDescriptionElementMap.forEach((prov, endpoint, map) => {
+                        data.push(prov)
+                    });
+
+                    data.sort((a,b) => {
+                        return a.endpoint.localeCompare(b.endpoint);
+                    });
+
+                    function fillTestTable() {
+                        var tableBody = $('#datasetDescriptionTableBody');
+                        tableBody.empty();
+                        data.forEach((item, i) => {
+                            var endpoint = item.endpoint;
+                            var who = item.who;
+                            var license = item.license;
+                            var time = item.time;
+                            var source = item.source;
+                            var endpointRow = $(document.createElement("tr"));
+                            var endpointCell = $(document.createElement("td"));
+                            endpointCell.text(endpoint);
+                            var whoCell = $(document.createElement("td"));
+                            whoCell.text(who);
+                            var licenseCell = $(document.createElement("td"));
+                            licenseCell.text(license);
+                            var timeCell = $(document.createElement("td"));
+                            timeCell.text(time);
+                            var sourceCell = $(document.createElement("td"));
+                            sourceCell.text(source);
+                            endpointRow.append(endpointCell);
+                            endpointRow.append(whoCell);
+                            endpointRow.append(licenseCell);
+                            endpointRow.append(timeCell);
+                            endpointRow.append(sourceCell);
+                            tableBody.append(endpointRow);
+                        });
+                    }
+
+                    var tableBody = $('#datasetDescriptionTableBody');
+                    $('#datasetDescriptionTableEndpointHeader').click(function() {
+                        tableBody.empty();
+                        if(tableBody.hasClass('sortEndpointDesc')) {
+                            tableBody.removeClass('sortEndpointDesc');
+                            tableBody.addClass('sortEndpointAsc');
+                            data.sort((a,b) => {
+                                return a.endpoint.localeCompare(b.endpoint);
+                            });
+                        } else {
+                            tableBody.addClass('sortEndpointDesc');
+                            tableBody.removeClass('sortEndpointAsc');
+                            data.sort((a,b) => {
+                                return - a.endpoint.localeCompare(b.endpoint);
+                            });
+                        }
+                        fillTestTable();
+                    });
+
+                    fillTestTable();
+                });
+            });
+        });
+    });
+}
+setButtonAsTableCollapse('datasetDescriptionStatDetails', 'datasetDescriptionTable');
