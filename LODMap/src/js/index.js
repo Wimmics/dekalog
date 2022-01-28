@@ -22,7 +22,6 @@ var layerGroup = L.layerGroup().addTo(map);
 // Initialization of the ECharts components
 var sparql10Chart = echarts.init(document.getElementById('histo1'));
 var sparql11Chart = echarts.init(document.getElementById('histo2'));
-var sparqlTotalChart = echarts.init(document.getElementById('histo3'));
 var tripleScatterChart = echarts.init(document.getElementById('tripleScatter'));
 var classScatterChart = echarts.init(document.getElementById('classScatter'));
 var propertyScatterChart = echarts.init(document.getElementById('propertyScatter'));
@@ -103,7 +102,6 @@ function clear() {
     layerGroup.clearLayers();
     sparql10Chart.setOption({series:[]}, true);
     sparql11Chart.setOption({series:[]}, true);
-    sparqlTotalChart.setOption({series:[]}, true);
     tripleScatterChart.setOption({series:[]}, true);
     classScatterChart.setOption({series:[]}, true);
     propertyScatterChart.setOption({series:[]}, true);
@@ -303,60 +301,100 @@ function sparqlesHistoFill() {
             }
         });
 
-        var chart10Data = [];
-        var chart11Data = [];
-        var chartSPARQLData = [];
+        var chart10DataMap = new Map();
+        var chart11DataMap = new Map();
+        var chartSPARQLDataMap = new Map();
+        var categorySet = new Set();
         chart10ValueMap.forEach((value, key, map) => {
-            chart10Data.push({'value':value, 'name':"[ " + ((key-1)*10).toString() + "%, "+ (key*10).toString() + " % ]" })
+            var categoryName = "[ " + ((key-1)*10).toString() + "%, "+ (key*10).toString() + " % ]";
+            categorySet.add(categoryName);
+            chart10DataMap.set(categoryName, value);
         });
         chart11ValueMap.forEach((value, key, map) => {
-            chart11Data.push({'value':value, 'name':"[ " + ((key-1)*10).toString() + "%, "+ (key*10).toString() + " % ]" })
+            var categoryName = "[ " + ((key-1)*10).toString() + "%, "+ (key*10).toString() + " % ]";
+            categorySet.add(categoryName);
+            chart11DataMap.set(categoryName, value);
         });
         chartSPARQLValueMap.forEach((value, key, map) => {
-            chartSPARQLData.push({'value':value, 'name':"[ " + ((key-1)*10).toString() + "%, "+ (key*10).toString() + " % ]" })
+            var categoryName = "[ " + ((key-1)*10).toString() + "%, "+ (key*10).toString() + " % ]";
+            categorySet.add(categoryName);
+            chartSPARQLDataMap.set(categoryName, value);
         });
+        var categories = ([...categorySet]).sort((a,b) => a.localeCompare(b));
+        var sparql10seriesMap = new Map();
+        var sparql11seriesMap = new Map();
+        categories.forEach((category, i) => {
+           if(sparql10seriesMap.get(category) == undefined) {
+               sparql10seriesMap.set(category, []);
+           }
+           sparql10seriesMap.get(category).push(chart10DataMap.get(category));
+
+          if(sparql11seriesMap.get(category) == undefined) {
+              sparql11seriesMap.set(category, []);
+          }
+          sparql11seriesMap.get(category).push(chart11DataMap.get(category));
+        });
+
+        var sparql10Series = [];
+        var sparql11Series = [];
+        sparql10seriesMap.forEach((serie, category, map) => {
+            sparql10Series.push({
+                name: category,
+                type: 'bar',
+                data: serie,
+                label: {
+                    show:false
+                }
+            },)
+        });
+        sparql11seriesMap.forEach((serie, category, map) => {
+            sparql11Series.push({
+                name: category,
+                type: 'bar',
+                data: serie,
+                label: {
+                    show:false
+                }
+            },)
+        });
+
 
         var option10 = {
             title: {
+                align: 'center',
+                textalign: 'center',
                 left: 'center',
-                text:"Coverage of the SPARQL 1.0 features",
+                text:"Coverage of SPARQL 1.0 features covered",
             },
             legend: {
+                data:[...categories],
                 show: true,
                 top: 'bottom'
             },
             toolbox: {
                 show: false
             },
-            color: ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6","#ee9b00","#ca6702","#bb3e03","#ae2012","#9b2226"],
             tooltip: {
                 show:true
             },
-            series: [
-                {
-                    name: 'SPARQL 1.0 coverage',
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    center: ['50%', '50%'],
-                    //roseType: 'area',
-                    itemStyle: {
-                        borderRadius: 5
-                    },
-                    data: chart10Data,
-                    label: {
-                        show:false
-                    }
-                }
-            ]
+            xAxis: {
+                type:'category'
+            },
+            yAxis: {
+            },
+            color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
+            series:sparql10Series ,
         };
         var option11 = {
             title: {
                 align: 'center',
                 textalign: 'center',
                 left: 'center',
-                text:"Coverage of the SPARQL 1.1 features",
+                text:"Coverage of SPARQL 1.1 features covered",
             },
             legend: {
+                data:[...categories],
+                show: true,
                 top: 'bottom'
             },
             toolbox: {
@@ -365,61 +403,16 @@ function sparqlesHistoFill() {
             tooltip: {
                 show:true
             },
-            color: ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6","#ee9b00","#ca6702","#bb3e03","#ae2012","#9b2226"],
-            series: [
-                {
-                    name: 'SPARQL 1.1 coverage',
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    center: ['50%', '50%'],
-                    //roseType: 'area',
-                    itemStyle: {
-                        borderRadius: 8
-                    },
-                    data: chart11Data,
-                    label: {
-                        show:false
-                    }
-                }
-            ],
-        };
-        var optionTotal = {
-            title: {
-                align: 'center',
-                textalign: 'center',
-                left: 'center',
-                text:"Coverage of SPARQL features",
+            xAxis: {
+                type:'category'
             },
-            legend: {
-                top: 'bottom'
+            yAxis: {
             },
-            toolbox: {
-                show: false
-            },
-            tooltip: {
-                show:true
-            },
-            color: ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6","#ee9b00","#ca6702","#bb3e03","#ae2012","#9b2226"],
-            series: [
-                {
-                    name: 'Total SPARQL coverage',
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    center: ['50%', '50%'],
-                    //roseType: 'area',
-                    itemStyle: {
-                        borderRadius: 8
-                    },
-                    data: chartSPARQLData,
-                    label: {
-                        show:false
-                    }
-                }
-            ],
+            color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
+            series:sparql11Series ,
         };
         sparql10Chart.setOption(option10);
         sparql11Chart.setOption(option11);
-        sparqlTotalChart.setOption(optionTotal);
 
 
 
