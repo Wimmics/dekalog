@@ -29,6 +29,8 @@ var categoryScatterChart = echarts.init(document.getElementById('testCategorySca
 var totalRuntimeChart = echarts.init(document.getElementById('totalRuntimeScatter'));
 var averageRuntimeChart = echarts.init(document.getElementById('averageRuntimeScatter'));
 var vocabForceGraph = echarts.init(document.getElementById('vocabs'));
+var shortUriChart = echarts.init(document.getElementById('shortUrisScatter'));
+var rdfDataStructureChart = echarts.init(document.getElementById('rdfDataStructuresScatter'));
 
 function sparqlQueryJSON(query, callback, errorCallback) {
     xmlhttpRequestJSON('http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", callback, errorCallback);
@@ -97,6 +99,9 @@ function refresh() {
     runtimeStatsFill();
     averageRuntimeStatsFill();
     classAndPropertiesGraphFill();
+    descriptionElementFill();
+    shortUrisFill();
+    rdfDataStructuresFill();
 }
 
 function clear() {
@@ -109,11 +114,14 @@ function clear() {
     categoryScatterChart.setOption({series:[]}, true);
     totalRuntimeChart.setOption({series:[]}, true);
     vocabForceGraph.setOption({series:[]}, true);
+    shortUriChart.setOption({series:[]}, true);
+    rdfDataStructureChart.setOption({series:[]}, true);
     $('#shortUrisMeasure').empty();
-    $('#RDFdataStructuresMeasure').empty();
+    $('#rdfDataStructureMeasure').empty();
     $('#KnownVocabulariesMeasure').empty();
     $('#endpointKnownVocabsTableBody').empty();
     $('#rulesTableBody').empty();
+    $('#datasetDescriptionTableBody').empty();
 }
 
 function generateGraphValuesURI( graphs) {
@@ -454,10 +462,6 @@ function sparqlesHistoFill() {
             tableBody.empty();
             if(tableBody.hasClass('sortEndpointDesc')) {
                 tableBody.removeClass('sortEndpointDesc');
-                tableBody.removeClass('sortSPARQL10Desc');
-                tableBody.removeClass('sortSPARQL11Desc');
-                tableBody.removeClass('sortSPARQL10Asc');
-                tableBody.removeClass('sortSPARQL11Asc');
                 tableBody.addClass('sortEndpointAsc');
                 jsonBaseFeatureSparqles.sort((a,b) => {
                     return a.endpoint.localeCompare(b.endpoint);
@@ -465,10 +469,6 @@ function sparqlesHistoFill() {
             } else {
                 tableBody.addClass('sortEndpointDesc');
                 tableBody.removeClass('sortEndpointAsc');
-                tableBody.removeClass('sortSPARQL10Desc');
-                tableBody.removeClass('sortSPARQL11Desc');
-                tableBody.removeClass('sortSPARQL10Asc');
-                tableBody.removeClass('sortSPARQL11Asc');
                 jsonBaseFeatureSparqles.sort((a,b) => {
                     return - a.endpoint.localeCompare(b.endpoint);
                 });
@@ -479,10 +479,6 @@ function sparqlesHistoFill() {
             tableBody.empty();
             if(tableBody.hasClass('sortSPARQL10Desc')) {
                 tableBody.removeClass('sortSPARQL10Desc');
-                tableBody.removeClass('sortSPARQL11Asc');
-                tableBody.removeClass('sortSPARQL11Desc');
-                tableBody.removeClass('sortEndpointDesc');
-                tableBody.removeClass('sortEndpointAsc');
                 tableBody.addClass('sortSPARQL10Asc');
                 jsonBaseFeatureSparqles.sort((a,b) => {
                     return a.sparql10 - b.sparql10;
@@ -490,10 +486,6 @@ function sparqlesHistoFill() {
             } else {
                 tableBody.addClass('sortSPARQL10Desc');
                 tableBody.removeClass('sortSPARQL10Asc');
-                tableBody.removeClass('sortSPARQL11Asc');
-                tableBody.removeClass('sortSPARQL11Desc');
-                tableBody.removeClass('sortEndpointDesc');
-                tableBody.removeClass('sortEndpointAsc');
                 jsonBaseFeatureSparqles.sort((a,b) => {
                     return - a.sparql10 - b.sparql10;
                 });
@@ -504,10 +496,6 @@ function sparqlesHistoFill() {
             tableBody.empty();
             if(tableBody.hasClass('sortSPARQL11Desc')) {
                 tableBody.removeClass('sortSPARQL11Desc');
-                tableBody.removeClass('sortSPARQL10Asc');
-                tableBody.removeClass('sortSPARQL10Desc');
-                tableBody.removeClass('sortEndpointDesc');
-                tableBody.removeClass('sortEndpointAsc');
                 tableBody.addClass('sortSPARQL11Asc');
                 jsonBaseFeatureSparqles.sort((a,b) => {
                     return a.sparql11 - b.sparql11;
@@ -515,10 +503,6 @@ function sparqlesHistoFill() {
             } else {
                 tableBody.addClass('sortSPARQL11Desc');
                 tableBody.removeClass('sortSPARQL11Asc');
-                tableBody.removeClass('sortSPARQL10Asc');
-                tableBody.removeClass('sortSPARQL10Desc');
-                tableBody.removeClass('sortEndpointDesc');
-                tableBody.removeClass('sortEndpointAsc');
                 jsonBaseFeatureSparqles.sort((a,b) => {
                     return - a.sparql11 - b.sparql11;
                 });
@@ -813,11 +797,9 @@ function propertyNumberFill() {
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
-        //"?metadata <http://purl.org/dc/terms/modified> ?modifDate . " +
         "?base <http://rdfs.org/ns/void#properties> ?o ." +
         "}" +
-        "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";// +
-        //"DESC(?modifDate)";
+        "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";
     sparqlQueryJSON(propertiesSPARQLquery, json => {
         var endpointDataSerieMap = new Map();
         json.results.bindings.forEach((itemResult, i) => {
@@ -947,10 +929,11 @@ function categoryTestNumberFill() {
                 data:dataCategory,
                 type: 'bar'
             };
-
             triplesSeries.push(chartSerie);
         });
 
+        var categoriesArray = [...categorySet].sort((a, b) => a.localeCompare(b));
+        triplesSeries.sort((a, b) => a.name.localeCompare(b.name))
 
         var optionTriples = {
             title: {
@@ -961,7 +944,7 @@ function categoryTestNumberFill() {
                 type:'category'
             },
             legend: {
-                data:[...categorySet],
+                data:categoriesArray,
                 bottom:'bottom'
             },
             yAxis: {
@@ -1271,9 +1254,11 @@ function classAndPropertiesGraphFill() {
             classDescriptionData.sort((a,b) => b.distinctObjects - a.distinctObjects);
             fillclassDescriptionTable();
         });
-
+        $('#classDescriptionTableEndpointsHeader').click(() => {
+            classDescriptionData.sort((a,b) => b.endpoints.size - a.endpoints.size );
+            fillclassDescriptionTable();
+        });
         function fillclassDescriptionTable() {
-            console.log(classDescriptionData)
             var tableBody = $("#classDescriptionTableBody");
             tableBody.empty();
             classDescriptionData.forEach((countsItem, i) => {
@@ -1284,6 +1269,7 @@ function classAndPropertiesGraphFill() {
                 var classPropertiesCell = $(document.createElement("td"))
                 var classDistinctSubjectsCell = $(document.createElement("td"))
                 var classDistinctObjectsCell = $(document.createElement("td"))
+                var endpointsCell = $(document.createElement("td"))
 
                 classCell.text(countsItem.class);
                 classTriplesCell.text(countsItem.triples);
@@ -1291,6 +1277,7 @@ function classAndPropertiesGraphFill() {
                 classPropertiesCell.text(countsItem.properties);
                 classDistinctSubjectsCell.text(countsItem.distinctSubjects);
                 classDistinctObjectsCell.text(countsItem.distinctObjects);
+                endpointsCell.text(countsItem.endpoints.size);
 
                 classRow.append(classCell);
                 classRow.append(classTriplesCell);
@@ -1298,13 +1285,13 @@ function classAndPropertiesGraphFill() {
                 classRow.append(classPropertiesCell);
                 classRow.append(classDistinctSubjectsCell);
                 classRow.append(classDistinctObjectsCell);
+                classRow.append(endpointsCell);
                 tableBody.append(classRow);
             });
         }
         fillclassDescriptionTable()
 
 
-        // TBD
     });
 
     var classPropertyPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?p ?pt ?po ?ps { " +
@@ -1327,10 +1314,118 @@ function classAndPropertiesGraphFill() {
             "}" +
             "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?c ?p ?pt ?po ?ps ";
     sparqlQueryJSON(classPropertyPartitionQuery, json => {
-        console.log(json); // TBD
+
+        var classPropertyCountsEndpointsMap = new Map();
+        json.results.bindings.forEach((item, i) => {
+            var c = item.c.value;
+            var p = item.p.value;
+            var mapKey = c+p;
+            var endpointUrl = item.endpointUrl.value;
+
+            if(classPropertyCountsEndpointsMap.get(mapKey) == undefined) {
+                classPropertyCountsEndpointsMap.set(mapKey, {class:c, property:p});
+            }
+            if(item.pt != undefined) {
+                var pt = Number.parseInt(item.pt.value);
+                var currentClassItem = classCountsEndpointsMap.get(mapKey);
+                if(classPropertyCountsEndpointsMap.get(mapKey).triples == undefined) {
+                    currentClassItem.triples = 0;
+                    classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                }
+                currentClassItem.triples = currentClassItem.triples + pt;
+                classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+            }
+            if(item.ps != undefined) {
+                var ps = Number.parseInt(item.ps.value);
+                var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
+                if(classPropertyCountsEndpointsMap.get(mapKey).distinctSubjects == undefined) {
+                    currentClassItem.distinctSubjects = 0;
+                    classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                }
+                currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + ps;
+                classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+            }
+            if(item.po != undefined) {
+                var po = Number.parseInt(item.po.value);
+                var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
+                if(classPropertyCountsEndpointsMap.get(mapKey).distinctObjects == undefined) {
+                    currentClassItem.distinctObjects = 0;
+                    classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                }
+                currentClassItem.distinctObjects = currentClassItem.distinctObjects + po;
+                classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+            }
+            if(classPropertyCountsEndpointsMap.get(mapKey).endpoints == undefined) {
+                var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
+                currentClassItem.endpoints = new Set();
+                classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+            }
+            classPropertyCountsEndpointsMap.get(mapKey).endpoints.add(endpointUrl);
+        });
+
+        var classDescriptionData = [];
+        classPropertyCountsEndpointsMap.forEach((countsItem, classKey, map) => {
+            classDescriptionData.push(countsItem);
+        });
+        classDescriptionData.sort((a,b) => a.class.localeCompare(b.class));
+        $('#classPropertiesDescriptionTableClassHeader').click(() => {
+            classDescriptionData.sort((a,b) => a.class.localeCompare(b.class));
+            fillClassPropertiesDescriptionTable();
+        });
+        $('#classPropertiesDescriptionTablePropertyHeader').click(() => {
+            classDescriptionData.sort((a,b) => b.property.localeCompare(a.property));
+            fillClassPropertiesDescriptionTable();
+        });
+        $('#classPropertiesDescriptionTableTriplesHeader').click(() => {
+            classDescriptionData.sort((a,b) => b.triples - a.triples);
+            fillClassPropertiesDescriptionTable();
+        });
+        $('#classPropertiesDescriptionTableDistinctSubjectsHeader').click(() => {
+            classDescriptionData.sort((a,b) => b.distinctSubjects - a.distinctSubjects);
+            fillClassPropertiesDescriptionTable();
+        });
+        $('#classPropertiesDescriptionTableDistinctObjectsHeader').click(() => {
+            classDescriptionData.sort((a,b) => b.distinctObjects - a.distinctObjects);
+            fillClassPropertiesDescriptionTable();
+        });
+        $('#classPropertiesDescriptionTableEndpointsHeader').click(() => {
+            classDescriptionData.sort((a,b) => b.endpoints.size - a.endpoints.size );
+            fillClassPropertiesDescriptionTable();
+        });
+
+        function fillClassPropertiesDescriptionTable() {
+            var tableBody = $("#classPropertiesDescriptionTableBody");
+            tableBody.empty();
+            classDescriptionData.forEach((countsItem, i) => {
+                var classRow = $(document.createElement("tr"))
+                var classCell = $(document.createElement("td"))
+                var classTriplesCell = $(document.createElement("td"))
+                var classPropertyCell = $(document.createElement("td"))
+                var classDistinctSubjectsCell = $(document.createElement("td"))
+                var classDistinctObjectsCell = $(document.createElement("td"))
+                var endpointsCell = $(document.createElement("td"))
+
+                classCell.text(countsItem.class);
+                classTriplesCell.text(countsItem.triples);
+                classPropertyCell.text(countsItem.property);
+                classDistinctSubjectsCell.text(countsItem.distinctSubjects);
+                classDistinctObjectsCell.text(countsItem.distinctObjects);
+                endpointsCell.text(countsItem.endpoints.size);
+
+                classRow.append(classCell);
+                classRow.append(classPropertyCell);
+                classRow.append(classTriplesCell);
+                classRow.append(classDistinctSubjectsCell);
+                classRow.append(classDistinctObjectsCell);
+                classRow.append(endpointsCell);
+                tableBody.append(classRow);
+            });
+        }
+        fillClassPropertiesDescriptionTable()
     });
 }
 setButtonAsTableCollapse('classDescriptionDetails', 'classDescriptionTable');
+setButtonAsTableCollapse('classPropertiesDescriptionDetails', 'classPropertiesDescriptionTable');
 
 function descriptionElementFill() {
     var provenanceWhoCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { "+
@@ -1508,3 +1603,178 @@ function descriptionElementFill() {
     });
 }
 setButtonAsTableCollapse('datasetDescriptionStatDetails', 'datasetDescriptionTable');
+
+function shortUrisFill() {
+    var shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+            "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+            "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> . " +
+            "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+            "}" +
+            "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
+
+    sparqlQueryJSON(shortUrisMeasureQuery, json => {
+        var shortUriData = []
+        json.results.bindings.forEach((jsonItem, i) => {
+            var endpoint = jsonItem.endpointUrl.value;
+            var shortUriMeasure = Number.parseFloat(jsonItem.measure.value*100);
+            var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+
+            shortUriData.push({graph:graph, endpoint:endpoint, measure:shortUriMeasure})
+        });
+
+        var endpointDataSerieMap = new Map();
+        shortUriData.forEach((shortUriItem, i) => {
+            if(endpointDataSerieMap.get(shortUriItem.endpoint) == undefined) {
+                endpointDataSerieMap.set(shortUriItem.endpoint, []);
+            }
+            endpointDataSerieMap.get(shortUriItem.endpoint).push([shortUriItem.graph, precise(shortUriItem.measure)]);
+        });
+
+        // Chart
+        var shortUrisSeries = [];
+        endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+            var chartSerie = {
+                name:endpoint,
+                label:'show',
+                symbolSize: 5,
+                data:serieData,
+                type: 'line'
+            };
+
+            shortUrisSeries.push(chartSerie);
+        });
+
+        var optionTriples = {
+            title: {
+                left: 'center',
+                text:"Short URIs (< 80 characters) quality measure through time",
+            },
+            xAxis: {
+                type:'category'
+            },
+            yAxis: {},
+            series: shortUrisSeries,
+            tooltip:{
+                show:'true'
+            }
+        };
+        shortUriChart.setOption(optionTriples);
+
+        // Average measure
+        var shortUriMeasureSum = shortUriData.map(a => a.measure).reduce((previous, current) => current + previous);
+        var shortUrisAverageMeasure = shortUriMeasureSum / shortUriData.length;
+        $('#shortUrisMeasure').text(precise(shortUrisAverageMeasure)+"%");
+
+        // Measire Details
+        var shortUrisDetailTableBody = $('#shortUrisTableBody');
+        endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+            var endpointRow = $(document.createElement('tr'));
+
+            var endpointCell = $(document.createElement('td'));
+            endpointCell.text(endpoint);
+            var measureCell = $(document.createElement('td'));
+            var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+            var measureAverage = endpointMeasureSum / serieData.length;
+            measureCell.text(precise(measureAverage, 3) + "%");
+
+            endpointRow.append(endpointCell);
+            endpointRow.append(measureCell);
+
+            shortUrisDetailTableBody.append(endpointRow);
+        });
+
+
+    });
+}
+setButtonAsTableCollapse('shortUrisDetails', 'shortUrisTable');
+
+
+function rdfDataStructuresFill() {
+    var rdfDataStructuresMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+            "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+            "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . " +
+            "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+            "}" +
+            "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
+
+    sparqlQueryJSON(rdfDataStructuresMeasureQuery, json => {
+        var rdfDataStructureData = []
+        json.results.bindings.forEach((jsonItem, i) => {
+            var endpoint = jsonItem.endpointUrl.value;
+            var rdfDataStructureMeasure = Number.parseFloat(jsonItem.measure.value*100);
+            var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+
+            rdfDataStructureData.push({graph:graph, endpoint:endpoint, measure:rdfDataStructureMeasure})
+        });
+
+        var endpointDataSerieMap = new Map();
+        rdfDataStructureData.forEach((rdfDataStructureItem, i) => {
+            if(endpointDataSerieMap.get(rdfDataStructureItem.endpoint) == undefined) {
+                endpointDataSerieMap.set(rdfDataStructureItem.endpoint, []);
+            }
+            endpointDataSerieMap.get(rdfDataStructureItem.endpoint).push([rdfDataStructureItem.graph, precise(rdfDataStructureItem.measure)]);
+        });
+
+        // Chart
+        var rdfDataStructuresSeries = [];
+        endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+            var chartSerie = {
+                name:endpoint,
+                label:'show',
+                symbolSize: 5,
+                data:serieData,
+                type: 'line'
+            };
+
+            rdfDataStructuresSeries.push(chartSerie);
+        });
+
+        var optionTriples = {
+            title: {
+                left: 'center',
+                text:"Minimal usage of RDF data structures measure through time",
+            },
+            xAxis: {
+                type:'category'
+            },
+            yAxis: {},
+            series: rdfDataStructuresSeries,
+            tooltip:{
+                show:'true'
+            }
+        };
+        rdfDataStructureChart.setOption(optionTriples);
+
+        // Average measure
+        var rdfDataStructureMeasureSum = rdfDataStructureData.map(a => a.measure).reduce((previous, current) => current + previous);
+        var rdfDataStructuresAverageMeasure = rdfDataStructureMeasureSum / rdfDataStructureData.length;
+        $('#rdfDataStructuresMeasure').text(precise(rdfDataStructuresAverageMeasure, 3)+"%");
+
+        // Measire Details
+        var rdfDataStructuresDetailTableBody = $('#rdfDataStructuresTableBody');
+        endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+            var endpointRow = $(document.createElement('tr'));
+
+            var endpointCell = $(document.createElement('td'));
+            endpointCell.text(endpoint);
+            var measureCell = $(document.createElement('td'));
+            var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+            var measureAverage = endpointMeasureSum / serieData.length;
+            measureCell.text(precise(measureAverage, 3) + "%");
+
+            endpointRow.append(endpointCell);
+            endpointRow.append(measureCell);
+
+            rdfDataStructuresDetailTableBody.append(endpointRow);
+        });
+
+
+    });
+}
+setButtonAsTableCollapse('rdfDataStructuresDetails', 'rdfDataStructuresTable');
