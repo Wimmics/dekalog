@@ -523,8 +523,16 @@ setButtonAsTableCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
 
 function vocabEndpointGraphFill() {
 // Create an force graph with the graph linked by co-ocurrence of vocabularies
-    var sparqlesVocabularies = "SELECT DISTINCT ?endpoint ?vocabulary  WHERE { GRAPH ?g { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary }  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpoint";
+    var sparqlesVocabularies = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
+        "{ ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+        "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?endpoint . " +
+        "?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
+        "} } " +
+        "GROUP BY ?endpointUrl ?vocabulary ";
+    console.log(sparqlesVocabularies);
     sparqlQueryJSON(sparqlesVocabularies, json => {
+        console.log(json)
         // Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
         var LOVVocabularies = new Set();
         var sumVocabSetSize = 0;
@@ -542,18 +550,21 @@ function vocabEndpointGraphFill() {
             json.results.bindings.forEach((bindingItem, i) => {
                 var vocabulariUri = bindingItem.vocabulary.value;
                 var endpointUri = bindingItem.endpointUrl.value;
-                rawVocabSet.add(vocabulariUri);
-                if(! rawGatherVocab.has(endpointUri)) {
-                    rawGatherVocab.set(endpointUri, new Set());
-                }
-                rawGatherVocab.get(endpointUri).add(vocabulariUri);
-                if(LOVVocabularies.has(vocabulariUri)) {
-                    endpointSet.add(endpointUri);
-                    vocabSet.add(vocabulariUri);
-                    if(! gatherVocab.has(endpointUri)) {
-                        gatherVocab.set(endpointUri, new Set());
+                var graphUri = bindingItem.g.value;
+                if(graphList.some(graphListItem => graphUri.localeCompare(graphListItem) == 0)) {
+                    rawVocabSet.add(vocabulariUri);
+                    if(! rawGatherVocab.has(endpointUri)) {
+                        rawGatherVocab.set(endpointUri, new Set());
                     }
-                    gatherVocab.get(endpointUri).add(vocabulariUri);
+                    rawGatherVocab.get(endpointUri).add(vocabulariUri);
+                    if(LOVVocabularies.has(vocabulariUri)) {
+                        endpointSet.add(endpointUri);
+                        vocabSet.add(vocabulariUri);
+                        if(! gatherVocab.has(endpointUri)) {
+                            gatherVocab.set(endpointUri, new Set());
+                        }
+                        gatherVocab.get(endpointUri).add(vocabulariUri);
+                    }
                 }
             });
 
@@ -561,7 +572,7 @@ function vocabEndpointGraphFill() {
             var jsonVocabNodes = new Set();
 
             endpointSet.forEach((item, i) => {
-                jsonVocabNodes.add({name:item, category:'Knowledge base', x:i*100, y:100, symbolSize:5})
+                jsonVocabNodes.add({name:item, category:'Endpoint', x:i*100, y:100, symbolSize:5})
             });
             vocabSet.forEach((item, i) => {
                 jsonVocabNodes.add({name:item,  category:'Vocabulary', x:100, y:i*100, symbolSize:5})
@@ -587,7 +598,7 @@ function vocabEndpointGraphFill() {
                 tooltip: {},
                 legend: [
                   {
-                    data: ["Vocabulary", "Knowledge base"]
+                    data: ["Vocabulary", "Endpoint"]
                 }
             ],
                 series: [
@@ -597,14 +608,14 @@ function vocabEndpointGraphFill() {
                     layout: 'force',
                     data: [...jsonVocabNodes],
                     links: [...jsonVocabLinks],
-                    categories: [{name:"Vocabulary"}, {name:"Knowledge base"}],
+                    categories: [{name:"Vocabulary"}, {name:"Endpoint"}],
                     roam: true,
                     draggable:true,
                     label: {
                       position: 'right'
                     },
                     force: {
-                      repulsion: 100
+                      repulsion: 50
                     }
                 }
                 ]
