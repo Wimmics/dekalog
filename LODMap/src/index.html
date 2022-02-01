@@ -125,8 +125,18 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="row" id="datasetdescriptionRadar">
+                        </div>
                         <div class="row">
-                            <button id="datasetDescriptionStatDetails" type="button" class="btn btn-link">Details about the presence of provenance informations</button>
+                            <div class="col-6">
+                                <button id="datasetDescriptionExplain" type="button" class="btn btn-link justify-content-center">Explanations about the provenance informations</button>
+                            </div>
+                            <div class="col-6">
+                                <button id="datasetDescriptionStatDetails" type="button" class="btn btn-link justify-content-center">Details about the presence of provenance informations</button>
+                            </div>
+                        </div>
+                        <div class='row collapse' id='datasetDescriptionExplainText'>
+                            <span>TESSSSSSSSSSSSSSSSSSSSSSSSSSSSSST</span>
                         </div>
                         <div class="row">
                             <table id="datasetDescriptionTable" class="table table-responsive table-hover collapse">
@@ -215,6 +225,26 @@
                                             </tr>
                                         </thead>
                                         <tbody id="endpointKnownVocabsTableBody">
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" title="Presence of readable labels connected to each resources.">Readable labels</th> <td id="readableLabelsMeasure"></td><td><button id="readableLabelsDetails" type="button" class="btn btn-link">Details</button></td>
+                            </tr>
+                            <tr>
+                                <td id="readableLabelsScatter" colspan="3"></td>
+                            </tr>
+                            <tr>
+                                <td class="collapse" id="readableLabelsTable" colspan="3">
+                                    <table class="table table-responsive table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th id="readableLabelsEndpointHeader" scope="col">Endpoint</th>
+                                                <th id="readableLabelsMeasureHeader" scope="col">Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="readableLabelsTableBody">
                                         </tbody>
                                     </table>
                                 </td>

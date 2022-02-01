@@ -31,6 +31,8 @@ var averageRuntimeChart = echarts.init(document.getElementById('averageRuntimeSc
 var vocabForceGraph = echarts.init(document.getElementById('vocabs'));
 var shortUriChart = echarts.init(document.getElementById('shortUrisScatter'));
 var rdfDataStructureChart = echarts.init(document.getElementById('rdfDataStructuresScatter'));
+var readableLabelChart = echarts.init(document.getElementById('readableLabelsScatter'));
+var datasetdescriptionChart = echarts.init(document.getElementById('datasetdescriptionRadar'));
 
 function sparqlQueryJSON(query, callback, errorCallback) {
     xmlhttpRequestJSON('http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", callback, errorCallback);
@@ -102,22 +104,22 @@ function refresh() {
     descriptionElementFill();
     shortUrisFill();
     rdfDataStructuresFill();
+    readableLabelsFill();
 }
 
 function clear() {
     layerGroup.clearLayers();
     sparql10Chart.setOption({series:[]}, true);
     sparql11Chart.setOption({series:[]}, true);
-    tripleScatterChart.setOption({series:[]}, true);
-    classScatterChart.setOption({series:[]}, true);
-    propertyScatterChart.setOption({series:[]}, true);
-    categoryScatterChart.setOption({series:[]}, true);
     totalRuntimeChart.setOption({series:[]}, true);
     vocabForceGraph.setOption({series:[]}, true);
-    shortUriChart.setOption({series:[]}, true);
-    rdfDataStructureChart.setOption({series:[]}, true);
-    $('#shortUrisMeasure').empty();
-    $('#rdfDataStructureMeasure').empty();
+    hideTripleNumberContent();
+    hideClassNumberContent();
+    hideCategoryTestNumberContent();
+    hideShortUrisContent();
+    hideRDFDataStructuresContent();
+    hideReadableLabelsContent();
+    datasetdescriptionChart.setOption({series:[]}, true);
     $('#KnownVocabulariesMeasure').empty();
     $('#endpointKnownVocabsTableBody').empty();
     $('#rulesTableBody').empty();
@@ -539,7 +541,7 @@ function vocabEndpointGraphFill() {
             var rawGatherVocab = new Map();
             json.results.bindings.forEach((bindingItem, i) => {
                 var vocabulariUri = bindingItem.vocabulary.value;
-                var endpointUri = bindingItem.endpoint.value;
+                var endpointUri = bindingItem.endpointUrl.value;
                 rawVocabSet.add(vocabulariUri);
                 if(! rawGatherVocab.has(endpointUri)) {
                     rawGatherVocab.set(endpointUri, new Set());
@@ -697,36 +699,45 @@ function tripleNumberScatter() {
             endpointDataSerieMap.get(endpointUrl).push([graph,triples])
         });
 
-        var triplesSeries = [];
-        endpointDataSerieMap.forEach((value, key, map) => {
-            var chartSerie = {
-                name:key,
-                label:'show',
-                symbolSize: 5,
-                data:value,
-                type: 'line'
+        if(endpointDataSerieMap.size > 0) {
+            $('#tripleScatter').removeClass('collapse');
+            $('#tripleScatter').addClass('show');
+
+            var triplesSeries = [];
+            endpointDataSerieMap.forEach((value, key, map) => {
+                var chartSerie = {
+                    name:key,
+                    label:'show',
+                    symbolSize: 5,
+                    data:value,
+                    type: 'line'
+                };
+
+                triplesSeries.push(chartSerie);
+            });
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Size of the datasets",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                yAxis: {},
+                series: triplesSeries,
+                tooltip:{
+                    show:'true'
+                }
             };
-
-            triplesSeries.push(chartSerie);
-        });
-
-        var optionTriples = {
-            title: {
-                left: 'center',
-                text:"Size of the datasets",
-            },
-            xAxis: {
-                type:'category'
-            },
-            yAxis: {},
-            series: triplesSeries,
-            tooltip:{
-                show:'true'
-            }
-        };
-        tripleScatterChart.setOption(optionTriples);
-
+            tripleScatterChart.setOption(optionTriples);
+        }
     });
+}
+function hideTripleNumberContent() {
+    tripleScatterChart.setOption({series:[]}, true);
+    $('#tripleScatter').removeClass('show');
+    $('#tripleScatter').addClass('collapse');
 }
 
 function classNumberFill() {
@@ -758,37 +769,46 @@ function classNumberFill() {
             endpointDataSerieMap.get(endpointUrl).push([ graph, triples ])
         });
 
-        var triplesSeries = [];
-        endpointDataSerieMap.forEach((value, key, map) => {
-            var chartSerie = {
-                name:key,
-                label:'show',
-                symbolSize: 5,
-                data:value,
-                type: 'line'
+        if(endpointDataSerieMap.size > 0) {
+            $('#classScatter').removeClass('collapse');
+            $('#classScatter').addClass('show');
+            var triplesSeries = [];
+            endpointDataSerieMap.forEach((value, key, map) => {
+                var chartSerie = {
+                    name:key,
+                    label:'show',
+                    symbolSize: 5,
+                    data:value,
+                    type: 'line'
+                };
+
+                triplesSeries.push(chartSerie);
+            });
+
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Number of classes in the datasets",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                yAxis: {},
+                series: triplesSeries,
+                tooltip:{
+                    show:'true'
+                }
             };
-
-            triplesSeries.push(chartSerie);
-        });
-
-
-        var optionTriples = {
-            title: {
-                left: 'center',
-                text:"Number of classes in the datasets",
-            },
-            xAxis: {
-                type:'category'
-            },
-            yAxis: {},
-            series: triplesSeries,
-            tooltip:{
-                show:'true'
-            }
-        };
-        classScatterChart.setOption(optionTriples);
+            classScatterChart.setOption(optionTriples);
+        }
 
     });
+}
+function hideClassNumberContent() {
+    classScatterChart.setOption({series:[]}, true);
+    $('#classScatter').removeClass('show');
+    $('#classScatter').addClass('collapse');
 }
 
 function propertyNumberFill() {
@@ -817,36 +837,45 @@ function propertyNumberFill() {
             endpointDataSerieMap.get(endpointUrl).push([ graph, triples ])
         });
 
-        var triplesSeries = [];
-        endpointDataSerieMap.forEach((value, key, map) => {
-            var chartSerie = {
-                name:key,
-                label:'show',
-                symbolSize: 5,
-                data:value,
-                type: 'line'
+        if(endpointDataSerieMap.size > 0) {
+            $('#propertyScatter').removeClass('collapse');
+            $('#propertyScatter').addClass('show');
+            var triplesSeries = [];
+            endpointDataSerieMap.forEach((value, key, map) => {
+                var chartSerie = {
+                    name:key,
+                    label:'show',
+                    symbolSize: 5,
+                    data:value,
+                    type: 'line'
+                };
+
+                triplesSeries.push(chartSerie);
+            });
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Number of properties in the datasets",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                yAxis: {},
+                series: triplesSeries,
+                tooltip:{
+                    show:'true'
+                }
             };
-
-            triplesSeries.push(chartSerie);
-        });
-
-        var optionTriples = {
-            title: {
-                left: 'center',
-                text:"Number of properties in the datasets",
-            },
-            xAxis: {
-                type:'category'
-            },
-            yAxis: {},
-            series: triplesSeries,
-            tooltip:{
-                show:'true'
-            }
-        };
-        propertyScatterChart.setOption(optionTriples);
+            propertyScatterChart.setOption(optionTriples);
+        }
 
     });
+}
+function hidePropertyNumberContent() {
+    propertyScatterChart.setOption({series:[]}, true);
+    $('#propertyScatter').removeClass('show');
+    $('#propertyScatter').addClass('collapse');
 }
 
 function categoryTestNumberFill() {
@@ -893,70 +922,80 @@ function categoryTestNumberFill() {
             endpointDataSerieMap.get(category).get( graph).set(endpoint, count);
         });
 
-        var triplesSeries = [];
-        endpointDataSerieMap.forEach((gemap, category, map1) => {
-            var dataCategory = [];
-            gemap.forEach((endpointMap, graph, map2) => {
-                var totalEndpointGraph = 0;
-                endpointMap.forEach((count, endpoint, map3) => {
-                    totalEndpointGraph = totalEndpointGraph + Number.parseInt(count);
-                });
-                var numberOfEndpoint = endpointMap.size;
-                var avgEndpointGraph = precise(totalEndpointGraph / numberOfEndpoint);
-                var percentageAvrEndpointCategory = avgEndpointGraph;
-                if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/")) {
-                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 8)*100);
-                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/")) {
-                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 4)*100);
-                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/")) {
-                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 10)*100);
-                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/")) {
-                    percentageAvrEndpointCategory = (precise(percentageAvrEndpointCategory / 23)*100);
-                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/")) {
-                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 25)*100);
-                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/")) {
-                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 20)*100);
-                }
+        if(endpointDataSerieMap.size > 0) {
+            $('#testCategoryScatter').removeClass('collapse');
+            $('#testCategoryScatter').addClass('show');
 
-                dataCategory.push([graph, percentageAvrEndpointCategory]);
+            var triplesSeries = [];
+            endpointDataSerieMap.forEach((gemap, category, map1) => {
+                var dataCategory = [];
+                gemap.forEach((endpointMap, graph, map2) => {
+                    var totalEndpointGraph = 0;
+                    endpointMap.forEach((count, endpoint, map3) => {
+                        totalEndpointGraph = totalEndpointGraph + Number.parseInt(count);
+                    });
+                    var numberOfEndpoint = endpointMap.size;
+                    var avgEndpointGraph = precise(totalEndpointGraph / numberOfEndpoint);
+                    var percentageAvrEndpointCategory = avgEndpointGraph;
+                    if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 8)*100);
+                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 4)*100);
+                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 10)*100);
+                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/")) {
+                        percentageAvrEndpointCategory = (precise(percentageAvrEndpointCategory / 23)*100);
+                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 25)*100);
+                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 20)*100);
+                    }
+
+                    dataCategory.push([graph, percentageAvrEndpointCategory]);
+                });
+
+                dataCategory.sort((a, b) => a[0].localeCompare(b[0]));
+                var chartSerie = {
+                    name:category.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/", "").replace("/", ""),
+                    label:'show',
+                    symbolSize: 5,
+                    data:dataCategory,
+                    type: 'bar'
+                };
+                triplesSeries.push(chartSerie);
             });
 
-            dataCategory.sort((a, b) => a[0].localeCompare(b[0]));
-            var chartSerie = {
-                name:category.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/", "").replace("/", ""),
-                label:'show',
-                symbolSize: 5,
-                data:dataCategory,
-                type: 'bar'
+            var categoriesArray = [...categorySet].sort((a, b) => a.localeCompare(b));
+            triplesSeries.sort((a, b) => a.name.localeCompare(b.name))
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Proportion of tests passed by category",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                legend: {
+                    data:categoriesArray,
+                    bottom:'bottom'
+                },
+                yAxis: {
+                    max:100
+                },
+                series: triplesSeries,
+                tooltip:{
+                    show:'true'
+                }
             };
-            triplesSeries.push(chartSerie);
-        });
-
-        var categoriesArray = [...categorySet].sort((a, b) => a.localeCompare(b));
-        triplesSeries.sort((a, b) => a.name.localeCompare(b.name))
-
-        var optionTriples = {
-            title: {
-                left: 'center',
-                text:"Proportion of tests passed by category",
-            },
-            xAxis: {
-                type:'category'
-            },
-            legend: {
-                data:categoriesArray,
-                bottom:'bottom'
-            },
-            yAxis: {
-                max:100
-            },
-            series: triplesSeries,
-            tooltip:{
-                show:'true'
-            }
-        };
-        categoryScatterChart.setOption(optionTriples);
+            categoryScatterChart.setOption(optionTriples);
+        }
     });
+}
+function hideCategoryTestNumberContent() {
+    categoryScatterChart.setOption({series:[]}, true);
+    $('#testCategoryScatter').removeClass('show');
+    $('#testCategoryScatter').addClass('collapse');
 }
 
 setButtonAsTableCollapse('tableRuleDetails', 'rulesTable');
@@ -1548,6 +1587,7 @@ function descriptionElementFill() {
                         return a.endpoint.localeCompare(b.endpoint);
                     });
 
+                    // Table
                     function fillTestTable() {
                         var tableBody = $('#datasetDescriptionTableBody');
                         tableBody.empty();
@@ -1597,12 +1637,95 @@ function descriptionElementFill() {
                     });
 
                     fillTestTable();
+
+                    // chart
+                    var whoDataScore = 0;
+                    var licenseDataScore = 0;
+                    var timeDataScore = 0;
+                    var sourceDataScore = 0;
+
+                    var dataSeries = data.forEach(dataItem => {
+                        var who = dataItem.who;
+                        if(who) {
+                            whoDataScore++;
+                        }
+                        var license = dataItem.license;
+                        if(license) {
+                            licenseDataScore++;
+                        }
+                        var time = dataItem.time;
+                        if(time) {
+                            timeDataScore++;
+                        }
+                        var source = dataItem.source;
+                        if(source) {
+                            sourceDataScore++;
+                        }
+                    });
+
+
+                     var whoDataSerie = {
+                            name: 'Description of creator/owner/contributor',
+                            type: 'pie',
+                            radius: '25%',
+                            center: ['25%', '25%'],
+                            data: [
+                                { value: whoDataScore, name: 'Presence of the description of creator/owner/contributor' },
+                                { value: (data.length - whoDataScore), name: 'Absence of the description of creator/owner/contributor' },
+                            ]
+                        };
+                     var licenseDataSerie = {
+                            name: 'Licensing information',
+                            type: 'pie',
+                            radius: '25%',
+                            center: ['25%', '75%'],
+                            data: [
+                                { value: licenseDataScore, name: 'Presence of licensing information' },
+                                { value: (data.length - licenseDataScore), name: 'Presence of the description of creator/owner/contributor' },
+                            ]
+                        };
+                     var timeDataSerie = {
+                            name: 'Time related information about the creation of the dataset',
+                            type: 'pie',
+                            radius: '25%',
+                            center: ['75%', '25%'],
+                            data: [
+                                { value: timeDataScore, name: 'Presence of time-related information' },
+                                { value: (data.length - timeDataScore), name: 'Absence of time-related information' },
+                            ]
+                        };
+                     var sourceDataSerie = {
+                            name: 'Description of the source or the process at the origin of the dataset',
+                            type: 'pie',
+                            radius: '25%',
+                            center: ['75%', '75%'],
+                            data: [
+                                { value: sourceDataScore, name: 'Presence of information about the origin of the dataset' },
+                                { value: (data.length - sourceDataScore), name: 'Absence of information about the origin of the dataset' },
+                            ]
+                        };
+                    var option = {
+                          title: {
+                            text: 'Dataset description features in all endpoints',
+                            left: 'center'
+                          },
+                          tooltip: {
+                          },
+                          legend: {
+                            left: 'left',
+                            show:false
+                          },
+                          series: [ whoDataSerie, licenseDataSerie, timeDataSerie, sourceDataSerie ]
+                        };
+                    console.log(option)
+                    datasetdescriptionChart.setOption(option)
                 });
             });
         });
     });
 }
 setButtonAsTableCollapse('datasetDescriptionStatDetails', 'datasetDescriptionTable');
+setButtonAsTableCollapse('datasetDescriptionExplain', 'datasetDescriptionExplainText');
 
 function shortUrisFill() {
     var shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
@@ -1633,64 +1756,72 @@ function shortUrisFill() {
             endpointDataSerieMap.get(shortUriItem.endpoint).push([shortUriItem.graph, precise(shortUriItem.measure)]);
         });
 
-        // Chart
-        var shortUrisSeries = [];
-        endpointDataSerieMap.forEach((serieData, endpoint, map) => {
-            var chartSerie = {
-                name:endpoint,
-                label:'show',
-                symbolSize: 5,
-                data:serieData,
-                type: 'line'
+        if(endpointDataSerieMap.size > 0) {
+            $('#shortUrisScatter').removeClass('collapse');
+            $('#shortUrisScatter').addClass('show');
+
+            // Chart
+            var shortUrisSeries = [];
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var chartSerie = {
+                    name:endpoint,
+                    label:'show',
+                    symbolSize: 5,
+                    data:serieData,
+                    type: 'line'
+                };
+
+                shortUrisSeries.push(chartSerie);
+            });
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Short URIs (< 80 characters) quality measure through time",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                yAxis: {},
+                series: shortUrisSeries,
+                tooltip:{
+                    show:'true'
+                }
             };
+            shortUriChart.setOption(optionTriples);
 
-            shortUrisSeries.push(chartSerie);
-        });
+            // Average measure
+            var shortUriMeasureSum = shortUriData.map(a => a.measure).reduce((previous, current) => current + previous);
+            var shortUrisAverageMeasure = shortUriMeasureSum / shortUriData.length;
+            $('#shortUrisMeasure').text(precise(shortUrisAverageMeasure)+"%");
 
-        var optionTriples = {
-            title: {
-                left: 'center',
-                text:"Short URIs (< 80 characters) quality measure through time",
-            },
-            xAxis: {
-                type:'category'
-            },
-            yAxis: {},
-            series: shortUrisSeries,
-            tooltip:{
-                show:'true'
-            }
-        };
-        shortUriChart.setOption(optionTriples);
+            // Measire Details
+            var shortUrisDetailTableBody = $('#shortUrisTableBody');
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var endpointRow = $(document.createElement('tr'));
 
-        // Average measure
-        var shortUriMeasureSum = shortUriData.map(a => a.measure).reduce((previous, current) => current + previous);
-        var shortUrisAverageMeasure = shortUriMeasureSum / shortUriData.length;
-        $('#shortUrisMeasure').text(precise(shortUrisAverageMeasure)+"%");
+                var endpointCell = $(document.createElement('td'));
+                endpointCell.text(endpoint);
+                var measureCell = $(document.createElement('td'));
+                var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+                var measureAverage = endpointMeasureSum / serieData.length;
+                measureCell.text(precise(measureAverage, 3) + "%");
 
-        // Measire Details
-        var shortUrisDetailTableBody = $('#shortUrisTableBody');
-        endpointDataSerieMap.forEach((serieData, endpoint, map) => {
-            var endpointRow = $(document.createElement('tr'));
+                endpointRow.append(endpointCell);
+                endpointRow.append(measureCell);
 
-            var endpointCell = $(document.createElement('td'));
-            endpointCell.text(endpoint);
-            var measureCell = $(document.createElement('td'));
-            var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
-            var measureAverage = endpointMeasureSum / serieData.length;
-            measureCell.text(precise(measureAverage, 3) + "%");
-
-            endpointRow.append(endpointCell);
-            endpointRow.append(measureCell);
-
-            shortUrisDetailTableBody.append(endpointRow);
-        });
-
-
+                shortUrisDetailTableBody.append(endpointRow);
+            });
+        }
     });
 }
+function hideShortUrisContent() {
+    rdfDataStructureChart.setOption({series:[]}, true);
+    $('shortUrisMeasure').empty();
+    $('#shortUrisScatter').removeClass('show');
+    $('#shortUrisScatter').addClass('collapse');
+}
 setButtonAsTableCollapse('shortUrisDetails', 'shortUrisTable');
-
 
 function rdfDataStructuresFill() {
     var rdfDataStructuresMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
@@ -1721,60 +1852,167 @@ function rdfDataStructuresFill() {
             endpointDataSerieMap.get(rdfDataStructureItem.endpoint).push([rdfDataStructureItem.graph, precise(rdfDataStructureItem.measure)]);
         });
 
-        // Chart
-        var rdfDataStructuresSeries = [];
-        endpointDataSerieMap.forEach((serieData, endpoint, map) => {
-            var chartSerie = {
-                name:endpoint,
-                label:'show',
-                symbolSize: 5,
-                data:serieData,
-                type: 'line'
+        if(endpointDataSerieMap.size > 0) {
+            $('#rdfDataStructuresScatter').removeClass('collapse');
+            $('#rdfDataStructuresScatter').addClass('show');
+
+            // Chart
+            var rdfDataStructuresSeries = [];
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var chartSerie = {
+                    name:endpoint,
+                    label:'show',
+                    symbolSize: 5,
+                    data:serieData,
+                    type: 'line'
+                };
+
+                rdfDataStructuresSeries.push(chartSerie);
+            });
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Minimal usage of RDF data structures measure through time",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                yAxis: {},
+                series: rdfDataStructuresSeries,
+                tooltip:{
+                    show:'true'
+                }
             };
+            rdfDataStructureChart.setOption(optionTriples);
 
-            rdfDataStructuresSeries.push(chartSerie);
-        });
+            // Average measure
+            var rdfDataStructureMeasureSum = rdfDataStructureData.map(a => a.measure).reduce((previous, current) => current + previous);
+            var rdfDataStructuresAverageMeasure = rdfDataStructureMeasureSum / rdfDataStructureData.length;
+            $('#rdfDataStructuresMeasure').text(precise(rdfDataStructuresAverageMeasure, 3)+"%");
 
-        var optionTriples = {
-            title: {
-                left: 'center',
-                text:"Minimal usage of RDF data structures measure through time",
-            },
-            xAxis: {
-                type:'category'
-            },
-            yAxis: {},
-            series: rdfDataStructuresSeries,
-            tooltip:{
-                show:'true'
-            }
-        };
-        rdfDataStructureChart.setOption(optionTriples);
+            // Measire Details
+            var rdfDataStructuresDetailTableBody = $('#rdfDataStructuresTableBody');
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var endpointRow = $(document.createElement('tr'));
 
-        // Average measure
-        var rdfDataStructureMeasureSum = rdfDataStructureData.map(a => a.measure).reduce((previous, current) => current + previous);
-        var rdfDataStructuresAverageMeasure = rdfDataStructureMeasureSum / rdfDataStructureData.length;
-        $('#rdfDataStructuresMeasure').text(precise(rdfDataStructuresAverageMeasure, 3)+"%");
+                var endpointCell = $(document.createElement('td'));
+                endpointCell.text(endpoint);
+                var measureCell = $(document.createElement('td'));
+                var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+                var measureAverage = endpointMeasureSum / serieData.length;
+                measureCell.text(precise(measureAverage, 3) + "%");
 
-        // Measire Details
-        var rdfDataStructuresDetailTableBody = $('#rdfDataStructuresTableBody');
-        endpointDataSerieMap.forEach((serieData, endpoint, map) => {
-            var endpointRow = $(document.createElement('tr'));
+                endpointRow.append(endpointCell);
+                endpointRow.append(measureCell);
 
-            var endpointCell = $(document.createElement('td'));
-            endpointCell.text(endpoint);
-            var measureCell = $(document.createElement('td'));
-            var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
-            var measureAverage = endpointMeasureSum / serieData.length;
-            measureCell.text(precise(measureAverage, 3) + "%");
-
-            endpointRow.append(endpointCell);
-            endpointRow.append(measureCell);
-
-            rdfDataStructuresDetailTableBody.append(endpointRow);
-        });
-
+                rdfDataStructuresDetailTableBody.append(endpointRow);
+            });
+        }
 
     });
 }
+function hideRDFDataStructuresContent() {
+    rdfDataStructureChart.setOption({series:[]}, true);
+    $('#rdfDataStructuresMeasure').empty();
+    $('#rdfDataStructuresScatter').removeClass('show');
+    $('#rdfDataStructuresScatter').addClass('collapse');
+}
 setButtonAsTableCollapse('rdfDataStructuresDetails', 'rdfDataStructuresTable');
+
+function readableLabelsFill() {
+    var readableLabelsMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+            "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+            "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . " +
+            "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+            "}" +
+            "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
+
+    sparqlQueryJSON(readableLabelsMeasureQuery, json => {
+        var readableLabelData = []
+        json.results.bindings.forEach((jsonItem, i) => {
+            var endpoint = jsonItem.endpointUrl.value;
+            var readableLabelMeasure = Number.parseFloat(jsonItem.measure.value*100);
+            var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+
+            readableLabelData.push({graph:graph, endpoint:endpoint, measure:readableLabelMeasure})
+        });
+
+        var endpointDataSerieMap = new Map();
+        readableLabelData.forEach((readableLabelItem, i) => {
+            if(endpointDataSerieMap.get(readableLabelItem.endpoint) == undefined) {
+                endpointDataSerieMap.set(readableLabelItem.endpoint, []);
+            }
+            endpointDataSerieMap.get(readableLabelItem.endpoint).push([readableLabelItem.graph, precise(readableLabelItem.measure)]);
+        });
+
+        if(endpointDataSerieMap.size > 0) {
+            $('#readableLabelsScatter').removeClass('collapse');
+            $('#readableLabelsScatter').addClass('show');
+
+            // Chart
+            var readableLabelsSeries = [];
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var chartSerie = {
+                    name:endpoint,
+                    label:'show',
+                    symbolSize: 5,
+                    data:serieData,
+                    type: 'line'
+                };
+
+                readableLabelsSeries.push(chartSerie);
+            });
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Usage of readable label for every resource",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                yAxis: {},
+                series: readableLabelsSeries,
+                tooltip:{
+                    show:'true'
+                }
+            };
+            readableLabelChart.setOption(optionTriples);
+
+            // Average measure
+            var readableLabelMeasureSum = readableLabelData.map(a => a.measure).reduce((previous, current) => current + previous);
+            var readableLabelsAverageMeasure = readableLabelMeasureSum / readableLabelData.length;
+            $('#readableLabelsMeasure').text(precise(readableLabelsAverageMeasure, 3)+"%");
+
+            // Measire Details
+            var readableLabelsDetailTableBody = $('#readableLabelsTableBody');
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var endpointRow = $(document.createElement('tr'));
+
+                var endpointCell = $(document.createElement('td'));
+                endpointCell.text(endpoint);
+                var measureCell = $(document.createElement('td'));
+                var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+                var measureAverage = endpointMeasureSum / serieData.length;
+                measureCell.text(precise(measureAverage, 3) + "%");
+
+                endpointRow.append(endpointCell);
+                endpointRow.append(measureCell);
+
+                readableLabelsDetailTableBody.append(endpointRow);
+            });
+        }
+
+    });
+}
+function hideReadableLabelsContent() {
+    readableLabelChart.setOption({series:[]}, true);
+    $('#readableLabelMeasure').empty();
+    $('#readableLabelsScatter').removeClass('show');
+    $('#readableLabelsScatter').addClass('collapse');
+}
+setButtonAsTableCollapse('readableLabelsDetails', 'readableLabelsTable');
