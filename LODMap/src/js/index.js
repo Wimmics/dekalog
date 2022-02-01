@@ -1009,7 +1009,6 @@ function hideCategoryTestNumberContent() {
     $('#testCategoryScatter').addClass('collapse');
 }
 
-setButtonAsTableCollapse('tableRuleDetails', 'rulesTable');
 function testTableFill() {
 
     var appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?rule { " +
@@ -1090,6 +1089,7 @@ function testTableFill() {
         fillTestTable();
     });
 }
+setButtonAsTableCollapse('tableRuleDetails', 'rulesTable');
 
 function runtimeStatsFill() {
     var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?data . ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . }  VALUES ?g { "+ graphValuesURIList +" } }";
@@ -1692,7 +1692,7 @@ function descriptionElementFill() {
                             center: ['25%', '75%'],
                             data: [
                                 { value: licenseDataScore, name: 'Presence of licensing information' },
-                                { value: (data.length - licenseDataScore), name: 'Presence of the description of creator/owner/contributor' },
+                                { value: (data.length - licenseDataScore), name: 'Absence of licensing information' },
                             ]
                         };
                      var timeDataSerie = {
