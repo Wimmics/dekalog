@@ -1515,9 +1515,6 @@ function descriptionElementFill() {
         " { ?dataset <http://purl.org/dc/terms/modified> ?o } " +
         "UNION { ?dataset <http://www.w3.org/ns/prov#wasGeneratedAtTime> ?o } " +
         "UNION { ?dataset <http://purl.org/dc/terms/issued> ?o } " +
-        "{ ?dataset <http://purl.org/dc/terms/source> ?o } " +
-        "UNION { ?dataset <http://www.w3.org/ns/prov#wasDerivedFrom> ?o } " +
-        "UNION { ?dataset <http://purl.org/dc/terms/format> ?o } " +
         "} " +
         "} " +
         "VALUES ?g { "+ graphValuesURIList +" } " +
@@ -1529,9 +1526,6 @@ function descriptionElementFill() {
         "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
         "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
         "OPTIONAL {" +
-        " { ?dataset <http://purl.org/dc/terms/modified> ?o } " +
-        "UNION { ?dataset <http://www.w3.org/ns/prov#wasGeneratedAtTime> ?o } " +
-        "UNION { ?dataset <http://purl.org/dc/terms/issued> ?o } " +
         "{ ?dataset <http://purl.org/dc/terms/source> ?o } " +
         "UNION { ?dataset <http://www.w3.org/ns/prov#wasDerivedFrom> ?o } " +
         "UNION { ?dataset <http://purl.org/dc/terms/format> ?o } " +
