@@ -31,9 +31,23 @@
                 </div>
                 <div class="row border border-dark justify-content-center">
                     <div class="col-12 justify-content-center">
-                        <div class="container justify-content-center"><h5>Graph of the endpoints connected to their vocabularies*</h5></div>
-                        <div class="container justify-content-center" id="vocabs"></div>
-                        <span> *: Only the vocabularies listed in <a href="https://lov.linkeddata.es/dataset/lov">Linked Open Vocabularies</a> are displayed.</span>
+                        <div class="row justify-content-center"><h5>Graphs based on the vocabularies* used in the endpoints</h5></div>
+                        <div class="row justify-content-center" id="vocabs"></div>
+                        <div class="row justify-content-center" id="endpointKeywords"></div>
+                        <div class="row">
+                            <button id="endpointKeywordsDetails" type="button" class="btn btn-link">Details</button>
+                        </div>
+                        <table id="endpointKeywordsTable" class="table table-responsive table-hover collapse">
+                            <thead>
+                                <tr>
+                                    <th id="endpointKeywordsTableEndpointHeader" scope="col">Endpoint</th>
+                                    <th id="endpointKeywordsTableKeywordHeader" scope="col">Keywords</th>
+                                </tr>
+                            </thead>
+                            <tbody id="endpointKeywordsTableBody">
+                            </tbody>
+                        </table>
+                        <span> *: Only the vocabularies listed in <a href="https://lov.linkeddata.es/dataset/lov">Linked Open Vocabularies</a> are shown.</span>
                     </div>
                 </div>
                 <div class="row border border-dark justify-content-center">
@@ -173,8 +187,8 @@
                             </figure>
                             <figure class="figure">
                                 <pre><code class="fs-6">
-&lt;http://e.g&gt; &lt;http://purl.org/dc/terms/source&gt; &lt;http://inria.fr&gt; .
-&lt;http://e.g&gt; &lt;http://www.w3.org/ns/prov#wasDerivedFrom&gt; &lt;http://dbpedia.fr&gt; .
+&lt;http://e.g&gt; &lt;http://purl.org/dc/terms/source&gt; &lt;http://wikipedia.org&gt; .
+&lt;http://e.g&gt; &lt;http://www.w3.org/ns/prov#wasDerivedFrom&gt; &lt;http://wikipedia.org&gt; .
 &lt;http://e.g&gt; &lt;http://purl.org/dc/terms/format&gt; "text/turtle" .
                                 </code></pre>
                               <figcaption class="figure-caption">Exemple of triples to describe the source and format of the dataset "e.g".</figcaption>

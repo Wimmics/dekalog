@@ -28,6 +28,7 @@ var categoryScatterChart = echarts.init(document.getElementById('testCategorySca
 var totalRuntimeChart = echarts.init(document.getElementById('totalRuntimeScatter'));
 var averageRuntimeChart = echarts.init(document.getElementById('averageRuntimeScatter'));
 var vocabForceGraph = echarts.init(document.getElementById('vocabs'));
+var endpointKeywordsForceGraph = echarts.init(document.getElementById('endpointKeywords'));
 var shortUriChart = echarts.init(document.getElementById('shortUrisScatter'));
 var rdfDataStructureChart = echarts.init(document.getElementById('rdfDataStructuresScatter'));
 var readableLabelChart = echarts.init(document.getElementById('readableLabelsScatter'));
@@ -112,6 +113,7 @@ function clear() {
     sparql11Chart.setOption({series:[]}, true);
     totalRuntimeChart.setOption({series:[]}, true);
     vocabForceGraph.setOption({series:[]}, true);
+    endpointKeywordsForceGraph.setOption({series:[]}, true);
     hideTripleNumberContent();
     hideClassNumberContent();
     hideCategoryTestNumberContent();
@@ -123,6 +125,7 @@ function clear() {
     $('#endpointKnownVocabsTableBody').empty();
     $('#rulesTableBody').empty();
     $('#datasetDescriptionTableBody').empty();
+    $('#endpointKeywordsTableBody').empty();
 }
 
 function generateGraphValuesURI( graphs) {
@@ -529,9 +532,9 @@ function vocabEndpointGraphFill() {
         "?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
         "} } " +
         "GROUP BY ?endpointUrl ?vocabulary ";
-    console.log(sparqlesVocabularies);
+
     sparqlQueryJSON(sparqlesVocabularies, json => {
-        console.log(json)
+
         // Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
         var LOVVocabularies = new Set();
         var sumVocabSetSize = 0;
@@ -567,14 +570,15 @@ function vocabEndpointGraphFill() {
                 }
             });
 
+            // Endpoint and vocabularies graph
             var jsonVocabLinks = new Set();
             var jsonVocabNodes = new Set();
 
-            endpointSet.forEach((item, i) => {
-                jsonVocabNodes.add({name:item, category:'Endpoint', x:i*100, y:100, symbolSize:5})
+            endpointSet.forEach(item => {
+                jsonVocabNodes.add({name:item, category:'Endpoint', symbolSize:5});
             });
-            vocabSet.forEach((item, i) => {
-                jsonVocabNodes.add({name:item,  category:'Vocabulary', x:100, y:i*100, symbolSize:5})
+            vocabSet.forEach(item => {
+                jsonVocabNodes.add({name:item,  category:'Vocabulary', symbolSize:5})
             });
             var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
             var sumknowVocabMeasure = 0;
@@ -621,6 +625,7 @@ function vocabEndpointGraphFill() {
             };
             vocabForceGraph.setOption(vocabGraphOptions);
 
+            // Measure Table
             function endpointKnowVocabsMeasureFill() {
                 knowVocabsData.forEach((item, i) => {
                     var endpointUrl = item.endpoint;
@@ -677,10 +682,189 @@ function vocabEndpointGraphFill() {
             // compputation of the know vocabularies measure
             var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
             knownVocabulariesMeasureHtml.append( document.createTextNode(precise(sumknowVocabMeasure / endpointSet.size)));
+
+            // Endpoint and vocabulary keywords graph
+            var vocabularyQueryValues = "";
+            vocabSet.forEach((item, i) => {
+                vocabularyQueryValues += "<"+item+">";
+                vocabularyQueryValues += " " ;
+            });
+
+            var keywordLOVQuery = "SELECT DISTINCT ?vocabulary ?keyword { " +
+            "GRAPH <https://lov.linkeddata.es/dataset/lov> { " +
+            "   ?vocabulary a <http://purl.org/vocommons/voaf#Vocabulary> . " +
+            "   ?vocabulary <http://www.w3.org/ns/dcat#keyword> ?keyword . " +
+            "} " +
+            "VALUES ?vocabulary { "+ vocabularyQueryValues +" } " +
+            "}"
+
+            xmlhttpRequestJSON("https://lov.linkeddata.es/dataset/lov/sparql?query="+encodeURIComponent(keywordLOVQuery)+"&format=json", jsonKeywords => {
+
+                var jsonKeywordLinks = new Set();
+                var jsonKeywordNodes = new Set();
+
+                var keywordSet = new Set();
+                var keywordHitsMap = new Map();
+                var vocabKeywordMap = new Map();
+                var endpointKeywordsMap = new Map();
+                jsonKeywords.results.bindings.forEach((keywordItem, i) => {
+                    var keyword = keywordItem.keyword.value;
+                    var vocab = keywordItem.vocabulary.value;
+                    if(vocabKeywordMap.get(vocab) == undefined) {
+                        vocabKeywordMap.set(vocab, [])
+                    }
+                    vocabKeywordMap.get(vocab).push(keyword);
+
+                    keywordSet.add(keyword);
+                });
+
+                gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
+                    endpointVocabs.forEach((endpointVocab, i) => {
+                        var vocabKeywords = vocabKeywordMap.get(endpointVocab);
+                        vocabKeywords.forEach((endpointKeyword, i) => {
+                            jsonKeywordLinks.add({source:endpointUrl, target:endpointKeyword})
+
+                            if(keywordHitsMap.get(endpointKeyword) == undefined) {
+                                keywordHitsMap.set(endpointKeyword, 0)
+                            }
+                            var currentKeywordHits = keywordHitsMap.get(endpointKeyword);
+                            keywordHitsMap.set(endpointKeyword, currentKeywordHits+1);
+
+
+                            if(endpointKeywordsMap.get(endpointUrl) == undefined) {
+                                endpointKeywordsMap.set(endpointUrl, new Set());
+                            }
+                            endpointKeywordsMap.get(endpointUrl).add(endpointKeyword);
+                        });
+                    });
+                });
+
+                keywordSet.forEach(item => {
+                    jsonKeywordNodes.add({name:item, category:'Keyword', symbolSize:5})
+                });
+                endpointSet.forEach(item => {
+                    jsonKeywordNodes.add({name:item, category:'Endpoint', symbolSize:5})
+                });
+
+                var endpointKeywordsGraphOptions = {
+                        title: {
+                          text: 'Endpoints and keywords',
+                          top: 'bottom',
+                          left: 'center'
+                        },
+                        tooltip: {},
+                        legend: [
+                          {
+                            data: ["Keyword", "Endpoint"]
+                        }
+                    ],
+                    series: [
+                      {
+                        //name: 'Vocabulary',
+                        type: 'graph',
+                        layout: 'force',
+                        data: [...jsonKeywordNodes],
+                        links: [...jsonKeywordLinks],
+                        categories: [{name:"Keyword"}, {name:"Endpoint"}],
+                        roam: true,
+                        draggable:true,
+                        label: {
+                          position: 'right'
+                        },
+                        force: {
+                          repulsion: 50
+                        }
+                    }
+                    ]
+                };
+                endpointKeywordsForceGraph.setOption(endpointKeywordsGraphOptions);
+
+                console.log(endpointKeywordsMap)
+
+                var endpointKeywordsData = [];
+                endpointKeywordsMap.forEach((keywords, endpoint, map) => {
+                    endpointKeywordsData.push({endpoint:endpoint, keywords:keywords})
+                });
+
+                // Endpoint and vocabulary keywords table
+                var endpointKeywordsTableBody = $('#endpointKeywordsTableBody');
+                function endpointKeywordsTableFill() {
+                    endpointKeywordsTableBody.empty();
+                    endpointKeywordsData.forEach(endpointKeywordsItem => {
+                        var endpoint = endpointKeywordsItem.endpoint;
+                        var keywords = endpointKeywordsItem.keywords;
+                        var endpointRow = $(document.createElement("tr"));
+                        var endpointCell = $(document.createElement("td"));
+                        endpointCell.text(endpoint);
+                        var keywordsCell = $(document.createElement("td"));
+                        var keywordsText = "";
+                        var keywordCount = 0;
+                        keywords.forEach((keyword) => {
+                            if(keywordCount > 0) {
+                                keywordsText += ", ";
+                            }
+                            keywordsText += keyword;
+                            keywordCount++;
+                        });
+                        keywordsCell.text(keywordsText);
+
+                        endpointRow.append(endpointCell);
+                        endpointRow.append(keywordsCell);
+                        endpointKeywordsTableBody.append(endpointRow);
+                    });
+                }
+                endpointKeywordsTableFill()
+
+                $('#endpointKeywordsTableEndpointHeader').click(function() {
+                    endpointKeywordsTableBody.empty();
+                    if(endpointKeywordsTableBody.hasClass('sortByEndpointDesc')) {
+                        endpointKeywordsTableBody.removeClass('sortEndpointDesc');
+                        endpointKeywordsTableBody.addClass('sortByEndpointAsc');
+                        endpointKeywordsData.sort((a,b) => {
+                            return a.endpoint.localeCompare(b.endpoint);
+                        });
+                    } else {
+                        endpointKeywordsTableBody.addClass('sortByEndpointDesc');
+                        endpointKeywordsTableBody.removeClass('sortByEndpointAsc');
+                        endpointKeywordsData.sort((a,b) => {
+                            return - a.endpoint.localeCompare(b.endpoint);
+                        });
+                    }
+                    endpointKeywordsTableFill();
+                });
+
+                $('#endpointKeywordsTableKeywordHeader').click(function() {
+                    endpointKeywordsTableBody.empty();
+                    if(endpointKeywordsTableBody.hasClass('sortByKeywordsDesc')) {
+                        endpointKeywordsTableBody.removeClass('sortByKeywordsDesc');
+                        endpointKeywordsTableBody.addClass('sortByKeywordsAsc');
+                        endpointKeywordsData.sort((a,b) => {
+                            return a.keywords.size - b.keywords.size;
+                        });
+                    } else {
+                        endpointKeywordsTableBody.addClass('sortByKeywordsDesc');
+                        endpointKeywordsTableBody.removeClass('sortByKeywordsAsc');
+                        endpointKeywordsData.sort((a,b) => {
+                            return b.keywords.size - a.keywords.size;
+                        });
+                    }
+                    endpointKeywordsTableFill();
+                });
+            });
         });
     });
 }
 setButtonAsTableCollapse('KnownVocabulariesDetails', 'knowVocabEndpointTable');
+setButtonAsTableCollapse('endpointKeywordsDetails', 'endpointKeywordsTable');
+function hideVocabularyContent() {
+    vocabForceGraph.setOption({series:[]}, true);
+    endpointKeywordsForceGraph.setOption({series:[]}, true);
+    $('#vocabs').removeClass('show');
+    $('#vocabs').addClass('collapse');
+    $('#endpointKeywords').removeClass('show');
+    $('#endpointKeywords').addClass('collapse');
+    endpointKeywordsTableBody.empty();
+}
 
 function tripleNumberScatter() {
     // Scatter plot of the number of triples through time
@@ -1721,7 +1905,6 @@ function descriptionElementFill() {
                           },
                           series: [ whoDataSerie, licenseDataSerie, timeDataSerie, sourceDataSerie ]
                         };
-                    console.log(option)
                     datasetdescriptionChart.setOption(option)
                 });
             });
