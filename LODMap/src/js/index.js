@@ -87,6 +87,65 @@ function parseDate(input, format) {
   return new Date(parts[fmt['yyyy']], parts[fmt['mm']]-1, parts[fmt['dd']]);
 }
 
+function getForceGraphOption(title, legendData, dataNodes, dataLinks) {
+    var categories = [];
+    legendData.forEach((item, i) => {
+        categories.push({ name:item });
+    });
+    return {
+        title: {
+          text: title,
+          top: 'bottom',
+          left: 'center'
+        },
+        tooltip: {},
+        legend: [
+          {
+            data: legendData
+        }
+    ],
+        series: [
+          {
+            type: 'graph',
+            layout: 'force',
+            data: dataNodes,
+            links: dataLinks,
+            categories: categories,
+            roam: true,
+            draggable:true,
+            label: {
+              position: 'right'
+            },
+            force: {
+              repulsion: 50
+            }
+        }
+        ]
+    };
+}
+
+function setTableHeaderSort(tableBodyId, tableHeadersIds, tableColsSortFunction, tableFillFunction, dataArray) {
+    var tableBody = $('#'+tableBodyId);
+    tableHeadersIds.forEach((tableheaderId, i) => {
+        $('#'+tableheaderId).click(function() {
+            tableBody.empty();
+            var ascSortColClass = "sortCol"+ i +"Asc";
+            var descSortColClass = "sortCol"+ i +"Desc";
+            var colSortFunction = tableColsSortFunction[i];
+            if(! tableBody.hasClass(ascSortColClass)) {
+                tableBody.removeClass(descSortColClass);
+                tableBody.addClass(ascSortColClass);
+                dataArray.sort((a,b) => colSortFunction(a,b));
+            } else {
+                tableBody.addClass(descSortColClass);
+                tableBody.removeClass(ascSortColClass);
+                dataArray.sort((a,b) => - colSortFunction(a,b));
+            }
+            tableFillFunction();
+        });
+    });
+}
+
 function refresh() {
     graphValuesURIList = generateGraphValuesURI(graphList);
     clear();
@@ -461,58 +520,7 @@ function sparqlesHistoFill() {
             });
         }
 
-        var tableBody = $('#SPARQLFeaturesTableBody');
-        $('#SPARQLFeaturesTableEndpointHeader').click(function() {
-            tableBody.empty();
-            if(tableBody.hasClass('sortEndpointDesc')) {
-                tableBody.removeClass('sortEndpointDesc');
-                tableBody.addClass('sortEndpointAsc');
-                jsonBaseFeatureSparqles.sort((a,b) => {
-                    return a.endpoint.localeCompare(b.endpoint);
-                });
-            } else {
-                tableBody.addClass('sortEndpointDesc');
-                tableBody.removeClass('sortEndpointAsc');
-                jsonBaseFeatureSparqles.sort((a,b) => {
-                    return - a.endpoint.localeCompare(b.endpoint);
-                });
-            }
-            fillTestTable();
-        });
-        $('#SPARQL10FeaturesTableRuleHeader').click(function() {
-            tableBody.empty();
-            if(tableBody.hasClass('sortSPARQL10Desc')) {
-                tableBody.removeClass('sortSPARQL10Desc');
-                tableBody.addClass('sortSPARQL10Asc');
-                jsonBaseFeatureSparqles.sort((a,b) => {
-                    return a.sparql10 - b.sparql10;
-                });
-            } else {
-                tableBody.addClass('sortSPARQL10Desc');
-                tableBody.removeClass('sortSPARQL10Asc');
-                jsonBaseFeatureSparqles.sort((a,b) => {
-                    return - a.sparql10 - b.sparql10;
-                });
-            }
-            fillTestTable();
-        });
-        $('#SPARQL11FeaturesTableRuleHeader').click(function() {
-            tableBody.empty();
-            if(tableBody.hasClass('sortSPARQL11Desc')) {
-                tableBody.removeClass('sortSPARQL11Desc');
-                tableBody.addClass('sortSPARQL11Asc');
-                jsonBaseFeatureSparqles.sort((a,b) => {
-                    return a.sparql11 - b.sparql11;
-                });
-            } else {
-                tableBody.addClass('sortSPARQL11Desc');
-                tableBody.removeClass('sortSPARQL11Asc');
-                jsonBaseFeatureSparqles.sort((a,b) => {
-                    return - a.sparql11 - b.sparql11;
-                });
-            }
-            fillTestTable();
-        });
+        setTableHeaderSort("SPARQLFeaturesTableBody", ["SPARQLFeaturesTableEndpointHeader", "SPARQL10FeaturesTableRuleHeader", "SPARQL11FeaturesTableRuleHeader"],  [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.sparql10 - b.sparql10, (a,b) => a.sparql11 - b.sparql11], fillTestTable, jsonBaseFeatureSparqles);
 
         fillTestTable();
 
@@ -592,37 +600,7 @@ function vocabEndpointGraphFill() {
                 });
             });
 
-            var vocabGraphOptions = {
-                title: {
-                  text: 'Endpoints and knowledge bases',
-                  top: 'bottom',
-                  left: 'center'
-                },
-                tooltip: {},
-                legend: [
-                  {
-                    data: ["Vocabulary", "Endpoint"]
-                }
-            ],
-                series: [
-                  {
-                    //name: 'Vocabulary',
-                    type: 'graph',
-                    layout: 'force',
-                    data: [...jsonVocabNodes],
-                    links: [...jsonVocabLinks],
-                    categories: [{name:"Vocabulary"}, {name:"Endpoint"}],
-                    roam: true,
-                    draggable:true,
-                    label: {
-                      position: 'right'
-                    },
-                    force: {
-                      repulsion: 50
-                    }
-                }
-                ]
-            };
+            var vocabGraphOptions = getForceGraphOption('Endpoints and knowledge bases', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
             vocabForceGraph.setOption(vocabGraphOptions);
 
             // Measure Table
@@ -641,43 +619,8 @@ function vocabEndpointGraphFill() {
                     endpointKnownVocabulariestableBody.append(endpointRow);
                 });
             };
-            var tableBody = $('#endpointKnownVocabsTableBody');
-            $('#knownVocabEndpointHeader').click(function() {
-                tableBody.empty();
-                if(tableBody.hasClass('sortByKnownVocabEndpointDesc')) {
-                    tableBody.removeClass('sortByKnownVocabEndpointDesc');
-                    tableBody.addClass('sortByKnownVocabEndpointAsc');
-                    knowVocabsData.sort((a,b) => {
-                        return a.endpoint.localeCompare(b.endpoint);
-                    });
-                } else {
-                    tableBody.addClass('sortByKnownVocabEndpointDesc');
-                    tableBody.removeClass('sortByKnownVocabEndpointAsc');
-                    knowVocabsData.sort((a,b) => {
-                        return - a.endpoint.localeCompare(b.endpoint);
-                    });
-                }
-                endpointKnowVocabsMeasureFill();
-            });
 
-            endpointKnowVocabsMeasureFill();
-            $('#knownVocabMeasureHeader').click(function() {
-                $('#endpointKnownVocabsTableBody').empty();
-                if(tableBody.hasClass('sortByKnownVocabMeasureDesc')) {
-                    tableBody.removeClass('sortByKnownVocabMeasureDesc');
-                    tableBody.addClass('sortByKnownVocabMeasureAsc');
-                    knowVocabsData.sort((a,b) => {
-                        return a.measure - b.measure;
-                    });
-                } else {
-                    tableBody.addClass('sortByKnownVocabMeasureDesc');
-                    tableBody.removeClass('sortByKnownVocabMeasureAsc');
-                    knowVocabsData.sort((a,b) => {
-                        return b.measure - a.measure;
-                    });
-                }
-                endpointKnowVocabsMeasureFill();
-            });
+            setTableHeaderSort("endpointKnownVocabsTableBody", ["knownVocabEndpointHeader", "knownVocabMeasureHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.measure - b.measure ], endpointKnowVocabsMeasureFill, knowVocabsData);
 
             // compputation of the know vocabularies measure
             var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
@@ -724,13 +667,6 @@ function vocabEndpointGraphFill() {
                         vocabKeywords.forEach((endpointKeyword, i) => {
                             jsonKeywordLinks.add({source:endpointUrl, target:endpointKeyword})
 
-                            if(keywordHitsMap.get(endpointKeyword) == undefined) {
-                                keywordHitsMap.set(endpointKeyword, 0)
-                            }
-                            var currentKeywordHits = keywordHitsMap.get(endpointKeyword);
-                            keywordHitsMap.set(endpointKeyword, currentKeywordHits+1);
-
-
                             if(endpointKeywordsMap.get(endpointUrl) == undefined) {
                                 endpointKeywordsMap.set(endpointUrl, new Set());
                             }
@@ -746,40 +682,8 @@ function vocabEndpointGraphFill() {
                     jsonKeywordNodes.add({name:item, category:'Endpoint', symbolSize:5})
                 });
 
-                var endpointKeywordsGraphOptions = {
-                        title: {
-                          text: 'Endpoints and keywords',
-                          top: 'bottom',
-                          left: 'center'
-                        },
-                        tooltip: {},
-                        legend: [
-                          {
-                            data: ["Keyword", "Endpoint"]
-                        }
-                    ],
-                    series: [
-                      {
-                        //name: 'Vocabulary',
-                        type: 'graph',
-                        layout: 'force',
-                        data: [...jsonKeywordNodes],
-                        links: [...jsonKeywordLinks],
-                        categories: [{name:"Keyword"}, {name:"Endpoint"}],
-                        roam: true,
-                        draggable:true,
-                        label: {
-                          position: 'right'
-                        },
-                        force: {
-                          repulsion: 50
-                        }
-                    }
-                    ]
-                };
+                var endpointKeywordsGraphOptions = getForceGraphOption('Endpoints and keywords', ["Keyword", "Endpoint"], [...jsonKeywordNodes], [...jsonKeywordLinks]);
                 endpointKeywordsForceGraph.setOption(endpointKeywordsGraphOptions);
-
-                console.log(endpointKeywordsMap)
 
                 var endpointKeywordsData = [];
                 endpointKeywordsMap.forEach((keywords, endpoint, map) => {
@@ -799,7 +703,8 @@ function vocabEndpointGraphFill() {
                         var keywordsCell = $(document.createElement("td"));
                         var keywordsText = "";
                         var keywordCount = 0;
-                        keywords.forEach((keyword) => {
+                        var keywordsArray = [...keywords].sort((a, b) => a.localeCompare(b))
+                        keywordsArray.forEach((keyword) => {
                             if(keywordCount > 0) {
                                 keywordsText += ", ";
                             }
@@ -815,41 +720,7 @@ function vocabEndpointGraphFill() {
                 }
                 endpointKeywordsTableFill()
 
-                $('#endpointKeywordsTableEndpointHeader').click(function() {
-                    endpointKeywordsTableBody.empty();
-                    if(endpointKeywordsTableBody.hasClass('sortByEndpointDesc')) {
-                        endpointKeywordsTableBody.removeClass('sortEndpointDesc');
-                        endpointKeywordsTableBody.addClass('sortByEndpointAsc');
-                        endpointKeywordsData.sort((a,b) => {
-                            return a.endpoint.localeCompare(b.endpoint);
-                        });
-                    } else {
-                        endpointKeywordsTableBody.addClass('sortByEndpointDesc');
-                        endpointKeywordsTableBody.removeClass('sortByEndpointAsc');
-                        endpointKeywordsData.sort((a,b) => {
-                            return - a.endpoint.localeCompare(b.endpoint);
-                        });
-                    }
-                    endpointKeywordsTableFill();
-                });
-
-                $('#endpointKeywordsTableKeywordHeader').click(function() {
-                    endpointKeywordsTableBody.empty();
-                    if(endpointKeywordsTableBody.hasClass('sortByKeywordsDesc')) {
-                        endpointKeywordsTableBody.removeClass('sortByKeywordsDesc');
-                        endpointKeywordsTableBody.addClass('sortByKeywordsAsc');
-                        endpointKeywordsData.sort((a,b) => {
-                            return a.keywords.size - b.keywords.size;
-                        });
-                    } else {
-                        endpointKeywordsTableBody.addClass('sortByKeywordsDesc');
-                        endpointKeywordsTableBody.removeClass('sortByKeywordsAsc');
-                        endpointKeywordsData.sort((a,b) => {
-                            return b.keywords.size - a.keywords.size;
-                        });
-                    }
-                    endpointKeywordsTableFill();
-                });
+                setTableHeaderSort("endpointKeywordsTableBody", ["endpointKeywordsTableEndpointHeader", "endpointKeywordsTableKeywordHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.keywords.size - b.keywords.size ], endpointKeywordsTableFill, endpointKeywordsData);
             });
         });
     });
@@ -925,6 +796,8 @@ function tripleNumberScatter() {
                 }
             };
             tripleScatterChart.setOption(optionTriples);
+        } else {
+            hideTripleNumberContent();
         }
     });
 }
@@ -995,6 +868,8 @@ function classNumberFill() {
                 }
             };
             classScatterChart.setOption(optionTriples);
+        } else {
+            hideClassNumberContent();
         }
 
     });
@@ -1013,7 +888,7 @@ function propertyNumberFill() {
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
         "?base <http://rdfs.org/ns/void#properties> ?o ." +
         "}" +
-        "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";
+        "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?g ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";
     sparqlQueryJSON(propertiesSPARQLquery, json => {
         var endpointDataSerieMap = new Map();
         json.results.bindings.forEach((itemResult, i) => {
@@ -1062,6 +937,8 @@ function propertyNumberFill() {
                 }
             };
             propertyScatterChart.setOption(optionTriples);
+        } else {
+            hidePropertyNumberContent();
         }
 
     });
@@ -1183,6 +1060,8 @@ function categoryTestNumberFill() {
                 }
             };
             categoryScatterChart.setOption(optionTriples);
+        } else {
+            hideCategoryTestNumberContent();
         }
     });
 }
@@ -1462,35 +1341,10 @@ function classAndPropertiesGraphFill() {
         classCountsEndpointsMap.forEach((countsItem, classKey, map) => {
             classDescriptionData.push(countsItem);
         });
+
+        setTableHeaderSort("classDescriptionTableBody", ["classDescriptionTableClassHeader", "classDescriptionTableTriplesHeader", "classDescriptionTableClassesHeader", "classDescriptionTablePropertiesHeader", "classDescriptionTableDistinctSubjectsHeader", "classDescriptionTableDistinctObjectsHeader", "classDescriptionTableEndpointsHeader"], [(a,b) => a.class.localeCompare(b.class), (a,b) => b.triples - a.triples, (a,b) => b.classes - a.classes, (a,b) => b.properties - a.properties, (a,b) => b.distinctSubjects - a.distinctSubjects, (a,b) => b.distinctObjects - a.distinctObjects, (a,b) => b.endpoints.size - a.endpoints.size ], fillclassDescriptionTable, classDescriptionData);
         classDescriptionData.sort((a,b) => a.class.localeCompare(b.class));
-        $('#classDescriptionTableClassHeader').click(() => {
-            classDescriptionData.sort((a,b) => a.class.localeCompare(b.class));
-            fillclassDescriptionTable();
-        });
-        $('#classDescriptionTableTriplesHeader').click(() => {
-            classDescriptionData.sort((a,b) => b.triples - a.triples);
-            fillclassDescriptionTable();
-        });
-        $('#classDescriptionTableClassesHeader').click(() => {
-            classDescriptionData.sort((a,b) => b.classes - a.classes);
-            fillclassDescriptionTable();
-        });
-        $('#classDescriptionTablePropertiesHeader').click(() => {
-            classDescriptionData.sort((a,b) => b.properties - a.properties);
-            fillclassDescriptionTable();
-        });
-        $('#classDescriptionTableDistinctSubjectsHeader').click(() => {
-            classDescriptionData.sort((a,b) => b.distinctSubjects - a.distinctSubjects);
-            fillclassDescriptionTable();
-        });
-        $('#classDescriptionTableDistinctObjectsHeader').click(() => {
-            classDescriptionData.sort((a,b) => b.distinctObjects - a.distinctObjects);
-            fillclassDescriptionTable();
-        });
-        $('#classDescriptionTableEndpointsHeader').click(() => {
-            classDescriptionData.sort((a,b) => b.endpoints.size - a.endpoints.size );
-            fillclassDescriptionTable();
-        });
+
         function fillclassDescriptionTable() {
             var tableBody = $("#classDescriptionTableBody");
             tableBody.empty();
@@ -1601,30 +1455,8 @@ function classAndPropertiesGraphFill() {
             classDescriptionData.push(countsItem);
         });
         classDescriptionData.sort((a,b) => a.class.localeCompare(b.class));
-        $('#classPropertiesDescriptionTableClassHeader').click(() => {
-            classDescriptionData.sort((a,b) => a.class.localeCompare(b.class));
-            fillClassPropertiesDescriptionTable();
-        });
-        $('#classPropertiesDescriptionTablePropertyHeader').click(() => {
-            classDescriptionData.sort((a,b) => b.property.localeCompare(a.property));
-            fillClassPropertiesDescriptionTable();
-        });
-        $('#classPropertiesDescriptionTableTriplesHeader').click(() => {
-            classDescriptionData.sort((a,b) => b.triples - a.triples);
-            fillClassPropertiesDescriptionTable();
-        });
-        $('#classPropertiesDescriptionTableDistinctSubjectsHeader').click(() => {
-            classDescriptionData.sort((a,b) => b.distinctSubjects - a.distinctSubjects);
-            fillClassPropertiesDescriptionTable();
-        });
-        $('#classPropertiesDescriptionTableDistinctObjectsHeader').click(() => {
-            classDescriptionData.sort((a,b) => b.distinctObjects - a.distinctObjects);
-            fillClassPropertiesDescriptionTable();
-        });
-        $('#classPropertiesDescriptionTableEndpointsHeader').click(() => {
-            classDescriptionData.sort((a,b) => b.endpoints.size - a.endpoints.size );
-            fillClassPropertiesDescriptionTable();
-        });
+
+        setTableHeaderSort("classPropertiesDescriptionTableBody", ["classPropertiesDescriptionTableClassHeader", "classPropertiesDescriptionTablePropertyHeader", "classPropertiesDescriptionTableTriplesHeader", "classPropertiesDescriptionTableDistinctSubjectsHeader", "classPropertiesDescriptionTableDistinctObjectsHeader", "classPropertiesDescriptionTableEndpointsHeader"], [(a,b) => a.class.localeCompare(b.class), (a,b) => b.property.localeCompare(a.property), (a,b) => b.triples - a.triples, (a,b) => b.distinctSubjects - a.distinctSubjects, (a,b) => b.distinctObjects - a.distinctObjects, (a,b) => b.endpoints.size - a.endpoints.size ], fillClassPropertiesDescriptionTable, classDescriptionData);
 
         function fillClassPropertiesDescriptionTable() {
             var tableBody = $("#classPropertiesDescriptionTableBody");
@@ -1805,24 +1637,7 @@ function descriptionElementFill() {
                         });
                     }
 
-                    var tableBody = $('#datasetDescriptionTableBody');
-                    $('#datasetDescriptionTableEndpointHeader').click(function() {
-                        tableBody.empty();
-                        if(tableBody.hasClass('sortEndpointDesc')) {
-                            tableBody.removeClass('sortEndpointDesc');
-                            tableBody.addClass('sortEndpointAsc');
-                            data.sort((a,b) => {
-                                return a.endpoint.localeCompare(b.endpoint);
-                            });
-                        } else {
-                            tableBody.addClass('sortEndpointDesc');
-                            tableBody.removeClass('sortEndpointAsc');
-                            data.sort((a,b) => {
-                                return - a.endpoint.localeCompare(b.endpoint);
-                            });
-                        }
-                        fillTestTable();
-                    });
+                    setTableHeaderSort("datasetDescriptionTableBody", ["datasetDescriptionTableEndpointHeader", "datasetDescriptionTableWhoHeader", "datasetDescriptionTableLicenseHeader", "datasetDescriptionTableDateHeader", "datasetDescriptionTableSourceHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.who.toString().localeCompare(b.who.toString()), (a,b) => a.license.toString().localeCompare(b.license.toString()), (a,b) => a.time.toString().localeCompare(b.time.toString()), (a,b) => a.source.toString().localeCompare(b.source.toString())], fillTestTable, data);
 
                     fillTestTable();
 
@@ -1983,22 +1798,25 @@ function shortUrisFill() {
             $('#shortUrisMeasure').text(precise(shortUrisAverageMeasure)+"%");
 
             // Measire Details
-            var shortUrisDetailTableBody = $('#shortUrisTableBody');
-            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
-                var endpointRow = $(document.createElement('tr'));
+            function fillShortUriTable() {
+                var shortUrisDetailTableBody = $('#shortUrisTableBody');
+                endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                    var endpointRow = $(document.createElement('tr'));
 
-                var endpointCell = $(document.createElement('td'));
-                endpointCell.text(endpoint);
-                var measureCell = $(document.createElement('td'));
-                var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
-                var measureAverage = endpointMeasureSum / serieData.length;
-                measureCell.text(precise(measureAverage, 3) + "%");
+                    var endpointCell = $(document.createElement('td'));
+                    endpointCell.text(endpoint);
+                    var measureCell = $(document.createElement('td'));
+                    var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+                    var measureAverage = endpointMeasureSum / serieData.length;
+                    measureCell.text(precise(measureAverage, 3) + "%");
 
-                endpointRow.append(endpointCell);
-                endpointRow.append(measureCell);
+                    endpointRow.append(endpointCell);
+                    endpointRow.append(measureCell);
 
-                shortUrisDetailTableBody.append(endpointRow);
-            });
+                    shortUrisDetailTableBody.append(endpointRow);
+                });
+            }
+            fillShortUriTable();
         }
     });
 }
