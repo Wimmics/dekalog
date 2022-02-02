@@ -4,7 +4,6 @@ import $ from 'jquery';
 import 'leaflet';
 import {greenIcon, orangeIcon} from "./leaflet-color-markers.js";
 import {endpointIpMap, timezoneMap, graphLists} from "./data.js";
-import {ForceGraph} from './graphics.js'
 
 
 // Initialization of the map
