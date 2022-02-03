@@ -76,6 +76,18 @@ function precise(x, n) {
     return Number.parseFloat(x).toPrecision(2);
 }
 
+function collapseHtml(htmlId) {
+    var jQuerySelect = $('#'+htmlId);
+    jQuerySelect.removeClass('show');
+    jQuerySelect.addClass('collapse');
+}
+
+function unCollapseHtml(htmlId) {
+    var jQuerySelect = $('#'+htmlId);
+    jQuerySelect.removeClass('collapse');
+    jQuerySelect.addClass('show');
+}
+
 // Parse the date in any format
 function parseDate(input, format) {
   format = format || 'yyyy-mm-dd'; // default format
@@ -151,7 +163,7 @@ function refresh() {
     clear();
     mapFill();
     sparqlesHistoFill();
-    vocabEndpointGraphFill();
+    vocabRelatedContentFill();
     tripleNumberScatter();
     classNumberFill();
     propertyNumberFill();
@@ -171,8 +183,7 @@ function clear() {
     sparql10Chart.setOption({series:[]}, true);
     sparql11Chart.setOption({series:[]}, true);
     totalRuntimeChart.setOption({series:[]}, true);
-    vocabForceGraph.setOption({series:[]}, true);
-    endpointKeywordsForceGraph.setOption({series:[]}, true);
+    hideVocabularyContent();
     hideTripleNumberContent();
     hideClassNumberContent();
     hideCategoryTestNumberContent();
@@ -180,7 +191,6 @@ function clear() {
     hideRDFDataStructuresContent();
     hideReadableLabelsContent();
     datasetdescriptionChart.setOption({series:[]}, true);
-    $('#KnownVocabulariesMeasure').empty();
     $('#endpointKnownVocabsTableBody').empty();
     $('#rulesTableBody').empty();
     $('#datasetDescriptionTableBody').empty();
@@ -241,13 +251,10 @@ function changeGraphSetIndex(index) {
 
 function setButtonAsTableCollapse(buttonId, tableId) {
     $('#'+buttonId).click(function() {
-        var table = $('#'+tableId);
-        if(table.hasClass("show")) {
-            table.removeClass("show");
-            table.addClass("collapse");
+        if($('#'+tableId).hasClass("show")) {
+            collapseHtml(tableId);
         } else {
-            table.removeClass("collapse");
-            table.addClass("show");
+            unCollapseHtml(tableId);
         }
     });
 }
@@ -531,7 +538,7 @@ function sparqlesHistoFill() {
 setButtonAsTableCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
 
 
-function vocabEndpointGraphFill() {
+function vocabRelatedContentFill() {
 // Create an force graph with the graph linked by co-ocurrence of vocabularies
     var sparqlesVocabularies = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
         "{ ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
@@ -588,43 +595,49 @@ function vocabEndpointGraphFill() {
             vocabSet.forEach(item => {
                 jsonVocabNodes.add({name:item,  category:'Vocabulary', symbolSize:5})
             });
-            var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
-            var sumknowVocabMeasure = 0;
-            var knowVocabsData = [];
-            gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
-                var measure = (endpointVocabs.size/rawGatherVocab.get(endpointUrl).size);
-                knowVocabsData.push({ 'endpoint':endpointUrl, 'measure':measure })
+                var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
+                var sumknowVocabMeasure = 0;
+                var knowVocabsData = [];
+                gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
+                    var measure = (endpointVocabs.size/rawGatherVocab.get(endpointUrl).size);
+                    knowVocabsData.push({ 'endpoint':endpointUrl, 'measure':measure })
 
-                endpointVocabs.forEach((vocab, i) => {
-                    jsonVocabLinks.add({source:endpointUrl, target:vocab})
+                    endpointVocabs.forEach((vocab, i) => {
+                        jsonVocabLinks.add({source:endpointUrl, target:vocab})
+                    });
                 });
-            });
 
-            var vocabGraphOptions = getForceGraphOption('Endpoints and knowledge bases', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
-            vocabForceGraph.setOption(vocabGraphOptions);
+                if(jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
+                showEndpointVocabularyContent();
 
-            // Measure Table
-            function endpointKnowVocabsMeasureFill() {
-                knowVocabsData.forEach((item, i) => {
-                    var endpointUrl = item.endpoint;
-                    var measure = item.measure;
-                    sumknowVocabMeasure += measure;
-                    var endpointRow = document.createElement("tr");
-                    var endpointCell = document.createElement('td');
-                    endpointCell.appendChild( document.createTextNode(endpointUrl));
-                    endpointRow.appendChild(endpointCell);
-                    var knownVocabMeasureCell = document.createElement('td');
-                    knownVocabMeasureCell.appendChild( document.createTextNode(precise(measure)));
-                    endpointRow.appendChild(knownVocabMeasureCell);
-                    endpointKnownVocabulariestableBody.append(endpointRow);
-                });
-            };
+                var vocabGraphOptions = getForceGraphOption('Endpoints and knowledge bases', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
+                vocabForceGraph.setOption(vocabGraphOptions);
 
-            setTableHeaderSort("endpointKnownVocabsTableBody", ["knownVocabEndpointHeader", "knownVocabMeasureHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.measure - b.measure ], endpointKnowVocabsMeasureFill, knowVocabsData);
+                // Measure Table
+                function endpointKnowVocabsMeasureFill() {
+                    knowVocabsData.forEach((item, i) => {
+                        var endpointUrl = item.endpoint;
+                        var measure = item.measure;
+                        sumknowVocabMeasure += measure;
+                        var endpointRow = $(document.createElement("tr"));
+                        var endpointCell = $(document.createElement('td'));
+                        endpointCell.text(endpointUrl);
+                        endpointRow.append(endpointCell);
+                        var knownVocabMeasureCell = $(document.createElement('td'));
+                        knownVocabMeasureCell.text(precise(measure*100, 3)+"%");
+                        endpointRow.append(knownVocabMeasureCell);
+                        endpointKnownVocabulariestableBody.append(endpointRow);
+                    });
+                };
+                endpointKnowVocabsMeasureFill();
+                setTableHeaderSort("endpointKnownVocabsTableBody", ["knownVocabEndpointHeader", "knownVocabMeasureHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.measure - b.measure ], endpointKnowVocabsMeasureFill, knowVocabsData);
 
-            // compputation of the know vocabularies measure
-            var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
-            knownVocabulariesMeasureHtml.append( document.createTextNode(precise(sumknowVocabMeasure / endpointSet.size)));
+                // compputation of the know vocabularies measure
+                var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
+                knownVocabulariesMeasureHtml.text( precise((sumknowVocabMeasure / endpointSet.size)*100, 3)+"%");
+            } else {
+                hideEndpointVocabularyContent();
+            }
 
             // Endpoint and vocabulary keywords graph
             var vocabularyQueryValues = "";
@@ -682,59 +695,92 @@ function vocabEndpointGraphFill() {
                     jsonKeywordNodes.add({name:item, category:'Endpoint', symbolSize:5})
                 });
 
-                var endpointKeywordsGraphOptions = getForceGraphOption('Endpoints and keywords', ["Keyword", "Endpoint"], [...jsonKeywordNodes], [...jsonKeywordLinks]);
-                endpointKeywordsForceGraph.setOption(endpointKeywordsGraphOptions);
+                if(jsonKeywordNodes.size > 0 && jsonKeywordLinks.size > 0) {
+                    showEndpointKeywordContent();
 
-                var endpointKeywordsData = [];
-                endpointKeywordsMap.forEach((keywords, endpoint, map) => {
-                    endpointKeywordsData.push({endpoint:endpoint, keywords:keywords})
-                });
+                    var endpointKeywordsGraphOptions = getForceGraphOption('Endpoints and keywords', ["Keyword", "Endpoint"], [...jsonKeywordNodes], [...jsonKeywordLinks]);
+                    endpointKeywordsForceGraph.setOption(endpointKeywordsGraphOptions);
 
-                // Endpoint and vocabulary keywords table
-                var endpointKeywordsTableBody = $('#endpointKeywordsTableBody');
-                function endpointKeywordsTableFill() {
-                    endpointKeywordsTableBody.empty();
-                    endpointKeywordsData.forEach(endpointKeywordsItem => {
-                        var endpoint = endpointKeywordsItem.endpoint;
-                        var keywords = endpointKeywordsItem.keywords;
-                        var endpointRow = $(document.createElement("tr"));
-                        var endpointCell = $(document.createElement("td"));
-                        endpointCell.text(endpoint);
-                        var keywordsCell = $(document.createElement("td"));
-                        var keywordsText = "";
-                        var keywordCount = 0;
-                        var keywordsArray = [...keywords].sort((a, b) => a.localeCompare(b))
-                        keywordsArray.forEach((keyword) => {
-                            if(keywordCount > 0) {
-                                keywordsText += ", ";
-                            }
-                            keywordsText += keyword;
-                            keywordCount++;
-                        });
-                        keywordsCell.text(keywordsText);
-
-                        endpointRow.append(endpointCell);
-                        endpointRow.append(keywordsCell);
-                        endpointKeywordsTableBody.append(endpointRow);
+                    var endpointKeywordsData = [];
+                    endpointKeywordsMap.forEach((keywords, endpoint, map) => {
+                        endpointKeywordsData.push({endpoint:endpoint, keywords:keywords})
                     });
-                }
-                endpointKeywordsTableFill()
 
-                setTableHeaderSort("endpointKeywordsTableBody", ["endpointKeywordsTableEndpointHeader", "endpointKeywordsTableKeywordHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.keywords.size - b.keywords.size ], endpointKeywordsTableFill, endpointKeywordsData);
+                    // Endpoint and vocabulary keywords table
+                    var endpointKeywordsTableBody = $('#endpointKeywordsTableBody');
+                    function endpointKeywordsTableFill() {
+                        endpointKeywordsTableBody.empty();
+                        endpointKeywordsData.forEach(endpointKeywordsItem => {
+                            var endpoint = endpointKeywordsItem.endpoint;
+                            var keywords = endpointKeywordsItem.keywords;
+                            var endpointRow = $(document.createElement("tr"));
+                            var endpointCell = $(document.createElement("td"));
+                            endpointCell.text(endpoint);
+                            var keywordsCell = $(document.createElement("td"));
+                            var keywordsText = "";
+                            var keywordCount = 0;
+                            var keywordsArray = [...keywords].sort((a, b) => a.localeCompare(b))
+                            keywordsArray.forEach((keyword) => {
+                                if(keywordCount > 0) {
+                                    keywordsText += ", ";
+                                }
+                                keywordsText += keyword;
+                                keywordCount++;
+                            });
+                            keywordsCell.text(keywordsText);
+
+                            endpointRow.append(endpointCell);
+                            endpointRow.append(keywordsCell);
+                            endpointKeywordsTableBody.append(endpointRow);
+                        });
+                    }
+                    endpointKeywordsTableFill()
+
+                    setTableHeaderSort("endpointKeywordsTableBody", ["endpointKeywordsTableEndpointHeader", "endpointKeywordsTableKeywordHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.keywords.size - b.keywords.size ], endpointKeywordsTableFill, endpointKeywordsData);
+                } else {
+                    hideEndpointKeywordContent();
+                }
+            }, () => {
+                hideEndpointKeywordContent();
             });
+        }, () => {
+            hideVocabularyContent();
         });
+    }, () => {
+        hideEndpointVocabularyContent();
     });
 }
 setButtonAsTableCollapse('KnownVocabulariesDetails', 'knowVocabEndpointTable');
 setButtonAsTableCollapse('endpointKeywordsDetails', 'endpointKeywordsTable');
 function hideVocabularyContent() {
+    collapseHtml('vocabRelatedContent');
+    hideEndpointVocabularyContent();
+    hideEndpointKeywordContent();
+}
+function showVocabularyContent() {
+    unCollapseHtml('vocabRelatedContent')
+}
+function hideEndpointVocabularyContent() {
     vocabForceGraph.setOption({series:[]}, true);
+    collapseHtml('vocabs');
+    collapseHtml('knowVocabEndpointMeasureRow');
+    collapseHtml('knowVocabEndpointTable');
+}
+function hideEndpointKeywordContent() {
     endpointKeywordsForceGraph.setOption({series:[]}, true);
-    $('#vocabs').removeClass('show');
-    $('#vocabs').addClass('collapse');
-    $('#endpointKeywords').removeClass('show');
-    $('#endpointKeywords').addClass('collapse');
-    endpointKeywordsTableBody.empty();
+    collapseHtml('endpointKeywords');
+    collapseHtml('endpointKeywordsDetails');
+    $('#endpointKeywordsTableBody').empty();
+}
+function showEndpointVocabularyContent() {
+    showVocabularyContent();
+    unCollapseHtml('knowVocabEndpointMeasureRow');
+    unCollapseHtml('vocabs');
+}
+function showEndpointKeywordContent() {
+    showVocabularyContent();
+    unCollapseHtml('endpointKeywords');
+    unCollapseHtml('endpointKeywordsDetails');
 }
 
 function tripleNumberScatter() {
@@ -803,8 +849,7 @@ function tripleNumberScatter() {
 }
 function hideTripleNumberContent() {
     tripleScatterChart.setOption({series:[]}, true);
-    $('#tripleScatter').removeClass('show');
-    $('#tripleScatter').addClass('collapse');
+    collapseHtml('tripleScatter');
 }
 
 function classNumberFill() {
@@ -876,8 +921,7 @@ function classNumberFill() {
 }
 function hideClassNumberContent() {
     classScatterChart.setOption({series:[]}, true);
-    $('#classScatter').removeClass('show');
-    $('#classScatter').addClass('collapse');
+    collapseHtml('classScatter');
 }
 
 function propertyNumberFill() {
@@ -945,8 +989,7 @@ function propertyNumberFill() {
 }
 function hidePropertyNumberContent() {
     propertyScatterChart.setOption({series:[]}, true);
-    $('#propertyScatter').removeClass('show');
-    $('#propertyScatter').addClass('collapse');
+    collapseHtml('propertyScatter');
 }
 
 function categoryTestNumberFill() {
@@ -1067,8 +1110,7 @@ function categoryTestNumberFill() {
 }
 function hideCategoryTestNumberContent() {
     categoryScatterChart.setOption({series:[]}, true);
-    $('#testCategoryScatter').removeClass('show');
-    $('#testCategoryScatter').addClass('collapse');
+    collapseHtml('testCategoryScatter');
 }
 
 function testTableFill() {
@@ -1822,9 +1864,8 @@ function shortUrisFill() {
 }
 function hideShortUrisContent() {
     rdfDataStructureChart.setOption({series:[]}, true);
-    $('shortUrisMeasure').empty();
-    $('#shortUrisScatter').removeClass('show');
-    $('#shortUrisScatter').addClass('collapse');
+    $('#shortUrisMeasure').empty();
+    collapseHtml('shortUrisScatter');
 }
 setButtonAsTableCollapse('shortUrisDetails', 'shortUrisTable');
 
@@ -1920,8 +1961,7 @@ function rdfDataStructuresFill() {
 function hideRDFDataStructuresContent() {
     rdfDataStructureChart.setOption({series:[]}, true);
     $('#rdfDataStructuresMeasure').empty();
-    $('#rdfDataStructuresScatter').removeClass('show');
-    $('#rdfDataStructuresScatter').addClass('collapse');
+    collapseHtml('rdfDataStructuresScatter');
 }
 setButtonAsTableCollapse('rdfDataStructuresDetails', 'rdfDataStructuresTable');
 
@@ -2017,7 +2057,6 @@ function readableLabelsFill() {
 function hideReadableLabelsContent() {
     readableLabelChart.setOption({series:[]}, true);
     $('#readableLabelMeasure').empty();
-    $('#readableLabelsScatter').removeClass('show');
-    $('#readableLabelsScatter').addClass('collapse');
+    collapseHtml('readableLabelsScatter');
 }
 setButtonAsTableCollapse('readableLabelsDetails', 'readableLabelsTable');

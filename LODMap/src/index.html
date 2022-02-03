@@ -29,7 +29,7 @@
                     <span> <img src="./img/marker-icon-green.png">: Marker used for endpoints.</span><br/>
                     <span> <img src="./img/marker-icon-orange.png">: Marker used for endpoints that are using a timezone different to the one corresponding to their IP.</span>
                 </div>
-                <div class="row border border-dark justify-content-center">
+                <div class="row border border-dark justify-content-center" id="vocabRelatedContent">
                     <div class="col-12 justify-content-center">
                         <div class="row justify-content-center"><h5>Graphs based on the vocabularies* used in the endpoints</h5></div>
                         <div class="row justify-content-center" id="vocabs"></div>
@@ -143,10 +143,10 @@
                         </div>
                         <div class="row">
                             <div class="col-6">
-                                <button id="datasetDescriptionExplain" type="button" class="btn btn-link justify-content-center">Explanations about the provenance informations</button>
+                                <button id="datasetDescriptionExplain" type="button" class="btn btn-link justify-content-center">Explanations about the dataset description elements</button>
                             </div>
                             <div class="col-6">
-                                <button id="datasetDescriptionStatDetails" type="button" class="btn btn-link justify-content-center">Details about the presence of provenance informations</button>
+                                <button id="datasetDescriptionStatDetails" type="button" class="btn btn-link justify-content-center">Details about the presence of dataset description elements</button>
                             </div>
                         </div>
                         <div class='row collapse' id='datasetDescriptionExplainText'>
@@ -268,7 +268,7 @@
                                     </table>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="knowVocabEndpointMeasureRow">
                                 <th scope="row" title="Use of vocabularies registered in the Linked Open Vocabularies repository.">Use of known vocabularies*</th> <td id="KnownVocabulariesMeasure"></td><td><button id="KnownVocabulariesDetails" type="button" class="btn btn-link">Details</button></td>
                             </tr>
                             <tr>
@@ -308,7 +308,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <span>*: This measure can only be computed for the endpoints that return their list of used vocabularies.</span>
+                <span>*: This measure can only be computed for the endpoints that have returned their list of used vocabularies.</span>
             </div>
             <div class="row border border-dark  rounded-bottom"><span>This website was created as part of the <a href="https://dekalog.univ-nantes.fr/">ANR project DeKaloG</a>. The code of this site and of the application that generated the RDF data it exploits, are hosted on <a href="https://github.com/Wimmics/dekalog">Github</a></span></div>
         </div>
