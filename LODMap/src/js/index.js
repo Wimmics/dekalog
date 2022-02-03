@@ -1140,7 +1140,7 @@ function hideCategoryTestNumberContent() {
     collapseHtml('testCategoryScatter');
 }
 function showCategoryTestNumberContent() {
-    uncollapseHtml('testCategoryScatter');
+    unCollapseHtml('testCategoryScatter');
 }
 function redrawCategoryTestNumberChart() {
     categoryScatterChart.setOption(categoryTestNumberScatterOption, true);
@@ -1912,6 +1912,8 @@ function shortUrisFill() {
                 });
             }
             fillShortUriTable();
+        } else {
+            hideShortUrisContent();
         }
     });
 }
@@ -1919,10 +1921,11 @@ function hideShortUrisContent() {
     rdfDataStructureChart.setOption({series:[]}, true);
     $('#shortUrisMeasure').empty();
     collapseHtml('shortUrisScatter');
+    collapseHtml('shortUriMeasureRow');
 }
 function showShortUrisContent() {
-    $('#shortUrisScatter').removeClass('collapse');
-    $('#shortUrisScatter').addClass('show');
+    unCollapseHtml('shortUrisScatter');
+    unCollapseHtml('shortUriMeasureRow');
 }
 function redrawShortUrisChart() {
     shortUriChart.setOption(shortUrisScatterOption, true);
@@ -2004,6 +2007,8 @@ function rdfDataStructuresFill() {
 
                 rdfDataStructuresDetailTableBody.append(endpointRow);
             });
+        } else {
+            hideRDFDataStructuresContent();
         }
 
     });
@@ -2012,10 +2017,11 @@ function hideRDFDataStructuresContent() {
     rdfDataStructureChart.setOption({series:[]}, true);
     $('#rdfDataStructuresMeasure').empty();
     collapseHtml('rdfDataStructuresScatter');
+    collapseHtml("rdfDataStructureMeasureRow");
 }
 function showRDFDataStructuresContent() {
-    $('#rdfDataStructuresScatter').removeClass('collapse');
-    $('#rdfDataStructuresScatter').addClass('show');
+    unCollapseHtml('rdfDataStructuresScatter');
+    unCollapseHtml("rdfDataStructureMeasureRow");
 }
 function redrawRDFDataStructuresChart() {
     rdfDataStructureChart.setOption(rdfDataStructureChartOption, true);
@@ -2097,6 +2103,8 @@ function readableLabelsFill() {
 
                 readableLabelsDetailTableBody.append(endpointRow);
             });
+        } else {
+            hideReadableLabelsContent();
         }
 
     });
@@ -2104,10 +2112,12 @@ function readableLabelsFill() {
 function hideReadableLabelsContent() {
     readableLabelChart.setOption({series:[]}, true);
     $('#readableLabelMeasure').empty();
+    collapseHtml('readableLabelsMeasureRow');
     collapseHtml('readableLabelsScatter');
 }
 function showReadableLabelsContent() {
     unCollapseHtml('readableLabelsScatter');
+    unCollapseHtml('readableLabelsMeasureRow');
 }
 function redrawReadableLabelsChart() {
     readableLabelChart.setOption(readableLabelChartOption, true);
