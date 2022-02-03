@@ -4,7 +4,6 @@ import $ from 'jquery';
 import 'leaflet';
 import {greenIcon, orangeIcon} from "./leaflet-color-markers.js";
 import {endpointIpMap, timezoneMap, graphLists} from "./data.js";
-import {ForceGraph} from './graphics.js'
 
 
 // Initialization of the map
@@ -29,6 +28,11 @@ var categoryScatterChart = echarts.init(document.getElementById('testCategorySca
 var totalRuntimeChart = echarts.init(document.getElementById('totalRuntimeScatter'));
 var averageRuntimeChart = echarts.init(document.getElementById('averageRuntimeScatter'));
 var vocabForceGraph = echarts.init(document.getElementById('vocabs'));
+var endpointKeywordsForceGraph = echarts.init(document.getElementById('endpointKeywords'));
+var shortUriChart = echarts.init(document.getElementById('shortUrisScatter'));
+var rdfDataStructureChart = echarts.init(document.getElementById('rdfDataStructuresScatter'));
+var readableLabelChart = echarts.init(document.getElementById('readableLabelsScatter'));
+var datasetdescriptionChart = echarts.init(document.getElementById('datasetdescriptionRadar'));
 
 function sparqlQueryJSON(query, callback, errorCallback) {
     xmlhttpRequestJSON('http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", callback, errorCallback);
@@ -72,6 +76,18 @@ function precise(x, n) {
     return Number.parseFloat(x).toPrecision(2);
 }
 
+function collapseHtml(htmlId) {
+    var jQuerySelect = $('#'+htmlId);
+    jQuerySelect.removeClass('show');
+    jQuerySelect.addClass('collapse');
+}
+
+function unCollapseHtml(htmlId) {
+    var jQuerySelect = $('#'+htmlId);
+    jQuerySelect.removeClass('collapse');
+    jQuerySelect.addClass('show');
+}
+
 // Parse the date in any format
 function parseDate(input, format) {
   format = format || 'yyyy-mm-dd'; // default format
@@ -83,36 +99,102 @@ function parseDate(input, format) {
   return new Date(parts[fmt['yyyy']], parts[fmt['mm']]-1, parts[fmt['dd']]);
 }
 
+function getForceGraphOption(title, legendData, dataNodes, dataLinks) {
+    var categories = [];
+    legendData.forEach((item, i) => {
+        categories.push({ name:item });
+    });
+    return {
+        title: {
+          text: title,
+          top: 'bottom',
+          left: 'center'
+        },
+        tooltip: {},
+        legend: [
+          {
+            data: legendData
+        }
+    ],
+        series: [
+          {
+            type: 'graph',
+            layout: 'force',
+            data: dataNodes,
+            links: dataLinks,
+            categories: categories,
+            roam: true,
+            draggable:true,
+            label: {
+              position: 'right'
+            },
+            force: {
+              repulsion: 50
+            }
+        }
+        ]
+    };
+}
+
+function setTableHeaderSort(tableBodyId, tableHeadersIds, tableColsSortFunction, tableFillFunction, dataArray) {
+    var tableBody = $('#'+tableBodyId);
+    tableHeadersIds.forEach((tableheaderId, i) => {
+        $('#'+tableheaderId).click(function() {
+            tableBody.empty();
+            var ascSortColClass = "sortCol"+ i +"Asc";
+            var descSortColClass = "sortCol"+ i +"Desc";
+            var colSortFunction = tableColsSortFunction[i];
+            if(! tableBody.hasClass(ascSortColClass)) {
+                tableBody.removeClass(descSortColClass);
+                tableBody.addClass(ascSortColClass);
+                dataArray.sort((a,b) => colSortFunction(a,b));
+            } else {
+                tableBody.addClass(descSortColClass);
+                tableBody.removeClass(ascSortColClass);
+                dataArray.sort((a,b) => - colSortFunction(a,b));
+            }
+            tableFillFunction();
+        });
+    });
+}
+
 function refresh() {
     graphValuesURIList = generateGraphValuesURI(graphList);
     clear();
     mapFill();
     sparqlesHistoFill();
-    vocabEndpointGraphFill();
+    vocabRelatedContentFill();
     tripleNumberScatter();
     classNumberFill();
     propertyNumberFill();
     categoryTestNumberFill();
     testTableFill();
     runtimeStatsFill();
-    averageRuntimeStatsFill()
+    averageRuntimeStatsFill();
+    classAndPropertiesGraphFill();
+    descriptionElementFill();
+    shortUrisFill();
+    rdfDataStructuresFill();
+    readableLabelsFill();
 }
 
 function clear() {
     layerGroup.clearLayers();
     sparql10Chart.setOption({series:[]}, true);
     sparql11Chart.setOption({series:[]}, true);
-    tripleScatterChart.setOption({series:[]}, true);
-    classScatterChart.setOption({series:[]}, true);
-    propertyScatterChart.setOption({series:[]}, true);
-    categoryScatterChart.setOption({series:[]}, true);
     totalRuntimeChart.setOption({series:[]}, true);
-    vocabForceGraph.setOption({series:[]}, true);
-    $('#shortUrisMeasure').empty();
-    $('#RDFdataStructuresMeasure').empty();
-    $('#KnownVocabulariesMeasure').empty();
+    hideVocabularyContent();
+    hideTripleNumberContent();
+    hideClassNumberContent();
+    hideCategoryTestNumberContent();
+    hideShortUrisContent();
+    hideRDFDataStructuresContent();
+    hideReadableLabelsContent();
+    datasetdescriptionChart.setOption({series:[]}, true);
     $('#endpointKnownVocabsTableBody').empty();
     $('#rulesTableBody').empty();
+    $('#datasetDescriptionTableBody').empty();
+    $('#endpointKeywordsTableBody').empty();
 }
 
 function generateGraphValuesURI( graphs) {
@@ -169,13 +251,10 @@ function changeGraphSetIndex(index) {
 
 function setButtonAsTableCollapse(buttonId, tableId) {
     $('#'+buttonId).click(function() {
-        var table = $('#'+tableId);
-        if(table.hasClass("show")) {
-            table.removeClass("show");
-            table.addClass("collapse");
+        if($('#'+tableId).hasClass("show")) {
+            collapseHtml(tableId);
         } else {
-            table.removeClass("collapse");
-            table.addClass("show");
+            unCollapseHtml(tableId);
         }
     });
 }
@@ -364,7 +443,11 @@ function sparqlesHistoFill() {
                 align: 'center',
                 textalign: 'center',
                 left: 'center',
-                text:"Coverage of SPARQL 1.0 features covered",
+                text:"Number of endpoints according to\n their coverage of SPARQL 1.0 features",
+                textStyle: {
+        		    overflow: 'break',
+                    width:"80%"
+                }
             },
             legend: {
                 data:[...categories],
@@ -387,10 +470,12 @@ function sparqlesHistoFill() {
         };
         var option11 = {
             title: {
-                align: 'center',
-                textalign: 'center',
                 left: 'center',
-                text:"Coverage of SPARQL 1.1 features covered",
+                text:"Number of endpoints according to\n their coverage of SPARQL 1.1 features",
+                textStyle: {
+        		    overflow: 'breakAll',
+                    width:"80%"
+                }
             },
             legend: {
                 data:[...categories],
@@ -442,82 +527,7 @@ function sparqlesHistoFill() {
             });
         }
 
-        var tableBody = $('#SPARQLFeaturesTableBody');
-        $('#SPARQLFeaturesTableEndpointHeader').click(function() {
-            tableBody.empty();
-            if(tableBody.hasClass('sortEndpointDesc')) {
-                tableBody.removeClass('sortEndpointDesc');
-                tableBody.removeClass('sortSPARQL10Desc');
-                tableBody.removeClass('sortSPARQL11Desc');
-                tableBody.removeClass('sortSPARQL10Asc');
-                tableBody.removeClass('sortSPARQL11Asc');
-                tableBody.addClass('sortEndpointAsc');
-                jsonBaseFeatureSparqles.sort((a,b) => {
-                    return a.endpoint.localeCompare(b.endpoint);
-                });
-            } else {
-                tableBody.addClass('sortEndpointDesc');
-                tableBody.removeClass('sortEndpointAsc');
-                tableBody.removeClass('sortSPARQL10Desc');
-                tableBody.removeClass('sortSPARQL11Desc');
-                tableBody.removeClass('sortSPARQL10Asc');
-                tableBody.removeClass('sortSPARQL11Asc');
-                jsonBaseFeatureSparqles.sort((a,b) => {
-                    return - a.endpoint.localeCompare(b.endpoint);
-                });
-            }
-            fillTestTable();
-        });
-        $('#SPARQL10FeaturesTableRuleHeader').click(function() {
-            tableBody.empty();
-            if(tableBody.hasClass('sortSPARQL10Desc')) {
-                tableBody.removeClass('sortSPARQL10Desc');
-                tableBody.removeClass('sortSPARQL11Asc');
-                tableBody.removeClass('sortSPARQL11Desc');
-                tableBody.removeClass('sortEndpointDesc');
-                tableBody.removeClass('sortEndpointAsc');
-                tableBody.addClass('sortSPARQL10Asc');
-                jsonBaseFeatureSparqles.sort((a,b) => {
-                    return a.sparql10 - b.sparql10;
-                });
-            } else {
-                tableBody.addClass('sortSPARQL10Desc');
-                tableBody.removeClass('sortSPARQL10Asc');
-                tableBody.removeClass('sortSPARQL11Asc');
-                tableBody.removeClass('sortSPARQL11Desc');
-                tableBody.removeClass('sortEndpointDesc');
-                tableBody.removeClass('sortEndpointAsc');
-                jsonBaseFeatureSparqles.sort((a,b) => {
-                    return - a.sparql10 - b.sparql10;
-                });
-            }
-            fillTestTable();
-        });
-        $('#SPARQL11FeaturesTableRuleHeader').click(function() {
-            tableBody.empty();
-            if(tableBody.hasClass('sortSPARQL11Desc')) {
-                tableBody.removeClass('sortSPARQL11Desc');
-                tableBody.removeClass('sortSPARQL10Asc');
-                tableBody.removeClass('sortSPARQL10Desc');
-                tableBody.removeClass('sortEndpointDesc');
-                tableBody.removeClass('sortEndpointAsc');
-                tableBody.addClass('sortSPARQL11Asc');
-                jsonBaseFeatureSparqles.sort((a,b) => {
-                    return a.sparql11 - b.sparql11;
-                });
-            } else {
-                tableBody.addClass('sortSPARQL11Desc');
-                tableBody.removeClass('sortSPARQL11Asc');
-                tableBody.removeClass('sortSPARQL10Asc');
-                tableBody.removeClass('sortSPARQL10Desc');
-                tableBody.removeClass('sortEndpointDesc');
-                tableBody.removeClass('sortEndpointAsc');
-                jsonBaseFeatureSparqles.sort((a,b) => {
-                    return - a.sparql11 - b.sparql11;
-                });
-            }
-            fillTestTable();
-        });
+        setTableHeaderSort("SPARQLFeaturesTableBody", ["SPARQLFeaturesTableEndpointHeader", "SPARQL10FeaturesTableRuleHeader", "SPARQL11FeaturesTableRuleHeader"],  [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.sparql10 - b.sparql10, (a,b) => a.sparql11 - b.sparql11], fillTestTable, jsonBaseFeatureSparqles);
 
         fillTestTable();
 
@@ -528,10 +538,18 @@ function sparqlesHistoFill() {
 setButtonAsTableCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
 
 
-function vocabEndpointGraphFill() {
+function vocabRelatedContentFill() {
 // Create an force graph with the graph linked by co-ocurrence of vocabularies
-    var sparqlesVocabularies = "SELECT DISTINCT ?endpoint ?vocabulary  WHERE { GRAPH ?g { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary }  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpoint";
+    var sparqlesVocabularies = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
+        "{ ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+        "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?endpoint . " +
+        "?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
+        "} } " +
+        "GROUP BY ?endpointUrl ?vocabulary ";
+
     sparqlQueryJSON(sparqlesVocabularies, json => {
+
         // Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
         var LOVVocabularies = new Set();
         var sumVocabSetSize = 0;
@@ -548,136 +566,222 @@ function vocabEndpointGraphFill() {
             var rawGatherVocab = new Map();
             json.results.bindings.forEach((bindingItem, i) => {
                 var vocabulariUri = bindingItem.vocabulary.value;
-                var endpointUri = bindingItem.endpoint.value;
-                rawVocabSet.add(vocabulariUri);
-                if(! rawGatherVocab.has(endpointUri)) {
-                    rawGatherVocab.set(endpointUri, new Set());
-                }
-                rawGatherVocab.get(endpointUri).add(vocabulariUri);
-                if(LOVVocabularies.has(vocabulariUri)) {
-                    endpointSet.add(endpointUri);
-                    vocabSet.add(vocabulariUri);
-                    if(! gatherVocab.has(endpointUri)) {
-                        gatherVocab.set(endpointUri, new Set());
+                var endpointUri = bindingItem.endpointUrl.value;
+                var graphUri = bindingItem.g.value;
+                if(graphList.some(graphListItem => graphUri.localeCompare(graphListItem) == 0)) {
+                    rawVocabSet.add(vocabulariUri);
+                    if(! rawGatherVocab.has(endpointUri)) {
+                        rawGatherVocab.set(endpointUri, new Set());
                     }
-                    gatherVocab.get(endpointUri).add(vocabulariUri);
+                    rawGatherVocab.get(endpointUri).add(vocabulariUri);
+                    if(LOVVocabularies.has(vocabulariUri)) {
+                        endpointSet.add(endpointUri);
+                        vocabSet.add(vocabulariUri);
+                        if(! gatherVocab.has(endpointUri)) {
+                            gatherVocab.set(endpointUri, new Set());
+                        }
+                        gatherVocab.get(endpointUri).add(vocabulariUri);
+                    }
                 }
             });
 
+            // Endpoint and vocabularies graph
             var jsonVocabLinks = new Set();
             var jsonVocabNodes = new Set();
 
-            endpointSet.forEach((item, i) => {
-                jsonVocabNodes.add({name:item, category:'Knowledge base', x:i*100, y:100, symbolSize:5})
+            endpointSet.forEach(item => {
+                jsonVocabNodes.add({name:item, category:'Endpoint', symbolSize:5});
             });
+            vocabSet.forEach(item => {
+                jsonVocabNodes.add({name:item,  category:'Vocabulary', symbolSize:5})
+            });
+                var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
+                var sumknowVocabMeasure = 0;
+                var knowVocabsData = [];
+                gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
+                    var measure = (endpointVocabs.size/rawGatherVocab.get(endpointUrl).size);
+                    knowVocabsData.push({ 'endpoint':endpointUrl, 'measure':measure })
+
+                    endpointVocabs.forEach((vocab, i) => {
+                        jsonVocabLinks.add({source:endpointUrl, target:vocab})
+                    });
+                });
+
+                if(jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
+                showEndpointVocabularyContent();
+
+                var vocabGraphOptions = getForceGraphOption('Endpoints and knowledge bases', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
+                vocabForceGraph.setOption(vocabGraphOptions);
+
+                // Measure Table
+                function endpointKnowVocabsMeasureFill() {
+                    knowVocabsData.forEach((item, i) => {
+                        var endpointUrl = item.endpoint;
+                        var measure = item.measure;
+                        sumknowVocabMeasure += measure;
+                        var endpointRow = $(document.createElement("tr"));
+                        var endpointCell = $(document.createElement('td'));
+                        endpointCell.text(endpointUrl);
+                        endpointRow.append(endpointCell);
+                        var knownVocabMeasureCell = $(document.createElement('td'));
+                        knownVocabMeasureCell.text(precise(measure*100, 3)+"%");
+                        endpointRow.append(knownVocabMeasureCell);
+                        endpointKnownVocabulariestableBody.append(endpointRow);
+                    });
+                };
+                endpointKnowVocabsMeasureFill();
+                setTableHeaderSort("endpointKnownVocabsTableBody", ["knownVocabEndpointHeader", "knownVocabMeasureHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.measure - b.measure ], endpointKnowVocabsMeasureFill, knowVocabsData);
+
+                // compputation of the know vocabularies measure
+                var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
+                knownVocabulariesMeasureHtml.text( precise((sumknowVocabMeasure / endpointSet.size)*100, 3)+"%");
+            } else {
+                hideEndpointVocabularyContent();
+            }
+
+            // Endpoint and vocabulary keywords graph
+            var vocabularyQueryValues = "";
             vocabSet.forEach((item, i) => {
-                jsonVocabNodes.add({name:item,  category:'Vocabulary', x:100, y:i*100, symbolSize:5})
-            });
-            var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
-            var sumknowVocabMeasure = 0;
-            var knowVocabsData = [];
-            gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
-                var measure = (endpointVocabs.size/rawGatherVocab.get(endpointUrl).size);
-                knowVocabsData.push({ 'endpoint':endpointUrl, 'measure':measure })
-
-                endpointVocabs.forEach((vocab, i) => {
-                    jsonVocabLinks.add({source:endpointUrl, target:vocab})
-                });
+                vocabularyQueryValues += "<"+item+">";
+                vocabularyQueryValues += " " ;
             });
 
-            var vocabGraphOptions = {
-                title: {
-                  text: 'Endpoints and knowledge bases',
-                  top: 'bottom',
-                  left: 'center'
-                },
-                tooltip: {},
-                legend: [
-                  {
-                    data: ["Vocabulary", "Knowledge base"]
-                }
-            ],
-                series: [
-                  {
-                    //name: 'Vocabulary',
-                    type: 'graph',
-                    layout: 'force',
-                    data: [...jsonVocabNodes],
-                    links: [...jsonVocabLinks],
-                    categories: [{name:"Vocabulary"}, {name:"Knowledge base"}],
-                    roam: true,
-                    draggable:true,
-                    label: {
-                      position: 'right'
-                    },
-                    force: {
-                      repulsion: 100
+            var keywordLOVQuery = "SELECT DISTINCT ?vocabulary ?keyword { " +
+            "GRAPH <https://lov.linkeddata.es/dataset/lov> { " +
+            "   ?vocabulary a <http://purl.org/vocommons/voaf#Vocabulary> . " +
+            "   ?vocabulary <http://www.w3.org/ns/dcat#keyword> ?keyword . " +
+            "} " +
+            "VALUES ?vocabulary { "+ vocabularyQueryValues +" } " +
+            "}"
+
+            xmlhttpRequestJSON("https://lov.linkeddata.es/dataset/lov/sparql?query="+encodeURIComponent(keywordLOVQuery)+"&format=json", jsonKeywords => {
+
+                var jsonKeywordLinks = new Set();
+                var jsonKeywordNodes = new Set();
+
+                var keywordSet = new Set();
+                var keywordHitsMap = new Map();
+                var vocabKeywordMap = new Map();
+                var endpointKeywordsMap = new Map();
+                jsonKeywords.results.bindings.forEach((keywordItem, i) => {
+                    var keyword = keywordItem.keyword.value;
+                    var vocab = keywordItem.vocabulary.value;
+                    if(vocabKeywordMap.get(vocab) == undefined) {
+                        vocabKeywordMap.set(vocab, [])
                     }
-                }
-                ]
-            };
-            vocabForceGraph.setOption(vocabGraphOptions);
+                    vocabKeywordMap.get(vocab).push(keyword);
 
-            function endpointKnowVocabsMeasureFill() {
-                knowVocabsData.forEach((item, i) => {
-                    var endpointUrl = item.endpoint;
-                    var measure = item.measure;
-                    sumknowVocabMeasure += measure;
-                    var endpointRow = document.createElement("tr");
-                    var endpointCell = document.createElement('td');
-                    endpointCell.appendChild( document.createTextNode(endpointUrl));
-                    endpointRow.appendChild(endpointCell);
-                    var knownVocabMeasureCell = document.createElement('td');
-                    knownVocabMeasureCell.appendChild( document.createTextNode(precise(measure)));
-                    endpointRow.appendChild(knownVocabMeasureCell);
-                    endpointKnownVocabulariestableBody.append(endpointRow);
+                    keywordSet.add(keyword);
                 });
-            };
-            var tableBody = $('#endpointKnownVocabsTableBody');
-            $('#knownVocabEndpointHeader').click(function() {
-                tableBody.empty();
-                if(tableBody.hasClass('sortByKnownVocabEndpointDesc')) {
-                    tableBody.removeClass('sortByKnownVocabEndpointDesc');
-                    tableBody.addClass('sortByKnownVocabEndpointAsc');
-                    knowVocabsData.sort((a,b) => {
-                        return a.endpoint.localeCompare(b.endpoint);
-                    });
-                } else {
-                    tableBody.addClass('sortByKnownVocabEndpointDesc');
-                    tableBody.removeClass('sortByKnownVocabEndpointAsc');
-                    knowVocabsData.sort((a,b) => {
-                        return - a.endpoint.localeCompare(b.endpoint);
-                    });
-                }
-                endpointKnowVocabsMeasureFill();
-            });
 
-            endpointKnowVocabsMeasureFill();
-            $('#knownVocabMeasureHeader').click(function() {
-                $('#endpointKnownVocabsTableBody').empty();
-                if(tableBody.hasClass('sortByKnownVocabMeasureDesc')) {
-                    tableBody.removeClass('sortByKnownVocabMeasureDesc');
-                    tableBody.addClass('sortByKnownVocabMeasureAsc');
-                    knowVocabsData.sort((a,b) => {
-                        return a.measure - b.measure;
-                    });
-                } else {
-                    tableBody.addClass('sortByKnownVocabMeasureDesc');
-                    tableBody.removeClass('sortByKnownVocabMeasureAsc');
-                    knowVocabsData.sort((a,b) => {
-                        return b.measure - a.measure;
-                    });
-                }
-                endpointKnowVocabsMeasureFill();
-            });
+                gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
+                    endpointVocabs.forEach((endpointVocab, i) => {
+                        var vocabKeywords = vocabKeywordMap.get(endpointVocab);
+                        vocabKeywords.forEach((endpointKeyword, i) => {
+                            jsonKeywordLinks.add({source:endpointUrl, target:endpointKeyword})
 
-            // compputation of the know vocabularies measure
-            var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
-            knownVocabulariesMeasureHtml.append( document.createTextNode(precise(sumknowVocabMeasure / endpointSet.size)));
+                            if(endpointKeywordsMap.get(endpointUrl) == undefined) {
+                                endpointKeywordsMap.set(endpointUrl, new Set());
+                            }
+                            endpointKeywordsMap.get(endpointUrl).add(endpointKeyword);
+                        });
+                    });
+                });
+
+                keywordSet.forEach(item => {
+                    jsonKeywordNodes.add({name:item, category:'Keyword', symbolSize:5})
+                });
+                endpointSet.forEach(item => {
+                    jsonKeywordNodes.add({name:item, category:'Endpoint', symbolSize:5})
+                });
+
+                if(jsonKeywordNodes.size > 0 && jsonKeywordLinks.size > 0) {
+                    showEndpointKeywordContent();
+
+                    var endpointKeywordsGraphOptions = getForceGraphOption('Endpoints and keywords', ["Keyword", "Endpoint"], [...jsonKeywordNodes], [...jsonKeywordLinks]);
+                    endpointKeywordsForceGraph.setOption(endpointKeywordsGraphOptions);
+
+                    var endpointKeywordsData = [];
+                    endpointKeywordsMap.forEach((keywords, endpoint, map) => {
+                        endpointKeywordsData.push({endpoint:endpoint, keywords:keywords})
+                    });
+
+                    // Endpoint and vocabulary keywords table
+                    var endpointKeywordsTableBody = $('#endpointKeywordsTableBody');
+                    function endpointKeywordsTableFill() {
+                        endpointKeywordsTableBody.empty();
+                        endpointKeywordsData.forEach(endpointKeywordsItem => {
+                            var endpoint = endpointKeywordsItem.endpoint;
+                            var keywords = endpointKeywordsItem.keywords;
+                            var endpointRow = $(document.createElement("tr"));
+                            var endpointCell = $(document.createElement("td"));
+                            endpointCell.text(endpoint);
+                            var keywordsCell = $(document.createElement("td"));
+                            var keywordsText = "";
+                            var keywordCount = 0;
+                            var keywordsArray = [...keywords].sort((a, b) => a.localeCompare(b))
+                            keywordsArray.forEach((keyword) => {
+                                if(keywordCount > 0) {
+                                    keywordsText += ", ";
+                                }
+                                keywordsText += keyword;
+                                keywordCount++;
+                            });
+                            keywordsCell.text(keywordsText);
+
+                            endpointRow.append(endpointCell);
+                            endpointRow.append(keywordsCell);
+                            endpointKeywordsTableBody.append(endpointRow);
+                        });
+                    }
+                    endpointKeywordsTableFill()
+
+                    setTableHeaderSort("endpointKeywordsTableBody", ["endpointKeywordsTableEndpointHeader", "endpointKeywordsTableKeywordHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.keywords.size - b.keywords.size ], endpointKeywordsTableFill, endpointKeywordsData);
+                } else {
+                    hideEndpointKeywordContent();
+                }
+            }, () => {
+                hideEndpointKeywordContent();
+            });
+        }, () => {
+            hideVocabularyContent();
         });
+    }, () => {
+        hideEndpointVocabularyContent();
     });
 }
 setButtonAsTableCollapse('KnownVocabulariesDetails', 'knowVocabEndpointTable');
+setButtonAsTableCollapse('endpointKeywordsDetails', 'endpointKeywordsTable');
+function hideVocabularyContent() {
+    collapseHtml('vocabRelatedContent');
+    hideEndpointVocabularyContent();
+    hideEndpointKeywordContent();
+}
+function showVocabularyContent() {
+    unCollapseHtml('vocabRelatedContent')
+}
+function hideEndpointVocabularyContent() {
+    vocabForceGraph.setOption({series:[]}, true);
+    collapseHtml('vocabs');
+    collapseHtml('knowVocabEndpointMeasureRow');
+    collapseHtml('knowVocabEndpointTable');
+}
+function hideEndpointKeywordContent() {
+    endpointKeywordsForceGraph.setOption({series:[]}, true);
+    collapseHtml('endpointKeywords');
+    collapseHtml('endpointKeywordsDetails');
+    $('#endpointKeywordsTableBody').empty();
+}
+function showEndpointVocabularyContent() {
+    showVocabularyContent();
+    unCollapseHtml('knowVocabEndpointMeasureRow');
+    unCollapseHtml('vocabs');
+}
+function showEndpointKeywordContent() {
+    showVocabularyContent();
+    unCollapseHtml('endpointKeywords');
+    unCollapseHtml('endpointKeywordsDetails');
+}
 
 function tripleNumberScatter() {
     // Scatter plot of the number of triples through time
@@ -706,36 +810,46 @@ function tripleNumberScatter() {
             endpointDataSerieMap.get(endpointUrl).push([graph,triples])
         });
 
-        var triplesSeries = [];
-        endpointDataSerieMap.forEach((value, key, map) => {
-            var chartSerie = {
-                name:key,
-                label:'show',
-                symbolSize: 5,
-                data:value,
-                type: 'line'
+        if(endpointDataSerieMap.size > 0) {
+            $('#tripleScatter').removeClass('collapse');
+            $('#tripleScatter').addClass('show');
+
+            var triplesSeries = [];
+            endpointDataSerieMap.forEach((value, key, map) => {
+                var chartSerie = {
+                    name:key,
+                    label:'show',
+                    symbolSize: 5,
+                    data:value,
+                    type: 'line'
+                };
+
+                triplesSeries.push(chartSerie);
+            });
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Size of the datasets",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                yAxis: {},
+                series: triplesSeries,
+                tooltip:{
+                    show:'true'
+                }
             };
-
-            triplesSeries.push(chartSerie);
-        });
-
-        var optionTriples = {
-            title: {
-                left: 'center',
-                text:"Size of the datasets",
-            },
-            xAxis: {
-                type:'category'
-            },
-            yAxis: {},
-            series: triplesSeries,
-            tooltip:{
-                show:'true'
-            }
-        };
-        tripleScatterChart.setOption(optionTriples);
-
+            tripleScatterChart.setOption(optionTriples);
+        } else {
+            hideTripleNumberContent();
+        }
     });
+}
+function hideTripleNumberContent() {
+    tripleScatterChart.setOption({series:[]}, true);
+    collapseHtml('tripleScatter');
 }
 
 function classNumberFill() {
@@ -767,37 +881,47 @@ function classNumberFill() {
             endpointDataSerieMap.get(endpointUrl).push([ graph, triples ])
         });
 
-        var triplesSeries = [];
-        endpointDataSerieMap.forEach((value, key, map) => {
-            var chartSerie = {
-                name:key,
-                label:'show',
-                symbolSize: 5,
-                data:value,
-                type: 'line'
+        if(endpointDataSerieMap.size > 0) {
+            $('#classScatter').removeClass('collapse');
+            $('#classScatter').addClass('show');
+            var triplesSeries = [];
+            endpointDataSerieMap.forEach((value, key, map) => {
+                var chartSerie = {
+                    name:key,
+                    label:'show',
+                    symbolSize: 5,
+                    data:value,
+                    type: 'line'
+                };
+
+                triplesSeries.push(chartSerie);
+            });
+
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Number of classes in the datasets",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                yAxis: {},
+                series: triplesSeries,
+                tooltip:{
+                    show:'true'
+                }
             };
-
-            triplesSeries.push(chartSerie);
-        });
-
-
-        var optionTriples = {
-            title: {
-                left: 'center',
-                text:"Number of classes in the datasets",
-            },
-            xAxis: {
-                type:'category'
-            },
-            yAxis: {},
-            series: triplesSeries,
-            tooltip:{
-                show:'true'
-            }
-        };
-        classScatterChart.setOption(optionTriples);
+            classScatterChart.setOption(optionTriples);
+        } else {
+            hideClassNumberContent();
+        }
 
     });
+}
+function hideClassNumberContent() {
+    classScatterChart.setOption({series:[]}, true);
+    collapseHtml('classScatter');
 }
 
 function propertyNumberFill() {
@@ -806,11 +930,9 @@ function propertyNumberFill() {
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
-        //"?metadata <http://purl.org/dc/terms/modified> ?modifDate . " +
         "?base <http://rdfs.org/ns/void#properties> ?o ." +
         "}" +
-        "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";// +
-        //"DESC(?modifDate)";
+        "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?g ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";
     sparqlQueryJSON(propertiesSPARQLquery, json => {
         var endpointDataSerieMap = new Map();
         json.results.bindings.forEach((itemResult, i) => {
@@ -828,36 +950,46 @@ function propertyNumberFill() {
             endpointDataSerieMap.get(endpointUrl).push([ graph, triples ])
         });
 
-        var triplesSeries = [];
-        endpointDataSerieMap.forEach((value, key, map) => {
-            var chartSerie = {
-                name:key,
-                label:'show',
-                symbolSize: 5,
-                data:value,
-                type: 'line'
+        if(endpointDataSerieMap.size > 0) {
+            $('#propertyScatter').removeClass('collapse');
+            $('#propertyScatter').addClass('show');
+            var triplesSeries = [];
+            endpointDataSerieMap.forEach((value, key, map) => {
+                var chartSerie = {
+                    name:key,
+                    label:'show',
+                    symbolSize: 5,
+                    data:value,
+                    type: 'line'
+                };
+
+                triplesSeries.push(chartSerie);
+            });
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Number of properties in the datasets",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                yAxis: {},
+                series: triplesSeries,
+                tooltip:{
+                    show:'true'
+                }
             };
-
-            triplesSeries.push(chartSerie);
-        });
-
-        var optionTriples = {
-            title: {
-                left: 'center',
-                text:"Number of properties in the datasets",
-            },
-            xAxis: {
-                type:'category'
-            },
-            yAxis: {},
-            series: triplesSeries,
-            tooltip:{
-                show:'true'
-            }
-        };
-        propertyScatterChart.setOption(optionTriples);
+            propertyScatterChart.setOption(optionTriples);
+        } else {
+            hidePropertyNumberContent();
+        }
 
     });
+}
+function hidePropertyNumberContent() {
+    propertyScatterChart.setOption({series:[]}, true);
+    collapseHtml('propertyScatter');
 }
 
 function categoryTestNumberFill() {
@@ -904,72 +1036,83 @@ function categoryTestNumberFill() {
             endpointDataSerieMap.get(category).get( graph).set(endpoint, count);
         });
 
-        var triplesSeries = [];
-        endpointDataSerieMap.forEach((gemap, category, map1) => {
-            var dataCategory = [];
-            gemap.forEach((endpointMap, graph, map2) => {
-                var totalEndpointGraph = 0;
-                endpointMap.forEach((count, endpoint, map3) => {
-                    totalEndpointGraph = totalEndpointGraph + Number.parseInt(count);
-                });
-                var numberOfEndpoint = endpointMap.size;
-                var avgEndpointGraph = precise(totalEndpointGraph / numberOfEndpoint);
-                var percentageAvrEndpointCategory = avgEndpointGraph;
-                if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/")) {
-                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 8)*100);
-                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/")) {
-                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 4)*100);
-                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/")) {
-                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 10)*100);
-                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/")) {
-                    percentageAvrEndpointCategory = (precise(percentageAvrEndpointCategory / 23)*100);
-                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/")) {
-                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 25)*100);
-                } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/")) {
-                    percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 20)*100);
-                }
+        if(endpointDataSerieMap.size > 0) {
+            $('#testCategoryScatter').removeClass('collapse');
+            $('#testCategoryScatter').addClass('show');
 
-                dataCategory.push([graph, percentageAvrEndpointCategory]);
+            var triplesSeries = [];
+            endpointDataSerieMap.forEach((gemap, category, map1) => {
+                var dataCategory = [];
+                gemap.forEach((endpointMap, graph, map2) => {
+                    var totalEndpointGraph = 0;
+                    endpointMap.forEach((count, endpoint, map3) => {
+                        totalEndpointGraph = totalEndpointGraph + Number.parseInt(count);
+                    });
+                    var numberOfEndpoint = endpointMap.size;
+                    var avgEndpointGraph = precise(totalEndpointGraph / numberOfEndpoint);
+                    var percentageAvrEndpointCategory = avgEndpointGraph;
+                    if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 8)*100);
+                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 4)*100);
+                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 10)*100);
+                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/")) {
+                        percentageAvrEndpointCategory = (precise(percentageAvrEndpointCategory / 23)*100);
+                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 25)*100);
+                    } else if(category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 20)*100);
+                    }
+
+                    dataCategory.push([graph, percentageAvrEndpointCategory]);
+                });
+
+                dataCategory.sort((a, b) => a[0].localeCompare(b[0]));
+                var chartSerie = {
+                    name:category.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/", "").replace("/", ""),
+                    label:'show',
+                    symbolSize: 5,
+                    data:dataCategory,
+                    type: 'bar'
+                };
+                triplesSeries.push(chartSerie);
             });
 
-            dataCategory.sort((a, b) => a[0].localeCompare(b[0]));
-            var chartSerie = {
-                name:category.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/", "").replace("/", ""),
-                label:'show',
-                symbolSize: 5,
-                data:dataCategory,
-                type: 'bar'
+            var categoriesArray = [...categorySet].sort((a, b) => a.localeCompare(b));
+            triplesSeries.sort((a, b) => a.name.localeCompare(b.name))
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Proportion of tests passed by category",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                legend: {
+                    data:categoriesArray,
+                    bottom:'bottom'
+                },
+                yAxis: {
+                    max:100
+                },
+                series: triplesSeries,
+                tooltip:{
+                    show:'true'
+                }
             };
-
-            triplesSeries.push(chartSerie);
-        });
-
-
-        var optionTriples = {
-            title: {
-                left: 'center',
-                text:"Proportion of tests passed by category",
-            },
-            xAxis: {
-                type:'category'
-            },
-            legend: {
-                data:[...categorySet],
-                bottom:'bottom'
-            },
-            yAxis: {
-                max:100
-            },
-            series: triplesSeries,
-            tooltip:{
-                show:'true'
-            }
-        };
-        categoryScatterChart.setOption(optionTriples);
+            categoryScatterChart.setOption(optionTriples);
+        } else {
+            hideCategoryTestNumberContent();
+        }
     });
 }
+function hideCategoryTestNumberContent() {
+    categoryScatterChart.setOption({series:[]}, true);
+    collapseHtml('testCategoryScatter');
+}
 
-setButtonAsTableCollapse('tableRuleDetails', 'rulesTable');
 function testTableFill() {
 
     var appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?rule { " +
@@ -1050,6 +1193,7 @@ function testTableFill() {
         fillTestTable();
     });
 }
+setButtonAsTableCollapse('tableRuleDetails', 'rulesTable');
 
 function runtimeStatsFill() {
     var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?data . ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . }  VALUES ?g { "+ graphValuesURIList +" } }";
@@ -1142,3 +1286,777 @@ function averageRuntimeStatsFill() {
         });
     });
 }
+
+function classAndPropertiesGraphFill() {
+    var classPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+            "?base <http://rdfs.org/ns/void#classPartition> ?classPartition . " +
+            "?classPartition <http://rdfs.org/ns/void#class> ?c . " +
+            "OPTIONAL { "+
+            "?classPartition <http://rdfs.org/ns/void#triples> ?ct . "+
+            "} " +
+            "OPTIONAL { "+
+            "?classPartition <http://rdfs.org/ns/void#classes> ?cc . "+
+            "} " +
+            "OPTIONAL { "+
+            "?classPartition <http://rdfs.org/ns/void#properties> ?cp . "+
+            "} " +
+            "OPTIONAL { "+
+            "?classPartition <http://rdfs.org/ns/void#distinctSubjects> ?cs . "+
+            "} " +
+            "OPTIONAL { "+
+            "?classPartition <http://rdfs.org/ns/void#distinctObjects> ?co . "+
+            "} " +
+            "FILTER(! isBlank(?c)) " +
+            "}" +
+            "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co ";
+    sparqlQueryJSON(classPartitionQuery, json => {
+        var classCountsEndpointsMap = new Map();
+        json.results.bindings.forEach((item, i) => {
+            var c = item.c.value;
+            var endpointUrl = item.endpointUrl.value;
+
+            if(classCountsEndpointsMap.get(c) == undefined) {
+                classCountsEndpointsMap.set(c, {class:c});
+            }
+            if(item.ct != undefined) {
+                var ct = Number.parseInt(item.ct.value);
+                var currentClassItem = classCountsEndpointsMap.get(c);
+                if(classCountsEndpointsMap.get(c).triples == undefined) {
+                    currentClassItem.triples = 0;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                currentClassItem.triples = currentClassItem.triples + ct;
+                classCountsEndpointsMap.set(c, currentClassItem);
+            }
+            if(item.cc != undefined) {
+                var cc = Number.parseInt(item.cc.value);
+                var currentClassItem = classCountsEndpointsMap.get(c);
+                if(classCountsEndpointsMap.get(c).classes == undefined) {
+                    currentClassItem.classes = 0;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                currentClassItem.classes = currentClassItem.classes + cc;
+                classCountsEndpointsMap.set(c, currentClassItem);
+            }
+            if(item.cp != undefined) {
+                var cp = Number.parseInt(item.cp.value);
+                var currentClassItem = classCountsEndpointsMap.get(c);
+                if(classCountsEndpointsMap.get(c).properties == undefined) {
+                    currentClassItem.properties = 0;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                currentClassItem.properties = currentClassItem.properties + cp;
+                classCountsEndpointsMap.set(c, currentClassItem);
+            }
+            if(item.cs != undefined) {
+                var cs = Number.parseInt(item.cs.value);
+                var currentClassItem = classCountsEndpointsMap.get(c);
+                if(classCountsEndpointsMap.get(c).distinctSubjects == undefined) {
+                    currentClassItem.distinctSubjects = 0;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + cs;
+                classCountsEndpointsMap.set(c, currentClassItem);
+            }
+            if(item.co != undefined) {
+                var co = Number.parseInt(item.co.value);
+                var currentClassItem = classCountsEndpointsMap.get(c);
+                if(classCountsEndpointsMap.get(c).distinctObjects == undefined) {
+                    currentClassItem.distinctObjects = 0;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                currentClassItem.distinctObjects = currentClassItem.distinctObjects + co;
+                classCountsEndpointsMap.set(c, currentClassItem);
+            }
+            if(classCountsEndpointsMap.get(c).endpoints == undefined) {
+                var currentClassItem = classCountsEndpointsMap.get(c);
+                currentClassItem.endpoints = new Set();
+                classCountsEndpointsMap.set(c, currentClassItem);
+            }
+            classCountsEndpointsMap.get(c).endpoints.add(endpointUrl);
+        });
+
+        var classDescriptionData = [];
+        classCountsEndpointsMap.forEach((countsItem, classKey, map) => {
+            classDescriptionData.push(countsItem);
+        });
+
+        setTableHeaderSort("classDescriptionTableBody", ["classDescriptionTableClassHeader", "classDescriptionTableTriplesHeader", "classDescriptionTableClassesHeader", "classDescriptionTablePropertiesHeader", "classDescriptionTableDistinctSubjectsHeader", "classDescriptionTableDistinctObjectsHeader", "classDescriptionTableEndpointsHeader"], [(a,b) => a.class.localeCompare(b.class), (a,b) => b.triples - a.triples, (a,b) => b.classes - a.classes, (a,b) => b.properties - a.properties, (a,b) => b.distinctSubjects - a.distinctSubjects, (a,b) => b.distinctObjects - a.distinctObjects, (a,b) => b.endpoints.size - a.endpoints.size ], fillclassDescriptionTable, classDescriptionData);
+        classDescriptionData.sort((a,b) => a.class.localeCompare(b.class));
+
+        function fillclassDescriptionTable() {
+            var tableBody = $("#classDescriptionTableBody");
+            tableBody.empty();
+            classDescriptionData.forEach((countsItem, i) => {
+                var classRow = $(document.createElement("tr"))
+                var classCell = $(document.createElement("td"))
+                var classTriplesCell = $(document.createElement("td"))
+                var classClassesCell = $(document.createElement("td"))
+                var classPropertiesCell = $(document.createElement("td"))
+                var classDistinctSubjectsCell = $(document.createElement("td"))
+                var classDistinctObjectsCell = $(document.createElement("td"))
+                var endpointsCell = $(document.createElement("td"))
+
+                classCell.text(countsItem.class);
+                classTriplesCell.text(countsItem.triples);
+                classClassesCell.text(countsItem.classes);
+                classPropertiesCell.text(countsItem.properties);
+                classDistinctSubjectsCell.text(countsItem.distinctSubjects);
+                classDistinctObjectsCell.text(countsItem.distinctObjects);
+                endpointsCell.text(countsItem.endpoints.size);
+
+                classRow.append(classCell);
+                classRow.append(classTriplesCell);
+                classRow.append(classClassesCell);
+                classRow.append(classPropertiesCell);
+                classRow.append(classDistinctSubjectsCell);
+                classRow.append(classDistinctObjectsCell);
+                classRow.append(endpointsCell);
+                tableBody.append(classRow);
+            });
+        }
+        fillclassDescriptionTable()
+
+
+    });
+
+    var classPropertyPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?p ?pt ?po ?ps { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+            "?base <http://rdfs.org/ns/void#classPartition> ?classPartition . " +
+            "?classPartition <http://rdfs.org/ns/void#class> ?c . " +
+            "?classPartition <http://rdfs.org/ns/void#propertyPartition> ?classPropertyPartition . " +
+            "?classPropertyPartition <http://rdfs.org/ns/void#property> ?p . " +
+            "OPTIONAL { "+
+            "?classPropertyPartition <http://rdfs.org/ns/void#triples> ?pt . "+
+            "} " +
+            "OPTIONAL { "+
+            "?classPropertyPartition <http://rdfs.org/ns/void#distinctSubjects> ?ps . "+
+            "} " +
+            "OPTIONAL { "+
+            "?classPropertyPartition <http://rdfs.org/ns/void#distinctObjects> ?po . "+
+            "} " +
+            "}" +
+            "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?c ?p ?pt ?po ?ps ";
+    sparqlQueryJSON(classPropertyPartitionQuery, json => {
+
+        var classPropertyCountsEndpointsMap = new Map();
+        json.results.bindings.forEach((item, i) => {
+            var c = item.c.value;
+            var p = item.p.value;
+            var mapKey = c+p;
+            var endpointUrl = item.endpointUrl.value;
+
+            if(classPropertyCountsEndpointsMap.get(mapKey) == undefined) {
+                classPropertyCountsEndpointsMap.set(mapKey, {class:c, property:p});
+            }
+            if(item.pt != undefined) {
+                var pt = Number.parseInt(item.pt.value);
+                var currentClassItem = classCountsEndpointsMap.get(mapKey);
+                if(classPropertyCountsEndpointsMap.get(mapKey).triples == undefined) {
+                    currentClassItem.triples = 0;
+                    classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                }
+                currentClassItem.triples = currentClassItem.triples + pt;
+                classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+            }
+            if(item.ps != undefined) {
+                var ps = Number.parseInt(item.ps.value);
+                var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
+                if(classPropertyCountsEndpointsMap.get(mapKey).distinctSubjects == undefined) {
+                    currentClassItem.distinctSubjects = 0;
+                    classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                }
+                currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + ps;
+                classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+            }
+            if(item.po != undefined) {
+                var po = Number.parseInt(item.po.value);
+                var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
+                if(classPropertyCountsEndpointsMap.get(mapKey).distinctObjects == undefined) {
+                    currentClassItem.distinctObjects = 0;
+                    classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                }
+                currentClassItem.distinctObjects = currentClassItem.distinctObjects + po;
+                classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+            }
+            if(classPropertyCountsEndpointsMap.get(mapKey).endpoints == undefined) {
+                var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
+                currentClassItem.endpoints = new Set();
+                classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+            }
+            classPropertyCountsEndpointsMap.get(mapKey).endpoints.add(endpointUrl);
+        });
+
+        var classDescriptionData = [];
+        classPropertyCountsEndpointsMap.forEach((countsItem, classKey, map) => {
+            classDescriptionData.push(countsItem);
+        });
+        classDescriptionData.sort((a,b) => a.class.localeCompare(b.class));
+
+        setTableHeaderSort("classPropertiesDescriptionTableBody", ["classPropertiesDescriptionTableClassHeader", "classPropertiesDescriptionTablePropertyHeader", "classPropertiesDescriptionTableTriplesHeader", "classPropertiesDescriptionTableDistinctSubjectsHeader", "classPropertiesDescriptionTableDistinctObjectsHeader", "classPropertiesDescriptionTableEndpointsHeader"], [(a,b) => a.class.localeCompare(b.class), (a,b) => b.property.localeCompare(a.property), (a,b) => b.triples - a.triples, (a,b) => b.distinctSubjects - a.distinctSubjects, (a,b) => b.distinctObjects - a.distinctObjects, (a,b) => b.endpoints.size - a.endpoints.size ], fillClassPropertiesDescriptionTable, classDescriptionData);
+
+        function fillClassPropertiesDescriptionTable() {
+            var tableBody = $("#classPropertiesDescriptionTableBody");
+            tableBody.empty();
+            classDescriptionData.forEach((countsItem, i) => {
+                var classRow = $(document.createElement("tr"))
+                var classCell = $(document.createElement("td"))
+                var classTriplesCell = $(document.createElement("td"))
+                var classPropertyCell = $(document.createElement("td"))
+                var classDistinctSubjectsCell = $(document.createElement("td"))
+                var classDistinctObjectsCell = $(document.createElement("td"))
+                var endpointsCell = $(document.createElement("td"))
+
+                classCell.text(countsItem.class);
+                classTriplesCell.text(countsItem.triples);
+                classPropertyCell.text(countsItem.property);
+                classDistinctSubjectsCell.text(countsItem.distinctSubjects);
+                classDistinctObjectsCell.text(countsItem.distinctObjects);
+                endpointsCell.text(countsItem.endpoints.size);
+
+                classRow.append(classCell);
+                classRow.append(classPropertyCell);
+                classRow.append(classTriplesCell);
+                classRow.append(classDistinctSubjectsCell);
+                classRow.append(classDistinctObjectsCell);
+                classRow.append(endpointsCell);
+                tableBody.append(classRow);
+            });
+        }
+        fillClassPropertiesDescriptionTable()
+    });
+}
+setButtonAsTableCollapse('classDescriptionDetails', 'classDescriptionTable');
+setButtonAsTableCollapse('classPropertiesDescriptionDetails', 'classPropertiesDescriptionTable');
+
+function descriptionElementFill() {
+    var provenanceWhoCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { "+
+        "GRAPH ?g { " +
+        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
+        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "OPTIONAL {" +
+        "{ ?dataset <http://purl.org/dc/terms/creator> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/contributor> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/publisher> ?o } " +
+        "} " +
+        "} " +
+        "VALUES ?g { "+ graphValuesURIList +" } " +
+        "} ";
+    var provenanceLicenseCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { "+
+        "GRAPH ?g { " +
+        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
+        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "OPTIONAL {" +
+        "{ ?dataset <http://purl.org/dc/terms/license> ?o } " +
+        "UNION {?dataset <http://purl.org/dc/terms/conformsTo> ?o } " +
+        "} " +
+        "} " +
+        "VALUES ?g { "+ graphValuesURIList +" } " +
+        "} ";
+    var provenanceDateCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { "+
+        "GRAPH ?g { " +
+        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
+        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "OPTIONAL {" +
+        " { ?dataset <http://purl.org/dc/terms/modified> ?o } " +
+        "UNION { ?dataset <http://www.w3.org/ns/prov#wasGeneratedAtTime> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/issued> ?o } " +
+        "} " +
+        "} " +
+        "VALUES ?g { "+ graphValuesURIList +" } " +
+        "} ";
+    var provenanceSourceCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { "+
+        "GRAPH ?g { " +
+        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
+        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "OPTIONAL {" +
+        "{ ?dataset <http://purl.org/dc/terms/source> ?o } " +
+        "UNION { ?dataset <http://www.w3.org/ns/prov#wasDerivedFrom> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/format> ?o } " +
+        "} " +
+        "} " +
+        "VALUES ?g { "+ graphValuesURIList +" } " +
+        "} ";
+    var endpointDescriptionElementMap = new Map();
+    sparqlQueryJSON(provenanceWhoCheckQuery, json => {
+        json.results.bindings.forEach((item, i) => {
+            var endpointUrl = item.endpointUrl.value;
+            var who = (item.o != undefined);
+            var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+            if(currentEndpointItem == undefined) {
+                endpointDescriptionElementMap.set(endpointUrl, {endpoint:endpointUrl})
+                currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl);
+            }
+            currentEndpointItem.who = who;
+            if(who) {
+                currentEndpointItem.whoValue = item.o.value;
+            }
+            endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+        });
+        sparqlQueryJSON(provenanceLicenseCheckQuery, json => {
+            json.results.bindings.forEach((item, i) => {
+                var endpointUrl = item.endpointUrl.value;
+                var license = (item.o != undefined);
+                var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                currentEndpointItem.license = license;
+                if(license) {
+                    currentEndpointItem.licenseValue = item.o.value;
+                }
+                endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+            });
+            sparqlQueryJSON(provenanceDateCheckQuery, json => {
+                json.results.bindings.forEach((item, i) => {
+                    var endpointUrl = item.endpointUrl.value;
+                    var time = (item.o != undefined);
+                    var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                    currentEndpointItem.time = time;
+                    if(time) {
+                        currentEndpointItem.timeValue = item.o.value;
+                    }
+                    endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+                });
+                sparqlQueryJSON(provenanceSourceCheckQuery, json => {
+                    json.results.bindings.forEach((item, i) => {
+                        var endpointUrl = item.endpointUrl.value;
+                        var source = (item.o != undefined);
+                        var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                        currentEndpointItem.source = source;
+                        if(source) {
+                            currentEndpointItem.sourceValue = item.o.value;
+                        }
+                        endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+                    });
+
+                    var data = [];
+                    endpointDescriptionElementMap.forEach((prov, endpoint, map) => {
+                        data.push(prov)
+                    });
+
+                    data.sort((a,b) => {
+                        return a.endpoint.localeCompare(b.endpoint);
+                    });
+
+                    // Table
+                    function fillTestTable() {
+                        var tableBody = $('#datasetDescriptionTableBody');
+                        tableBody.empty();
+                        data.forEach((item, i) => {
+                            var endpoint = item.endpoint;
+                            var who = item.who;
+                            var license = item.license;
+                            var time = item.time;
+                            var source = item.source;
+                            var endpointRow = $(document.createElement("tr"));
+                            var endpointCell = $(document.createElement("td"));
+                            endpointCell.text(endpoint);
+                            var whoCell = $(document.createElement("td"));
+                            whoCell.text(who);
+                            var licenseCell = $(document.createElement("td"));
+                            licenseCell.text(license);
+                            var timeCell = $(document.createElement("td"));
+                            timeCell.text(time);
+                            var sourceCell = $(document.createElement("td"));
+                            sourceCell.text(source);
+                            endpointRow.append(endpointCell);
+                            endpointRow.append(whoCell);
+                            endpointRow.append(licenseCell);
+                            endpointRow.append(timeCell);
+                            endpointRow.append(sourceCell);
+                            tableBody.append(endpointRow);
+                        });
+                    }
+
+                    setTableHeaderSort("datasetDescriptionTableBody", ["datasetDescriptionTableEndpointHeader", "datasetDescriptionTableWhoHeader", "datasetDescriptionTableLicenseHeader", "datasetDescriptionTableDateHeader", "datasetDescriptionTableSourceHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.who.toString().localeCompare(b.who.toString()), (a,b) => a.license.toString().localeCompare(b.license.toString()), (a,b) => a.time.toString().localeCompare(b.time.toString()), (a,b) => a.source.toString().localeCompare(b.source.toString())], fillTestTable, data);
+
+                    fillTestTable();
+
+                    // chart
+                    var whoDataScore = 0;
+                    var licenseDataScore = 0;
+                    var timeDataScore = 0;
+                    var sourceDataScore = 0;
+
+                    var dataSeries = data.forEach(dataItem => {
+                        var who = dataItem.who;
+                        if(who) {
+                            whoDataScore++;
+                        }
+                        var license = dataItem.license;
+                        if(license) {
+                            licenseDataScore++;
+                        }
+                        var time = dataItem.time;
+                        if(time) {
+                            timeDataScore++;
+                        }
+                        var source = dataItem.source;
+                        if(source) {
+                            sourceDataScore++;
+                        }
+                    });
+
+
+                     var whoDataSerie = {
+                            name: 'Description of creator/owner/contributor',
+                            type: 'pie',
+                            radius: '25%',
+                            center: ['25%', '25%'],
+                            data: [
+                                { value: whoDataScore, name: 'Presence of the description of creator/owner/contributor' },
+                                { value: (data.length - whoDataScore), name: 'Absence of the description of creator/owner/contributor' },
+                            ]
+                        };
+                     var licenseDataSerie = {
+                            name: 'Licensing information',
+                            type: 'pie',
+                            radius: '25%',
+                            center: ['25%', '75%'],
+                            data: [
+                                { value: licenseDataScore, name: 'Presence of licensing information' },
+                                { value: (data.length - licenseDataScore), name: 'Absence of licensing information' },
+                            ]
+                        };
+                     var timeDataSerie = {
+                            name: 'Time related information about the creation of the dataset',
+                            type: 'pie',
+                            radius: '25%',
+                            center: ['75%', '25%'],
+                            data: [
+                                { value: timeDataScore, name: 'Presence of time-related information' },
+                                { value: (data.length - timeDataScore), name: 'Absence of time-related information' },
+                            ]
+                        };
+                     var sourceDataSerie = {
+                            name: 'Description of the source or the process at the origin of the dataset',
+                            type: 'pie',
+                            radius: '25%',
+                            center: ['75%', '75%'],
+                            data: [
+                                { value: sourceDataScore, name: 'Presence of information about the origin of the dataset' },
+                                { value: (data.length - sourceDataScore), name: 'Absence of information about the origin of the dataset' },
+                            ]
+                        };
+                    var option = {
+                          title: {
+                            text: 'Dataset description features in all endpoints',
+                            left: 'center'
+                          },
+                          tooltip: {
+                          },
+                          legend: {
+                            left: 'left',
+                            show:false
+                          },
+                          series: [ whoDataSerie, licenseDataSerie, timeDataSerie, sourceDataSerie ]
+                        };
+                    datasetdescriptionChart.setOption(option)
+                });
+            });
+        });
+    });
+}
+setButtonAsTableCollapse('datasetDescriptionStatDetails', 'datasetDescriptionTable');
+setButtonAsTableCollapse('datasetDescriptionExplain', 'datasetDescriptionExplainText');
+
+function shortUrisFill() {
+    var shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+            "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+            "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> . " +
+            "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+            "}" +
+            "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
+
+    sparqlQueryJSON(shortUrisMeasureQuery, json => {
+        var shortUriData = []
+        json.results.bindings.forEach((jsonItem, i) => {
+            var endpoint = jsonItem.endpointUrl.value;
+            var shortUriMeasure = Number.parseFloat(jsonItem.measure.value*100);
+            var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+
+            shortUriData.push({graph:graph, endpoint:endpoint, measure:shortUriMeasure})
+        });
+
+        var endpointDataSerieMap = new Map();
+        shortUriData.forEach((shortUriItem, i) => {
+            if(endpointDataSerieMap.get(shortUriItem.endpoint) == undefined) {
+                endpointDataSerieMap.set(shortUriItem.endpoint, []);
+            }
+            endpointDataSerieMap.get(shortUriItem.endpoint).push([shortUriItem.graph, precise(shortUriItem.measure)]);
+        });
+
+        if(endpointDataSerieMap.size > 0) {
+            $('#shortUrisScatter').removeClass('collapse');
+            $('#shortUrisScatter').addClass('show');
+
+            // Chart
+            var shortUrisSeries = [];
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var chartSerie = {
+                    name:endpoint,
+                    label:'show',
+                    symbolSize: 5,
+                    data:serieData,
+                    type: 'line'
+                };
+
+                shortUrisSeries.push(chartSerie);
+            });
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Short URIs (< 80 characters) quality measure through time",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                yAxis: {},
+                series: shortUrisSeries,
+                tooltip:{
+                    show:'true'
+                }
+            };
+            shortUriChart.setOption(optionTriples);
+
+            // Average measure
+            var shortUriMeasureSum = shortUriData.map(a => a.measure).reduce((previous, current) => current + previous);
+            var shortUrisAverageMeasure = shortUriMeasureSum / shortUriData.length;
+            $('#shortUrisMeasure').text(precise(shortUrisAverageMeasure)+"%");
+
+            // Measire Details
+            function fillShortUriTable() {
+                var shortUrisDetailTableBody = $('#shortUrisTableBody');
+                endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                    var endpointRow = $(document.createElement('tr'));
+
+                    var endpointCell = $(document.createElement('td'));
+                    endpointCell.text(endpoint);
+                    var measureCell = $(document.createElement('td'));
+                    var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+                    var measureAverage = endpointMeasureSum / serieData.length;
+                    measureCell.text(precise(measureAverage, 3) + "%");
+
+                    endpointRow.append(endpointCell);
+                    endpointRow.append(measureCell);
+
+                    shortUrisDetailTableBody.append(endpointRow);
+                });
+            }
+            fillShortUriTable();
+        }
+    });
+}
+function hideShortUrisContent() {
+    rdfDataStructureChart.setOption({series:[]}, true);
+    $('#shortUrisMeasure').empty();
+    collapseHtml('shortUrisScatter');
+}
+setButtonAsTableCollapse('shortUrisDetails', 'shortUrisTable');
+
+function rdfDataStructuresFill() {
+    var rdfDataStructuresMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+            "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+            "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . " +
+            "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+            "}" +
+            "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
+
+    sparqlQueryJSON(rdfDataStructuresMeasureQuery, json => {
+        var rdfDataStructureData = []
+        json.results.bindings.forEach((jsonItem, i) => {
+            var endpoint = jsonItem.endpointUrl.value;
+            var rdfDataStructureMeasure = Number.parseFloat(jsonItem.measure.value*100);
+            var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+
+            rdfDataStructureData.push({graph:graph, endpoint:endpoint, measure:rdfDataStructureMeasure})
+        });
+
+        var endpointDataSerieMap = new Map();
+        rdfDataStructureData.forEach((rdfDataStructureItem, i) => {
+            if(endpointDataSerieMap.get(rdfDataStructureItem.endpoint) == undefined) {
+                endpointDataSerieMap.set(rdfDataStructureItem.endpoint, []);
+            }
+            endpointDataSerieMap.get(rdfDataStructureItem.endpoint).push([rdfDataStructureItem.graph, precise(rdfDataStructureItem.measure)]);
+        });
+
+        if(endpointDataSerieMap.size > 0) {
+            $('#rdfDataStructuresScatter').removeClass('collapse');
+            $('#rdfDataStructuresScatter').addClass('show');
+
+            // Chart
+            var rdfDataStructuresSeries = [];
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var chartSerie = {
+                    name:endpoint,
+                    label:'show',
+                    symbolSize: 5,
+                    data:serieData,
+                    type: 'line'
+                };
+
+                rdfDataStructuresSeries.push(chartSerie);
+            });
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Minimal usage of RDF data structures measure through time",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                yAxis: {},
+                series: rdfDataStructuresSeries,
+                tooltip:{
+                    show:'true'
+                }
+            };
+            rdfDataStructureChart.setOption(optionTriples);
+
+            // Average measure
+            var rdfDataStructureMeasureSum = rdfDataStructureData.map(a => a.measure).reduce((previous, current) => current + previous);
+            var rdfDataStructuresAverageMeasure = rdfDataStructureMeasureSum / rdfDataStructureData.length;
+            $('#rdfDataStructuresMeasure').text(precise(rdfDataStructuresAverageMeasure, 3)+"%");
+
+            // Measire Details
+            var rdfDataStructuresDetailTableBody = $('#rdfDataStructuresTableBody');
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var endpointRow = $(document.createElement('tr'));
+
+                var endpointCell = $(document.createElement('td'));
+                endpointCell.text(endpoint);
+                var measureCell = $(document.createElement('td'));
+                var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+                var measureAverage = endpointMeasureSum / serieData.length;
+                measureCell.text(precise(measureAverage, 3) + "%");
+
+                endpointRow.append(endpointCell);
+                endpointRow.append(measureCell);
+
+                rdfDataStructuresDetailTableBody.append(endpointRow);
+            });
+        }
+
+    });
+}
+function hideRDFDataStructuresContent() {
+    rdfDataStructureChart.setOption({series:[]}, true);
+    $('#rdfDataStructuresMeasure').empty();
+    collapseHtml('rdfDataStructuresScatter');
+}
+setButtonAsTableCollapse('rdfDataStructuresDetails', 'rdfDataStructuresTable');
+
+function readableLabelsFill() {
+    var readableLabelsMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+            "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+            "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . " +
+            "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+            "}" +
+            "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
+
+    sparqlQueryJSON(readableLabelsMeasureQuery, json => {
+        var readableLabelData = []
+        json.results.bindings.forEach((jsonItem, i) => {
+            var endpoint = jsonItem.endpointUrl.value;
+            var readableLabelMeasure = Number.parseFloat(jsonItem.measure.value*100);
+            var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+
+            readableLabelData.push({graph:graph, endpoint:endpoint, measure:readableLabelMeasure})
+        });
+
+        var endpointDataSerieMap = new Map();
+        readableLabelData.forEach((readableLabelItem, i) => {
+            if(endpointDataSerieMap.get(readableLabelItem.endpoint) == undefined) {
+                endpointDataSerieMap.set(readableLabelItem.endpoint, []);
+            }
+            endpointDataSerieMap.get(readableLabelItem.endpoint).push([readableLabelItem.graph, precise(readableLabelItem.measure)]);
+        });
+
+        if(endpointDataSerieMap.size > 0) {
+            $('#readableLabelsScatter').removeClass('collapse');
+            $('#readableLabelsScatter').addClass('show');
+
+            // Chart
+            var readableLabelsSeries = [];
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var chartSerie = {
+                    name:endpoint,
+                    label:'show',
+                    symbolSize: 5,
+                    data:serieData,
+                    type: 'line'
+                };
+
+                readableLabelsSeries.push(chartSerie);
+            });
+
+            var optionTriples = {
+                title: {
+                    left: 'center',
+                    text:"Usage of readable label for every resource",
+                },
+                xAxis: {
+                    type:'category'
+                },
+                yAxis: {},
+                series: readableLabelsSeries,
+                tooltip:{
+                    show:'true'
+                }
+            };
+            readableLabelChart.setOption(optionTriples);
+
+            // Average measure
+            var readableLabelMeasureSum = readableLabelData.map(a => a.measure).reduce((previous, current) => current + previous);
+            var readableLabelsAverageMeasure = readableLabelMeasureSum / readableLabelData.length;
+            $('#readableLabelsMeasure').text(precise(readableLabelsAverageMeasure, 3)+"%");
+
+            // Measire Details
+            var readableLabelsDetailTableBody = $('#readableLabelsTableBody');
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var endpointRow = $(document.createElement('tr'));
+
+                var endpointCell = $(document.createElement('td'));
+                endpointCell.text(endpoint);
+                var measureCell = $(document.createElement('td'));
+                var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+                var measureAverage = endpointMeasureSum / serieData.length;
+                measureCell.text(precise(measureAverage, 3) + "%");
+
+                endpointRow.append(endpointCell);
+                endpointRow.append(measureCell);
+
+                readableLabelsDetailTableBody.append(endpointRow);
+            });
+        }
+
+    });
+}
+function hideReadableLabelsContent() {
+    readableLabelChart.setOption({series:[]}, true);
+    $('#readableLabelMeasure').empty();
+    collapseHtml('readableLabelsScatter');
+}
+setButtonAsTableCollapse('readableLabelsDetails', 'readableLabelsTable');

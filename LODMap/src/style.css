@@ -1,8 +1,8 @@
 #map { width: 100%; height: 900px; }
+#endpointKeywords { width: 100%; height: 500px; }
 #vocabs { width: 100%; height: 500px; }
 #histo1 { width: 49%; height: 500px; }
 #histo2 { width: 49%; height: 500px; }
-#datasetDescriptionStatHisto { width: 100%; height: 500px; }
 #tripleScatter { width: 33%; height: 300px; }
 #classScatter { width: 33%; height: 300px; }
 #propertyScatter { width: 33%; height: 300px; }
@@ -10,4 +10,9 @@
 #descriptionSizeScatter { width: 100%; height: 500px; }
 #totalRuntimeScatter { width: 100%; height: 250px; }
 #averageRuntimeScatter { width: 100%; height: 250px; }
+#classesGraph { width: 100%; height: 300px; }
+#shortUrisScatter { width: 100%; height: 300px; }
+#rdfDataStructuresScatter { width: 100%; height: 300px; }
+#readableLabelsScatter { width: 100%; height: 300px; }
+#datasetdescriptionRadar { width: 100%; height: 300px; }
 td { overflow-wrap: anywhere; }
