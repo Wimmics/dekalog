@@ -136,7 +136,7 @@ function getForceGraphOption(title, legendData, dataNodes, dataLinks) {
     };
 }
 
-function getCategoryScatterOption(title, series) {
+function getCategoryScatterOption(title, categories, series) {
     return {
         title: {
             left: 'center',
@@ -144,6 +144,7 @@ function getCategoryScatterOption(title, series) {
         },
         xAxis: {
             type:'category',
+            data:categories,
             axisLabel:{
                 show:true,
                 interval:0
@@ -156,6 +157,21 @@ function getCategoryScatterOption(title, series) {
             show:'true'
         }
     };
+}
+function getCategoryScatterDataSeriesFromMap(dataMap) {
+    var series = [];
+    dataMap.forEach((value, key, map) => {
+        var chartSerie = {
+            name:key,
+            label:'show',
+            symbolSize: 5,
+            data:[...new Set(value)].sort((a,b) => a[0].localeCompare(b[0])),
+            type: 'line'
+        };
+
+        series.push(chartSerie);
+    });
+    return series;
 }
 function setTableHeaderSort(tableBodyId, tableHeadersIds, tableColsSortFunction, tableFillFunction, dataArray) {
     var tableBody = $('#'+tableBodyId);
@@ -810,28 +826,27 @@ function showEndpointKeywordContent() {
 
 function tripleNumberScatter() {
     // Scatter plot of the number of triples through time
-    var triplesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl ?o { " +
+    var triplesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) { " +
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
         //"?metadata <http://purl.org/dc/terms/modified> ?modifDate ." +
-        "?base <http://rdfs.org/ns/void#triples> ?o ." +
+        "?base <http://rdfs.org/ns/void#triples> ?rawO ." +
         "}" +
-        " VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl)"; //+" DESC(?modifDate)";
+        " VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?o ORDER BY DESC(?g) DESC(?endpointUrl)"; //+" DESC(?modifDate)";
     sparqlQueryJSON(triplesSPARQLquery, json => {
         var endpointDataSerieMap = new Map();
         json.results.bindings.forEach((itemResult, i) => {
             var endpointUrl = itemResult.endpointUrl.value;
-            //var graphModifiedDate = itemResult.modifDate.value;
 
             endpointDataSerieMap.set(endpointUrl, []);
         });
+        var graphSet = new Set();
         json.results.bindings.forEach((itemResult, i) => {
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
             var endpointUrl = itemResult.endpointUrl.value;
             var triples = Number.parseInt(itemResult.o.value);
-            //var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
-            //var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
+            graphSet.add(graph);
             endpointDataSerieMap.get(endpointUrl).push([graph,triples])
         });
 
@@ -839,20 +854,10 @@ function tripleNumberScatter() {
             $('#tripleScatter').removeClass('collapse');
             $('#tripleScatter').addClass('show');
 
-            var triplesSeries = [];
-            endpointDataSerieMap.forEach((value, key, map) => {
-                var chartSerie = {
-                    name:key,
-                    label:'show',
-                    symbolSize: 5,
-                    data:value,
-                    type: 'line'
-                };
-
-                triplesSeries.push(chartSerie);
-            });
-            var optionTriples = getCategoryScatterOption("Size of the datasets", triplesSeries);
+            var triplesSeries = getCategoryScatterDataSeriesFromMap(endpointDataSerieMap);
+            var optionTriples = getCategoryScatterOption("Size of the datasets", [...graphSet].sort((a,b)=>a.localeCompare(b)), triplesSeries);
             tripleScatterChart.setOption(optionTriples);
+            tripleScatterChart.setOption({xAxis:{axisLabel:{rotate:27}}});
         } else {
             hideTripleNumberContent();
         }
@@ -865,14 +870,14 @@ function hideTripleNumberContent() {
 
 function classNumberFill() {
 // Scatter plot of the number of classes through time
-    var classesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl ?o ?modifDate { " +
+    var classesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) ?modifDate { " +
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
         "?metadata <http://purl.org/dc/terms/modified> ?modifDate ." +
-        "?base <http://rdfs.org/ns/void#classes> ?o ." +
+        "?base <http://rdfs.org/ns/void#classes> ?rawO ." +
         "}" +
-        "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl) DESC(?modifDate)";
+        "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl) DESC(?modifDate)";
     sparqlQueryJSON(classesSPARQLquery, json => {
         var endpointDataSerieMap = new Map();
         //var xAxisDataSet = new Set();
@@ -882,35 +887,22 @@ function classNumberFill() {
             endpointDataSerieMap.set(endpointUrl, []);
             //xAxisDataSet.add(graph);
         });
+        var graphSet = new Set();
         json.results.bindings.forEach((itemResult, i) => {
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
             var endpointUrl = itemResult.endpointUrl.value;
             var triples = Number.parseInt(itemResult.o.value);
-            //var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
-            //var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
-
+            graphSet.add(graph);
             endpointDataSerieMap.get(endpointUrl).push([ graph, triples ])
         });
 
         if(endpointDataSerieMap.size > 0) {
             $('#classScatter').removeClass('collapse');
             $('#classScatter').addClass('show');
-            var triplesSeries = [];
-            endpointDataSerieMap.forEach((value, key, map) => {
-                var chartSerie = {
-                    name:key,
-                    label:'show',
-                    symbolSize: 5,
-                    data:value,
-                    type: 'line'
-                };
-
-                triplesSeries.push(chartSerie);
-            });
-
-
-            var optionTriples = getCategoryScatterOption("Number of classes in the datasets", triplesSeries);
+            var classesSeries = getCategoryScatterDataSeriesFromMap(endpointDataSerieMap);
+            var optionTriples = getCategoryScatterOption("Number of classes in the datasets", [...graphSet].sort((a,b)=>a.localeCompare(b)), classesSeries);
             classScatterChart.setOption(optionTriples);
+            classScatterChart.setOption({xAxis:{axisLabel:{rotate:27}}});
         } else {
             hideClassNumberContent();
         }
@@ -924,11 +916,11 @@ function hideClassNumberContent() {
 
 function propertyNumberFill() {
 // scatter plot of the number of properties through time
-    var propertiesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl ?o { " +
+    var propertiesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) { " +
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
-        "?base <http://rdfs.org/ns/void#properties> ?o ." +
+        "?base <http://rdfs.org/ns/void#properties> ?rawO ." +
         "}" +
         "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?endpointUrl ?g ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";
     sparqlQueryJSON(propertiesSPARQLquery, json => {
@@ -938,34 +930,25 @@ function propertyNumberFill() {
 
             endpointDataSerieMap.set(endpointUrl, []);
         });
+        var endpointGraphPropertiesData = [];
+        var graphSet = new Set();
         json.results.bindings.forEach((itemResult, i) => {
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
             var endpointUrl = itemResult.endpointUrl.value;
-            var triples = Number.parseInt(itemResult.o.value);
-            //var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
-            //var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
-
-            endpointDataSerieMap.get(endpointUrl).push([ graph, triples ])
+            var properties = Number.parseInt(itemResult.o.value);
+            graphSet.add(graph);
+            endpointDataSerieMap.get(endpointUrl).push([ graph, properties ])
+            endpointGraphPropertiesData.push({endpoint:endpointUrl, graph:graph, properties:properties})
         });
 
         if(endpointDataSerieMap.size > 0) {
             $('#propertyScatter').removeClass('collapse');
             $('#propertyScatter').addClass('show');
-            var triplesSeries = [];
-            endpointDataSerieMap.forEach((value, key, map) => {
-                var chartSerie = {
-                    name:key,
-                    label:'show',
-                    symbolSize: 5,
-                    data:value,
-                    type: 'line'
-                };
+            var propertiesSeries = getCategoryScatterDataSeriesFromMap(endpointDataSerieMap);
 
-                triplesSeries.push(chartSerie);
-            });
-
-            var optionTriples = getCategoryScatterOption("Number of properties in the datasets", triplesSeries);
+            var optionTriples = getCategoryScatterOption("Number of properties in the datasets", [...graphSet].sort((a,b)=>a.localeCompare(b)), propertiesSeries);
             propertyScatterChart.setOption(optionTriples);
+            propertyScatterChart.setOption({xAxis:{axisLabel:{rotate:27}}});
         } else {
             hidePropertyNumberContent();
         }
@@ -1185,14 +1168,13 @@ function runtimeStatsFill() {
     var runtimeDataSerie = []
     var runtimeSerie = []
     sparqlQueryJSON(maxMinTimeQuery, jsonResponse => {
+        var graphSet = new Set();
         jsonResponse.results.bindings.forEach((itemResult, i) => {
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
             var start = parseDate(itemResult.start.value, 'dd-mm-yyyyTHH:mm:ss');
             var end = parseDate(itemResult.end.value, 'dd-mm-yyyyTHH:mm:ss');
             var runtime = Math.abs((end - start)/1000);
-            //var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
-            //var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
-
+            graphSet.add(graph);
             runtimeDataSerie.push([ graph, runtime ])
         });
         var runtimeSerie = {
@@ -1202,7 +1184,7 @@ function runtimeStatsFill() {
             data:runtimeDataSerie,
             type: 'scatter'
         };
-        var optionRuntime = getCategoryScatterOption("Runtime of the framework for each run (in seconds)", [runtimeSerie]);
+        var optionRuntime = getCategoryScatterOption("Runtime of the framework for each run (in seconds)", [...graphSet].sort((a,b)=>a.localeCompare(b)), [runtimeSerie]);
         totalRuntimeChart.setOption(optionRuntime);
     });
 }
@@ -1223,6 +1205,7 @@ function averageRuntimeStatsFill() {
                 numberEndpointMap.set(graph, count);
             });
 
+            var graphSet = new Set();
             jsonResponse.results.bindings.forEach((itemResult, i) => {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
                 var start = parseDate(itemResult.start.value, 'dd-mm-yyyyTHH:mm:ss');
@@ -1230,6 +1213,7 @@ function averageRuntimeStatsFill() {
                 var numberOfEndpoint = numberEndpointMap.get(graph);
                 var runtime = Math.floor(Math.abs((end - start)/1000)/numberOfEndpoint);
 
+                graphSet.add(graph);
                 runtimeDataSerie.push([ graph, runtime ])
             });
             var runtimeSerie = {
@@ -1239,7 +1223,7 @@ function averageRuntimeStatsFill() {
                 data:runtimeDataSerie,
                 type: 'scatter'
             };
-            var optionRuntime = getCategoryScatterOption("Average runtime of the framework for each run (in seconds)", [runtimeSerie]);
+            var optionRuntime = getCategoryScatterOption("Average runtime of the framework for each run (in seconds)", [...graphSet].sort((a,b)=>a.localeCompare(b)), [runtimeSerie]);
             averageRuntimeChart.setOption(optionRuntime);
 
         });
@@ -1743,11 +1727,13 @@ function shortUrisFill() {
 
     sparqlQueryJSON(shortUrisMeasureQuery, json => {
         var shortUriData = []
+        var graphSet = new Set();
         json.results.bindings.forEach((jsonItem, i) => {
             var endpoint = jsonItem.endpointUrl.value;
             var shortUriMeasure = Number.parseFloat(jsonItem.measure.value*100);
             var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
 
+            graphSet.add(graph);
             shortUriData.push({graph:graph, endpoint:endpoint, measure:shortUriMeasure})
         });
 
@@ -1777,7 +1763,7 @@ function shortUrisFill() {
                 shortUrisSeries.push(chartSerie);
             });
 
-            var optionTriples = getCategoryScatterOption("Short URIs (< 80 characters) quality measure through time", shortUrisSeries);
+            var optionTriples = getCategoryScatterOption("Short URIs (< 80 characters) quality measure through time", [...graphSet].sort((a,b)=>a.localeCompare(b)), shortUrisSeries);
             shortUriChart.setOption(optionTriples);
 
             // Average measure
@@ -1828,11 +1814,13 @@ function rdfDataStructuresFill() {
 
     sparqlQueryJSON(rdfDataStructuresMeasureQuery, json => {
         var rdfDataStructureData = []
+        var graphSet = new Set();
         json.results.bindings.forEach((jsonItem, i) => {
             var endpoint = jsonItem.endpointUrl.value;
             var rdfDataStructureMeasure = Number.parseFloat(jsonItem.measure.value*100);
             var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
 
+            graphSet.add(graph);
             rdfDataStructureData.push({graph:graph, endpoint:endpoint, measure:rdfDataStructureMeasure})
         });
 
@@ -1862,7 +1850,7 @@ function rdfDataStructuresFill() {
                 rdfDataStructuresSeries.push(chartSerie);
             });
 
-            var optionTriples = getCategoryScatterOption("Minimal usage of RDF data structures measure through time", rdfDataStructuresSeries);
+            var optionTriples = getCategoryScatterOption("Minimal usage of RDF data structures measure through time", [...graphSet].sort((a,b)=>a.localeCompare(b)), rdfDataStructuresSeries);
             rdfDataStructureChart.setOption(optionTriples);
 
             // Average measure
@@ -1911,11 +1899,13 @@ function readableLabelsFill() {
 
     sparqlQueryJSON(readableLabelsMeasureQuery, json => {
         var readableLabelData = []
+        var graphSet = new Set();
         json.results.bindings.forEach((jsonItem, i) => {
             var endpoint = jsonItem.endpointUrl.value;
             var readableLabelMeasure = Number.parseFloat(jsonItem.measure.value*100);
             var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
 
+            graphSet.add(graph);
             readableLabelData.push({graph:graph, endpoint:endpoint, measure:readableLabelMeasure})
         });
 
@@ -1945,7 +1935,7 @@ function readableLabelsFill() {
                 readableLabelsSeries.push(chartSerie);
             });
 
-            var optionTriples = getCategoryScatterOption("Usage of readable label for every resource", readableLabelsSeries);
+            var optionTriples = getCategoryScatterOption("Usage of readable label for every resource", [...graphSet].sort((a,b)=>a.localeCompare(b)), readableLabelsSeries);
             readableLabelChart.setOption(optionTriples);
 
             // Average measure
