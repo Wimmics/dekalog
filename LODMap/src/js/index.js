@@ -136,6 +136,27 @@ function getForceGraphOption(title, legendData, dataNodes, dataLinks) {
     };
 }
 
+function getCategoryScatterOption(title, series) {
+    return {
+        title: {
+            left: 'center',
+            text:title,
+        },
+        xAxis: {
+            type:'category',
+            axisLabel:{
+                show:true,
+                interval:0
+            }
+        },
+        yAxis: {
+        },
+        series: series,
+        tooltip:{
+            show:'true'
+        }
+    };
+}
 function setTableHeaderSort(tableBodyId, tableHeadersIds, tableColsSortFunction, tableFillFunction, dataArray) {
     var tableBody = $('#'+tableBodyId);
     tableHeadersIds.forEach((tableheaderId, i) => {
@@ -170,8 +191,9 @@ function refresh() {
     categoryTestNumberFill();
     testTableFill();
     runtimeStatsFill();
+//    availabilityFill();
     averageRuntimeStatsFill();
-    classAndPropertiesGraphFill();
+    classAndPropertiesContentFill();
     descriptionElementFill();
     shortUrisFill();
     rdfDataStructuresFill();
@@ -183,13 +205,16 @@ function clear() {
     sparql10Chart.setOption({series:[]}, true);
     sparql11Chart.setOption({series:[]}, true);
     totalRuntimeChart.setOption({series:[]}, true);
+    averageRuntimeChart.setOption({series:[]}, true);
     hideVocabularyContent();
     hideTripleNumberContent();
     hideClassNumberContent();
+    hidePropertyNumberContent();
     hideCategoryTestNumberContent();
     hideShortUrisContent();
     hideRDFDataStructuresContent();
     hideReadableLabelsContent();
+//    hideAvailabilityContent();
     datasetdescriptionChart.setOption({series:[]}, true);
     $('#endpointKnownVocabsTableBody').empty();
     $('#rulesTableBody').empty();
@@ -826,21 +851,7 @@ function tripleNumberScatter() {
 
                 triplesSeries.push(chartSerie);
             });
-
-            var optionTriples = {
-                title: {
-                    left: 'center',
-                    text:"Size of the datasets",
-                },
-                xAxis: {
-                    type:'category'
-                },
-                yAxis: {},
-                series: triplesSeries,
-                tooltip:{
-                    show:'true'
-                }
-            };
+            var optionTriples = getCategoryScatterOption("Size of the datasets", triplesSeries);
             tripleScatterChart.setOption(optionTriples);
         } else {
             hideTripleNumberContent();
@@ -898,20 +909,7 @@ function classNumberFill() {
             });
 
 
-            var optionTriples = {
-                title: {
-                    left: 'center',
-                    text:"Number of classes in the datasets",
-                },
-                xAxis: {
-                    type:'category'
-                },
-                yAxis: {},
-                series: triplesSeries,
-                tooltip:{
-                    show:'true'
-                }
-            };
+            var optionTriples = getCategoryScatterOption("Number of classes in the datasets", triplesSeries);
             classScatterChart.setOption(optionTriples);
         } else {
             hideClassNumberContent();
@@ -966,20 +964,7 @@ function propertyNumberFill() {
                 triplesSeries.push(chartSerie);
             });
 
-            var optionTriples = {
-                title: {
-                    left: 'center',
-                    text:"Number of properties in the datasets",
-                },
-                xAxis: {
-                    type:'category'
-                },
-                yAxis: {},
-                series: triplesSeries,
-                tooltip:{
-                    show:'true'
-                }
-            };
+            var optionTriples = getCategoryScatterOption("Number of properties in the datasets", triplesSeries);
             propertyScatterChart.setOption(optionTriples);
         } else {
             hidePropertyNumberContent();
@@ -1217,20 +1202,7 @@ function runtimeStatsFill() {
             data:runtimeDataSerie,
             type: 'scatter'
         };
-        var optionRuntime = {
-            title: {
-                left: 'center',
-                text:"Runtime of the framework for each run (in seconds)",
-            },
-            xAxis: {
-                type:'category'
-            },
-            yAxis: {},
-            series: [runtimeSerie],
-            tooltip:{
-                show:'true'
-            }
-        };
+        var optionRuntime = getCategoryScatterOption("Runtime of the framework for each run (in seconds)", [runtimeSerie]);
         totalRuntimeChart.setOption(optionRuntime);
     });
 }
@@ -1267,27 +1239,14 @@ function averageRuntimeStatsFill() {
                 data:runtimeDataSerie,
                 type: 'scatter'
             };
-            var optionRuntime = {
-                title: {
-                    left: 'center',
-                    text:"Average runtime of the framework for each run (in seconds)",
-                },
-                xAxis: {
-                    type:'category'
-                },
-                yAxis: {},
-                series: [runtimeSerie],
-                tooltip:{
-                    show:'true'
-                }
-            };
+            var optionRuntime = getCategoryScatterOption("Average runtime of the framework for each run (in seconds)", [runtimeSerie]);
             averageRuntimeChart.setOption(optionRuntime);
 
         });
     });
 }
 
-function classAndPropertiesGraphFill() {
+function classAndPropertiesContentFill() {
     var classPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co { " +
             "GRAPH ?g {" +
             "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
@@ -1818,20 +1777,7 @@ function shortUrisFill() {
                 shortUrisSeries.push(chartSerie);
             });
 
-            var optionTriples = {
-                title: {
-                    left: 'center',
-                    text:"Short URIs (< 80 characters) quality measure through time",
-                },
-                xAxis: {
-                    type:'category'
-                },
-                yAxis: {},
-                series: shortUrisSeries,
-                tooltip:{
-                    show:'true'
-                }
-            };
+            var optionTriples = getCategoryScatterOption("Short URIs (< 80 characters) quality measure through time", shortUrisSeries);
             shortUriChart.setOption(optionTriples);
 
             // Average measure
@@ -1916,20 +1862,7 @@ function rdfDataStructuresFill() {
                 rdfDataStructuresSeries.push(chartSerie);
             });
 
-            var optionTriples = {
-                title: {
-                    left: 'center',
-                    text:"Minimal usage of RDF data structures measure through time",
-                },
-                xAxis: {
-                    type:'category'
-                },
-                yAxis: {},
-                series: rdfDataStructuresSeries,
-                tooltip:{
-                    show:'true'
-                }
-            };
+            var optionTriples = getCategoryScatterOption("Minimal usage of RDF data structures measure through time", rdfDataStructuresSeries);
             rdfDataStructureChart.setOption(optionTriples);
 
             // Average measure
@@ -2012,20 +1945,7 @@ function readableLabelsFill() {
                 readableLabelsSeries.push(chartSerie);
             });
 
-            var optionTriples = {
-                title: {
-                    left: 'center',
-                    text:"Usage of readable label for every resource",
-                },
-                xAxis: {
-                    type:'category'
-                },
-                yAxis: {},
-                series: readableLabelsSeries,
-                tooltip:{
-                    show:'true'
-                }
-            };
+            var optionTriples = getCategoryScatterOption("Usage of readable label for every resource", readableLabelsSeries);
             readableLabelChart.setOption(optionTriples);
 
             // Average measure
