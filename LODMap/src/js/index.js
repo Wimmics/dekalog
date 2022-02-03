@@ -319,10 +319,50 @@ function setButtonAsTableCollapse(buttonId, tableId) {
 }
 
 function mapFill() {
+    var endpointGeolocTableBody = $('#endpointGeolocTableBody');
+    endpointGeolocTableBody.empty();
+    var endpointGeolocData = [];
+
+    function addLineToEndpointGeolocTable(item) {
+        var endpointRow = $(document.createElement('tr'));
+        var endpointCell = $(document.createElement('td'));
+        endpointCell.text(item.endpoint);
+        var latCell = $(document.createElement('td'));
+        latCell.text(item.lat);
+        var lonCell = $(document.createElement('td'));
+        lonCell.text(item.lon);
+        var countryCell = $(document.createElement('td'));
+        countryCell.text(item.country);
+        var regionCell = $(document.createElement('td'));
+        regionCell.text(item.region);
+        var cityCell = $(document.createElement('td'));
+        cityCell.text(item.city);
+        var orgCell = $(document.createElement('td'));
+        orgCell.text(item.org);
+
+        endpointRow.append(endpointCell);
+        endpointRow.append(latCell);
+        endpointRow.append(lonCell);
+        endpointRow.append(countryCell);
+        endpointRow.append(regionCell);
+        endpointRow.append(cityCell);
+        endpointRow.append(orgCell);
+
+        endpointGeolocTableBody.append(endpointRow);
+    }
+    function endpointGeolocTableFill() {
+        endpointGeolocTableBody.empty();
+        endpointGeolocData.forEach((item, i) => {
+            addLineToEndpointGeolocTable(item);
+        });
+    }
+
+    setTableHeaderSort('endpointGeolocTableBody', ['endpointGeolocTableEndpointHeader', 'endpointGeolocTableLatHeader', 'endpointGeolocTableLonHeader', 'endpointGeolocTableCountryHeader', 'endpointGeolocTableRegionHeader', 'endpointGeolocTableCityHeader', 'endpointGeolocTableOrgHeader'], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.lat - b.lat, (a,b) => a.lon - b.lon, (a,b) => a.country.localeCompare(b.country), (a,b) => a.region.localeCompare(b.region), (a,b) => a.city.localeCompare(b.city), (a,b) => a.org.localeCompare(b.org)], endpointGeolocTableFill, endpointGeolocData)
     // Marked map with the geoloc of each endpoint
     endpointIpMap.forEach((item, i) => {
         // Add the markers for each endpoints.
         var endpoint = item.key;
+
 
         // Filter the endpoints according to their graphs
         var endpointInGraphQuery = "ASK { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <"+ endpoint +"> . } VALUES ?g { "+ graphValuesURIList +" } }";
@@ -356,9 +396,25 @@ function mapFill() {
                     }
 
                     var endpointMarker = L.marker([item.value.geoloc.lat, item.value.geoloc.lon], { icon:markerIcon });
+                    var endpointItem = {endpoint:endpoint, lat:item.value.geoloc.lat, lon:item.value.geoloc.lon, country:"", region:"", city:"", org:""};
+                    if(item.value.geoloc.country != undefined) {
+                        endpointItem.country = item.value.geoloc.country;
+                    }
+                    if(item.value.geoloc.regionName != undefined) {
+                        endpointItem.region = item.value.geoloc.regionName;
+                    }
+                    if(item.value.geoloc.city != undefined) {
+                        endpointItem.city =item.value.geoloc.city;
+                    }
+                    if(item.value.geoloc.org != undefined) {
+                        endpointItem.org = item.value.geoloc.org;
+                    }
+                    endpointGeolocData.push(endpointItem);
+                    addLineToEndpointGeolocTable(endpointItem);
                     endpointMarker.on('click', clickEvent => {
                         var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + endpoint + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } VALUES ?g { "+ graphValuesURIList +" } }";
                             sparqlQueryJSON(labelQuery, responseLabels => {
+
                                 var popupString = "<table> <thead> <tr> <th colspan='2'> <a href='" + endpoint + "' >" + endpoint + "</a> </th> </tr> </thead>" ;
                                 popupString += "</body>"
                                 if(item.value.geoloc.country != undefined) {
@@ -383,15 +439,16 @@ function mapFill() {
                                 popupString += "</tbody>"
                                 popupString += "</table>"
                                 endpointMarker.bindPopup(popupString).openPopup();
+
                             });
                         });
                         endpointMarker.addTo(layerGroup);
                     });
                 }
             });
-
         });
 }
+setButtonAsTableCollapse('endpointGeolocDetails', 'endpointGeolocTable');
 
 var sparql10ChartOption = {};
 var sparql11ChartOption = {};
