@@ -467,21 +467,22 @@ function sparqlesHistoFill() {
             endpointSet.add(endpointUrl);
             var feature = bindingItem.sparqlNorm.value;
             var count = bindingItem.count.value;
-            if(feature.localeCompare("SPARQL10")) {
+            if(feature.localeCompare("SPARQL10") == 0) {
                 sparql10Map.set(endpointUrl, Number(count));
             }
-            if (feature.localeCompare("SPARQL11")) {
+            if (feature.localeCompare("SPARQL11") == 0) {
                 sparql11Map.set(endpointUrl, Number(count));
             }
         });
 
-        var maxSparql10 = 19;
-        var maxSparql11 = 24;
+        var maxSparql10 = 24;
+        var maxSparql11 = 19;
         var maxSparqlTotal = maxSparql10 + maxSparql11;
         endpointSet.forEach((item) => {
             var sparql10 = sparql10Map.get(item);
             var sparql11 = sparql11Map.get(item);
-            jsonBaseFeatureSparqles.push({'endpoint':item, 'sparql10':sparql10, 'sparql11':sparql11, 'sparqlTotal':(sparql10 + sparql11)});
+            var sparqlJSONObject = {'endpoint':item, 'sparql10':sparql10, 'sparql11':sparql11, 'sparqlTotal':(sparql10 + sparql11)};
+            jsonBaseFeatureSparqles.push(sparqlJSONObject);
         });
 
         var chart10ValueMap = new Map();
@@ -493,15 +494,15 @@ function sparqlesHistoFill() {
             chart11ValueMap.set(i, 0);
             chartSPARQLValueMap.set(i, 0);
         }
-        var sparql10Step = Math.ceil(maxSparql10 / 10);
-        var sparql11Step = Math.ceil(maxSparql11 / 10);
-        var sparqlTotalStep = Math.ceil(maxSparqlTotal / 10);
+        var sparql10Step = maxSparql10 / 10;
+        var sparql11Step = maxSparql11 / 10;
+        var sparqlTotalStep = maxSparqlTotal / 10;
         jsonBaseFeatureSparqles.forEach((item) => {
-            var itemBinSparql10 = Math.round(item.sparql10 / sparql10Step);
+            var itemBinSparql10 = Math.floor(item.sparql10 / sparql10Step);
             chart10ValueMap.set(itemBinSparql10, chart10ValueMap.get(itemBinSparql10)+1);
-            var itemBinSparql11 = Math.round(item.sparql11 / sparql11Step);
+            var itemBinSparql11 = Math.floor(item.sparql11 / sparql11Step);
             chart11ValueMap.set(itemBinSparql11, chart11ValueMap.get(itemBinSparql11)+1);
-            var itemBinSparqlTotal = Math.round(item.sparqlTotal / sparqlTotalStep);
+            var itemBinSparqlTotal = Math.floor(item.sparqlTotal / sparqlTotalStep);
             chartSPARQLValueMap.set(itemBinSparqlTotal, chartSPARQLValueMap.get(itemBinSparqlTotal)+1);
         });
 
@@ -663,8 +664,8 @@ function sparqlesHistoFill() {
             tableBody.empty();
             jsonBaseFeatureSparqles.forEach((item, i) => {
                 var endpoint = item.endpoint;
-                var sparql10 = precise(item.sparql10*100, 3);
-                var sparql11 = precise(item.sparql11*100, 3);
+                var sparql10 = precise((item.sparql10/maxSparql10)*100, 3);
+                var sparql11 = precise((item.sparql11/maxSparql11)*100, 3);
                 var endpointRow = $(document.createElement("tr"));
                 var endpointCell = $(document.createElement("td"));
                 var sparql10Cell = $(document.createElement("td"));
