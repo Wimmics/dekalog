@@ -241,7 +241,6 @@ function clear() {
 }
 
 function redrawCharts() {
-    console.log("redraw")
     redrawVocabRelatedContentCharts();
     redrawSPARQLFeaturesChart();
     redrawTriplesNumberContentChart();
@@ -1872,6 +1871,7 @@ function descriptionElementFill() {
                             left: 'center'
                           },
                           tooltip: {
+                              confine:true
                           },
                           legend: {
                             left: 'left',
