@@ -456,48 +456,53 @@ var sparql11ChartOption = {};
 var sparqlChartOption = {};
 function sparqlesHistoFill() {
 // Create an histogram of the SPARQLES rules passed by endpoint.
-    var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) WHERE { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . FILTER(CONTAINS(str(?activity), ?sparqlNorm)) VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } } VALUES ?g { '+ graphValuesURIList +' } } GROUP BY ?endpoint ?sparqlNorm ORDER BY DESC( ?endpoint)';
+    var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) WHERE { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . FILTER(CONTAINS(str(?activity), ?sparqlNorm)) VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } } VALUES ?g { '+ graphValuesURIList +' } } GROUP BY ?endpoint ?sparqlNorm ORDER BY DESC( ?sparqlNorm)';
     sparqlQueryJSON(sparqlesFeatureQuery, json => {
+        var endpointSet = new Set();
         var jsonBaseFeatureSparqles = [];
         var sparql10Map = new Map();
         var sparql11Map = new Map();
         json.results.bindings.forEach((bindingItem, i) => {
             var endpointUrl = bindingItem.endpoint.value;
+            endpointSet.add(endpointUrl);
             var feature = bindingItem.sparqlNorm.value;
             var count = bindingItem.count.value;
-            if(feature == "SPARQL10") {
+            if(feature.localeCompare("SPARQL10")) {
                 sparql10Map.set(endpointUrl, Number(count));
-            } else if (feature == "SPARQL11") {
+            }
+            if (feature.localeCompare("SPARQL11")) {
                 sparql11Map.set(endpointUrl, Number(count));
             }
         });
-        sparql10Map.forEach((value, key, map) => {
-            var sparql10 = value;
-            var sparql11 = sparql11Map.get(key);
-            jsonBaseFeatureSparqles.push({'endpoint':key, 'sparql10':sparql10/24, 'sparql11':sparql11/19, 'sparqlTotal':(sparql10 + sparql11)/43});
+
+        var maxSparql10 = 19;
+        var maxSparql11 = 24;
+        var maxSparqlTotal = maxSparql10 + maxSparql11;
+        endpointSet.forEach((item) => {
+            var sparql10 = sparql10Map.get(item);
+            var sparql11 = sparql11Map.get(item);
+            jsonBaseFeatureSparqles.push({'endpoint':item, 'sparql10':sparql10, 'sparql11':sparql11, 'sparqlTotal':(sparql10 + sparql11)});
         });
 
         var chart10ValueMap = new Map();
         var chart11ValueMap = new Map();
         var chartSPARQLValueMap = new Map();
 
-        for(var i = 1; i <= 10 ; i++) {
+        for(var i = 0; i < 10 ; i++) {
             chart10ValueMap.set(i, 0);
             chart11ValueMap.set(i, 0);
             chartSPARQLValueMap.set(i, 0);
         }
-        jsonBaseFeatureSparqles.forEach((item, i) => {
-            for(var i = 1; i <= 10 ; i++) {
-                if(item.sparql10 >= (i/10) && item.sparql10 < ((i+1)/10)) {
-                    chart10ValueMap.set(i, chart10ValueMap.get(i)+1);
-                }
-                if(item.sparql11 >= (i/10) && item.sparql11 < ((i+1)/10)) {
-                    chart11ValueMap.set(i, chart11ValueMap.get(i)+1);
-                }
-                if(item.sparqlTotal >= (i/10) && item.sparqlTotal < ((i+1)/10)) {
-                    chartSPARQLValueMap.set(i, chartSPARQLValueMap.get(i)+1);
-                }
-            }
+        var sparql10Step = Math.ceil(maxSparql10 / 10);
+        var sparql11Step = Math.ceil(maxSparql11 / 10);
+        var sparqlTotalStep = Math.ceil(maxSparqlTotal / 10);
+        jsonBaseFeatureSparqles.forEach((item) => {
+            var itemBinSparql10 = Math.round(item.sparql10 / sparql10Step);
+            chart10ValueMap.set(itemBinSparql10, chart10ValueMap.get(itemBinSparql10)+1);
+            var itemBinSparql11 = Math.round(item.sparql11 / sparql11Step);
+            chart11ValueMap.set(itemBinSparql11, chart11ValueMap.get(itemBinSparql11)+1);
+            var itemBinSparqlTotal = Math.round(item.sparqlTotal / sparqlTotalStep);
+            chartSPARQLValueMap.set(itemBinSparqlTotal, chartSPARQLValueMap.get(itemBinSparqlTotal)+1);
         });
 
         var chart10DataMap = new Map();
@@ -505,17 +510,17 @@ function sparqlesHistoFill() {
         var chartSPARQLDataMap = new Map();
         var categorySet = new Set();
         chart10ValueMap.forEach((value, key, map) => {
-            var categoryName = "[ " + ((key-1)*10).toString() + "%, "+ (key*10).toString() + " % ]";
+            var categoryName = "[ " + ((key)*10).toString() + "%, "+ ((key+1)*10).toString() + " % ]";
             categorySet.add(categoryName);
             chart10DataMap.set(categoryName, value);
         });
         chart11ValueMap.forEach((value, key, map) => {
-            var categoryName = "[ " + ((key-1)*10).toString() + "%, "+ (key*10).toString() + " % ]";
+            var categoryName = "[ " + ((key)*10).toString() + "%, "+ ((key+1)*10).toString() + " % ]";
             categorySet.add(categoryName);
             chart11DataMap.set(categoryName, value);
         });
         chartSPARQLValueMap.forEach((value, key, map) => {
-            var categoryName = "[ " + ((key-1)*10).toString() + "%, "+ (key*10).toString() + " % ]";
+            var categoryName = "[ " + ((key)*10).toString() + "%, "+ ((key+1)*10).toString() + " % ]";
             categorySet.add(categoryName);
             chartSPARQLDataMap.set(categoryName, value);
         });
@@ -557,8 +562,6 @@ function sparqlesHistoFill() {
                 }
             })
         });
-        console.log(sparql10Series);
-        console.log(sparql11Series);
 
         sparql10ChartOption = {
             title: {
