@@ -63,6 +63,12 @@
                         <table id="endpointKeywordsTable" class="table table-responsive table-hover collapse">
                             <thead>
                                 <tr>
+                                    <th>Query</th>
+                                    <th>
+                                        SELECT DISTINCT ?endpointUrl ?vocabulary { SERVICE <http://prod-dekalog.inria.fr/sparql> { GRAPH ?g { { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } ?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?endpoint . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary . FILTER(isIri(?vocabulary)) } } SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> { GRAPH <https://lov.linkeddata.es/dataset/lov> { ?vocabURI a <http://purl.org/vocommons/voaf#Vocabulary> . } } } GROUP BY ?endpointUrl ?vocabulary
+                                    </th>
+                                </tr>
+                                <tr>
                                     <th id="endpointKeywordsTableEndpointHeader" scope="col">Endpoint</th>
                                     <th id="endpointKeywordsTableKeywordHeader" scope="col">Keywords</th>
                                 </tr>
@@ -77,8 +83,11 @@
                     <div class="col-12 justify-content-center">
                         <div class="container justify-content-center"><h5>Estimation of the SPARQL features covered by the endpoints</h5></div>
                         <div class="row">
-                            <div class="container justify-content-center" id="histo1"><h5>SPARQL 1.0</h5></div>
-                            <div class="container justify-content-center" id="histo2"><h5>SPARQL 1.1</h5></div>
+                            <div class="col-6 justify-content-center" id="histo1"><h5>SPARQL 1.0</h5></div>
+                            <div class="col-6 justify-content-center" id="histo2"><h5>SPARQL 1.1</h5></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 justify-content-center" id="SPARQLCoverageHisto"><h5>SPARQL</h5></div>
                         </div>
                         <div class="row">
                             <button id="tableSPARQLFeaturesDetails" type="button" class="btn btn-link">Details</button>
@@ -234,13 +243,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="row border border-dark justify-content-center"><h5>Availability of the endpoints</h5>
-                    <div class="col-12 justify-content-center">
-                        <div class="row">
-                            <div class="container justify-content-center" id="availabilityScatter"><h5>Average availability of the endpoints</h5></div>
-                        </div>
-                    </div>
-                </div> -->
                 <div class="row border border-dark justify-content-center"><h5>Runtimes of the dataset description generation</h5>
                     <div class="col-12 justify-content-center">
                         <div class="row">

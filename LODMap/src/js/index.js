@@ -25,6 +25,7 @@ $(window).resize(() => {
 // Initialization of the ECharts components
 var sparql10Chart = echarts.init(document.getElementById('histo1'));
 var sparql11Chart = echarts.init(document.getElementById('histo2'));
+var sparqlChart = echarts.init(document.getElementById('SPARQLCoverageHisto'));
 var tripleScatterChart = echarts.init(document.getElementById('tripleScatter'));
 var classScatterChart = echarts.init(document.getElementById('classScatter'));
 var propertyScatterChart = echarts.init(document.getElementById('propertyScatter'));
@@ -222,6 +223,7 @@ function clear() {
     layerGroup.clearLayers();
     sparql10Chart.setOption({series:[]}, true);
     sparql11Chart.setOption({series:[]}, true);
+    sparqlChart.setOption({series:[]}, true);
     totalRuntimeChart.setOption({series:[]}, true);
     averageRuntimeChart.setOption({series:[]}, true);
     hideVocabularyContent();
@@ -451,6 +453,7 @@ setButtonAsTableCollapse('endpointGeolocDetails', 'endpointGeolocTable');
 
 var sparql10ChartOption = {};
 var sparql11ChartOption = {};
+var sparqlChartOption = {};
 function sparqlesHistoFill() {
 // Create an histogram of the SPARQLES rules passed by endpoint.
     var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) WHERE { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . FILTER(CONTAINS(str(?activity), ?sparqlNorm)) VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } } VALUES ?g { '+ graphValuesURIList +' } } GROUP BY ?endpoint ?sparqlNorm ORDER BY DESC( ?endpoint)';
@@ -517,59 +520,57 @@ function sparqlesHistoFill() {
             chartSPARQLDataMap.set(categoryName, value);
         });
         var categories = ([...categorySet]).sort((a,b) => a.localeCompare(b));
-        var sparql10seriesMap = new Map();
-        var sparql11seriesMap = new Map();
-        categories.forEach((category, i) => {
-           if(sparql10seriesMap.get(category) == undefined) {
-               sparql10seriesMap.set(category, []);
-           }
-           sparql10seriesMap.get(category).push(chart10DataMap.get(category));
-
-          if(sparql11seriesMap.get(category) == undefined) {
-              sparql11seriesMap.set(category, []);
-          }
-          sparql11seriesMap.get(category).push(chart11DataMap.get(category));
-        });
 
         var sparql10Series = [];
-        var sparql11Series = [];
-        sparql10seriesMap.forEach((serie, category, map) => {
+        chart10DataMap.forEach((percentage, category, map) => {
             sparql10Series.push({
                 name: category,
                 type: 'bar',
-                data: serie,
+                data: [percentage],
                 label: {
-                    show:false
+                    show:true,
+                    formatter:"{a}"
                 }
-            },)
+            })
         });
-        sparql11seriesMap.forEach((serie, category, map) => {
+        var sparql11Series = [];
+        chart11DataMap.forEach((percentage, category, map) => {
             sparql11Series.push({
                 name: category,
                 type: 'bar',
-                data: serie,
+                data: [percentage],
                 label: {
-                    show:false
+                    show:true,
+                    formatter:"{a}"
                 }
-            },)
+            })
         });
-
+        var sparqlCategorySeries = [];
+        chartSPARQLDataMap.forEach((percentage, category, map) => {
+            sparqlCategorySeries.push({
+                name: category,
+                type: 'bar',
+                data: [percentage],
+                label: {
+                    show:true,
+                    formatter:"{a}"
+                }
+            })
+        });
+        console.log(sparql10Series);
+        console.log(sparql11Series);
 
         sparql10ChartOption = {
             title: {
-                align: 'center',
-                textalign: 'center',
                 left: 'center',
                 text:"Number of endpoints according to\n their coverage of SPARQL 1.0 features",
                 textStyle: {
-        		    overflow: 'break',
+        		    overflow: 'breakAll',
                     width:"80%"
                 }
             },
             legend: {
-                data:[...categories],
-                show: true,
-                top: 'bottom'
+                show: false,
             },
             toolbox: {
                 show: false
@@ -578,9 +579,12 @@ function sparqlesHistoFill() {
                 show:true
             },
             xAxis: {
-                type:'category'
+                type:'category',
+                data:["SPARQL 1.0 features"],
+                show:false
             },
             yAxis: {
+                type:'value'
             },
             color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
             series:sparql10Series ,
@@ -595,9 +599,7 @@ function sparqlesHistoFill() {
                 }
             },
             legend: {
-                data:[...categories],
-                show: true,
-                top: 'bottom'
+                show: false,
             },
             toolbox: {
                 show: false
@@ -606,15 +608,48 @@ function sparqlesHistoFill() {
                 show:true
             },
             xAxis: {
-                type:'category'
+                type:'category',
+                data:["SPARQL 1.1 features"],
+                show:false
             },
             yAxis: {
+                type:'value'
             },
             color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
             series:sparql11Series ,
         };
+        sparqlChartOption = {
+            title: {
+                left: 'center',
+                text:"Number of endpoints according to\n their coverage of all SPARQL features",
+                textStyle: {
+        		    overflow: 'breakAll',
+                    width:"80%"
+                }
+            },
+            legend: {
+                show: false,
+            },
+            toolbox: {
+                show: false
+            },
+            tooltip: {
+                show:true
+            },
+            xAxis: {
+                type:'category',
+                data:["All SPARQL features"],
+                show:false
+            },
+            yAxis: {
+                type:'value'
+            },
+            color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
+            series:sparqlCategorySeries ,
+        };
         sparql10Chart.setOption(sparql10ChartOption, true);
         sparql11Chart.setOption(sparql11ChartOption, true);
+        sparqlChart.setOption(sparqlChartOption, true);
 
         jsonBaseFeatureSparqles.sort((a,b) => {
             return a.endpoint.localeCompare(b.endpoint);
@@ -651,6 +686,8 @@ function redrawSPARQLFeaturesChart() {
     sparql10Chart.resize();
     sparql11Chart.setOption(sparql11ChartOption, true);
     sparql11Chart.resize();
+    sparqlChart.setOption(sparqlChartOption, true);
+    sparqlChart.resize();
 }
 setButtonAsTableCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
 
@@ -1098,12 +1135,10 @@ function categoryTestNumberFill() {
         "} GROUP BY ?g ?category ?endpointUrl";
     sparqlQueryJSON(testCategoryQuery, json => {
         var endpointDataSerieMap = new Map();
-        var categorySet = new Set();
         json.results.bindings.forEach((itemResult, i) => {
             var category = itemResult.category.value;
 
             endpointDataSerieMap.set(category, new Map());
-            categorySet.add(category.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/", "").replace("/", ""));
         });
         json.results.bindings.forEach((itemResult, i) => {
             var category = itemResult.category.value;
@@ -1123,7 +1158,10 @@ function categoryTestNumberFill() {
             showCategoryTestNumberContent();
 
             var triplesSeries = [];
+            var categoryXAxisData = [];
             endpointDataSerieMap.forEach((gemap, category, map1) => {
+                var categoryName = category.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/", "").replace("/", "").replace("check", "Quality").replace('computed', "Computed").replace('asserted', "Asserted").replace("sportal", 'SPORTAL');
+                categoryXAxisData.push(categoryName);
                 var dataCategory = [];
                 gemap.forEach((endpointMap, graph, map2) => {
                     var totalEndpointGraph = 0;
@@ -1152,7 +1190,7 @@ function categoryTestNumberFill() {
 
                 dataCategory.sort((a, b) => a[0].localeCompare(b[0]));
                 var chartSerie = {
-                    name:category.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/", "").replace("/", ""),
+                    name:categoryName,
                     label:'show',
                     symbolSize: 5,
                     data:dataCategory,
@@ -1161,7 +1199,7 @@ function categoryTestNumberFill() {
                 triplesSeries.push(chartSerie);
             });
 
-            var categoriesArray = [...categorySet].sort((a, b) => a.localeCompare(b));
+            var categoriesArray = categoryXAxisData.sort((a, b) => a.localeCompare(b));
             triplesSeries.sort((a, b) => a.name.localeCompare(b.name))
 
             categoryTestNumberScatterOption = {
@@ -1170,11 +1208,8 @@ function categoryTestNumberFill() {
                     text:"Proportion of tests passed by category",
                 },
                 xAxis: {
-                    type:'category'
-                },
-                legend: {
-                    data:categoriesArray,
-                    bottom:'bottom'
+                    type:'category',
+                //    data:categoriesArray
                 },
                 yAxis: {
                     max:100
