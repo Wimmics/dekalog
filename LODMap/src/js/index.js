@@ -1204,7 +1204,10 @@ function categoryTestNumberFill() {
                 dataCategory.sort((a, b) => a[0].localeCompare(b[0]));
                 var chartSerie = {
                     name:categoryName,
-                    label:'show',
+                    label:{
+                        show:true,
+                        formatter:"{a}"
+                    },
                     symbolSize: 5,
                     data:dataCategory,
                     type: 'bar'
