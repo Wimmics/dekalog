@@ -499,10 +499,19 @@ function sparqlesHistoFill() {
         var sparqlTotalStep = maxSparqlTotal / 10;
         jsonBaseFeatureSparqles.forEach((item) => {
             var itemBinSparql10 = Math.floor(item.sparql10 / sparql10Step);
+            if(itemBinSparql10 == 10) {
+                itemBinSparql10 = 9;
+            }
             chart10ValueMap.set(itemBinSparql10, chart10ValueMap.get(itemBinSparql10)+1);
             var itemBinSparql11 = Math.floor(item.sparql11 / sparql11Step);
+            if(itemBinSparql11 == 10) {
+                itemBinSparql11 = 9;
+            }
             chart11ValueMap.set(itemBinSparql11, chart11ValueMap.get(itemBinSparql11)+1);
             var itemBinSparqlTotal = Math.floor(item.sparqlTotal / sparqlTotalStep);
+            if(itemBinSparqlTotal == 10) {
+                itemBinSparqlTotal = 9;
+            }
             chartSPARQLValueMap.set(itemBinSparqlTotal, chartSPARQLValueMap.get(itemBinSparqlTotal)+1);
         });
 
