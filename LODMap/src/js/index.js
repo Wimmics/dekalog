@@ -597,7 +597,8 @@ function sparqlesHistoFill() {
                 show:false
             },
             yAxis: {
-                type:'value'
+                type:'value',
+                max:'dataMax',
             },
             color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
             series:sparql10Series ,
@@ -626,7 +627,8 @@ function sparqlesHistoFill() {
                 show:false
             },
             yAxis: {
-                type:'value'
+                type:'value',
+                max:'dataMax',
             },
             color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
             series:sparql11Series ,
@@ -655,7 +657,8 @@ function sparqlesHistoFill() {
                 show:false
             },
             yAxis: {
-                type:'value'
+                type:'value',
+                max:'dataMax',
             },
             color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
             series:sparqlCategorySeries ,
@@ -1876,46 +1879,126 @@ function descriptionElementFill() {
                     });
 
 
-                     var whoDataSerie = {
-                            name: 'Description of creator/owner/contributor',
-                            type: 'pie',
-                            radius: '25%',
-                            center: ['25%', '25%'],
+                     var whoTrueDataSerie = {
+                            name: 'Description of author',
+                            type: 'bar',
+                            stack:'who',
+                            colorBy:'data',
                             data: [
                                 { value: whoDataScore, name: 'Presence of the description of creator/owner/contributor' },
+                            ]
+                        };
+                    if(whoDataScore > 0) {
+                        whoTrueDataSerie.label = {
+                            show:true,
+                            formatter:'{c} endpoints with author description'
+                        }
+                    };
+                    var whoFalseDataSerie = {
+                            name: 'Description of author',
+                            type: 'bar',
+                            stack:'who',
+                            colorBy:'data',
+                            data: [
                                 { value: (data.length - whoDataScore), name: 'Absence of the description of creator/owner/contributor' },
                             ]
                         };
-                     var licenseDataSerie = {
-                            name: 'Licensing information',
-                            type: 'pie',
-                            radius: '25%',
-                            center: ['25%', '75%'],
+                    if((data.length - whoDataScore) > 0) {
+                        whoFalseDataSerie.label = {
+                            show:true,
+                            formatter:'{c} endpoints without author description'
+                        }
+                    };
+                    var licenseTrueDataSerie = {
+                            name: 'Licensing description',
+                            type: 'bar',
+                            stack:'license',
+                            colorBy:'data',
                             data: [
                                 { value: licenseDataScore, name: 'Presence of licensing information' },
-                                { value: (data.length - licenseDataScore), name: 'Absence of licensing information' },
                             ]
                         };
-                     var timeDataSerie = {
-                            name: 'Time related information about the creation of the dataset',
-                            type: 'pie',
-                            radius: '25%',
-                            center: ['75%', '25%'],
+                    if(licenseDataScore > 0) {
+                        licenseTrueDataSerie.label = {
+                            show:true,
+                            formatter:'{c} endpoints with licensing description'
+                        }
+                    }
+                     var licenseFalseDataSerie = {
+                            name: 'Licensing description',
+                            type: 'bar',
+                            stack:'license',
+                            colorBy:'data',
+                            data: [
+                                { value: (data.length - licenseDataScore), name: 'Absence of licensing description' },
+                            ]
+                        };
+                    if((data.length - licenseDataScore) > 0) {
+                        licenseFalseDataSerie.label = {
+                            show:true,
+                            formatter:'{c} endpoints without licensing description'
+                        }
+                    }
+                     var timeTrueDataSerie = {
+                            name: 'Time related description of the creation of the dataset',
+                            type: 'bar',
+                            stack:'time',
+                            colorBy:'data',
                             data: [
                                 { value: timeDataScore, name: 'Presence of time-related information' },
-                                { value: (data.length - timeDataScore), name: 'Absence of time-related information' },
                             ]
                         };
-                     var sourceDataSerie = {
-                            name: 'Description of the source or the process at the origin of the dataset',
-                            type: 'pie',
-                            radius: '25%',
-                            center: ['75%', '75%'],
+                    if(timeDataScore > 0) {
+                        timeTrueDataSerie.label = {
+                            show:true,
+                            formatter:'{c} endpoints with time-related description'
+                        }
+                    }
+                     var timeFalseDataSerie = {
+                            name: 'Time related description of creation of the dataset',
+                            type: 'bar',
+                            stack:'time',
+                            colorBy:'data',
                             data: [
-                                { value: sourceDataScore, name: 'Presence of information about the origin of the dataset' },
-                                { value: (data.length - sourceDataScore), name: 'Absence of information about the origin of the dataset' },
+                                { value: (data.length - timeDataScore), name: 'Absence of time-related description' },
                             ]
                         };
+                    if((data.length - timeDataScore) > 0) {
+                        timeFalseDataSerie.label = {
+                            show:true,
+                            formatter:'{c} endpoints without time-related description'
+                        }
+                    }
+                     var sourceTrueDataSerie = {
+                            name: 'Description of the source or the process at the origin of the dataset',
+                            type: 'bar',
+                            stack:'source',
+                            colorBy:'data',
+                            data: [
+                                { value: sourceDataScore, name: 'Presence of description of the origin of the dataset' },
+                            ]
+                        };
+                    if(sourceDataScore > 0) {
+                        sourceTrueDataSerie.label = {
+                            show:true,
+                            formatter:'{c} endpoints with source description'
+                        }
+                    }
+                     var sourceFalseDataSerie = {
+                            name: 'Description of the source or the process at the origin of the dataset',
+                            type: 'bar',
+                            stack:'source',
+                            colorBy:'data',
+                            data: [
+                                { value: (data.length - sourceDataScore), name: 'Absence of description of the origin of the dataset' },
+                            ]
+                        };
+                    if((data.length - sourceDataScore) > 0) {
+                        sourceFalseDataSerie.label = {
+                            show:true,
+                            formatter:'{c} endpoints without source description'
+                        }
+                    }
                     descriptionElementChartOption = {
                           title: {
                             text: 'Dataset description features in all endpoints',
@@ -1924,11 +2007,22 @@ function descriptionElementFill() {
                           tooltip: {
                               confine:true
                           },
+                          xAxis: {
+                              type:'value',
+                              max:'dataMax',
+                          },
+                          yAxis: {
+                            type:'category',
+                            axisLabel: {
+                                formatter:'Dataset\n description\n elements',
+                                overflow:'breakAll'
+                            }
+                          },
                           legend: {
                             left: 'left',
                             show:false
                           },
-                          series: [ whoDataSerie, licenseDataSerie, timeDataSerie, sourceDataSerie ]
+                          series: [ whoTrueDataSerie, whoFalseDataSerie, licenseTrueDataSerie, licenseFalseDataSerie, timeTrueDataSerie, timeFalseDataSerie, sourceTrueDataSerie, sourceFalseDataSerie ]
                         };
                     datasetdescriptionChart.setOption(descriptionElementChartOption, true);
                 });
