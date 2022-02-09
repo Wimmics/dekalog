@@ -30,6 +30,7 @@ var endpointKeywordsForceGraph;
 var shortUriChart;
 var rdfDataStructureChart;
 var readableLabelChart;
+var blankNodeChart;
 var datasetdescriptionChart;
 
 // Setup tab menu
@@ -236,6 +237,7 @@ function refresh() {
     shortUrisFill();
     rdfDataStructuresFill();
     readableLabelsFill();
+    blankNodesFill();
 }
 
 function clear() {
@@ -253,6 +255,7 @@ function clear() {
     hideShortUrisContent();
     hideRDFDataStructuresContent();
     hideReadableLabelsContent();
+    hideblankNodesContent();
     datasetdescriptionChart.setOption({series:[]}, true);
     $('#endpointKnownVocabsTableBody').empty();
     $('#rulesTableBody').empty();
@@ -275,6 +278,7 @@ function redrawCharts() {
     redrawShortUrisChart();
     redrawRDFDataStructuresChart();
     redrawReadableLabelsChart();
+    redrawblankNodesChart();
 }
 
 function generateGraphValuesURI( graphs) {
@@ -326,6 +330,7 @@ $( document ).ready(function() {
     shortUriChart = echarts.init(document.getElementById('shortUrisScatter'));
     rdfDataStructureChart = echarts.init(document.getElementById('rdfDataStructuresScatter'));
     readableLabelChart = echarts.init(document.getElementById('readableLabelsScatter'));
+    blankNodeChart = echarts.init(document.getElementById('blankNodesScatter'));
     datasetdescriptionChart = echarts.init(document.getElementById('datasetdescriptionRadar'));
 
     $(window).resize(() => {
@@ -2554,3 +2559,103 @@ function redrawReadableLabelsChart() {
     readableLabelChart.resize();
 }
 setButtonAsToggleCollapse('readableLabelsDetails', 'readableLabelsTable');
+
+
+var blankNodeChartOption = {};
+function blankNodesFill() {
+    var blankNodesMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+            "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+            "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . " +
+            "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+            "}" +
+            "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
+
+    sparqlQueryJSON(blankNodesMeasureQuery, json => {
+        var blankNodeData = []
+        var graphSet = new Set();
+        json.results.bindings.forEach((jsonItem, i) => {
+            var endpoint = jsonItem.endpointUrl.value;
+            if( ! blacklistedEndpointList.includes(endpoint)) {
+                var blankNodeMeasure = Number.parseFloat(jsonItem.measure.value*100);
+                var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+
+                graphSet.add(graph);
+                blankNodeData.push({graph:graph, endpoint:endpoint, measure:blankNodeMeasure})
+            }
+        });
+
+        var endpointDataSerieMap = new Map();
+        blankNodeData.forEach((blankNodeItem, i) => {
+            if(endpointDataSerieMap.get(blankNodeItem.endpoint) == undefined) {
+                endpointDataSerieMap.set(blankNodeItem.endpoint, []);
+            }
+            endpointDataSerieMap.get(blankNodeItem.endpoint).push([blankNodeItem.graph, precise(blankNodeItem.measure, 3)]);
+        });
+
+        if(endpointDataSerieMap.size > 0) {
+            showblankNodesContent();
+
+            // Chart
+            var blankNodesSeries = [];
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var chartSerie = {
+                    name:endpoint,
+                    label:'show',
+                    symbolSize: 5,
+                    data:serieData,
+                    type: 'line'
+                };
+
+                blankNodesSeries.push(chartSerie);
+            });
+
+            blankNodeChartOption = getCategoryScatterOption("Usage of blank nodes", [...graphSet].sort((a,b)=>a.localeCompare(b)), blankNodesSeries);
+            blankNodeChart.setOption(blankNodeChartOption, true);
+
+            // Average measure
+            var blankNodeMeasureSum = blankNodeData.map(a => a.measure).reduce((previous, current) => current + previous);
+            var blankNodesAverageMeasure = blankNodeMeasureSum / blankNodeData.length;
+            $('#blankNodesMeasure').text(precise(blankNodesAverageMeasure, 3)+"%");
+
+            // Measire Details
+            var blankNodesDetailTableBody = $('#blankNodesTableBody');
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var endpointRow = $(document.createElement('tr'));
+
+                var endpointCell = $(document.createElement('td'));
+                endpointCell.text(endpoint);
+                var measureCell = $(document.createElement('td'));
+                var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+                var measureAverage = endpointMeasureSum / serieData.length;
+                measureCell.text(precise(measureAverage, 3) + "%");
+
+                endpointRow.append(endpointCell);
+                endpointRow.append(measureCell);
+
+                blankNodesDetailTableBody.append(endpointRow);
+            });
+        } else {
+            hideblankNodesContent();
+        }
+
+    });
+}
+function hideblankNodesContent() {
+    blankNodeChart.setOption({series:[]}, true);
+    $('#blankNodeMeasure').empty();
+    collapseHtml('blankNodesMeasureRow');
+    collapseHtml('blankNodesScatter');
+}
+function showblankNodesContent() {
+    unCollapseHtml('blankNodesScatter');
+    unCollapseHtml('blankNodesMeasureRow');
+}
+function redrawblankNodesChart() {
+    $('#blankNodesScatter').width(mainContentColWidth*.8);
+    blankNodeChart.setOption(blankNodeChartOption, true);
+    blankNodeChart.resize();
+}
+setButtonAsToggleCollapse('blankNodesDetails', 'blankNodesTable');

@@ -17,5 +17,6 @@
 #shortUrisScatter { width: 100%; height: 300px; }
 #rdfDataStructuresScatter { width: 100%; height: 300px; }
 #readableLabelsScatter { width: 100%; height: 300px; }
+#blankNodesScatter { width: 100%; height: 300px; }
 #datasetdescriptionRadar { width: 100%; height: 300px; }
 td { overflow-wrap: anywhere; }
