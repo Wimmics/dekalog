@@ -26,6 +26,7 @@ var categoryScatterChart;
 var totalRuntimeChart;
 var averageRuntimeChart;
 var vocabForceGraph;
+var rawVocabForceGraph;
 var endpointKeywordsForceGraph;
 var shortUriChart;
 var rdfDataStructureChart;
@@ -131,12 +132,15 @@ function getForceGraphOption(title, legendData, dataNodes, dataLinks) {
     return {
         title: {
           text: title,
-          top: 'bottom',
+          top: 'top',
           left: 'center'
         },
         //tooltip: { show:true },
         legend: [
-            { data: legendData }
+            {
+                data: legendData,
+                top:'bottom',
+            }
         ],
         series: [
           {
@@ -326,6 +330,7 @@ $( document ).ready(function() {
     totalRuntimeChart = echarts.init(document.getElementById('totalRuntimeScatter'));
     averageRuntimeChart = echarts.init(document.getElementById('averageRuntimeScatter'));
     vocabForceGraph = echarts.init(document.getElementById('vocabs'));
+    rawVocabForceGraph = echarts.init(document.getElementById('rawVocabs'));
     endpointKeywordsForceGraph = echarts.init(document.getElementById('endpointKeywords'));
     shortUriChart = echarts.init(document.getElementById('shortUrisScatter'));
     rdfDataStructureChart = echarts.init(document.getElementById('rdfDataStructuresScatter'));
@@ -886,6 +891,7 @@ function redrawSPARQLFeaturesChart() {
 setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
 
 var vocabForceGraphOption = {};
+var rawVocabForceGraphOption = {};
 var endpointKeywordsForceGraphOption = {};
 var sparqlesVocabularies = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
     "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
@@ -949,30 +955,44 @@ function vocabRelatedContentFill() {
             // Endpoint and vocabularies graph
             var jsonVocabLinks = new Set();
             var jsonVocabNodes = new Set();
+            var jsonRawVocabNodes = new Set();
+            var jsonRawVocabLinks = new Set();
 
             endpointSet.forEach(item => {
                 jsonVocabNodes.add({name:item, category:'Endpoint', symbolSize:5});
+                jsonRawVocabNodes.add({name:item, category:'Endpoint', symbolSize:5});
             });
             vocabSet.forEach(item => {
                 jsonVocabNodes.add({name:item,  category:'Vocabulary', symbolSize:5})
             });
-                var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
-                var sumknowVocabMeasure = 0;
-                var knowVocabsData = [];
-                gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
-                    var measure = (endpointVocabs.size/rawGatherVocab.get(endpointUrl).size);
-                    knowVocabsData.push({ 'endpoint':endpointUrl, 'measure':measure })
+            rawVocabSet.forEach(item => {
+                jsonRawVocabNodes.add({name:item,  category:'Vocabulary', symbolSize:5})
+            });
 
-                    endpointVocabs.forEach((vocab, i) => {
-                        jsonVocabLinks.add({source:endpointUrl, target:vocab})
-                    });
+            var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
+            var sumknowVocabMeasure = 0;
+            var knowVocabsData = [];
+            gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
+                var measure = (endpointVocabs.size/rawGatherVocab.get(endpointUrl).size);
+                knowVocabsData.push({ 'endpoint':endpointUrl, 'measure':measure })
+
+                endpointVocabs.forEach((vocab, i) => {
+                    jsonVocabLinks.add({source:endpointUrl, target:vocab})
                 });
+            });
+            rawGatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
+                endpointVocabs.forEach((vocab, i) => {
+                    jsonRawVocabLinks.add({source:endpointUrl, target:vocab})
+                });
+            });
 
-                if(jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
+            if(jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
                 showEndpointVocabularyContent();
 
-                vocabForceGraphOption = getForceGraphOption('Endpoints and knowledge bases', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
+                vocabForceGraphOption = getForceGraphOption('Endpoints and vocabularies*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
                 vocabForceGraph.setOption(vocabForceGraphOption, true);
+                rawVocabForceGraphOption = getForceGraphOption('Endpoints and vocabularies without filtering', ["Vocabulary", "Endpoint"], [...jsonRawVocabNodes], [...jsonRawVocabLinks]);
+                rawVocabForceGraph.setOption(rawVocabForceGraphOption, true);
 
                 // Measure Table
                 function endpointKnowVocabsMeasureFill() {
@@ -1124,6 +1144,7 @@ function showVocabularyContent() {
 function hideEndpointVocabularyContent() {
     vocabForceGraph.setOption({series:[]}, true);
     collapseHtml('vocabs');
+    collapseHtml('rawVocabs');
     collapseHtml('knowVocabEndpointMeasureRow');
     collapseHtml('knowVocabEndpointTable');
 }
@@ -1137,6 +1158,7 @@ function showEndpointVocabularyContent() {
     showVocabularyContent();
     unCollapseHtml('knowVocabEndpointMeasureRow');
     unCollapseHtml('vocabs');
+    unCollapseHtml('rawVocabs');
 }
 function showEndpointKeywordContent() {
     showVocabularyContent();
@@ -1145,9 +1167,12 @@ function showEndpointKeywordContent() {
 }
 function redrawVocabRelatedContentCharts() {
     $('#vocabs').width(mainContentColWidth);
+    $('#rawVocabs').width(mainContentColWidth);
     $('#endpointKeywords').width(mainContentColWidth);
     vocabForceGraph.setOption(vocabForceGraphOption, true);
     vocabForceGraph.resize();
+    rawVocabForceGraph.setOption(rawVocabForceGraphOption, true);
+    rawVocabForceGraph.resize();
     endpointKeywordsForceGraph.setOption(endpointKeywordsForceGraphOption, true);
     endpointKeywordsForceGraph.resize();
     var codeQuery1Div = $(document.createElement('code')).text(sparqlesVocabularies);
