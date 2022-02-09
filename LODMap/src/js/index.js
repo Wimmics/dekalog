@@ -32,10 +32,6 @@ var rdfDataStructureChart;
 var readableLabelChart;
 var datasetdescriptionChart;
 
-$(window).resize(() => {
-    redrawCharts();
-})
-
 // Setup tab menu
 var geolocTabButton = $('#geoloc-tab')
 geolocTabButton.click(function (event) {
@@ -266,7 +262,7 @@ function clear() {
 
 function redrawCharts() {
     mainContentColWidth = $('#mainContentCol').width();
-    $('#map').width(mainContentColWidth);
+    redrawMapContent()
     redrawVocabRelatedContentCharts();
     redrawSPARQLFeaturesChart();
     redrawTriplesNumberContentChart();
@@ -331,6 +327,10 @@ $( document ).ready(function() {
     rdfDataStructureChart = echarts.init(document.getElementById('rdfDataStructuresScatter'));
     readableLabelChart = echarts.init(document.getElementById('readableLabelsScatter'));
     datasetdescriptionChart = echarts.init(document.getElementById('datasetdescriptionRadar'));
+
+    $(window).resize(() => {
+        redrawCharts();
+    })
 
     var url = new URL(window.location);
     urlParams = new URLSearchParams(url.search);
@@ -400,9 +400,8 @@ function changeGraphSetIndex(index) {
     urlParams.append(graphSetIndexParameter, index);
     history.pushState(null, null, '?'+urlParams.toString());
     graphList = graphLists[index].graphs;
-    blacklistedEndpointList = [];
-    blackistedEndpointIndexList = [];
     refresh();
+    redrawCharts();
 }
 
 function setButtonAsToggleCollapse(buttonId, tableId) {
@@ -429,6 +428,8 @@ function whiteListFill() {
     sparqlQueryJSON(endpointListQuery, json => {
         tableBody.empty();
         endpointList = [];
+        blacklistedEndpointList = [];
+        blackistedEndpointIndexList = [];
         json.results.bindings.forEach((item) => {
             endpointList.push(item.endpointUrl.value);
         });
@@ -481,6 +482,7 @@ function mapFill() {
     var endpointGeolocData = [];
 
     $('#map').width(mainContentColWidth);
+    map.invalidateSize();
 
     function addLineToEndpointGeolocTable(item) {
         var endpointRow = $(document.createElement('tr'));
@@ -607,6 +609,11 @@ function mapFill() {
                 });
             }
         });
+}
+function redrawMapContent() {
+    $('#map').width(mainContentColWidth);
+    map.invalidateSize();
+    map.setView([24.5271348225978, 62.22656250000001], 2);
 }
 setButtonAsToggleCollapse('endpointGeolocDetails', 'endpointGeolocTable');
 
@@ -858,8 +865,8 @@ function sparqlesHistoFill() {
     });
 }
 function redrawSPARQLFeaturesChart() {
-    $('#SPARQL10histo').width(mainContentColWidth*.49);
-    $('#SPARQL11histo').width(mainContentColWidth*.49);
+    $('#SPARQL10histo').width(mainContentColWidth*.48);
+    $('#SPARQL11histo').width(mainContentColWidth*.48);
     $('#SPARQL10histo').height(500);
     $('#SPARQL11histo').height(500);
     $('#SPARQLCoverageHisto').width(mainContentColWidth);
