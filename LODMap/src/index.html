@@ -102,10 +102,16 @@
                         <thead>
                             <tr>
                                 <th>
-                                    Query
+                                    Query 1
                                 </th>
+                                <th id="endpointVocabularyQueryCell">
+                                </th>
+                            </tr>
+                            <tr>
                                 <th>
-                                    SELECT DISTINCT ?endpointUrl ?vocabulary { SERVICE <http://prod-dekalog.inria.fr/sparql> { GRAPH ?g { { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } ?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?endpoint . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary . FILTER(isIri(?vocabulary)) } } SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> { GRAPH <https://lov.linkeddata.es/dataset/lov> { ?vocabURI a <http://purl.org/vocommons/voaf#Vocabulary> . } } } GROUP BY ?endpointUrl ?vocabulary
+                                    Query 2
+                                </th>
+                                <th id="endpointKeywordQueryCell">
                                 </th>
                             </tr>
                             <tr>

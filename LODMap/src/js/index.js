@@ -887,18 +887,29 @@ setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
 
 var vocabForceGraphOption = {};
 var endpointKeywordsForceGraphOption = {};
+var sparqlesVocabularies = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
+    "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+    "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+    "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
+    "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
+    "} "+
+    'VALUES ?g { '+ graphValuesURIList +' } '+
+    " } " +
+    "GROUP BY ?endpointUrl ?vocabulary ";
 function vocabRelatedContentFill() {
 // Create an force graph with the graph linked by co-ocurrence of vocabularies
-    var sparqlesVocabularies = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
-        "{ ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+    sparqlesVocabularies = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
+        "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
         "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?endpoint . " +
-        "?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
-        "} } " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
+        "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
+        "} "+
+        'VALUES ?g { '+ graphValuesURIList +' } '+
+        " } " +
         "GROUP BY ?endpointUrl ?vocabulary ";
 
     sparqlQueryJSON(sparqlesVocabularies, json => {
-
+        console.log(sparqlesVocabularies)
         // Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
         var LOVVocabularies = new Set();
         var sumVocabSetSize = 0;
@@ -1140,6 +1151,12 @@ function redrawVocabRelatedContentCharts() {
     vocabForceGraph.resize();
     endpointKeywordsForceGraph.setOption(endpointKeywordsForceGraphOption, true);
     endpointKeywordsForceGraph.resize();
+    var codeQuery1Div = $(document.createElement('code')).text(sparqlesVocabularies);
+    $('#endpointVocabularyQueryCell').empty()
+    $('#endpointVocabularyQueryCell').append(codeQuery1Div)
+    var codeQuery2Div = $(document.createElement('code')).text('SELECT DISTINCT ?endpointUrl ?vocabulary { SERVICE <http://prod-dekalog.inria.fr/sparql> { GRAPH ?g { { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } ?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?endpoint . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary . FILTER(isIri(?vocabulary)) } VALUES ?g { '+ graphValuesURIList +' } } SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> { GRAPH <https://lov.linkeddata.es/dataset/lov> { ?vocabURI a <http://purl.org/vocommons/voaf#Vocabulary> . } } } GROUP BY ?endpointUrl ?vocabulary');
+    $('#endpointKeywordQueryCell').empty();
+    $('#endpointKeywordQueryCell').append(codeQuery2Div);
 }
 
 var tripleScatterOption = {};
