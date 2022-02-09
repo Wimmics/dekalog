@@ -14,38 +14,58 @@ import {greenIcon, orangeIcon} from "./leaflet-color-markers.js";
 import {endpointIpMap, timezoneMap, graphLists} from "./data.js";
 
 
-// Initialization of the map
-var map = L.map('map').setView([24.5271348225978, 62.22656250000001], 2);
-    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 18,
-        id: 'mapbox/streets-v11',
-        tileSize: 512,
-        zoomOffset: -1,
-        accessToken: 'pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q'
-    }).addTo(map);
-var layerGroup = L.layerGroup().addTo(map);
+var map;
+var layerGroup;
+var sparql10Chart;
+var sparql11Chart;
+var sparqlChart;
+var tripleScatterChart;
+var classScatterChart;
+var propertyScatterChart;
+var categoryScatterChart;
+var totalRuntimeChart;
+var averageRuntimeChart;
+var vocabForceGraph;
+var endpointKeywordsForceGraph;
+var shortUriChart;
+var rdfDataStructureChart;
+var readableLabelChart;
+var datasetdescriptionChart;
 
 $(window).resize(() => {
     redrawCharts();
 })
 
-// Initialization of the ECharts components
-var sparql10Chart = echarts.init(document.getElementById('histo1'));
-var sparql11Chart = echarts.init(document.getElementById('histo2'));
-var sparqlChart = echarts.init(document.getElementById('SPARQLCoverageHisto'));
-var tripleScatterChart = echarts.init(document.getElementById('tripleScatter'));
-var classScatterChart = echarts.init(document.getElementById('classScatter'));
-var propertyScatterChart = echarts.init(document.getElementById('propertyScatter'));
-var categoryScatterChart = echarts.init(document.getElementById('testCategoryScatter'));
-var totalRuntimeChart = echarts.init(document.getElementById('totalRuntimeScatter'));
-var averageRuntimeChart = echarts.init(document.getElementById('averageRuntimeScatter'));
-var vocabForceGraph = echarts.init(document.getElementById('vocabs'));
-var endpointKeywordsForceGraph = echarts.init(document.getElementById('endpointKeywords'));
-var shortUriChart = echarts.init(document.getElementById('shortUrisScatter'));
-var rdfDataStructureChart = echarts.init(document.getElementById('rdfDataStructuresScatter'));
-var readableLabelChart = echarts.init(document.getElementById('readableLabelsScatter'));
-var datasetdescriptionChart = echarts.init(document.getElementById('datasetdescriptionRadar'));
+// Setup tab menu
+var geolocTabButton = $('#geoloc-tab')
+geolocTabButton.click(function (event) {
+    redrawCharts()
+})
+var vocabRelatedContentTabButton = $('#vocabRelatedContent-tab')
+vocabRelatedContentTabButton.click(function (event) {
+    redrawCharts()
+})
+var sparqlTabButton = $('#sparql-tab')
+sparqlTabButton.click(function (event) {
+    redrawCharts()
+})
+var populationTabButton = $('#population-tab')
+populationTabButton.click(function (event) {
+    redrawCharts()
+})
+var descriptionTabButton = $('#description-tab')
+descriptionTabButton.click(function (event) {
+    redrawCharts()
+})
+var runtimeTabButton = $('#runtime-tab')
+runtimeTabButton.click(function (event) {
+    redrawCharts()
+})
+var qualityTabButton = $('#quality-tab')
+qualityTabButton.click(function (event) {
+    redrawCharts()
+})
+
 
 function sparqlQueryJSON(query, callback, errorCallback) {
     xmlhttpRequestJSON('http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", callback, errorCallback);
@@ -201,6 +221,7 @@ function setTableHeaderSort(tableBodyId, tableHeadersIds, tableColsSortFunction,
 }
 
 function refresh() {
+    mainContentColWidth = $('#mainContentCol').width();
     graphValuesURIList = generateGraphValuesURI(graphList);
     clear();
     whiteListFill();
@@ -213,7 +234,6 @@ function refresh() {
     categoryTestNumberFill();
     testTableFill();
     runtimeStatsFill();
-//    availabilityFill();
     averageRuntimeStatsFill();
     classAndPropertiesContentFill();
     descriptionElementFill();
@@ -237,7 +257,6 @@ function clear() {
     hideShortUrisContent();
     hideRDFDataStructuresContent();
     hideReadableLabelsContent();
-//    hideAvailabilityContent();
     datasetdescriptionChart.setOption({series:[]}, true);
     $('#endpointKnownVocabsTableBody').empty();
     $('#rulesTableBody').empty();
@@ -246,6 +265,8 @@ function clear() {
 }
 
 function redrawCharts() {
+    mainContentColWidth = $('#mainContentCol').width();
+    $('#map').width(mainContentColWidth);
     redrawVocabRelatedContentCharts();
     redrawSPARQLFeaturesChart();
     redrawTriplesNumberContentChart();
@@ -268,6 +289,8 @@ function generateGraphValuesURI( graphs) {
     return result;
 }
 
+var mainContentColWidth = 0; // Used to initialize graph width;
+
 var graphList = [];
 var graphValuesURIList = "";
 var currentGraphSetIndex = 0;
@@ -279,17 +302,44 @@ var blackistedEndpointIndexList = [];
 var url = new URL(window.location);
 var urlParams = new URLSearchParams(url.search);
 $( document ).ready(function() {
+    mainContentColWidth = $('#mainContentCol').width();
+
+    // Initialization of the map
+    map = L.map('map').setView([24.5271348225978, 62.22656250000001], 2);
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q'
+        }).addTo(map);
+    layerGroup = L.layerGroup().addTo(map);
+    // Initialization of the ECharts components
+    sparql10Chart = echarts.init(document.getElementById('SPARQL10histo'));
+    sparql11Chart = echarts.init(document.getElementById('SPARQL11histo'));
+    sparqlChart = echarts.init(document.getElementById('SPARQLCoverageHisto'));
+    tripleScatterChart = echarts.init(document.getElementById('tripleScatter'));
+    classScatterChart = echarts.init(document.getElementById('classScatter'));
+    propertyScatterChart = echarts.init(document.getElementById('propertyScatter'));
+    categoryScatterChart = echarts.init(document.getElementById('testCategoryScatter'));
+    totalRuntimeChart = echarts.init(document.getElementById('totalRuntimeScatter'));
+    averageRuntimeChart = echarts.init(document.getElementById('averageRuntimeScatter'));
+    vocabForceGraph = echarts.init(document.getElementById('vocabs'));
+    endpointKeywordsForceGraph = echarts.init(document.getElementById('endpointKeywords'));
+    shortUriChart = echarts.init(document.getElementById('shortUrisScatter'));
+    rdfDataStructureChart = echarts.init(document.getElementById('rdfDataStructuresScatter'));
+    readableLabelChart = echarts.init(document.getElementById('readableLabelsScatter'));
+    datasetdescriptionChart = echarts.init(document.getElementById('datasetdescriptionRadar'));
+
     var url = new URL(window.location);
     urlParams = new URLSearchParams(url.search);
+    // Set up graphs sets
     if(urlParams.has(graphSetIndexParameter) ) {
         const givenGraphSetIndex = urlParams.get(graphSetIndexParameter);
         if(givenGraphSetIndex >= 0 && givenGraphSetIndex < graphLists.length) {
             currentGraphSetIndex = givenGraphSetIndex;
         }
-    }
-    if(urlParams.has(blackListedEndpointParameter) ) {
-        var blackistedEndpointIndexListRaw = urlParams.get(blackListedEndpointParameter);
-        blackistedEndpointIndexList = JSON.parse(decodeURI(blackistedEndpointIndexListRaw));
     }
     var select = $('#endpoint-list-select');
     graphLists.forEach((item, i) => {
@@ -309,6 +359,11 @@ $( document ).ready(function() {
             changeGraphSetIndex(selectionIndex);
         })
     });
+    // set up blacklist
+    if(urlParams.has(blackListedEndpointParameter) ) {
+        var blackistedEndpointIndexListRaw = urlParams.get(blackListedEndpointParameter);
+        blackistedEndpointIndexList = JSON.parse(decodeURI(blackistedEndpointIndexListRaw));
+    }
 });
 
 function addBlacklistedEndpoint(endpointIndex) {
@@ -345,6 +400,8 @@ function changeGraphSetIndex(index) {
     urlParams.append(graphSetIndexParameter, index);
     history.pushState(null, null, '?'+urlParams.toString());
     graphList = graphLists[index].graphs;
+    blacklistedEndpointList = [];
+    blackistedEndpointIndexList = [];
     refresh();
 }
 
@@ -422,6 +479,8 @@ function mapFill() {
     var endpointGeolocTableBody = $('#endpointGeolocTableBody');
     endpointGeolocTableBody.empty();
     var endpointGeolocData = [];
+
+    $('#map').width(mainContentColWidth);
 
     function addLineToEndpointGeolocTable(item) {
         var endpointRow = $(document.createElement('tr'));
@@ -766,9 +825,7 @@ function sparqlesHistoFill() {
             series:sparqlCategorySeries ,
         };
 
-        sparql10Chart.setOption(sparql10ChartOption, true);
-        sparql11Chart.setOption(sparql11ChartOption, true);
-        sparqlChart.setOption(sparqlChartOption, true);
+        redrawSPARQLFeaturesChart();
 
         jsonBaseFeatureSparqles.sort((a,b) => {
             return a.endpoint.localeCompare(b.endpoint);
@@ -801,6 +858,12 @@ function sparqlesHistoFill() {
     });
 }
 function redrawSPARQLFeaturesChart() {
+    $('#SPARQL10histo').width(mainContentColWidth*.49);
+    $('#SPARQL11histo').width(mainContentColWidth*.49);
+    $('#SPARQL10histo').height(500);
+    $('#SPARQL11histo').height(500);
+    $('#SPARQLCoverageHisto').width(mainContentColWidth);
+
     sparql10Chart.setOption(sparql10ChartOption, true);
     sparql10Chart.resize();
     sparql11Chart.setOption(sparql11ChartOption, true);
@@ -1059,6 +1122,8 @@ function showEndpointKeywordContent() {
     unCollapseHtml('endpointKeywordsDetails');
 }
 function redrawVocabRelatedContentCharts() {
+    $('#vocabs').width(mainContentColWidth);
+    $('#endpointKeywords').width(mainContentColWidth);
     vocabForceGraph.setOption(vocabForceGraphOption, true);
     vocabForceGraph.resize();
     endpointKeywordsForceGraph.setOption(endpointKeywordsForceGraphOption, true);
@@ -1119,6 +1184,7 @@ function showTriplesNumberContent() {
     //unCollapseHtml('triplesContentCol');
 }
 function redrawTriplesNumberContentChart() {
+    $('#tripleScatter').width(mainContentColWidth/3);
     tripleScatterChart.setOption(tripleScatterOption, true);
     tripleScatterChart.resize();
 }
@@ -1179,6 +1245,7 @@ function showClassesNumberContent() {
     //unCollapseHtml('tableClassesDetails');
 }
 function redrawClassesNumberContentChart() {
+    $('#classScatter').width(mainContentColWidth/3);
     classScatterChart.setOption(classesScatterOption, true);
     classScatterChart.resize();
 }
@@ -1239,6 +1306,7 @@ function showPropertyNumberContent() {
     //unCollapseHtml('tablePropertiesDetails');
 }
 function redrawPropertyNumberContentChart() {
+    $('#propertyScatter').width(mainContentColWidth/3);
     propertyScatterChart.setOption(propertyNumberScatterOption, true);
     propertyScatterChart.resize();
 }
@@ -1371,6 +1439,7 @@ function showCategoryTestNumberContent() {
     unCollapseHtml('testCategoryScatter');
 }
 function redrawCategoryTestNumberChart() {
+    $('#testCategoryScatter').width(mainContentColWidth);
     categoryScatterChart.setOption(categoryTestNumberScatterOption, true);
     categoryScatterChart.resize();
 }
@@ -1508,6 +1577,7 @@ function runtimeStatsFill() {
     });
 }
 function redrawTotalRuntimeScatterChart() {
+    $('#totalRuntimeScatter').width(mainContentColWidth);
     totalRuntimeChart.setOption(totalRuntimeScatterOption, true);
     totalRuntimeChart.resize();
 }
@@ -1580,49 +1650,10 @@ function averageRuntimeStatsFill() {
     });
 }
 function redrawAverageRuntimeChart() {
+    $('#averageRuntimeScatter').width(mainContentColWidth);
     averageRuntimeChart.setOption(averageRuntimeChartOption, true);
     averageRuntimeChart.resize();
 }
-
-/*
-function availabilityFill() {
-    var availabilityPassedQuery = "SELECT DISTINCT ?g (COUNT(?endpoint) AS ?count) { "+
-    "GRAPH ?g { "+
-    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . "+
-    "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . "+
-    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-    "?trace <http://www.w3.org/ns/earl#result> ?result . "+
-    "?trace <http://www.w3.org/ns/earl#test> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> . "+
-    "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . "+
-    "}  "+
-    "VALUES ?g { "+ graphValuesURIList +" } "+
-    "}";
-    var availabilityFailedQuery = "SELECT DISTINCT ?g (COUNT(?data) AS ?count) { "+
-    "GRAPH ?g { "+
-    "?metadata <http://ns.inria.fr/kg/index#curated> ?data . "+
-    "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . "+
-    "?trace <http://www.w3.org/ns/earl#result> ?result . "+
-    "?trace <http://www.w3.org/ns/earl#test> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> . "+
-    "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#failed> . "+
-    "} "+
-    "VALUES ?g { "+ graphValuesURIList +" } }";
-
-    sparqlQueryJSON(availabilityPassedQuery, jsonPassed => {
-        console.log(jsonPassed)
-            sparqlQueryJSON(availabilityFailedQuery, jsonFailed => {
-                console.log(jsonFailed)
-
-
-            });
-    });
-}
-
-function hideAvailabilityContent() {
-    availabilityScatterChart.setOption({series:[]}, true);
-    collapseHtml('availabilityScatter');
-}*/
-
-
 
 function classAndPropertiesContentFill() {
     var classPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co { " +
@@ -2211,6 +2242,7 @@ function descriptionElementFill() {
     });
 }
 function redrawDescriptionElementChart() {
+    $('#datasetdescriptionRadar').width(mainContentColWidth);
     datasetdescriptionChart.setOption(descriptionElementChartOption, true);
     datasetdescriptionChart.resize();
 }
@@ -2312,6 +2344,7 @@ function showShortUrisContent() {
     unCollapseHtml('shortUriMeasureRow');
 }
 function redrawShortUrisChart() {
+    $('#shortUrisScatter').width(mainContentColWidth*.8);
     shortUriChart.setOption(shortUrisScatterOption, true);
     shortUriChart.resize();
 }
@@ -2410,6 +2443,7 @@ function showRDFDataStructuresContent() {
     unCollapseHtml("rdfDataStructureMeasureRow");
 }
 function redrawRDFDataStructuresChart() {
+    $('#rdfDataStructuresScatter').width(mainContentColWidth*.8);
     rdfDataStructureChart.setOption(rdfDataStructureChartOption, true);
     rdfDataStructureChart.resize();
 }
@@ -2508,6 +2542,7 @@ function showReadableLabelsContent() {
     unCollapseHtml('readableLabelsMeasureRow');
 }
 function redrawReadableLabelsChart() {
+    $('#readableLabelsScatter').width(mainContentColWidth*.8);
     readableLabelChart.setOption(readableLabelChartOption, true);
     readableLabelChart.resize();
 }
