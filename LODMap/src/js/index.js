@@ -909,7 +909,6 @@ function vocabRelatedContentFill() {
         "GROUP BY ?endpointUrl ?vocabulary ";
 
     sparqlQueryJSON(sparqlesVocabularies, json => {
-        console.log(sparqlesVocabularies)
         // Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
         var LOVVocabularies = new Set();
         var sumVocabSetSize = 0;
