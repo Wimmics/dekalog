@@ -989,7 +989,7 @@ function vocabRelatedContentFill() {
             if(jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
                 showEndpointVocabularyContent();
 
-                vocabForceGraphOption = getForceGraphOption('Endpoints and vocabularies*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
+                vocabForceGraphOption = getForceGraphOption('Endpoints and known vocabularies*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
                 vocabForceGraph.setOption(vocabForceGraphOption, true);
                 rawVocabForceGraphOption = getForceGraphOption('Endpoints and vocabularies without filtering', ["Vocabulary", "Endpoint"], [...jsonRawVocabNodes], [...jsonRawVocabLinks]);
                 rawVocabForceGraph.setOption(rawVocabForceGraphOption, true);
@@ -2700,3 +2700,21 @@ function redrawblankNodesChart() {
     blankNodeChart.resize();
 }
 setButtonAsToggleCollapse('blankNodesDetails', 'blankNodesTable');
+
+/*
+Vocabulaires en commun
+
+PREFIX void: <http://rdfs.org/ns/void#>
+SELECT DISTINCT ?endpointUrl1 ?endpointUrl2 ?vocabulary1 {
+    ?metadata1 <http://ns.inria.fr/kg/index#curated> ?endpoint1 , ?base1 .
+    ?metadata2 <http://ns.inria.fr/kg/index#curated> ?endpoint2 , ?base2 .
+    ?base1 void:vocabulary ?vocabulary1 .
+    ?base2 void:vocabulary ?vocabulary2 .
+    { ?endpoint1 <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl1 . }
+    UNION { ?endpoint1 <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl1 . }
+    { ?endpoint2 <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl2 . }
+    UNION { ?endpoint2 <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl2 . }
+  FILTER(?vocabulary1 = ?vocabulary2)
+  FILTER(?endpointUrl1 != ?endpointUrl2)
+  } GROUP BY ?vocabulary1 ?endpointUrl1 ?endpointUrl2
+*/
