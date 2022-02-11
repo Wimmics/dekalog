@@ -2303,8 +2303,17 @@ setButtonAsToggleCollapse('datasetDescriptionStatDetails', 'datasetDescriptionTa
 setButtonAsToggleCollapse('datasetDescriptionExplain', 'datasetDescriptionExplainText');
 
 var shortUrisScatterOption = {};
+var shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+    "GRAPH ?g {" +
+    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+    "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+    "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> . " +
+    "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+    "}" +
+    "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
 function shortUrisFill() {
-    var shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+    shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
             "GRAPH ?g {" +
             "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
             "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
@@ -2313,7 +2322,8 @@ function shortUrisFill() {
             "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
             "}" +
             "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
-
+    $('#shortUrisQueryCell').empty();
+    $('#shortUrisQueryCell').append($(document.createElement('code')).text(shortUrisMeasureQuery))
     sparqlQueryJSON(shortUrisMeasureQuery, json => {
         var shortUriData = []
         var graphSet = new Set();
@@ -2397,6 +2407,8 @@ function showShortUrisContent() {
     unCollapseHtml('shortUriMeasureRow');
 }
 function redrawShortUrisChart() {
+    $('#shortUrisQueryCell').empty();
+    $('#shortUrisQueryCell').append($(document.createElement('code')).text(shortUrisMeasureQuery));
     $('#shortUrisScatter').width(mainContentColWidth*.8);
     shortUriChart.setOption(shortUrisScatterOption, true);
     shortUriChart.resize();
@@ -2404,8 +2416,17 @@ function redrawShortUrisChart() {
 setButtonAsToggleCollapse('shortUrisDetails', 'shortUrisTable');
 
 var rdfDataStructureChartOption = {};
+var rdfDataStructuresMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+    "GRAPH ?g {" +
+    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+    "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+    "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . " +
+    "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+    "}" +
+    "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
 function rdfDataStructuresFill() {
-    var rdfDataStructuresMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+    rdfDataStructuresMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
             "GRAPH ?g {" +
             "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
             "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
@@ -2414,6 +2435,8 @@ function rdfDataStructuresFill() {
             "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
             "}" +
             "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
+    $('#rdfDataStructuresQueryCell').empty();
+    $('#rdfDataStructuresQueryCell').append($(document.createElement('code')).text(rdfDataStructuresMeasureQuery));
 
     sparqlQueryJSON(rdfDataStructuresMeasureQuery, json => {
         var rdfDataStructureData = []
@@ -2496,15 +2519,26 @@ function showRDFDataStructuresContent() {
     unCollapseHtml("rdfDataStructureMeasureRow");
 }
 function redrawRDFDataStructuresChart() {
+    $('#rdfDataStructuresQueryCell').empty();
+    $('#rdfDataStructuresQueryCell').append($(document.createElement('code')).text(rdfDataStructuresMeasureQuery));
     $('#rdfDataStructuresScatter').width(mainContentColWidth*.8);
     rdfDataStructureChart.setOption(rdfDataStructureChartOption, true);
     rdfDataStructureChart.resize();
 }
 setButtonAsToggleCollapse('rdfDataStructuresDetails', 'rdfDataStructuresTable');
 
+var readableLabelsMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+    "GRAPH ?g {" +
+    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+    "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+    "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . " +
+    "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+    "}" +
+    "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
 var readableLabelChartOption = {};
 function readableLabelsFill() {
-    var readableLabelsMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+    readableLabelsMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
             "GRAPH ?g {" +
             "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
             "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
@@ -2513,6 +2547,8 @@ function readableLabelsFill() {
             "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
             "}" +
             "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
+    $('#readableLabelsQueryCell').empty();
+    $('#readableLabelsQueryCell').append($(document.createElement('code')).text(readableLabelsMeasureQuery))
 
     sparqlQueryJSON(readableLabelsMeasureQuery, json => {
         var readableLabelData = []
@@ -2595,16 +2631,26 @@ function showReadableLabelsContent() {
     unCollapseHtml('readableLabelsMeasureRow');
 }
 function redrawReadableLabelsChart() {
+    $('#readableLabelsQueryCell').empty();
+    $('#readableLabelsQueryCell').append($(document.createElement('code')).text(readableLabelsMeasureQuery))
     $('#readableLabelsScatter').width(mainContentColWidth*.8);
     readableLabelChart.setOption(readableLabelChartOption, true);
     readableLabelChart.resize();
 }
 setButtonAsToggleCollapse('readableLabelsDetails', 'readableLabelsTable');
 
-
+var blankNodesMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+        "GRAPH ?g {" +
+        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+        "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+        "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . " +
+        "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+        "}" +
+        "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
 var blankNodeChartOption = {};
 function blankNodesFill() {
-    var blankNodesMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+    blankNodesMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
             "GRAPH ?g {" +
             "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
             "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
@@ -2613,6 +2659,8 @@ function blankNodesFill() {
             "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
             "}" +
             "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
+    $('#blankNodesQueryCell').empty();
+    $('#blankNodesQueryCell').append($(document.createElement('code')).text(blankNodesMeasureQuery))
 
     sparqlQueryJSON(blankNodesMeasureQuery, json => {
         var blankNodeData = []
@@ -2695,6 +2743,8 @@ function showblankNodesContent() {
     unCollapseHtml('blankNodesMeasureRow');
 }
 function redrawblankNodesChart() {
+    $('#blankNodesQueryCell').empty();
+    $('#blankNodesQueryCell').append($(document.createElement('code')).text(blankNodesMeasureQuery))
     $('#blankNodesScatter').width(mainContentColWidth*.8);
     blankNodeChart.setOption(blankNodeChartOption, true);
     blankNodeChart.resize();
