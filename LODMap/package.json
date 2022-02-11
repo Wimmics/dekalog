@@ -1,0 +1,17 @@
+{
+  "name": "KartoGraphI",
+  "source": "src/index.html",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "parcel": "latest",
+    "d3": "latest",
+    "echarts": "latest",
+    "jquery": "latest",
+    "leaflet": "latest",
+    "timespan": "^2.3.0",
+    "dayjs": "^1.10.7"
+  }
+}

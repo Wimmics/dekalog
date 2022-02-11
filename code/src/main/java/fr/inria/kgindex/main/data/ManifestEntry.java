@@ -118,6 +118,10 @@ public class ManifestEntry {
 			} catch(HttpException e) {
 				logger.error(e);
 				logger.error(modelUri.toString() + " could not be reached");
+			} catch(Exception e) {
+				logger.error(e);
+				logger.error(modelUri.toString());
+				throw e;
 			}
 
 			includedSubManifestModel.close();

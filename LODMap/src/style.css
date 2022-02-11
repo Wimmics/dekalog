@@ -1,0 +1,23 @@
+#ignoredEndpoints { width:100% }
+#map { width: 100%; height: 900px; }
+#endpointKeywords { width: 100%; height: 500px; }
+#vocabs { width: 100%; height: 500px; }
+#rawVocabs { width: 100%; height: 500px; }
+#histo1 { width: 49%; height: 500px; }
+#histo2 { width: 49%; height: 500px; }
+#SPARQLCoverageHisto { width: 100%; height: 500px; }
+#tripleScatter { width: 33%; height: 300px; }
+#classScatter { width: 33%; height: 300px; }
+#propertyScatter { width: 33%; height: 300px; }
+#testCategoryScatter { width: 100%; height: 300px; }
+#descriptionSizeScatter { width: 100%; height: 500px; }
+#totalRuntimeScatter { width: 100%; height: 250px; }
+#averageRuntimeScatter { width: 100%; height: 250px; }
+#availabilityScatter { width: 100%; height: 300px; }
+#classesGraph { width: 100%; height: 300px; }
+#shortUrisScatter { width: 100%; height: 300px; }
+#rdfDataStructuresScatter { width: 100%; height: 300px; }
+#readableLabelsScatter { width: 100%; height: 300px; }
+#blankNodesScatter { width: 100%; height: 300px; }
+#datasetdescriptionRadar { width: 100%; height: 300px; }
+td { overflow-wrap: anywhere; }
