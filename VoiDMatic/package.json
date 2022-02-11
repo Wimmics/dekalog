@@ -1,0 +1,16 @@
+{
+  "name": "VoIDMatic",
+  "source": "src/index.html",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "parcel": "latest",
+    "d3": "latest",
+    "echarts": "latest",
+    "jquery": "latest",
+    "dayjs": "^1.10.7",
+     "rdflib": "^2.2.17"
+  },
+}
