@@ -2,7 +2,6 @@ import * as d3 from 'd3';
 import * as echarts from "./echarts.js";
 import $ from 'jquery';
 import 'leaflet';
-var timespan = require('timespan');
 var dayjs = require('dayjs')
 var customParseFormat = require('dayjs/plugin/customParseFormat')
 var duration = require('dayjs/plugin/duration');
@@ -940,15 +939,18 @@ function vocabRelatedContentFill() {
                             rawGatherVocab.set(endpointUri, new Set());
                         }
                         rawGatherVocab.get(endpointUri).add(vocabulariUri);
-                        if(LOVVocabularies.has(vocabulariUri)) {
-                            endpointSet.add(endpointUri);
-                            vocabSet.add(vocabulariUri);
-                            if(! gatherVocab.has(endpointUri)) {
-                                gatherVocab.set(endpointUri, new Set());
-                            }
-                            gatherVocab.get(endpointUri).add(vocabulariUri);
-                        }
                     }
+                }
+            });
+
+            rawVocabSet.forEach(vocabulariUri => {
+                if(LOVVocabularies.has(vocabulariUri)) {
+                    endpointSet.add(endpointUri);
+                    vocabSet.add(vocabulariUri);
+                    if(! gatherVocab.has(endpointUri)) {
+                        gatherVocab.set(endpointUri, new Set());
+                    }
+                    gatherVocab.get(endpointUri).add(vocabulariUri);
                 }
             });
 
