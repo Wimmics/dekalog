@@ -1,4 +1,3 @@
-import * as d3 from 'd3';
 import * as echarts from "./echarts.js";
 import $ from 'jquery';
 import 'leaflet';
@@ -35,31 +34,31 @@ var datasetdescriptionChart;
 
 // Setup tab menu
 var geolocTabButton = $('#geoloc-tab')
-geolocTabButton.click(function (event) {
+geolocTabButton.on('click', function (event) {
     redrawCharts()
 })
 var vocabRelatedContentTabButton = $('#vocabRelatedContent-tab')
-vocabRelatedContentTabButton.click(function (event) {
+vocabRelatedContentTabButton.on('click', function (event) {
     redrawCharts()
 })
 var sparqlTabButton = $('#sparql-tab')
-sparqlTabButton.click(function (event) {
+sparqlTabButton.on('click', function (event) {
     redrawCharts()
 })
 var populationTabButton = $('#population-tab')
-populationTabButton.click(function (event) {
+populationTabButton.on('click', function (event) {
     redrawCharts()
 })
 var descriptionTabButton = $('#description-tab')
-descriptionTabButton.click(function (event) {
+descriptionTabButton.on('click', function (event) {
     redrawCharts()
 })
 var runtimeTabButton = $('#runtime-tab')
-runtimeTabButton.click(function (event) {
+runtimeTabButton.on('click', function (event) {
     redrawCharts()
 })
 var qualityTabButton = $('#quality-tab')
-qualityTabButton.click(function (event) {
+qualityTabButton.on('click', function (event) {
     redrawCharts()
 })
 
@@ -201,7 +200,7 @@ function getCategoryScatterDataSeriesFromMap(dataMap) {
 function setTableHeaderSort(tableBodyId, tableHeadersIds, tableColsSortFunction, tableFillFunction, dataArray) {
     var tableBody = $('#'+tableBodyId);
     tableHeadersIds.forEach((tableheaderId, i) => {
-        $('#'+tableheaderId).click(function() {
+        $('#'+tableheaderId).on('click', function() {
             tableBody.empty();
             var ascSortColClass = "sortCol"+ i +"Asc";
             var descSortColClass = "sortCol"+ i +"Desc";
@@ -304,7 +303,7 @@ const blackListedEndpointParameter = "blackListedEndpoints";
 var blackistedEndpointIndexList = [];
 var url = new URL(window.location);
 var urlParams = new URLSearchParams(url.search);
-$( document ).ready(function() {
+$(function() {
     mainContentColWidth = $('#mainContentCol').width();
 
     // Initialization of the map
@@ -362,7 +361,7 @@ $( document ).ready(function() {
         select.append(option);
     });
     changeGraphSetIndex(currentGraphSetIndex);
-    select.change(function() {
+    select.on('change', function() {
         $( "select option:selected" ).each(function() {
             var selectionIndex = $( this ).val();
             changeGraphSetIndex(selectionIndex);
@@ -414,7 +413,7 @@ function changeGraphSetIndex(index) {
 }
 
 function setButtonAsToggleCollapse(buttonId, tableId) {
-    $('#'+buttonId).click(function() {
+    $('#'+buttonId).on('click', function() {
         if($('#'+tableId).hasClass("show")) {
             collapseHtml(tableId);
         } else {
@@ -1400,7 +1399,7 @@ function categoryTestNumberFill() {
             var count = itemResult.count.value;
     //        var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
     //        var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
-            var endpoint = itemResult.endpointUrl.value:
+            var endpoint = itemResult.endpointUrl.value;
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
 
             if( ! blacklistedEndpointList.includes(endpoint)) {
@@ -1560,7 +1559,7 @@ function testTableFill() {
         }
 
         var tableBody = $('#ruleTableBody');
-        $('#rulesTableEndpointHeader').click(function() {
+        $('#rulesTableEndpointHeader').on('click', function() {
             tableBody.empty();
             if(tableBody.hasClass('sortEndpointDesc')) {
                 tableBody.removeClass('sortEndpointDesc');
@@ -2752,21 +2751,3 @@ function redrawblankNodesChart() {
     blankNodeChart.resize();
 }
 setButtonAsToggleCollapse('blankNodesDetails', 'blankNodesTable');
-
-/*
-Vocabulaires en commun
-
-PREFIX void: <http://rdfs.org/ns/void#>
-SELECT DISTINCT ?endpointUrl1 ?endpointUrl2 ?vocabulary1 {
-    ?metadata1 <http://ns.inria.fr/kg/index#curated> ?endpoint1 , ?base1 .
-    ?metadata2 <http://ns.inria.fr/kg/index#curated> ?endpoint2 , ?base2 .
-    ?base1 void:vocabulary ?vocabulary1 .
-    ?base2 void:vocabulary ?vocabulary2 .
-    { ?endpoint1 <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl1 . }
-    UNION { ?endpoint1 <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl1 . }
-    { ?endpoint2 <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl2 . }
-    UNION { ?endpoint2 <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl2 . }
-  FILTER(?vocabulary1 = ?vocabulary2)
-  FILTER(?endpointUrl1 != ?endpointUrl2)
-  } GROUP BY ?vocabulary1 ?endpointUrl1 ?endpointUrl2
-*/

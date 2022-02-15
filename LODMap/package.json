@@ -6,7 +6,6 @@
       "build": "parcel build"
    },
    "devDependencies": {
-      "d3": "latest",
       "dayjs": "latest",
       "echarts": "latest",
       "jquery": "latest",
