@@ -33,3 +33,11 @@ LODMap/.parcel-cache/
 LODMap/dist/
 
 *.out
+
+VoiDMatic/.parcel-cache/
+
+VoiDMatic/node_modules/
+
+VoiDMatic/dist/
+
+VoiDMatic/package-lock.json
