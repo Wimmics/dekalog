@@ -11,27 +11,6 @@ dayjs.extend(duration)
 import {greenIcon, orangeIcon} from "./leaflet-color-markers.js";
 import {endpointIpMap, timezoneMap, graphLists} from "./data.js";
 
-
-var map;
-var layerGroup;
-var sparql10Chart;
-var sparql11Chart;
-var sparqlChart;
-var tripleScatterChart;
-var classScatterChart;
-var propertyScatterChart;
-var categoryScatterChart;
-var totalRuntimeChart;
-var averageRuntimeChart;
-var vocabForceGraph;
-var rawVocabForceGraph;
-var endpointKeywordsForceGraph;
-var shortUriChart;
-var rdfDataStructureChart;
-var readableLabelChart;
-var blankNodeChart;
-var datasetdescriptionChart;
-
 // Setup tab menu
 var geolocTabButton = $('#geoloc-tab')
 geolocTabButton.on('click', function (event) {
@@ -62,6 +41,17 @@ qualityTabButton.on('click', function (event) {
     redrawCharts()
 })
 
+class KartoChart {
+    constructor(config = {chartObject, option, fillFunction, redrawFunction, clearFunction, hideFunction: ()=> {}, showFunction: () => {}}) {
+        this.chartObject = config.chartObject;
+        this.option = config.option;
+        this.fill = config.fillFunction;
+        this.redraw = config.redrawFunction;
+        this.clear = config.clearFunction;
+        this.hide = config.hideFunction;
+        this.show = config.showFunction;
+    }
+};
 
 function sparqlQueryJSON(query, callback, errorCallback) {
     xmlhttpRequestJSON('http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", callback, errorCallback);
@@ -133,7 +123,7 @@ function getForceGraphOption(title, legendData, dataNodes, dataLinks) {
           top: 'top',
           left: 'center'
         },
-        //tooltip: { show:true },
+        tooltip: { show:true },
         legend: [
             {
                 data: legendData,
@@ -224,63 +214,59 @@ function refresh() {
     graphValuesURIList = generateGraphValuesURI(graphList);
     clear();
     whiteListFill();
-    mapFill();
-    sparqlesHistoFill();
-    vocabRelatedContentFill();
-    tripleNumberScatter();
-    classNumberFill();
-    propertyNumberFill();
-    categoryTestNumberFill();
+    endpointMap.fill();
+    sparqlCoverCharts.fill();
+    vocabRelatedChart.fill();
+    tripleChart.fill();
+    classNumberChart.fill();
+    propertyNumberChart.fill();
+    categoryTestNumberChart.fill();
     testTableFill();
-    runtimeStatsFill();
-    averageRuntimeStatsFill();
+    totalRuntimeChart.fill();
+    averageRuntimeChart.fill();
     classAndPropertiesContentFill();
-    descriptionElementFill();
-    shortUrisFill();
-    rdfDataStructuresFill();
-    readableLabelsFill();
-    blankNodesFill();
+    descriptionElementChart.fill();
+    shortUriChart.fill();
+    rdfDataStructureChart.fill();
+    readableLabelsChart.fill();
+    blankNodesChart.fill();
 }
 
 function clear() {
-    layerGroup.clearLayers();
-    sparql10Chart.setOption({series:[]}, true);
-    sparql11Chart.setOption({series:[]}, true);
-    sparqlChart.setOption({series:[]}, true);
-    totalRuntimeChart.setOption({series:[]}, true);
-    averageRuntimeChart.setOption({series:[]}, true);
-    hideVocabularyContent();
-    hideTriplesNumberContent();
-    hideClassNumberContent();
-    hidePropertyNumberContent();
-    hideCategoryTestNumberContent();
-    hideShortUrisContent();
-    hideRDFDataStructuresContent();
-    hideReadableLabelsContent();
-    hideblankNodesContent();
-    datasetdescriptionChart.setOption({series:[]}, true);
+    endpointMap.clear();
+    sparqlCoverCharts.clear();
+    vocabRelatedChart.clear();
+    tripleChart.hide();
+    classNumberChart.hide();
+    propertyNumberChart.hide();
+    categoryTestNumberChart.hide();
+    totalRuntimeChart.clear();
+    shortUriChart.clear();
+    rdfDataStructureChart.hide();
+    readableLabelsChart.hide();
+    blankNodesChart.hide();
+    descriptionElementChart.clear();
     $('#endpointKnownVocabsTableBody').empty();
     $('#rulesTableBody').empty();
-    $('#datasetDescriptionTableBody').empty();
     $('#endpointKeywordsTableBody').empty();
 }
 
 function redrawCharts() {
     mainContentColWidth = $('#mainContentCol').width();
-    redrawMapContent()
-    redrawVocabRelatedContentCharts();
-    redrawSPARQLFeaturesChart();
-    redrawTriplesNumberContentChart();
-    redrawClassesNumberContentChart();
-    redrawPropertyNumberContentChart();
-    redrawCategoryTestNumberChart();
-    redrawDescriptionElementChart();
-    redrawTotalRuntimeScatterChart();
-    redrawAverageRuntimeChart();
-    redrawShortUrisChart();
-    redrawRDFDataStructuresChart();
-    redrawReadableLabelsChart();
-    redrawblankNodesChart();
+    endpointMap.redraw();
+    sparqlCoverCharts.redraw();
+    vocabRelatedChart.redraw();
+    tripleChart.redraw();
+    classNumberChart.redraw();
+    propertyNumberChart.redraw();
+    categoryTestNumberChart.redraw();
+    descriptionElementChart.redraw();
+    totalRuntimeChart.redraw();
+    averageRuntimeChart.redraw();
+    shortUriChart.redraw();
+    rdfDataStructureChart.redraw();
+    readableLabelsChart.redraw();
+    blankNodesChart.redraw();
 }
 
 function generateGraphValuesURI( graphs) {
@@ -290,89 +276,6 @@ function generateGraphValuesURI( graphs) {
     });
     return result;
 }
-
-var mainContentColWidth = 0; // Used to initialize graph width;
-
-var graphList = [];
-var graphValuesURIList = "";
-var currentGraphSetIndex = 0;
-const graphSetIndexParameter = "graphSetIndex";
-var endpointList = [];
-var blacklistedEndpointList = [];
-const blackListedEndpointParameter = "blackListedEndpoints";
-var blackistedEndpointIndexList = [];
-var url = new URL(window.location);
-var urlParams = new URLSearchParams(url.search);
-$(function() {
-    mainContentColWidth = $('#mainContentCol').width();
-
-    // Initialization of the map
-    map = L.map('map').setView([24.5271348225978, 62.22656250000001], 2);
-        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 18,
-            id: 'mapbox/streets-v11',
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: 'pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q'
-        }).addTo(map);
-    layerGroup = L.layerGroup().addTo(map);
-    // Initialization of the ECharts components
-    sparql10Chart = echarts.init(document.getElementById('SPARQL10histo'));
-    sparql11Chart = echarts.init(document.getElementById('SPARQL11histo'));
-    sparqlChart = echarts.init(document.getElementById('SPARQLCoverageHisto'));
-    tripleScatterChart = echarts.init(document.getElementById('tripleScatter'));
-    classScatterChart = echarts.init(document.getElementById('classScatter'));
-    propertyScatterChart = echarts.init(document.getElementById('propertyScatter'));
-    categoryScatterChart = echarts.init(document.getElementById('testCategoryScatter'));
-    totalRuntimeChart = echarts.init(document.getElementById('totalRuntimeScatter'));
-    averageRuntimeChart = echarts.init(document.getElementById('averageRuntimeScatter'));
-    vocabForceGraph = echarts.init(document.getElementById('vocabs'));
-    rawVocabForceGraph = echarts.init(document.getElementById('rawVocabs'));
-    endpointKeywordsForceGraph = echarts.init(document.getElementById('endpointKeywords'));
-    shortUriChart = echarts.init(document.getElementById('shortUrisScatter'));
-    rdfDataStructureChart = echarts.init(document.getElementById('rdfDataStructuresScatter'));
-    readableLabelChart = echarts.init(document.getElementById('readableLabelsScatter'));
-    blankNodeChart = echarts.init(document.getElementById('blankNodesScatter'));
-    datasetdescriptionChart = echarts.init(document.getElementById('datasetdescriptionRadar'));
-
-    $(window).resize(() => {
-        redrawCharts();
-    })
-
-    var url = new URL(window.location);
-    urlParams = new URLSearchParams(url.search);
-    // Set up graphs sets
-    if(urlParams.has(graphSetIndexParameter) ) {
-        const givenGraphSetIndex = urlParams.get(graphSetIndexParameter);
-        if(givenGraphSetIndex >= 0 && givenGraphSetIndex < graphLists.length) {
-            currentGraphSetIndex = givenGraphSetIndex;
-        }
-    }
-    var select = $('#endpoint-list-select');
-    graphLists.forEach((item, i) => {
-        var option = document.createElement('option');
-        $(option).text(item.name);
-        $(option).val(i);
-        if(i == currentGraphSetIndex) {
-            $(option).attr("selected","true")
-            graphList = item.graphs;
-        }
-        select.append(option);
-    });
-    changeGraphSetIndex(currentGraphSetIndex);
-    select.on('change', function() {
-        $( "select option:selected" ).each(function() {
-            var selectionIndex = $( this ).val();
-            changeGraphSetIndex(selectionIndex);
-        })
-    });
-    // set up blacklist
-    if(urlParams.has(blackListedEndpointParameter) ) {
-        var blackistedEndpointIndexListRaw = urlParams.get(blackListedEndpointParameter);
-        blackistedEndpointIndexList = JSON.parse(decodeURI(blackistedEndpointIndexListRaw));
-    }
-});
 
 function addBlacklistedEndpoint(endpointIndex) {
     urlParams = new URLSearchParams(window.location.search);
@@ -484,13 +387,15 @@ function whiteListFill() {
 }
 setButtonAsToggleCollapse('whiteListShowButton', 'whiteListTable');
 
-function mapFill() {
+
+var endpointMap = new KartoChart({ chartObject: L.map('map').setView([24.5271348225978, 62.22656250000001], 2), 
+        fillFunction: function() {
     var endpointGeolocTableBody = $('#endpointGeolocTableBody');
     endpointGeolocTableBody.empty();
     var endpointGeolocData = [];
 
     $('#map').width(mainContentColWidth);
-    map.invalidateSize();
+    this.chartObject.invalidateSize();
 
     function addLineToEndpointGeolocTable(item) {
         var endpointRow = $(document.createElement('tr'));
@@ -611,24 +516,25 @@ function mapFill() {
 
                                 });
                             });
-                            endpointMarker.addTo(layerGroup);
+                            endpointMarker.addTo(this.layerGroup);
                         });
                     }
                 });
             }
         });
-}
-function redrawMapContent() {
+},
+        redrawFunction: function() {
     $('#map').width(mainContentColWidth);
-    map.invalidateSize();
-    map.setView([24.5271348225978, 62.22656250000001], 2);
-}
+    this.chartObject.invalidateSize();
+    this.chartObject.setView([24.5271348225978, 62.22656250000001], 2);
+},
+        clearFunction: function() {
+    endpointMap.layerGroup.clearLayers();
+}});
 setButtonAsToggleCollapse('endpointGeolocDetails', 'endpointGeolocTable');
 
-var sparql10ChartOption = {};
-var sparql11ChartOption = {};
-var sparqlChartOption = {};
-function sparqlesHistoFill() {
+var sparqlCoverCharts = new KartoChart({chartObject:{'sparql10Chart': echarts.init(document.getElementById('SPARQL10histo')), 'sparql11Chart': echarts.init(document.getElementById('SPARQL11histo')), 'sparqlChart': echarts.init(document.getElementById('SPARQLCoverageHisto'))}, 
+        fillFunction:function() {
 // Create an histogram of the SPARQLES rules passed by endpoint.
     var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) WHERE { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . FILTER(CONTAINS(str(?activity), ?sparqlNorm)) VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } } VALUES ?g { '+ graphValuesURIList +' } } GROUP BY ?endpoint ?sparqlNorm ORDER BY DESC( ?sparqlNorm)';
     sparqlQueryJSON(sparqlesFeatureQuery, json => {
@@ -749,7 +655,7 @@ function sparqlesHistoFill() {
             })
         });
 
-        sparql10ChartOption = {
+        this.option.sparql10ChartOption = {
             title: {
                 left: 'center',
                 text:"Number of endpoints according to\n their coverage of SPARQL 1.0 features",
@@ -779,7 +685,7 @@ function sparqlesHistoFill() {
             color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
             series:sparql10Series ,
         };
-        sparql11ChartOption = {
+        this.option.sparql11ChartOption = {
             title: {
                 left: 'center',
                 text:"Number of endpoints according to\n their coverage of SPARQL 1.1 features",
@@ -809,7 +715,7 @@ function sparqlesHistoFill() {
             color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
             series:sparql11Series ,
         };
-        sparqlChartOption = {
+        this.option.sparqlChartOption = {
             title: {
                 left: 'center',
                 text:"Number of endpoints according to\n their coverage of all SPARQL features",
@@ -840,7 +746,7 @@ function sparqlesHistoFill() {
             series:sparqlCategorySeries ,
         };
 
-        redrawSPARQLFeaturesChart();
+        this.redraw();
 
         jsonBaseFeatureSparqles.sort((a,b) => {
             return a.endpoint.localeCompare(b.endpoint);
@@ -871,36 +777,33 @@ function sparqlesHistoFill() {
 
         fillTestTable();
     });
-}
-function redrawSPARQLFeaturesChart() {
+},
+        redrawFunction: function() {
     $('#SPARQL10histo').width(mainContentColWidth*.48);
     $('#SPARQL11histo').width(mainContentColWidth*.48);
     $('#SPARQL10histo').height(500);
     $('#SPARQL11histo').height(500);
     $('#SPARQLCoverageHisto').width(mainContentColWidth);
 
-    sparql10Chart.setOption(sparql10ChartOption, true);
-    sparql10Chart.resize();
-    sparql11Chart.setOption(sparql11ChartOption, true);
-    sparql11Chart.resize();
-    sparqlChart.setOption(sparqlChartOption, true);
-    sparqlChart.resize();
-}
+    this.chartObject.sparql10Chart.setOption(this.option.sparql10ChartOption, true);
+    this.chartObject.sparql10Chart.resize();
+    this.chartObject.sparql11Chart.setOption(this.option.sparql11ChartOption, true);
+    this.chartObject.sparql11Chart.resize();
+    this.chartObject.sparqlChart.setOption(this.option.sparqlChartOption, true);
+    this.chartObject.sparqlChart.resize();
+}, 
+        clearFunction: function() {
+    this.chartObject.sparql10Chart.setOption({series:[]}, true);
+    this.chartObject.sparql11Chart.setOption({series:[]}, true);
+    this.chartObject.sparqlChart.setOption({series:[]}, true);
+}});
+sparqlCoverCharts.option = {sparql10ChartOption: {}, sparql11ChartOption: {}, sparqlChartOption: {}};
 setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
 
-var vocabForceGraphOption = {};
-var rawVocabForceGraphOption = {};
-var endpointKeywordsForceGraphOption = {};
-var sparqlesVocabularies = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
-    "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
-    "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-    "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
-    "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
-    "} "+
-    'VALUES ?g { '+ graphValuesURIList +' } '+
-    " } " +
-    "GROUP BY ?endpointUrl ?vocabulary ";
-function vocabRelatedContentFill() {
+
+var vocabRelatedChart = new KartoChart({ chartObject: {vocabChart: echarts.init(document.getElementById('vocabs')), rawVocabChart: echarts.init(document.getElementById('rawVocabs')), keywordChart: echarts.init(document.getElementById('endpointKeywords'))},
+    option: {vocabOption: {}, rawVocabOption: {}, keywordOption: {}},
+    fillFunction: function() {
 // Create an force graph with the graph linked by co-ocurrence of vocabularies
     sparqlesVocabularies = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
         "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
@@ -914,287 +817,315 @@ function vocabRelatedContentFill() {
 
     sparqlQueryJSON(sparqlesVocabularies, json => {
         // Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
-        var LOVVocabularies = new Set();
+        var knownVocabulariesLOV = new Set();
         var sumVocabSetSize = 0;
         var sumRawVocabSetSize = 0;
-        xmlhttpRequestJSON("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list", response => {
-            response.forEach((item, i) => {
-                LOVVocabularies.add(item.uri)
+        xmlhttpRequestJSON("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list", responseLOV => {
+            responseLOV.forEach((item, i) => {
+                knownVocabulariesLOV.add(item.uri)
             });
-
-            var gatherVocab = new Map(); // List of vocab per endpoint
-            var endpointSet = new Set();
-            var vocabSet = new Set();
-            var rawVocabSet = new Set();
-            var rawGatherVocab = new Map();
-            json.results.bindings.forEach((bindingItem, i) => {
-                var vocabulariUri = bindingItem.vocabulary.value;
-                var endpointUri = bindingItem.endpointUrl.value;
-                var graphUri = bindingItem.g.value;
-                if(! blacklistedEndpointList.includes(endpointUri)) {
-                    if(graphList.some(graphListItem => graphUri.localeCompare(graphListItem) == 0)) {
-                        rawVocabSet.add(vocabulariUri);
-                        if(! rawGatherVocab.has(endpointUri)) {
-                            rawGatherVocab.set(endpointUri, new Set());
-                        }
-                        rawGatherVocab.get(endpointUri).add(vocabulariUri);
-                    }
-                }
-            });
-
-            rawVocabSet.forEach(vocabulariUri => {
-                if(LOVVocabularies.has(vocabulariUri)) {
-                    endpointSet.add(endpointUri);
-                    vocabSet.add(vocabulariUri);
-                    if(! gatherVocab.has(endpointUri)) {
-                        gatherVocab.set(endpointUri, new Set());
-                    }
-                    gatherVocab.get(endpointUri).add(vocabulariUri);
-                }
-            });
-
-            // Endpoint and vocabularies graph
-            var jsonVocabLinks = new Set();
-            var jsonVocabNodes = new Set();
-            var jsonRawVocabNodes = new Set();
-            var jsonRawVocabLinks = new Set();
-
-            endpointSet.forEach(item => {
-                jsonVocabNodes.add({name:item, category:'Endpoint', symbolSize:5});
-                jsonRawVocabNodes.add({name:item, category:'Endpoint', symbolSize:5});
-            });
-            vocabSet.forEach(item => {
-                jsonVocabNodes.add({name:item,  category:'Vocabulary', symbolSize:5})
-            });
-            rawVocabSet.forEach(item => {
-                jsonRawVocabNodes.add({name:item,  category:'Vocabulary', symbolSize:5})
-            });
-
-            var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
-            var sumknowVocabMeasure = 0;
-            var knowVocabsData = [];
-            gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
-                var measure = (endpointVocabs.size/rawGatherVocab.get(endpointUrl).size);
-                knowVocabsData.push({ 'endpoint':endpointUrl, 'measure':measure })
-
-                endpointVocabs.forEach((vocab, i) => {
-                    jsonVocabLinks.add({source:endpointUrl, target:vocab})
-                });
-            });
-            rawGatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
-                endpointVocabs.forEach((vocab, i) => {
-                    jsonRawVocabLinks.add({source:endpointUrl, target:vocab})
-                });
-            });
-
-            if(jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
-                showEndpointVocabularyContent();
-
-                vocabForceGraphOption = getForceGraphOption('Endpoints and known vocabularies*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
-                vocabForceGraph.setOption(vocabForceGraphOption, true);
-                rawVocabForceGraphOption = getForceGraphOption('Endpoints and vocabularies without filtering', ["Vocabulary", "Endpoint"], [...jsonRawVocabNodes], [...jsonRawVocabLinks]);
-                rawVocabForceGraph.setOption(rawVocabForceGraphOption, true);
-
-                // Measure Table
-                function endpointKnowVocabsMeasureFill() {
-                    knowVocabsData.forEach((item, i) => {
-                        var endpointUrl = item.endpoint;
-                        var measure = item.measure;
-                        sumknowVocabMeasure += measure;
-                        var endpointRow = $(document.createElement("tr"));
-                        var endpointCell = $(document.createElement('td'));
-                        endpointCell.text(endpointUrl);
-                        endpointRow.append(endpointCell);
-                        var knownVocabMeasureCell = $(document.createElement('td'));
-                        knownVocabMeasureCell.text(precise(measure*100, 3)+"%");
-                        endpointRow.append(knownVocabMeasureCell);
-                        endpointKnownVocabulariestableBody.append(endpointRow);
-                    });
+            var knownVocabulariesPrefixCC = new Set();
+            xmlhttpRequestJSON("http://prefix.cc/context", responsePrefixCC => {
+                for (var prefix of Object.keys(responsePrefixCC['@context'])) {
+                    knownVocabulariesPrefixCC.add(responsePrefixCC['@context'][prefix])
                 };
-                endpointKnowVocabsMeasureFill();
-                setTableHeaderSort("endpointKnownVocabsTableBody", ["knownVocabEndpointHeader", "knownVocabMeasureHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.measure - b.measure ], endpointKnowVocabsMeasureFill, knowVocabsData);
 
-                // compputation of the know vocabularies measure
-                var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
-                knownVocabulariesMeasureHtml.text( precise((sumknowVocabMeasure / endpointSet.size)*100, 3)+"%");
-            } else {
-                hideEndpointVocabularyContent();
-            }
-
-            // Endpoint and vocabulary keywords graph
-            var vocabularyQueryValues = "";
-            vocabSet.forEach((item, i) => {
-                vocabularyQueryValues += "<"+item+">";
-                vocabularyQueryValues += " " ;
-            });
-
-            var keywordLOVQuery = "SELECT DISTINCT ?vocabulary ?keyword { " +
-            "GRAPH <https://lov.linkeddata.es/dataset/lov> { " +
-            "   ?vocabulary a <http://purl.org/vocommons/voaf#Vocabulary> . " +
-            "   ?vocabulary <http://www.w3.org/ns/dcat#keyword> ?keyword . " +
-            "} " +
-            "VALUES ?vocabulary { "+ vocabularyQueryValues +" } " +
-            "}"
-
-            xmlhttpRequestJSON("https://lov.linkeddata.es/dataset/lov/sparql?query="+encodeURIComponent(keywordLOVQuery)+"&format=json", jsonKeywords => {
-
-                var jsonKeywordLinks = new Set();
-                var jsonKeywordNodes = new Set();
-
-                var keywordSet = new Set();
-                var keywordHitsMap = new Map();
-                var vocabKeywordMap = new Map();
-                var endpointKeywordsMap = new Map();
-                jsonKeywords.results.bindings.forEach((keywordItem, i) => {
-                    var keyword = keywordItem.keyword.value;
-                    var vocab = keywordItem.vocabulary.value;
-                    if(vocabKeywordMap.get(vocab) == undefined) {
-                        vocabKeywordMap.set(vocab, [])
-                    }
-                    vocabKeywordMap.get(vocab).push(keyword);
-
-                    keywordSet.add(keyword);
-                });
-
-                gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
-                    endpointVocabs.forEach((endpointVocab, i) => {
-                        var vocabKeywords = vocabKeywordMap.get(endpointVocab);
-                        vocabKeywords.forEach((endpointKeyword, i) => {
-                            jsonKeywordLinks.add({source:endpointUrl, target:endpointKeyword})
-
-                            if(endpointKeywordsMap.get(endpointUrl) == undefined) {
-                                endpointKeywordsMap.set(endpointUrl, new Set());
+                var gatherVocab = new Map(); // List of vocab per endpoint
+                var endpointSet = new Set();
+                var vocabSet = new Set();
+                var rawVocabSet = new Set();
+                var rawGatherVocab = new Map();
+                json.results.bindings.forEach((bindingItem, i) => {
+                    var vocabulariUri = bindingItem.vocabulary.value;
+                    var endpointUri = bindingItem.endpointUrl.value;
+                    var graphUri = bindingItem.g.value;
+                    if(! blacklistedEndpointList.includes(endpointUri)) {
+                        endpointSet.add(endpointUri);
+                        if(graphList.some(graphListItem => graphUri.localeCompare(graphListItem) == 0)) {
+                            rawVocabSet.add(vocabulariUri);
+                            if(! rawGatherVocab.has(endpointUri)) {
+                                rawGatherVocab.set(endpointUri, new Set());
                             }
-                            endpointKeywordsMap.get(endpointUrl).add(endpointKeyword);
-                        });
-                    });
-                });
-
-                keywordSet.forEach(item => {
-                    jsonKeywordNodes.add({name:item, category:'Keyword', symbolSize:5})
-                });
-                endpointSet.forEach(item => {
-                    jsonKeywordNodes.add({name:item, category:'Endpoint', symbolSize:5})
-                });
-
-                if(jsonKeywordNodes.size > 0 && jsonKeywordLinks.size > 0) {
-                    showEndpointKeywordContent();
-
-                    endpointKeywordsForceGraphOption = getForceGraphOption('Endpoints and keywords', ["Keyword", "Endpoint"], [...jsonKeywordNodes], [...jsonKeywordLinks]);
-                    endpointKeywordsForceGraph.setOption(endpointKeywordsForceGraphOption, true);
-
-                    var endpointKeywordsData = [];
-                    endpointKeywordsMap.forEach((keywords, endpoint, map) => {
-                        endpointKeywordsData.push({endpoint:endpoint, keywords:keywords})
-                    });
-
-                    // Endpoint and vocabulary keywords table
-                    var endpointKeywordsTableBody = $('#endpointKeywordsTableBody');
-                    function endpointKeywordsTableFill() {
-                        endpointKeywordsTableBody.empty();
-                        endpointKeywordsData.forEach(endpointKeywordsItem => {
-                            var endpoint = endpointKeywordsItem.endpoint;
-                            var keywords = endpointKeywordsItem.keywords;
-                            var endpointRow = $(document.createElement("tr"));
-                            var endpointCell = $(document.createElement("td"));
-                            endpointCell.text(endpoint);
-                            var keywordsCell = $(document.createElement("td"));
-                            var keywordsText = "";
-                            var keywordCount = 0;
-                            var keywordsArray = [...keywords].sort((a, b) => a.localeCompare(b))
-                            keywordsArray.forEach((keyword) => {
-                                if(keywordCount > 0) {
-                                    keywordsText += ", ";
-                                }
-                                keywordsText += keyword;
-                                keywordCount++;
-                            });
-                            keywordsCell.text(keywordsText);
-
-                            endpointRow.append(endpointCell);
-                            endpointRow.append(keywordsCell);
-                            endpointKeywordsTableBody.append(endpointRow);
-                        });
+                            rawGatherVocab.get(endpointUri).add(vocabulariUri);
+                        }
                     }
-                    endpointKeywordsTableFill()
+                });
 
-                    setTableHeaderSort("endpointKeywordsTableBody", ["endpointKeywordsTableEndpointHeader", "endpointKeywordsTableKeywordHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.keywords.size - b.keywords.size ], endpointKeywordsTableFill, endpointKeywordsData);
+                // https://obofoundry.org/ // No ontology URL available in ontology description
+                // http://prefix.cc/context // done
+                // http://data.bioontology.org/resource_index/resources?apikey=b86b12d8-dc46-4528-82e3-13fbdabf5191 // No ontology URL available in ontology description
+                // https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list // done
+                // Filtering according to ontology repositories
+                rawVocabSet.forEach(vocabulariUri => {
+                    if(knownVocabulariesLOV.has(vocabulariUri) || knownVocabulariesPrefixCC.has(vocabulariUri)) {
+                        vocabSet.add(vocabulariUri);
+                    }
+                });
+                rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
+                    vocabulariUriSet.forEach(vocabulariUri => {
+                        if(knownVocabulariesLOV.has(vocabulariUri) || knownVocabulariesPrefixCC.has(vocabulariUri)) {
+                            if(! gatherVocab.has(endpointUri)) {
+                                gatherVocab.set(endpointUri, new Set());
+                            }
+                                gatherVocab.get(endpointUri).add(vocabulariUri);
+                        }
+                    });
+                });
+
+                // Endpoint and vocabularies graph
+                var jsonVocabLinks = new Set();
+                var jsonVocabNodes = new Set();
+                var jsonRawVocabNodes = new Set();
+                var jsonRawVocabLinks = new Set();
+
+                endpointSet.forEach(item => {
+                    jsonVocabNodes.add({name:item, category:'Endpoint', symbolSize:5});
+                    jsonRawVocabNodes.add({name:item, category:'Endpoint', symbolSize:5});
+                });
+                vocabSet.forEach(item => {
+                    jsonVocabNodes.add({name:item,  category:'Vocabulary', symbolSize:5})
+                });
+                rawVocabSet.forEach(item => {
+                    jsonRawVocabNodes.add({name:item,  category:'Vocabulary', symbolSize:5})
+                });
+
+                var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
+                var sumknowVocabMeasure = 0;
+                var knowVocabsData = [];
+                gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
+                    var measure = (endpointVocabs.size/rawGatherVocab.get(endpointUrl).size);
+                    knowVocabsData.push({ 'endpoint':endpointUrl, 'measure':measure })
+
+                    endpointVocabs.forEach((vocab, i) => {
+                        jsonVocabLinks.add({source:endpointUrl, target:vocab})
+                    });
+                });
+                rawGatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
+                    endpointVocabs.forEach((vocab, i) => {
+                        jsonRawVocabLinks.add({source:endpointUrl, target:vocab})
+                    });
+                });
+
+                if(jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
+                    this.show();
+
+                    this.option.vocabOption = getForceGraphOption('Endpoints and known vocabularies*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
+                    this.chartObject.vocabChart.setOption(this.option.vocabOption, true);
+                    this.chartObject.rawVocabOption = getForceGraphOption('Endpoints and vocabularies without filtering', ["Vocabulary", "Endpoint"], [...jsonRawVocabNodes], [...jsonRawVocabLinks]);
+                    this.chartObject.rawVocabChart.setOption(this.chartObject.rawVocabOption, true);
+
+                    // Measure Table
+                    function endpointKnowVocabsMeasureFill() {
+                        knowVocabsData.forEach((item, i) => {
+                            var endpointUrl = item.endpoint;
+                            var measure = item.measure;
+                            sumknowVocabMeasure += measure;
+                            var endpointRow = $(document.createElement("tr"));
+                            var endpointCell = $(document.createElement('td'));
+                            endpointCell.text(endpointUrl);
+                            endpointRow.append(endpointCell);
+                            var knownVocabMeasureCell = $(document.createElement('td'));
+                            knownVocabMeasureCell.text(precise(measure*100, 3)+"%");
+                            endpointRow.append(knownVocabMeasureCell);
+                            endpointKnownVocabulariestableBody.append(endpointRow);
+                        });
+                    };
+                    endpointKnowVocabsMeasureFill();
+                    setTableHeaderSort("endpointKnownVocabsTableBody", ["knownVocabEndpointHeader", "knownVocabMeasureHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.measure - b.measure ], endpointKnowVocabsMeasureFill, knowVocabsData);
+
+                    // compputation of the know vocabularies measure
+                    var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
+                    knownVocabulariesMeasureHtml.text( precise((sumknowVocabMeasure / endpointSet.size)*100, 3)+"%");
                 } else {
-                    hideEndpointKeywordContent();
+                    this.hide();
                 }
+
+                // Endpoint and vocabulary keywords graph
+                var vocabularyQueryValues = "";
+                vocabSet.forEach((item, i) => {
+                    vocabularyQueryValues += "<"+item+">";
+                    vocabularyQueryValues += " " ;
+                });
+
+                var keywordLOVQuery = "SELECT DISTINCT ?vocabulary ?keyword { " +
+                "GRAPH <https://lov.linkeddata.es/dataset/lov> { " +
+                "   ?vocabulary a <http://purl.org/vocommons/voaf#Vocabulary> . " +
+                "   ?vocabulary <http://www.w3.org/ns/dcat#keyword> ?keyword . " +
+                "} " +
+                "VALUES ?vocabulary { "+ vocabularyQueryValues +" } " +
+                "}"
+
+                xmlhttpRequestJSON("https://lov.linkeddata.es/dataset/lov/sparql?query="+encodeURIComponent(keywordLOVQuery)+"&format=json", jsonKeywords => {
+
+                    var jsonKeywordLinks = new Set();
+                    var jsonKeywordNodes = new Set();
+
+                    var keywordSet = new Set();
+                    var keywordHitsMap = new Map();
+                    var vocabKeywordMap = new Map();
+                    var endpointKeywordsMap = new Map();
+                    jsonKeywords.results.bindings.forEach((keywordItem, i) => {
+                        var keyword = keywordItem.keyword.value;
+                        var vocab = keywordItem.vocabulary.value;
+                        if(vocabKeywordMap.get(vocab) == undefined) {
+                            vocabKeywordMap.set(vocab, [])
+                        }
+                        vocabKeywordMap.get(vocab).push(keyword);
+
+                        keywordSet.add(keyword);
+                    });
+
+                    gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
+                        endpointVocabs.forEach((endpointVocab, i) => {
+                            var vocabKeywords = vocabKeywordMap.get(endpointVocab);
+                            if(vocabKeywords != undefined){
+                                vocabKeywords.forEach((endpointKeyword, i) => {
+                                    jsonKeywordLinks.add({source:endpointUrl, target:endpointKeyword})
+
+                                    if(endpointKeywordsMap.get(endpointUrl) == undefined) {
+                                        endpointKeywordsMap.set(endpointUrl, new Set());
+                                    }
+                                    endpointKeywordsMap.get(endpointUrl).add(endpointKeyword);
+                                });
+                            }
+                        });
+                    });
+
+                    keywordSet.forEach(item => {
+                        jsonKeywordNodes.add({name:item, category:'Keyword', symbolSize:5})
+                    });
+                    endpointSet.forEach(item => {
+                        jsonKeywordNodes.add({name:item, category:'Endpoint', symbolSize:5})
+                    });
+
+                    if(jsonKeywordNodes.size > 0 && jsonKeywordLinks.size > 0) {
+                        this.show();
+
+                        this.option.keywordOption = getForceGraphOption('Endpoints and keywords', ["Keyword", "Endpoint"], [...jsonKeywordNodes], [...jsonKeywordLinks]);
+                        this.chartObject.keywordChart.setOption(this.option.keywordOption, true);
+
+                        var endpointKeywordsData = [];
+                        endpointKeywordsMap.forEach((keywords, endpoint, map) => {
+                            endpointKeywordsData.push({endpoint:endpoint, keywords:keywords})
+                        });
+
+                        // Endpoint and vocabulary keywords table
+                        var endpointKeywordsTableBody = $('#endpointKeywordsTableBody');
+                        function endpointKeywordsTableFill() {
+                            endpointKeywordsTableBody.empty();
+                            endpointKeywordsData.forEach(endpointKeywordsItem => {
+                                var endpoint = endpointKeywordsItem.endpoint;
+                                var keywords = endpointKeywordsItem.keywords;
+                                var endpointRow = $(document.createElement("tr"));
+                                var endpointCell = $(document.createElement("td"));
+                                endpointCell.text(endpoint);
+                                var keywordsCell = $(document.createElement("td"));
+                                var keywordsText = "";
+                                var keywordCount = 0;
+                                var keywordsArray = [...keywords].sort((a, b) => a.localeCompare(b))
+                                keywordsArray.forEach((keyword) => {
+                                    if(keywordCount > 0) {
+                                        keywordsText += ", ";
+                                    }
+                                    keywordsText += keyword;
+                                    keywordCount++;
+                                });
+                                keywordsCell.text(keywordsText);
+
+                                endpointRow.append(endpointCell);
+                                endpointRow.append(keywordsCell);
+                                endpointKeywordsTableBody.append(endpointRow);
+                            });
+                        }
+                        endpointKeywordsTableFill()
+
+                        setTableHeaderSort("endpointKeywordsTableBody", ["endpointKeywordsTableEndpointHeader", "endpointKeywordsTableKeywordHeader"], [(a,b) => a.endpoint.localeCompare(b.endpoint), (a,b) => a.keywords.size - b.keywords.size ], this.fill, endpointKeywordsData);
+                    } else {
+                        this.hideEndpointKeywordContent();
+                    }
+                }, () => {
+                    this.hideEndpointKeywordContent();
+                });
             }, () => {
-                hideEndpointKeywordContent();
+                this.hide();
             });
         }, () => {
-            hideVocabularyContent();
+            this.hide();
         });
     }, () => {
-        hideEndpointVocabularyContent();
+        this.hideEndpointVocabularyContent();
     });
-}
-setButtonAsToggleCollapse('KnownVocabulariesDetails', 'knowVocabEndpointTable');
-setButtonAsToggleCollapse('endpointKeywordsDetails', 'endpointKeywordsTable');
-function hideVocabularyContent() {
+
+    this.hideEndpointVocabularyContent = function() {
+        this.chartObject.vocabChart.setOption({series:[]}, true);
+        collapseHtml('vocabs');
+        collapseHtml('rawVocabs');
+        collapseHtml('knowVocabEndpointMeasureRow');
+        collapseHtml('knowVocabEndpointTable');
+    }
+    this.hideEndpointKeywordContent = function() {
+        this.chartObject.keywordChart.setOption({series:[]}, true);
+        collapseHtml('endpointKeywords');
+        collapseHtml('endpointKeywordsDetails');
+        $('#endpointKeywordsTableBody').empty();
+    }
+    this.showEndpointVocabularyContent = function() {
+        showVocabularyContent();
+        unCollapseHtml('knowVocabEndpointMeasureRow');
+        unCollapseHtml('vocabs');
+        unCollapseHtml('rawVocabs');
+    }
+    this.showEndpointKeywordContent = function() {
+        showVocabularyContent();
+        unCollapseHtml('endpointKeywords');
+        unCollapseHtml('endpointKeywordsDetails');
+    }
+},
+    hideFunction: function() {
     collapseHtml('vocabRelatedContent');
-    hideEndpointVocabularyContent();
-    hideEndpointKeywordContent();
-}
-function showVocabularyContent() {
+    this.hideEndpointVocabularyContent();
+    this.hideEndpointKeywordContent();
+},
+    showFunction: function() {
     unCollapseHtml('vocabRelatedContent')
-}
-function hideEndpointVocabularyContent() {
-    vocabForceGraph.setOption({series:[]}, true);
-    collapseHtml('vocabs');
-    collapseHtml('rawVocabs');
-    collapseHtml('knowVocabEndpointMeasureRow');
-    collapseHtml('knowVocabEndpointTable');
-}
-function hideEndpointKeywordContent() {
-    endpointKeywordsForceGraph.setOption({series:[]}, true);
-    collapseHtml('endpointKeywords');
-    collapseHtml('endpointKeywordsDetails');
-    $('#endpointKeywordsTableBody').empty();
-}
-function showEndpointVocabularyContent() {
-    showVocabularyContent();
-    unCollapseHtml('knowVocabEndpointMeasureRow');
-    unCollapseHtml('vocabs');
-    unCollapseHtml('rawVocabs');
-}
-function showEndpointKeywordContent() {
-    showVocabularyContent();
-    unCollapseHtml('endpointKeywords');
-    unCollapseHtml('endpointKeywordsDetails');
-}
-function redrawVocabRelatedContentCharts() {
+},
+    redrawFunction: function() {
     $('#vocabs').width(mainContentColWidth);
     $('#rawVocabs').width(mainContentColWidth);
     $('#endpointKeywords').width(mainContentColWidth);
-    vocabForceGraph.setOption(vocabForceGraphOption, true);
-    vocabForceGraph.resize();
-    rawVocabForceGraph.setOption(rawVocabForceGraphOption, true);
-    rawVocabForceGraph.resize();
-    endpointKeywordsForceGraph.setOption(endpointKeywordsForceGraphOption, true);
-    endpointKeywordsForceGraph.resize();
+    this.chartObject.vocabChart.setOption(this.option.vocabOption, true);
+    this.chartObject.vocabChart.resize();
+    this.chartObject.rawVocabChart.setOption(this.option.rawVocabOption, true);
+    this.chartObject.rawVocabChart.resize();
+    this.chartObject.keywordChart.setOption(this.option.keywordOption, true);
+    this.chartObject.keywordChart.resize();
     var codeQuery1Div = $(document.createElement('code')).text(sparqlesVocabularies);
     $('#endpointVocabularyQueryCell').empty()
     $('#endpointVocabularyQueryCell').append(codeQuery1Div)
     var codeQuery2Div = $(document.createElement('code')).text('SELECT DISTINCT ?endpointUrl ?vocabulary { SERVICE <http://prod-dekalog.inria.fr/sparql> { GRAPH ?g { { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } ?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?endpoint . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary . FILTER(isIri(?vocabulary)) } VALUES ?g { '+ graphValuesURIList +' } } SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> { GRAPH <https://lov.linkeddata.es/dataset/lov> { ?vocabURI a <http://purl.org/vocommons/voaf#Vocabulary> . } } } GROUP BY ?endpointUrl ?vocabulary');
     $('#endpointKeywordQueryCell').empty();
     $('#endpointKeywordQueryCell').append(codeQuery2Div);
+},
+clearFunction: function() {
+    this.chartObject.vocabChart.setOption({series:[]}, true);
+    this.chartObject.rawVocabChart.setOption({series:[]}, true);
+    this.chartObject.keywordChart.setOption({series:[]}, true);
 }
+});
+setButtonAsToggleCollapse('KnownVocabulariesDetails', 'knowVocabEndpointTable');
+setButtonAsToggleCollapse('endpointKeywordsDetails', 'endpointKeywordsTable');
 
-var tripleScatterOption = {};
-function tripleNumberScatter() {
+var tripleChart = new KartoChart({ chartObject: echarts.init(document.getElementById('tripleScatter')),
+        option: {},
+        fillFunction: function() {
     // Scatter plot of the number of triples through time
     var triplesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) { " +
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
-        //"?metadata <http://purl.org/dc/terms/modified> ?modifDate ." +
         "?base <http://rdfs.org/ns/void#triples> ?rawO ." +
         "}" +
-        " VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?o ORDER BY DESC(?g) DESC(?endpointUrl)"; //+" DESC(?modifDate)";
+        " VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?o ORDER BY DESC(?g) DESC(?endpointUrl)"; 
     sparqlQueryJSON(triplesSPARQLquery, json => {
         var endpointDataSerieMap = new Map();
         json.results.bindings.forEach((itemResult, i) => {
@@ -1216,35 +1147,38 @@ function tripleNumberScatter() {
         });
 
         if(endpointDataSerieMap.size > 0) {
-            showTriplesNumberContent()
+            this.show();
 
             var triplesSeries = getCategoryScatterDataSeriesFromMap(endpointDataSerieMap);
-            tripleScatterOption = getCategoryScatterOption("Size of the datasets", [...graphSet].sort((a,b)=>a.localeCompare(b)), triplesSeries);
-            tripleScatterChart.setOption(tripleScatterOption, true);
-            tripleScatterChart.setOption({xAxis:{axisLabel:{rotate:27}}});
-            tripleScatterOption = tripleScatterChart.getOption();
+            this.option = getCategoryScatterOption("Size of the datasets", [...graphSet].sort((a,b)=>a.localeCompare(b)), triplesSeries);
+            this.chartObject.setOption(this.option, true);
+            this.chartObject.setOption({xAxis:{axisLabel:{rotate:27}}});
+            this.option = this.chartObject.getOption();
         } else {
-            hideTriplesNumberContent();
+            this.hide();
         }
     });
-}
-function hideTriplesNumberContent() {
-    tripleScatterChart.setOption({series:[]}, true);
-    collapseHtml('tripleScatter');
-    //collapseHtml('triplesContentCol');
-}
-function showTriplesNumberContent() {
-    unCollapseHtml('tripleScatter');
-    //unCollapseHtml('triplesContentCol');
-}
-function redrawTriplesNumberContentChart() {
-    $('#tripleScatter').width(mainContentColWidth/3);
-    tripleScatterChart.setOption(tripleScatterOption, true);
-    tripleScatterChart.resize();
-}
+    },
+    hideFunction: function() {
+        this.chartObject.setOption({series:[]}, true);
+        collapseHtml('tripleScatter');
+        //collapseHtml('triplesContentCol');
+    },
+    showFunction: function() {
+        unCollapseHtml('tripleScatter');
+        //unCollapseHtml('triplesContentCol');
+    },
+    redrawFunction: function() {
+        $('#tripleScatter').width(mainContentColWidth/3);
+        this.chartObject.setOption(this.option, true);
+        this.chartObject.resize();
+    }
+});
 
-var classesScatterOption = {};
-function classNumberFill() {
+var classNumberChart = new KartoChart({
+    chartObject: echarts.init(document.getElementById('classScatter')),
+    option: {},
+    fillFunction: function() {
 // Scatter plot of the number of classes through time
     var classesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) ?modifDate { " +
         "GRAPH ?g {" +
@@ -1276,36 +1210,39 @@ function classNumberFill() {
         });
 
         if(endpointDataSerieMap.size > 0) {
-            showClassesNumberContent();
+            this.show();
 
             var classesSeries = getCategoryScatterDataSeriesFromMap(endpointDataSerieMap);
-            classesScatterOption = getCategoryScatterOption("Number of classes in the datasets", [...graphSet].sort((a,b)=>a.localeCompare(b)), classesSeries);
-            classScatterChart.setOption(classesScatterOption, true);
-            classScatterChart.setOption({xAxis:{axisLabel:{rotate:27}}});
-            classesScatterOption = classScatterChart.getOption();
+            this.option = getCategoryScatterOption("Number of classes in the datasets", [...graphSet].sort((a,b)=>a.localeCompare(b)), classesSeries);
+            this.chartObject.setOption(this.option, true);
+            this.chartObject.setOption({xAxis:{axisLabel:{rotate:27}}});
+            this.option = this.chartObject.getOption();
         } else {
-            hideClassNumberContent();
+            this.hide();
         }
 
     });
-}
-function hideClassNumberContent() {
-    classScatterChart.setOption({series:[]}, true);
+}, 
+    hideFunction: function() {
+    this.chartObject.setOption({series:[]}, true);
     collapseHtml('classScatter');
     //collapseHtml('tableClassesDetails');
-}
-function showClassesNumberContent() {
+},
+    showFunction: function() {
     unCollapseHtml('classScatter');
     //unCollapseHtml('tableClassesDetails');
-}
-function redrawClassesNumberContentChart() {
+}, 
+    redrawFunction: function() {
     $('#classScatter').width(mainContentColWidth/3);
-    classScatterChart.setOption(classesScatterOption, true);
-    classScatterChart.resize();
+    this.chartObject.setOption(this.option, true);
+    this.chartObject.resize();
 }
+});
 
-var propertyNumberScatterOption = {};
-function propertyNumberFill() {
+var propertyNumberChart = new KartoChart({
+    chartObject: echarts.init(document.getElementById('propertyScatter')),
+    option: {},
+    fillFunction: function() {
 // scatter plot of the number of properties through time
     var propertiesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) { " +
         "GRAPH ?g {" +
@@ -1337,36 +1274,39 @@ function propertyNumberFill() {
         });
 
         if(endpointDataSerieMap.size > 0) {
-            showPropertyNumberContent();
+            this.show();
             var propertiesSeries = getCategoryScatterDataSeriesFromMap(endpointDataSerieMap);
 
-            propertyNumberScatterOption = getCategoryScatterOption("Number of properties in the datasets", [...graphSet].sort((a,b)=>a.localeCompare(b)), propertiesSeries);
-            propertyScatterChart.setOption(propertyNumberScatterOption, true);
-            propertyScatterChart.setOption({xAxis:{axisLabel:{rotate:27}}});
-            propertyNumberScatterOption = propertyScatterChart.getOption();
+            this.option = getCategoryScatterOption("Number of properties in the datasets", [...graphSet].sort((a,b)=>a.localeCompare(b)), propertiesSeries);
+            this.chartObject.setOption(this.option, true);
+            this.chartObject.setOption({xAxis:{axisLabel:{rotate:27}}});
+            this.option = this.chartObject.getOption();
         } else {
-            hidePropertyNumberContent();
+            this.hide();
         }
 
     });
-}
-function hidePropertyNumberContent() {
-    propertyScatterChart.setOption({series:[]}, true);
+},
+    hideFunction: function() {
+        this.chartObject.setOption({series:[]}, true);
     collapseHtml('propertyScatter');
     //collapseHtml('tablePropertiesDetails');
-}
-function showPropertyNumberContent() {
+},
+    showFunction: function() {
     unCollapseHtml('propertyScatter');
     //unCollapseHtml('tablePropertiesDetails');
-}
-function redrawPropertyNumberContentChart() {
+},
+    redrawFunction: function() {
     $('#propertyScatter').width(mainContentColWidth/3);
-    propertyScatterChart.setOption(propertyNumberScatterOption, true);
-    propertyScatterChart.resize();
+    this.chartObject.setOption(this.option, true);
+    this.chartObject.resize();
 }
+});
 
-var categoryTestNumberScatterOption = {};
-function categoryTestNumberFill() {
+var categoryTestNumberChart = new KartoChart({
+    chartObject: echarts.init(document.getElementById('testCategoryScatter')),
+    option: {},
+    fillFunction: function() {
 // Number of tests passed by test categories
     var testCategoryQuery = "SELECT DISTINCT ?g ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
             "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
@@ -1411,7 +1351,7 @@ function categoryTestNumberFill() {
         });
 
         if(endpointDataSerieMap.size > 0) {
-            showCategoryTestNumberContent();
+            this.show();
 
             var triplesSeries = [];
             var categoryXAxisData = [];
@@ -1461,7 +1401,7 @@ function categoryTestNumberFill() {
             var categoriesArray = categoryXAxisData.sort((a, b) => a.localeCompare(b));
             triplesSeries.sort((a, b) => a.name.localeCompare(b.name))
 
-            categoryTestNumberScatterOption = {
+            this.option = {
                 title: {
                     left: 'center',
                     text:"Proportion of tests passed by category",
@@ -1479,24 +1419,25 @@ function categoryTestNumberFill() {
                 }
             };
 
-            categoryScatterChart.setOption(categoryTestNumberScatterOption, true);
+            this.chartObject.setOption(this.option, true);
         } else {
-            hideCategoryTestNumberContent();
+            this.hide();
         }
     });
-}
-function hideCategoryTestNumberContent() {
-    categoryScatterChart.setOption({series:[]}, true);
+},
+    hideFunction: function() {
+    this.chartObject.setOption({series:[]}, true);
     collapseHtml('testCategoryScatter');
-}
-function showCategoryTestNumberContent() {
+},
+    showFunction: function() {
     unCollapseHtml('testCategoryScatter');
-}
-function redrawCategoryTestNumberChart() {
+},
+    redrawFunction: function() {
     $('#testCategoryScatter').width(mainContentColWidth);
-    categoryScatterChart.setOption(categoryTestNumberScatterOption, true);
-    categoryScatterChart.resize();
+    this.chartObject.setOption(this.option, true);
+    this.chartObject.resize();
 }
+});
 
 function testTableFill() {
 
@@ -1582,8 +1523,9 @@ function testTableFill() {
 }
 setButtonAsToggleCollapse('tableRuleDetails', 'rulesTable');
 
-var totalRuntimeScatterOption = {};
-function runtimeStatsFill() {
+var totalRuntimeChart = new KartoChart({chartObject: echarts.init(document.getElementById('totalRuntimeScatter')), 
+        option: {},
+        fillFunction: function() {
     var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?data . ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . }  VALUES ?g { "+ graphValuesURIList +" } }";
     var runtimeDataSerie = []
     var runtimeSerie = []
@@ -1626,18 +1568,23 @@ function runtimeStatsFill() {
             },
             type: 'scatter'
         };
-        totalRuntimeScatterOption = getCategoryScatterOption("Runtime of the framework for each run (in seconds)", [...graphSet].sort((a,b)=>a.localeCompare(b)), [runtimeSerie]);
-        totalRuntimeChart.setOption(totalRuntimeScatterOption, true);
+        this.option = getCategoryScatterOption("Runtime of the framework for each run (in seconds)", [...graphSet].sort((a,b)=>a.localeCompare(b)), [runtimeSerie]);
+        this.chartObject.setOption(this.option, true);
     });
-}
-function redrawTotalRuntimeScatterChart() {
+},
+        redrawFunction: function() {
     $('#totalRuntimeScatter').width(mainContentColWidth);
-    totalRuntimeChart.setOption(totalRuntimeScatterOption, true);
-    totalRuntimeChart.resize();
+    this.chartObject.setOption(this.option, true);
+    this.chartObject.resize();
+},
+        clearFunction: function() {
+            this.chartObject.setOption({series:[]}, true);
 }
+});
 
-var averageRuntimeChartOption = {};
-function averageRuntimeStatsFill() {
+var averageRuntimeChart = new KartoChart({ chartObject: echarts.init(document.getElementById('averageRuntimeScatter')),
+        option: {},
+    fillFunction: function() {
     var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?data . ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . }  VALUES ?g { "+ graphValuesURIList +" } }";
     var runtimeDataSerie = []
     var runtimeSerie = []
@@ -1697,17 +1644,21 @@ function averageRuntimeStatsFill() {
                 },
                 type: 'scatter'
             };
-            averageRuntimeChartOption = getCategoryScatterOption("Average runtime of the framework for each run (in seconds)", [...graphSet].sort((a,b)=>a.localeCompare(b)), [runtimeSerie]);
-            averageRuntimeChart.setOption(averageRuntimeChartOption, true);
+            this.option = getCategoryScatterOption("Average runtime of the framework for each run (in seconds)", [...graphSet].sort((a,b)=>a.localeCompare(b)), [runtimeSerie]);
+            this.chartObject.setOption(this.option, true);
 
         });
     });
-}
-function redrawAverageRuntimeChart() {
+},
+        redrawFunction: function() {
     $('#averageRuntimeScatter').width(mainContentColWidth);
-    averageRuntimeChart.setOption(averageRuntimeChartOption, true);
-    averageRuntimeChart.resize();
-}
+    this.chartObject.setOption(this.option, true);
+    this.chartObject.resize();
+},
+        hideFunction: function() {
+            this.chartObject.setOption({}, true);
+        }        
+});
 
 function classAndPropertiesContentFill() {
     var classPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co { " +
@@ -1960,8 +1911,9 @@ function classAndPropertiesContentFill() {
 setButtonAsToggleCollapse('classDescriptionDetails', 'classDescriptionTable');
 setButtonAsToggleCollapse('classPropertiesDescriptionDetails', 'classPropertiesDescriptionTable');
 
-var descriptionElementChartOption = {};
-function descriptionElementFill() {
+var descriptionElementChart = new KartoChart({chartObject:echarts.init(document.getElementById('datasetdescriptionRadar')), 
+        option:{}, 
+        fillFunction: function() {
     var provenanceWhoCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { "+
         "GRAPH ?g { " +
         "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
@@ -2264,7 +2216,7 @@ function descriptionElementFill() {
                             formatter:'{c} endpoints without source description'
                         }
                     }
-                    descriptionElementChartOption = {
+                    this.option = {
                           title: {
                             text: 'Dataset description features in all endpoints',
                             left: 'center'
@@ -2289,32 +2241,28 @@ function descriptionElementFill() {
                           },
                           series: [ whoTrueDataSerie, whoFalseDataSerie, licenseTrueDataSerie, licenseFalseDataSerie, timeTrueDataSerie, timeFalseDataSerie, sourceTrueDataSerie, sourceFalseDataSerie ]
                         };
-                    datasetdescriptionChart.setOption(descriptionElementChartOption, true);
+                    this.chartObject.setOption(this.option, true);
                 });
             });
         });
     });
-}
-function redrawDescriptionElementChart() {
+}, 
+        redrawFunction: function() {
     $('#datasetdescriptionRadar').width(mainContentColWidth);
-    datasetdescriptionChart.setOption(descriptionElementChartOption, true);
-    datasetdescriptionChart.resize();
-}
+    this.chartObject.setOption(this.option, true);
+    this.chartObject.resize();
+},
+        clearFunction: function() {
+    this.chartObject.setOption({series:[]}, true);
+    $('#datasetDescriptionTableBody').empty();
+        }});
 setButtonAsToggleCollapse('datasetDescriptionStatDetails', 'datasetDescriptionTable');
 setButtonAsToggleCollapse('datasetDescriptionExplain', 'datasetDescriptionExplainText');
 
-var shortUrisScatterOption = {};
-var shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
-    "GRAPH ?g {" +
-    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
-    "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
-    "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> . " +
-    "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-    "}" +
-    "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
-function shortUrisFill() {
-    shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+var shortUriChart = new KartoChart({chartObject: echarts.init(document.getElementById('shortUrisScatter')),
+        option:{},
+        fillFunction:function() {
+    var shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
             "GRAPH ?g {" +
             "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
             "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
@@ -2323,6 +2271,7 @@ function shortUrisFill() {
             "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
             "}" +
             "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
+    this.shortUrisMeasureQuery = shortUrisMeasureQuery;
     $('#shortUrisQueryCell').empty();
     $('#shortUrisQueryCell').append($(document.createElement('code')).text(shortUrisMeasureQuery))
     sparqlQueryJSON(shortUrisMeasureQuery, json => {
@@ -2348,7 +2297,7 @@ function shortUrisFill() {
         });
 
         if(endpointDataSerieMap.size > 0) {
-            showShortUrisContent()
+            this.show();
 
             // Chart
             var shortUrisSeries = [];
@@ -2364,8 +2313,8 @@ function shortUrisFill() {
                 shortUrisSeries.push(chartSerie);
             });
 
-            shortUrisScatterOption = getCategoryScatterOption("Short URIs (< 80 characters) quality measure through time", [...graphSet].sort((a,b)=>a.localeCompare(b)), shortUrisSeries);
-            shortUriChart.setOption(shortUrisScatterOption, true);
+            this.option = getCategoryScatterOption("Short URIs (< 80 characters) quality measure through time", [...graphSet].sort((a,b)=>a.localeCompare(b)), shortUrisSeries);
+            this.chartObject.setOption(this.option, true);
 
             // Average measure
             var shortUriMeasureSum = shortUriData.map(a => a.measure).reduce((previous, current) => current + previous);
@@ -2393,41 +2342,38 @@ function shortUrisFill() {
             }
             fillShortUriTable();
         } else {
-            hideShortUrisContent();
+            this.hide();
         }
     });
+}, 
+redrawFunction: function() {
+    $('#shortUrisQueryCell').empty();
+    $('#shortUrisQueryCell').append($(document.createElement('code')).text(this.shortUrisMeasureQuery));
+    $('#shortUrisScatter').width(mainContentColWidth*.8);
+    this.chartObject.setOption(this.option, true);
+    this.chartObject.resize();
 }
-function hideShortUrisContent() {
-    rdfDataStructureChart.setOption({series:[]}, true);
+, clearFunction: function() {
+
+    this.chartObject.setOption({series:[]}, true);
+    $('#shortUrisMeasure').empty();
+},
+hideFunction: function() {
+    this.chartObject.setOption({series:[]}, true);
     $('#shortUrisMeasure').empty();
     collapseHtml('shortUrisScatter');
     collapseHtml('shortUriMeasureRow');
-}
-function showShortUrisContent() {
+},
+showFunction: function() {
     unCollapseHtml('shortUrisScatter');
     unCollapseHtml('shortUriMeasureRow');
-}
-function redrawShortUrisChart() {
-    $('#shortUrisQueryCell').empty();
-    $('#shortUrisQueryCell').append($(document.createElement('code')).text(shortUrisMeasureQuery));
-    $('#shortUrisScatter').width(mainContentColWidth*.8);
-    shortUriChart.setOption(shortUrisScatterOption, true);
-    shortUriChart.resize();
-}
+}});
 setButtonAsToggleCollapse('shortUrisDetails', 'shortUrisTable');
 
-var rdfDataStructureChartOption = {};
-var rdfDataStructuresMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
-    "GRAPH ?g {" +
-    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
-    "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
-    "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . " +
-    "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-    "}" +
-    "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
-function rdfDataStructuresFill() {
-    rdfDataStructuresMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+var rdfDataStructureChart = new KartoChart({chartObject: echarts.init(document.getElementById('rdfDataStructuresScatter')),
+        option:{},
+        fillFunction: function() {
+    this.query = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
             "GRAPH ?g {" +
             "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
             "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
@@ -2437,9 +2383,9 @@ function rdfDataStructuresFill() {
             "}" +
             "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
     $('#rdfDataStructuresQueryCell').empty();
-    $('#rdfDataStructuresQueryCell').append($(document.createElement('code')).text(rdfDataStructuresMeasureQuery));
+    $('#rdfDataStructuresQueryCell').append($(document.createElement('code')).text(this.query));
 
-    sparqlQueryJSON(rdfDataStructuresMeasureQuery, json => {
+    sparqlQueryJSON(this.query, json => {
         var rdfDataStructureData = []
         var graphSet = new Set();
         json.results.bindings.forEach((jsonItem, i) => {
@@ -2462,7 +2408,7 @@ function rdfDataStructuresFill() {
         });
 
         if(endpointDataSerieMap.size > 0) {
-            showRDFDataStructuresContent()
+            this.show()
 
             // Chart
             var rdfDataStructuresSeries = [];
@@ -2478,8 +2424,8 @@ function rdfDataStructuresFill() {
                 rdfDataStructuresSeries.push(chartSerie);
             });
 
-            rdfDataStructureChartOption = getCategoryScatterOption("Minimal usage of RDF data structures measure through time", [...graphSet].sort((a,b)=>a.localeCompare(b)), rdfDataStructuresSeries);
-            rdfDataStructureChart.setOption(rdfDataStructureChartOption, true);
+            this.option = getCategoryScatterOption("Minimal usage of RDF data structures measure through time", [...graphSet].sort((a,b)=>a.localeCompare(b)), rdfDataStructuresSeries);
+            this.chartObject.setOption(this.option, true);
 
             // Average measure
             var rdfDataStructureMeasureSum = rdfDataStructureData.map(a => a.measure).reduce((previous, current) => current + previous);
@@ -2504,42 +2450,32 @@ function rdfDataStructuresFill() {
                 rdfDataStructuresDetailTableBody.append(endpointRow);
             });
         } else {
-            hideRDFDataStructuresContent();
+            this.hide();
         }
 
     });
-}
-function hideRDFDataStructuresContent() {
-    rdfDataStructureChart.setOption({series:[]}, true);
+},
+hideFunction: function() {
+    this.chartObject.setOption({series:[]}, true);
     $('#rdfDataStructuresMeasure').empty();
     collapseHtml('rdfDataStructuresScatter');
     collapseHtml("rdfDataStructureMeasureRow");
-}
-function showRDFDataStructuresContent() {
+},
+showFunction: function() {
     unCollapseHtml('rdfDataStructuresScatter');
     unCollapseHtml("rdfDataStructureMeasureRow");
-}
-function redrawRDFDataStructuresChart() {
+},
+redrawFunction: function() {
     $('#rdfDataStructuresQueryCell').empty();
-    $('#rdfDataStructuresQueryCell').append($(document.createElement('code')).text(rdfDataStructuresMeasureQuery));
+    $('#rdfDataStructuresQueryCell').append($(document.createElement('code')).text(this.query));
     $('#rdfDataStructuresScatter').width(mainContentColWidth*.8);
-    rdfDataStructureChart.setOption(rdfDataStructureChartOption, true);
-    rdfDataStructureChart.resize();
-}
+    this.chartObject.setOption(this.option, true);
+    this.chartObject.resize();
+}});
 setButtonAsToggleCollapse('rdfDataStructuresDetails', 'rdfDataStructuresTable');
 
-var readableLabelsMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
-    "GRAPH ?g {" +
-    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
-    "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
-    "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . " +
-    "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-    "}" +
-    "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
-var readableLabelChartOption = {};
-function readableLabelsFill() {
-    readableLabelsMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+var readableLabelsChart = new KartoChart({chartObject:echarts.init(document.getElementById('readableLabelsScatter')), option:{}, fillFunction:function() {
+    this.query = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
             "GRAPH ?g {" +
             "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
             "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
@@ -2549,9 +2485,9 @@ function readableLabelsFill() {
             "}" +
             "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
     $('#readableLabelsQueryCell').empty();
-    $('#readableLabelsQueryCell').append($(document.createElement('code')).text(readableLabelsMeasureQuery))
+    $('#readableLabelsQueryCell').append($(document.createElement('code')).text(this.query))
 
-    sparqlQueryJSON(readableLabelsMeasureQuery, json => {
+    sparqlQueryJSON(this.query, json => {
         var readableLabelData = []
         var graphSet = new Set();
         json.results.bindings.forEach((jsonItem, i) => {
@@ -2574,7 +2510,7 @@ function readableLabelsFill() {
         });
 
         if(endpointDataSerieMap.size > 0) {
-            showReadableLabelsContent();
+            this.show();
 
             // Chart
             var readableLabelsSeries = [];
@@ -2590,8 +2526,8 @@ function readableLabelsFill() {
                 readableLabelsSeries.push(chartSerie);
             });
 
-            readableLabelChartOption = getCategoryScatterOption("Usage of readable label for every resource", [...graphSet].sort((a,b)=>a.localeCompare(b)), readableLabelsSeries);
-            readableLabelChart.setOption(readableLabelChartOption, true);
+            this.option = getCategoryScatterOption("Usage of readable label for every resource", [...graphSet].sort((a,b)=>a.localeCompare(b)), readableLabelsSeries);
+            this.chartObject.setOption(this.option, true);
 
             // Average measure
             var readableLabelMeasureSum = readableLabelData.map(a => a.measure).reduce((previous, current) => current + previous);
@@ -2616,42 +2552,33 @@ function readableLabelsFill() {
                 readableLabelsDetailTableBody.append(endpointRow);
             });
         } else {
-            hideReadableLabelsContent();
+            this.hide();
         }
 
     });
-}
-function hideReadableLabelsContent() {
-    readableLabelChart.setOption({series:[]}, true);
+}, hideFunction: function() {
+    this.chartObject.setOption({series:[]}, true);
     $('#readableLabelMeasure').empty();
     collapseHtml('readableLabelsMeasureRow');
     collapseHtml('readableLabelsScatter');
-}
-function showReadableLabelsContent() {
+},
+showFunction: function() {
     unCollapseHtml('readableLabelsScatter');
     unCollapseHtml('readableLabelsMeasureRow');
-}
-function redrawReadableLabelsChart() {
+},
+redrawFunction: function() {
     $('#readableLabelsQueryCell').empty();
-    $('#readableLabelsQueryCell').append($(document.createElement('code')).text(readableLabelsMeasureQuery))
+    $('#readableLabelsQueryCell').append($(document.createElement('code')).text(this.query))
     $('#readableLabelsScatter').width(mainContentColWidth*.8);
-    readableLabelChart.setOption(readableLabelChartOption, true);
-    readableLabelChart.resize();
-}
+    this.chartObject.setOption(this.option, true);
+    this.chartObject.resize();
+}});
 setButtonAsToggleCollapse('readableLabelsDetails', 'readableLabelsTable');
 
-var blankNodesMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
-        "GRAPH ?g {" +
-        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
-        "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
-        "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . " +
-        "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-        "}" +
-        "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
-var blankNodeChartOption = {};
-function blankNodesFill() {
-    blankNodesMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+var blankNodesChart = new KartoChart({ chartObject: echarts.init(document.getElementById('blankNodesScatter')), 
+        option: {},
+        fillFunction: function() {
+    this.query = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
             "GRAPH ?g {" +
             "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
             "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
@@ -2661,9 +2588,9 @@ function blankNodesFill() {
             "}" +
             "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
     $('#blankNodesQueryCell').empty();
-    $('#blankNodesQueryCell').append($(document.createElement('code')).text(blankNodesMeasureQuery))
+    $('#blankNodesQueryCell').append($(document.createElement('code')).text(this.query))
 
-    sparqlQueryJSON(blankNodesMeasureQuery, json => {
+    sparqlQueryJSON(this.query, json => {
         var blankNodeData = []
         var graphSet = new Set();
         json.results.bindings.forEach((jsonItem, i) => {
@@ -2686,7 +2613,7 @@ function blankNodesFill() {
         });
 
         if(endpointDataSerieMap.size > 0) {
-            showblankNodesContent();
+            this.show();
 
             // Chart
             var blankNodesSeries = [];
@@ -2702,8 +2629,8 @@ function blankNodesFill() {
                 blankNodesSeries.push(chartSerie);
             });
 
-            blankNodeChartOption = getCategoryScatterOption("Usage of blank nodes", [...graphSet].sort((a,b)=>a.localeCompare(b)), blankNodesSeries);
-            blankNodeChart.setOption(blankNodeChartOption, true);
+            this.option = getCategoryScatterOption("Usage of blank nodes", [...graphSet].sort((a,b)=>a.localeCompare(b)), blankNodesSeries);
+            this.chartObject.setOption(this.option, true);
 
             // Average measure
             var blankNodeMeasureSum = blankNodeData.map(a => a.measure).reduce((previous, current) => current + previous);
@@ -2728,26 +2655,94 @@ function blankNodesFill() {
                 blankNodesDetailTableBody.append(endpointRow);
             });
         } else {
-            hideblankNodesContent();
+            this.hide();
         }
 
     });
-}
-function hideblankNodesContent() {
-    blankNodeChart.setOption({series:[]}, true);
+},
+        hideFunction: function() {
+    this.chartObject.setOption({series:[]}, true);
     $('#blankNodeMeasure').empty();
     collapseHtml('blankNodesMeasureRow');
     collapseHtml('blankNodesScatter');
-}
-function showblankNodesContent() {
+},
+        showFunction: function() {
     unCollapseHtml('blankNodesScatter');
     unCollapseHtml('blankNodesMeasureRow');
-}
-function redrawblankNodesChart() {
+},
+        redrawFunction: function() {
     $('#blankNodesQueryCell').empty();
-    $('#blankNodesQueryCell').append($(document.createElement('code')).text(blankNodesMeasureQuery))
+    $('#blankNodesQueryCell').append($(document.createElement('code')).text(this.query))
     $('#blankNodesScatter').width(mainContentColWidth*.8);
-    blankNodeChart.setOption(blankNodeChartOption, true);
-    blankNodeChart.resize();
-}
+    this.chartObject.setOption(this.option, true);
+    this.chartObject.resize();
+}});
 setButtonAsToggleCollapse('blankNodesDetails', 'blankNodesTable');
+
+
+
+
+
+var mainContentColWidth = 0; // Used to initialize graph width;
+
+var graphList = [];
+var graphValuesURIList = "";
+var currentGraphSetIndex = 0;
+const graphSetIndexParameter = "graphSetIndex";
+var endpointList = [];
+var blacklistedEndpointList = [];
+const blackListedEndpointParameter = "blackListedEndpoints";
+var blackistedEndpointIndexList = [];
+var url = new URL(window.location);
+var urlParams = new URLSearchParams(url.search);
+$(function() {
+    mainContentColWidth = $('#mainContentCol').width();
+
+    // Initialization of the map
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: 'pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q'
+    }).addTo(endpointMap.chartObject);
+    endpointMap.layerGroup = L.layerGroup().addTo(endpointMap.chartObject);
+
+    $(window).on('resize', () => {
+        redrawCharts();
+    })
+
+    var url = new URL(window.location);
+    urlParams = new URLSearchParams(url.search);
+    // Set up graphs sets
+    if(urlParams.has(graphSetIndexParameter) ) {
+        const givenGraphSetIndex = urlParams.get(graphSetIndexParameter);
+        if(givenGraphSetIndex >= 0 && givenGraphSetIndex < graphLists.length) {
+            currentGraphSetIndex = givenGraphSetIndex;
+        }
+    }
+    var select = $('#endpoint-list-select');
+    graphLists.forEach((item, i) => {
+        var option = document.createElement('option');
+        $(option).text(item.name);
+        $(option).val(i);
+        if(i == currentGraphSetIndex) {
+            $(option).attr("selected","true")
+            graphList = item.graphs;
+        }
+        select.append(option);
+    });
+    changeGraphSetIndex(currentGraphSetIndex);
+    select.on('change', function() {
+        $( "select option:selected" ).each(function() {
+            var selectionIndex = $( this ).val();
+            changeGraphSetIndex(selectionIndex);
+        })
+    });
+    // set up blacklist
+    if(urlParams.has(blackListedEndpointParameter) ) {
+        var blackistedEndpointIndexListRaw = urlParams.get(blackListedEndpointParameter);
+        blackistedEndpointIndexList = JSON.parse(decodeURI(blackistedEndpointIndexListRaw));
+    }
+});
