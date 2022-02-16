@@ -14,38 +14,56 @@ import {greenIcon, orangeIcon} from "./leaflet-color-markers.js";
 import {endpointIpMap, timezoneMap, graphLists} from "./data.js";
 
 
-// Initialization of the map
-var map = L.map('map').setView([24.5271348225978, 62.22656250000001], 2);
-    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 18,
-        id: 'mapbox/streets-v11',
-        tileSize: 512,
-        zoomOffset: -1,
-        accessToken: 'pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q'
-    }).addTo(map);
-var layerGroup = L.layerGroup().addTo(map);
+var map;
+var layerGroup;
+var sparql10Chart;
+var sparql11Chart;
+var sparqlChart;
+var tripleScatterChart;
+var classScatterChart;
+var propertyScatterChart;
+var categoryScatterChart;
+var totalRuntimeChart;
+var averageRuntimeChart;
+var vocabForceGraph;
+var rawVocabForceGraph;
+var endpointKeywordsForceGraph;
+var shortUriChart;
+var rdfDataStructureChart;
+var readableLabelChart;
+var blankNodeChart;
+var datasetdescriptionChart;
 
-$(window).resize(() => {
-    redrawCharts();
+// Setup tab menu
+var geolocTabButton = $('#geoloc-tab')
+geolocTabButton.click(function (event) {
+    redrawCharts()
+})
+var vocabRelatedContentTabButton = $('#vocabRelatedContent-tab')
+vocabRelatedContentTabButton.click(function (event) {
+    redrawCharts()
+})
+var sparqlTabButton = $('#sparql-tab')
+sparqlTabButton.click(function (event) {
+    redrawCharts()
+})
+var populationTabButton = $('#population-tab')
+populationTabButton.click(function (event) {
+    redrawCharts()
+})
+var descriptionTabButton = $('#description-tab')
+descriptionTabButton.click(function (event) {
+    redrawCharts()
+})
+var runtimeTabButton = $('#runtime-tab')
+runtimeTabButton.click(function (event) {
+    redrawCharts()
+})
+var qualityTabButton = $('#quality-tab')
+qualityTabButton.click(function (event) {
+    redrawCharts()
 })
 
-// Initialization of the ECharts components
-var sparql10Chart = echarts.init(document.getElementById('histo1'));
-var sparql11Chart = echarts.init(document.getElementById('histo2'));
-var sparqlChart = echarts.init(document.getElementById('SPARQLCoverageHisto'));
-var tripleScatterChart = echarts.init(document.getElementById('tripleScatter'));
-var classScatterChart = echarts.init(document.getElementById('classScatter'));
-var propertyScatterChart = echarts.init(document.getElementById('propertyScatter'));
-var categoryScatterChart = echarts.init(document.getElementById('testCategoryScatter'));
-var totalRuntimeChart = echarts.init(document.getElementById('totalRuntimeScatter'));
-var averageRuntimeChart = echarts.init(document.getElementById('averageRuntimeScatter'));
-var vocabForceGraph = echarts.init(document.getElementById('vocabs'));
-var endpointKeywordsForceGraph = echarts.init(document.getElementById('endpointKeywords'));
-var shortUriChart = echarts.init(document.getElementById('shortUrisScatter'));
-var rdfDataStructureChart = echarts.init(document.getElementById('rdfDataStructuresScatter'));
-var readableLabelChart = echarts.init(document.getElementById('readableLabelsScatter'));
-var datasetdescriptionChart = echarts.init(document.getElementById('datasetdescriptionRadar'));
 
 function sparqlQueryJSON(query, callback, errorCallback) {
     xmlhttpRequestJSON('http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", callback, errorCallback);
@@ -114,12 +132,15 @@ function getForceGraphOption(title, legendData, dataNodes, dataLinks) {
     return {
         title: {
           text: title,
-          top: 'bottom',
+          top: 'top',
           left: 'center'
         },
         //tooltip: { show:true },
         legend: [
-            { data: legendData }
+            {
+                data: legendData,
+                top:'bottom',
+            }
         ],
         series: [
           {
@@ -201,8 +222,10 @@ function setTableHeaderSort(tableBodyId, tableHeadersIds, tableColsSortFunction,
 }
 
 function refresh() {
+    mainContentColWidth = $('#mainContentCol').width();
     graphValuesURIList = generateGraphValuesURI(graphList);
     clear();
+    whiteListFill();
     mapFill();
     sparqlesHistoFill();
     vocabRelatedContentFill();
@@ -212,13 +235,13 @@ function refresh() {
     categoryTestNumberFill();
     testTableFill();
     runtimeStatsFill();
-//    availabilityFill();
     averageRuntimeStatsFill();
     classAndPropertiesContentFill();
     descriptionElementFill();
     shortUrisFill();
     rdfDataStructuresFill();
     readableLabelsFill();
+    blankNodesFill();
 }
 
 function clear() {
@@ -236,7 +259,7 @@ function clear() {
     hideShortUrisContent();
     hideRDFDataStructuresContent();
     hideReadableLabelsContent();
-//    hideAvailabilityContent();
+    hideblankNodesContent();
     datasetdescriptionChart.setOption({series:[]}, true);
     $('#endpointKnownVocabsTableBody').empty();
     $('#rulesTableBody').empty();
@@ -245,6 +268,8 @@ function clear() {
 }
 
 function redrawCharts() {
+    mainContentColWidth = $('#mainContentCol').width();
+    redrawMapContent()
     redrawVocabRelatedContentCharts();
     redrawSPARQLFeaturesChart();
     redrawTriplesNumberContentChart();
@@ -257,6 +282,7 @@ function redrawCharts() {
     redrawShortUrisChart();
     redrawRDFDataStructuresChart();
     redrawReadableLabelsChart();
+    redrawblankNodesChart();
 }
 
 function generateGraphValuesURI( graphs) {
@@ -267,15 +293,58 @@ function generateGraphValuesURI( graphs) {
     return result;
 }
 
+var mainContentColWidth = 0; // Used to initialize graph width;
+
 var graphList = [];
 var graphValuesURIList = "";
 var currentGraphSetIndex = 0;
 const graphSetIndexParameter = "graphSetIndex";
+var endpointList = [];
+var blacklistedEndpointList = [];
+const blackListedEndpointParameter = "blackListedEndpoints";
+var blackistedEndpointIndexList = [];
 var url = new URL(window.location);
 var urlParams = new URLSearchParams(url.search);
 $( document ).ready(function() {
+    mainContentColWidth = $('#mainContentCol').width();
+
+    // Initialization of the map
+    map = L.map('map').setView([24.5271348225978, 62.22656250000001], 2);
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q'
+        }).addTo(map);
+    layerGroup = L.layerGroup().addTo(map);
+    // Initialization of the ECharts components
+    sparql10Chart = echarts.init(document.getElementById('SPARQL10histo'));
+    sparql11Chart = echarts.init(document.getElementById('SPARQL11histo'));
+    sparqlChart = echarts.init(document.getElementById('SPARQLCoverageHisto'));
+    tripleScatterChart = echarts.init(document.getElementById('tripleScatter'));
+    classScatterChart = echarts.init(document.getElementById('classScatter'));
+    propertyScatterChart = echarts.init(document.getElementById('propertyScatter'));
+    categoryScatterChart = echarts.init(document.getElementById('testCategoryScatter'));
+    totalRuntimeChart = echarts.init(document.getElementById('totalRuntimeScatter'));
+    averageRuntimeChart = echarts.init(document.getElementById('averageRuntimeScatter'));
+    vocabForceGraph = echarts.init(document.getElementById('vocabs'));
+    rawVocabForceGraph = echarts.init(document.getElementById('rawVocabs'));
+    endpointKeywordsForceGraph = echarts.init(document.getElementById('endpointKeywords'));
+    shortUriChart = echarts.init(document.getElementById('shortUrisScatter'));
+    rdfDataStructureChart = echarts.init(document.getElementById('rdfDataStructuresScatter'));
+    readableLabelChart = echarts.init(document.getElementById('readableLabelsScatter'));
+    blankNodeChart = echarts.init(document.getElementById('blankNodesScatter'));
+    datasetdescriptionChart = echarts.init(document.getElementById('datasetdescriptionRadar'));
+
+    $(window).resize(() => {
+        redrawCharts();
+    })
+
     var url = new URL(window.location);
     urlParams = new URLSearchParams(url.search);
+    // Set up graphs sets
     if(urlParams.has(graphSetIndexParameter) ) {
         const givenGraphSetIndex = urlParams.get(graphSetIndexParameter);
         if(givenGraphSetIndex >= 0 && givenGraphSetIndex < graphLists.length) {
@@ -300,7 +369,40 @@ $( document ).ready(function() {
             changeGraphSetIndex(selectionIndex);
         })
     });
+    // set up blacklist
+    if(urlParams.has(blackListedEndpointParameter) ) {
+        var blackistedEndpointIndexListRaw = urlParams.get(blackListedEndpointParameter);
+        blackistedEndpointIndexList = JSON.parse(decodeURI(blackistedEndpointIndexListRaw));
+    }
 });
+
+function addBlacklistedEndpoint(endpointIndex) {
+    urlParams = new URLSearchParams(window.location.search);
+    urlParams.delete(blackListedEndpointParameter);
+    var blackistedEndpointIndexSet = new Set(blackistedEndpointIndexList);
+    blackistedEndpointIndexSet.add(endpointIndex);
+    blacklistedEndpointList.push(endpointList[endpointIndex]);
+    blackistedEndpointIndexList = [...blackistedEndpointIndexSet];
+    var jsonBlacklist = encodeURI(JSON.stringify(blackistedEndpointIndexList));
+    urlParams.append(blackListedEndpointParameter, jsonBlacklist);
+    history.pushState(null, null, '?'+urlParams.toString());
+    refresh();
+}
+
+function removeBlacklistedEndpoint(endpointIndex) {
+    urlParams = new URLSearchParams(window.location.search);
+    urlParams.delete(blackListedEndpointParameter);
+    var blackistedEndpointIndexSet = new Set(blackistedEndpointIndexList);
+    var blacklistEndpointSet = new Set(blacklistedEndpointList);
+    blacklistEndpointSet.delete(endpointList[endpointIndex]);
+    blacklistedEndpointList = [...blacklistEndpointSet]
+    blackistedEndpointIndexSet.delete(endpointIndex);
+    blackistedEndpointIndexList = [...blackistedEndpointIndexSet];
+    var jsonBlacklist = encodeURI(JSON.stringify(blackistedEndpointIndexList));
+    urlParams.append(blackListedEndpointParameter, jsonBlacklist);
+    history.pushState(null, null, '?'+urlParams.toString());
+    refresh();
+}
 
 function changeGraphSetIndex(index) {
     urlParams = new URLSearchParams(window.location.search);
@@ -309,9 +411,10 @@ function changeGraphSetIndex(index) {
     history.pushState(null, null, '?'+urlParams.toString());
     graphList = graphLists[index].graphs;
     refresh();
+    redrawCharts();
 }
 
-function setButtonAsTableCollapse(buttonId, tableId) {
+function setButtonAsToggleCollapse(buttonId, tableId) {
     $('#'+buttonId).click(function() {
         if($('#'+tableId).hasClass("show")) {
             collapseHtml(tableId);
@@ -321,10 +424,75 @@ function setButtonAsTableCollapse(buttonId, tableId) {
     });
 }
 
+function whiteListFill() {
+    var tableBody = $('#whiteListTableBody');
+    var endpointListQuery = 'SELECT DISTINCT ?endpointUrl WHERE {'+
+    ' GRAPH ?g { '+
+    "{ ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+    "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+    '?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . '+
+    '} '+
+    'VALUES ?g { '+ graphValuesURIList +' } '+
+    '} '+
+    'GROUP BY ?endpointUrl';
+    sparqlQueryJSON(endpointListQuery, json => {
+        tableBody.empty();
+        endpointList = [];
+        blacklistedEndpointList = [];
+        blackistedEndpointIndexList = [];
+        json.results.bindings.forEach((item) => {
+            endpointList.push(item.endpointUrl.value);
+        });
+        endpointList.sort((a,b) => a.localeCompare(b))
+        endpointList.forEach((item, i) => {
+            tableBody.append(generateCheckEndpointLine(item, i));
+        });
+    });
+
+    function generateCheckEndpointLine(endpointUrl, i) {
+        var endpointCheckId =  'endpoint'+i;
+        var endpointRow = $(document.createElement('tr'));
+        var endpointCell = $(document.createElement('td'));
+        var endpointCheckCell = $(document.createElement('td'));
+        var endpointCheck = $(document.createElement('input'));
+        var endpointLabel = $(document.createElement('label'));
+        endpointLabel.addClass('form-check-label');
+        endpointLabel.attr('for', endpointCheckId);
+        endpointLabel.text(endpointUrl)
+        endpointCell.append(endpointLabel);
+        endpointCheck.attr('id', endpointCheckId);
+        endpointCheck.addClass('form-check-input');
+        endpointCheck.attr('type', 'checkbox');
+        if(blackistedEndpointIndexList.includes(i)) {
+            endpointCheck.prop('checked', false);
+        } else {
+            endpointCheck.prop('checked', true);
+        }
+        endpointCheck.val(i);
+        endpointCheckCell.append(endpointCheck);
+
+        endpointCheck.change(() => {
+            if(endpointCheck.prop('checked')) {
+                removeBlacklistedEndpoint(i);
+            } else {
+                addBlacklistedEndpoint(i);
+            }
+        });
+
+        endpointRow.append(endpointCell);
+        endpointRow.append(endpointCheckCell);
+        return endpointRow;
+    }
+}
+setButtonAsToggleCollapse('whiteListShowButton', 'whiteListTable');
+
 function mapFill() {
     var endpointGeolocTableBody = $('#endpointGeolocTableBody');
     endpointGeolocTableBody.empty();
     var endpointGeolocData = [];
+
+    $('#map').width(mainContentColWidth);
+    map.invalidateSize();
 
     function addLineToEndpointGeolocTable(item) {
         var endpointRow = $(document.createElement('tr'));
@@ -365,93 +533,99 @@ function mapFill() {
     endpointIpMap.forEach((item, i) => {
         // Add the markers for each endpoints.
         var endpoint = item.key;
+        if(! blacklistedEndpointList.includes(endpoint)) {
 
+            // Filter the endpoints according to their graphs
+            var endpointInGraphQuery = "ASK { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <"+ endpoint +"> . } VALUES ?g { "+ graphValuesURIList +" } }";
+            sparqlQueryJSON(endpointInGraphQuery, jsonAskResponse => {
+                var booleanResponse = jsonAskResponse.boolean;
 
-        // Filter the endpoints according to their graphs
-        var endpointInGraphQuery = "ASK { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <"+ endpoint +"> . } VALUES ?g { "+ graphValuesURIList +" } }";
-        sparqlQueryJSON(endpointInGraphQuery, jsonAskResponse => {
-            var booleanResponse = jsonAskResponse.boolean;
-
-            if(booleanResponse) {
-                // Study of the timezones
-                // http://worldtimeapi.org/pages/examples
-                var markerIcon = greenIcon;
-                var endpointTimezoneSPARQL = new Map();
-                var timezoneSPARQLquery = "SELECT DISTINCT ?timezone { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <"+ endpoint +"> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone } VALUES ?g { "+ graphValuesURIList +" } }";
-                sparqlQueryJSON(timezoneSPARQLquery, jsonResponse => {
-                    jsonResponse.results.bindings.forEach((itemResponse, i) => {
-                        endpointTimezoneSPARQL.set(endpoint, itemResponse.timezone.value);
-                    });
-
-                    var ipTimezoneArrayFiltered = timezoneMap.filter(itemtza => itemtza.key == item.value.geoloc.timezone);
-                    var ipTimezone;
-                    if(ipTimezoneArrayFiltered.length > 0) {
-                        ipTimezone = ipTimezoneArrayFiltered[0].value.utc_offset;
-                    }
-                    var sparqlTimezone = endpointTimezoneSPARQL.get(endpoint);
-                    var badTimezone = false;
-                    if(sparqlTimezone != undefined
-                        && ipTimezone != undefined
-                        && (ipTimezone.padStart(6, '-') != sparqlTimezone.padStart(6, '-') ) // addding + and - at the beginnig in case they are missing
-                        && (ipTimezone.padStart(6, '+') != sparqlTimezone.padStart(6, '+') ) ) {
-                        badTimezone = true;
-                        markerIcon = orangeIcon;
-                    }
-
-                    var endpointMarker = L.marker([item.value.geoloc.lat, item.value.geoloc.lon], { icon:markerIcon });
-                    var endpointItem = {endpoint:endpoint, lat:item.value.geoloc.lat, lon:item.value.geoloc.lon, country:"", region:"", city:"", org:""};
-                    if(item.value.geoloc.country != undefined) {
-                        endpointItem.country = item.value.geoloc.country;
-                    }
-                    if(item.value.geoloc.regionName != undefined) {
-                        endpointItem.region = item.value.geoloc.regionName;
-                    }
-                    if(item.value.geoloc.city != undefined) {
-                        endpointItem.city =item.value.geoloc.city;
-                    }
-                    if(item.value.geoloc.org != undefined) {
-                        endpointItem.org = item.value.geoloc.org;
-                    }
-                    endpointGeolocData.push(endpointItem);
-                    addLineToEndpointGeolocTable(endpointItem);
-                    endpointMarker.on('click', clickEvent => {
-                        var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + endpoint + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } VALUES ?g { "+ graphValuesURIList +" } }";
-                            sparqlQueryJSON(labelQuery, responseLabels => {
-
-                                var popupString = "<table> <thead> <tr> <th colspan='2'> <a href='" + endpoint + "' >" + endpoint + "</a> </th> </tr> </thead>" ;
-                                popupString += "</body>"
-                                if(item.value.geoloc.country != undefined) {
-                                    popupString += "<tr><td>Country: </td><td>" + item.value.geoloc.country + "</td></tr>" ;
-                                }
-                                if(item.value.geoloc.regionName != undefined) {
-                                    popupString += "<tr><td>Region: </td><td>" + item.value.geoloc.regionName  + "</td></tr>";
-                                }
-                                if(item.value.geoloc.city != undefined) {
-                                    popupString += "<tr><td>City: </td><td>" + item.value.geoloc.city  + "</td></tr>";
-                                }
-                                if(item.value.geoloc.org != undefined) {
-                                    popupString += "<tr><td>Organization: </td><td>" + item.value.geoloc.org + "</td></tr>";
-                                }
-                                if(badTimezone) {
-                                    popupString += "<tr><td>Timezone of endpoint URL: </td><td>" + ipTimezone + "</td></tr>";
-                                    popupString += "<tr><td>Timezone declared by endpoint: </td><td>" + sparqlTimezone + "</td></tr>";
-                                }
-                                if(responseLabels.results.bindings.size > 0) {
-                                    popupString += "<tr><td colspan='2'>" + responseLabels  + "</td></tr>" ;
-                                }
-                                popupString += "</tbody>"
-                                popupString += "</table>"
-                                endpointMarker.bindPopup(popupString).openPopup();
-
-                            });
+                if(booleanResponse) {
+                    // Study of the timezones
+                    // http://worldtimeapi.org/pages/examples
+                    var markerIcon = greenIcon;
+                    var endpointTimezoneSPARQL = new Map();
+                    var timezoneSPARQLquery = "SELECT DISTINCT ?timezone { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <"+ endpoint +"> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone } VALUES ?g { "+ graphValuesURIList +" } }";
+                    sparqlQueryJSON(timezoneSPARQLquery, jsonResponse => {
+                        jsonResponse.results.bindings.forEach((itemResponse, i) => {
+                            endpointTimezoneSPARQL.set(endpoint, itemResponse.timezone.value);
                         });
-                        endpointMarker.addTo(layerGroup);
-                    });
-                }
-            });
+
+                        var ipTimezoneArrayFiltered = timezoneMap.filter(itemtza => itemtza.key == item.value.geoloc.timezone);
+                        var ipTimezone;
+                        if(ipTimezoneArrayFiltered.length > 0) {
+                            ipTimezone = ipTimezoneArrayFiltered[0].value.utc_offset;
+                        }
+                        var sparqlTimezone = endpointTimezoneSPARQL.get(endpoint);
+                        var badTimezone = false;
+                        if(sparqlTimezone != undefined
+                            && ipTimezone != undefined
+                            && (ipTimezone.padStart(6, '-') != sparqlTimezone.padStart(6, '-') ) // addding + and - at the beginnig in case they are missing
+                            && (ipTimezone.padStart(6, '+') != sparqlTimezone.padStart(6, '+') ) ) {
+                            badTimezone = true;
+                            markerIcon = orangeIcon;
+                        }
+
+                        var endpointMarker = L.marker([item.value.geoloc.lat, item.value.geoloc.lon], { icon:markerIcon });
+                        var endpointItem = {endpoint:endpoint, lat:item.value.geoloc.lat, lon:item.value.geoloc.lon, country:"", region:"", city:"", org:""};
+                        if(item.value.geoloc.country != undefined) {
+                            endpointItem.country = item.value.geoloc.country;
+                        }
+                        if(item.value.geoloc.regionName != undefined) {
+                            endpointItem.region = item.value.geoloc.regionName;
+                        }
+                        if(item.value.geoloc.city != undefined) {
+                            endpointItem.city =item.value.geoloc.city;
+                        }
+                        if(item.value.geoloc.org != undefined) {
+                            endpointItem.org = item.value.geoloc.org;
+                        }
+                        endpointGeolocData.push(endpointItem);
+                        addLineToEndpointGeolocTable(endpointItem);
+                        endpointMarker.on('click', clickEvent => {
+                            var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + endpoint + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } VALUES ?g { "+ graphValuesURIList +" } }";
+                                sparqlQueryJSON(labelQuery, responseLabels => {
+
+                                    var popupString = "<table> <thead> <tr> <th colspan='2'> <a href='" + endpoint + "' >" + endpoint + "</a> </th> </tr> </thead>" ;
+                                    popupString += "</body>"
+                                    if(item.value.geoloc.country != undefined) {
+                                        popupString += "<tr><td>Country: </td><td>" + item.value.geoloc.country + "</td></tr>" ;
+                                    }
+                                    if(item.value.geoloc.regionName != undefined) {
+                                        popupString += "<tr><td>Region: </td><td>" + item.value.geoloc.regionName  + "</td></tr>";
+                                    }
+                                    if(item.value.geoloc.city != undefined) {
+                                        popupString += "<tr><td>City: </td><td>" + item.value.geoloc.city  + "</td></tr>";
+                                    }
+                                    if(item.value.geoloc.org != undefined) {
+                                        popupString += "<tr><td>Organization: </td><td>" + item.value.geoloc.org + "</td></tr>";
+                                    }
+                                    if(badTimezone) {
+                                        popupString += "<tr><td>Timezone of endpoint URL: </td><td>" + ipTimezone + "</td></tr>";
+                                        popupString += "<tr><td>Timezone declared by endpoint: </td><td>" + sparqlTimezone + "</td></tr>";
+                                    }
+                                    if(responseLabels.results.bindings.size > 0) {
+                                        popupString += "<tr><td colspan='2'>" + responseLabels  + "</td></tr>" ;
+                                    }
+                                    popupString += "</tbody>"
+                                    popupString += "</table>"
+                                    endpointMarker.bindPopup(popupString).openPopup();
+
+                                });
+                            });
+                            endpointMarker.addTo(layerGroup);
+                        });
+                    }
+                });
+            }
         });
 }
-setButtonAsTableCollapse('endpointGeolocDetails', 'endpointGeolocTable');
+function redrawMapContent() {
+    $('#map').width(mainContentColWidth);
+    map.invalidateSize();
+    map.setView([24.5271348225978, 62.22656250000001], 2);
+}
+setButtonAsToggleCollapse('endpointGeolocDetails', 'endpointGeolocTable');
 
 var sparql10ChartOption = {};
 var sparql11ChartOption = {};
@@ -466,14 +640,16 @@ function sparqlesHistoFill() {
         var sparql11Map = new Map();
         json.results.bindings.forEach((bindingItem, i) => {
             var endpointUrl = bindingItem.endpoint.value;
-            endpointSet.add(endpointUrl);
-            var feature = bindingItem.sparqlNorm.value;
-            var count = bindingItem.count.value;
-            if(feature.localeCompare("SPARQL10") == 0) {
-                sparql10Map.set(endpointUrl, Number(count));
-            }
-            if (feature.localeCompare("SPARQL11") == 0) {
-                sparql11Map.set(endpointUrl, Number(count));
+                if( ! blacklistedEndpointList.includes(endpointUrl)) {
+                endpointSet.add(endpointUrl);
+                var feature = bindingItem.sparqlNorm.value;
+                var count = bindingItem.count.value;
+                if(feature.localeCompare("SPARQL10") == 0) {
+                    sparql10Map.set(endpointUrl, Number(count));
+                }
+                if (feature.localeCompare("SPARQL11") == 0) {
+                    sparql11Map.set(endpointUrl, Number(count));
+                }
             }
         });
 
@@ -665,9 +841,8 @@ function sparqlesHistoFill() {
             color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
             series:sparqlCategorySeries ,
         };
-        sparql10Chart.setOption(sparql10ChartOption, true);
-        sparql11Chart.setOption(sparql11ChartOption, true);
-        sparqlChart.setOption(sparqlChartOption, true);
+
+        redrawSPARQLFeaturesChart();
 
         jsonBaseFeatureSparqles.sort((a,b) => {
             return a.endpoint.localeCompare(b.endpoint);
@@ -700,6 +875,12 @@ function sparqlesHistoFill() {
     });
 }
 function redrawSPARQLFeaturesChart() {
+    $('#SPARQL10histo').width(mainContentColWidth*.48);
+    $('#SPARQL11histo').width(mainContentColWidth*.48);
+    $('#SPARQL10histo').height(500);
+    $('#SPARQL11histo').height(500);
+    $('#SPARQLCoverageHisto').width(mainContentColWidth);
+
     sparql10Chart.setOption(sparql10ChartOption, true);
     sparql10Chart.resize();
     sparql11Chart.setOption(sparql11ChartOption, true);
@@ -707,22 +888,33 @@ function redrawSPARQLFeaturesChart() {
     sparqlChart.setOption(sparqlChartOption, true);
     sparqlChart.resize();
 }
-setButtonAsTableCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
+setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
 
 var vocabForceGraphOption = {};
+var rawVocabForceGraphOption = {};
 var endpointKeywordsForceGraphOption = {};
+var sparqlesVocabularies = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
+    "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+    "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+    "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
+    "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
+    "} "+
+    'VALUES ?g { '+ graphValuesURIList +' } '+
+    " } " +
+    "GROUP BY ?endpointUrl ?vocabulary ";
 function vocabRelatedContentFill() {
 // Create an force graph with the graph linked by co-ocurrence of vocabularies
-    var sparqlesVocabularies = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
-        "{ ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+    sparqlesVocabularies = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
+        "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
         "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?endpoint . " +
-        "?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
-        "} } " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
+        "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
+        "} "+
+        'VALUES ?g { '+ graphValuesURIList +' } '+
+        " } " +
         "GROUP BY ?endpointUrl ?vocabulary ";
 
     sparqlQueryJSON(sparqlesVocabularies, json => {
-
         // Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
         var LOVVocabularies = new Set();
         var sumVocabSetSize = 0;
@@ -741,19 +933,21 @@ function vocabRelatedContentFill() {
                 var vocabulariUri = bindingItem.vocabulary.value;
                 var endpointUri = bindingItem.endpointUrl.value;
                 var graphUri = bindingItem.g.value;
-                if(graphList.some(graphListItem => graphUri.localeCompare(graphListItem) == 0)) {
-                    rawVocabSet.add(vocabulariUri);
-                    if(! rawGatherVocab.has(endpointUri)) {
-                        rawGatherVocab.set(endpointUri, new Set());
-                    }
-                    rawGatherVocab.get(endpointUri).add(vocabulariUri);
-                    if(LOVVocabularies.has(vocabulariUri)) {
-                        endpointSet.add(endpointUri);
-                        vocabSet.add(vocabulariUri);
-                        if(! gatherVocab.has(endpointUri)) {
-                            gatherVocab.set(endpointUri, new Set());
+                if(! blacklistedEndpointList.includes(endpointUri)) {
+                    if(graphList.some(graphListItem => graphUri.localeCompare(graphListItem) == 0)) {
+                        rawVocabSet.add(vocabulariUri);
+                        if(! rawGatherVocab.has(endpointUri)) {
+                            rawGatherVocab.set(endpointUri, new Set());
                         }
-                        gatherVocab.get(endpointUri).add(vocabulariUri);
+                        rawGatherVocab.get(endpointUri).add(vocabulariUri);
+                        if(LOVVocabularies.has(vocabulariUri)) {
+                            endpointSet.add(endpointUri);
+                            vocabSet.add(vocabulariUri);
+                            if(! gatherVocab.has(endpointUri)) {
+                                gatherVocab.set(endpointUri, new Set());
+                            }
+                            gatherVocab.get(endpointUri).add(vocabulariUri);
+                        }
                     }
                 }
             });
@@ -761,30 +955,44 @@ function vocabRelatedContentFill() {
             // Endpoint and vocabularies graph
             var jsonVocabLinks = new Set();
             var jsonVocabNodes = new Set();
+            var jsonRawVocabNodes = new Set();
+            var jsonRawVocabLinks = new Set();
 
             endpointSet.forEach(item => {
                 jsonVocabNodes.add({name:item, category:'Endpoint', symbolSize:5});
+                jsonRawVocabNodes.add({name:item, category:'Endpoint', symbolSize:5});
             });
             vocabSet.forEach(item => {
                 jsonVocabNodes.add({name:item,  category:'Vocabulary', symbolSize:5})
             });
-                var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
-                var sumknowVocabMeasure = 0;
-                var knowVocabsData = [];
-                gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
-                    var measure = (endpointVocabs.size/rawGatherVocab.get(endpointUrl).size);
-                    knowVocabsData.push({ 'endpoint':endpointUrl, 'measure':measure })
+            rawVocabSet.forEach(item => {
+                jsonRawVocabNodes.add({name:item,  category:'Vocabulary', symbolSize:5})
+            });
 
-                    endpointVocabs.forEach((vocab, i) => {
-                        jsonVocabLinks.add({source:endpointUrl, target:vocab})
-                    });
+            var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
+            var sumknowVocabMeasure = 0;
+            var knowVocabsData = [];
+            gatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
+                var measure = (endpointVocabs.size/rawGatherVocab.get(endpointUrl).size);
+                knowVocabsData.push({ 'endpoint':endpointUrl, 'measure':measure })
+
+                endpointVocabs.forEach((vocab, i) => {
+                    jsonVocabLinks.add({source:endpointUrl, target:vocab})
                 });
+            });
+            rawGatherVocab.forEach(( endpointVocabs, endpointUrl, map1) => {
+                endpointVocabs.forEach((vocab, i) => {
+                    jsonRawVocabLinks.add({source:endpointUrl, target:vocab})
+                });
+            });
 
-                if(jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
+            if(jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
                 showEndpointVocabularyContent();
 
-                vocabForceGraphOption = getForceGraphOption('Endpoints and knowledge bases', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
+                vocabForceGraphOption = getForceGraphOption('Endpoints and known vocabularies*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
                 vocabForceGraph.setOption(vocabForceGraphOption, true);
+                rawVocabForceGraphOption = getForceGraphOption('Endpoints and vocabularies without filtering', ["Vocabulary", "Endpoint"], [...jsonRawVocabNodes], [...jsonRawVocabLinks]);
+                rawVocabForceGraph.setOption(rawVocabForceGraphOption, true);
 
                 // Measure Table
                 function endpointKnowVocabsMeasureFill() {
@@ -923,8 +1131,8 @@ function vocabRelatedContentFill() {
         hideEndpointVocabularyContent();
     });
 }
-setButtonAsTableCollapse('KnownVocabulariesDetails', 'knowVocabEndpointTable');
-setButtonAsTableCollapse('endpointKeywordsDetails', 'endpointKeywordsTable');
+setButtonAsToggleCollapse('KnownVocabulariesDetails', 'knowVocabEndpointTable');
+setButtonAsToggleCollapse('endpointKeywordsDetails', 'endpointKeywordsTable');
 function hideVocabularyContent() {
     collapseHtml('vocabRelatedContent');
     hideEndpointVocabularyContent();
@@ -936,6 +1144,7 @@ function showVocabularyContent() {
 function hideEndpointVocabularyContent() {
     vocabForceGraph.setOption({series:[]}, true);
     collapseHtml('vocabs');
+    collapseHtml('rawVocabs');
     collapseHtml('knowVocabEndpointMeasureRow');
     collapseHtml('knowVocabEndpointTable');
 }
@@ -949,6 +1158,7 @@ function showEndpointVocabularyContent() {
     showVocabularyContent();
     unCollapseHtml('knowVocabEndpointMeasureRow');
     unCollapseHtml('vocabs');
+    unCollapseHtml('rawVocabs');
 }
 function showEndpointKeywordContent() {
     showVocabularyContent();
@@ -956,10 +1166,21 @@ function showEndpointKeywordContent() {
     unCollapseHtml('endpointKeywordsDetails');
 }
 function redrawVocabRelatedContentCharts() {
+    $('#vocabs').width(mainContentColWidth);
+    $('#rawVocabs').width(mainContentColWidth);
+    $('#endpointKeywords').width(mainContentColWidth);
     vocabForceGraph.setOption(vocabForceGraphOption, true);
     vocabForceGraph.resize();
+    rawVocabForceGraph.setOption(rawVocabForceGraphOption, true);
+    rawVocabForceGraph.resize();
     endpointKeywordsForceGraph.setOption(endpointKeywordsForceGraphOption, true);
     endpointKeywordsForceGraph.resize();
+    var codeQuery1Div = $(document.createElement('code')).text(sparqlesVocabularies);
+    $('#endpointVocabularyQueryCell').empty()
+    $('#endpointVocabularyQueryCell').append(codeQuery1Div)
+    var codeQuery2Div = $(document.createElement('code')).text('SELECT DISTINCT ?endpointUrl ?vocabulary { SERVICE <http://prod-dekalog.inria.fr/sparql> { GRAPH ?g { { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } ?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?endpoint . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary . FILTER(isIri(?vocabulary)) } VALUES ?g { '+ graphValuesURIList +' } } SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> { GRAPH <https://lov.linkeddata.es/dataset/lov> { ?vocabURI a <http://purl.org/vocommons/voaf#Vocabulary> . } } } GROUP BY ?endpointUrl ?vocabulary');
+    $('#endpointKeywordQueryCell').empty();
+    $('#endpointKeywordQueryCell').append(codeQuery2Div);
 }
 
 var tripleScatterOption = {};
@@ -977,16 +1198,20 @@ function tripleNumberScatter() {
         var endpointDataSerieMap = new Map();
         json.results.bindings.forEach((itemResult, i) => {
             var endpointUrl = itemResult.endpointUrl.value;
+            if( ! blacklistedEndpointList.includes(endpointUrl)) {
+                endpointDataSerieMap.set(endpointUrl, []);
+            }
 
-            endpointDataSerieMap.set(endpointUrl, []);
         });
         var graphSet = new Set();
         json.results.bindings.forEach((itemResult, i) => {
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
             var endpointUrl = itemResult.endpointUrl.value;
             var triples = Number.parseInt(itemResult.o.value);
-            graphSet.add(graph);
-            endpointDataSerieMap.get(endpointUrl).push([graph,triples])
+            if( ! blacklistedEndpointList.includes(endpointUrl)) {
+                graphSet.add(graph);
+                endpointDataSerieMap.get(endpointUrl).push([graph,triples])
+            }
         });
 
         if(endpointDataSerieMap.size > 0) {
@@ -1012,6 +1237,7 @@ function showTriplesNumberContent() {
     //unCollapseHtml('triplesContentCol');
 }
 function redrawTriplesNumberContentChart() {
+    $('#tripleScatter').width(mainContentColWidth/3);
     tripleScatterChart.setOption(tripleScatterOption, true);
     tripleScatterChart.resize();
 }
@@ -1032,8 +1258,9 @@ function classNumberFill() {
         //var xAxisDataSet = new Set();
         json.results.bindings.forEach((itemResult, i) => {
             var endpointUrl = itemResult.endpointUrl.value;
-
-            endpointDataSerieMap.set(endpointUrl, []);
+            if( ! blacklistedEndpointList.includes(endpointUrl)) {
+                endpointDataSerieMap.set(endpointUrl, []);
+            }
             //xAxisDataSet.add(graph);
         });
         var graphSet = new Set();
@@ -1041,8 +1268,10 @@ function classNumberFill() {
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
             var endpointUrl = itemResult.endpointUrl.value;
             var triples = Number.parseInt(itemResult.o.value);
-            graphSet.add(graph);
-            endpointDataSerieMap.get(endpointUrl).push([ graph, triples ])
+            if( ! blacklistedEndpointList.includes(endpointUrl)) {
+                graphSet.add(graph);
+                endpointDataSerieMap.get(endpointUrl).push([ graph, triples ])
+            }
         });
 
         if(endpointDataSerieMap.size > 0) {
@@ -1069,6 +1298,7 @@ function showClassesNumberContent() {
     //unCollapseHtml('tableClassesDetails');
 }
 function redrawClassesNumberContentChart() {
+    $('#classScatter').width(mainContentColWidth/3);
     classScatterChart.setOption(classesScatterOption, true);
     classScatterChart.resize();
 }
@@ -1088,7 +1318,9 @@ function propertyNumberFill() {
         json.results.bindings.forEach((itemResult, i) => {
             var endpointUrl = itemResult.endpointUrl.value;
 
-            endpointDataSerieMap.set(endpointUrl, []);
+            if( ! blacklistedEndpointList.includes(endpointUrl)) {
+                endpointDataSerieMap.set(endpointUrl, []);
+            }
         });
         var endpointGraphPropertiesData = [];
         var graphSet = new Set();
@@ -1096,9 +1328,11 @@ function propertyNumberFill() {
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
             var endpointUrl = itemResult.endpointUrl.value;
             var properties = Number.parseInt(itemResult.o.value);
-            graphSet.add(graph);
-            endpointDataSerieMap.get(endpointUrl).push([ graph, properties ])
-            endpointGraphPropertiesData.push({endpoint:endpointUrl, graph:graph, properties:properties})
+            if( ! blacklistedEndpointList.includes(endpointUrl)) {
+                graphSet.add(graph);
+                endpointDataSerieMap.get(endpointUrl).push([ graph, properties ])
+                endpointGraphPropertiesData.push({endpoint:endpointUrl, graph:graph, properties:properties})
+            }
         });
 
         if(endpointDataSerieMap.size > 0) {
@@ -1125,6 +1359,7 @@ function showPropertyNumberContent() {
     //unCollapseHtml('tablePropertiesDetails');
 }
 function redrawPropertyNumberContentChart() {
+    $('#propertyScatter').width(mainContentColWidth/3);
     propertyScatterChart.setOption(propertyNumberScatterOption, true);
     propertyScatterChart.resize();
 }
@@ -1166,10 +1401,12 @@ function categoryTestNumberFill() {
             var endpoint = itemResult.endpointUrl.value:
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#','');
 
-            if(endpointDataSerieMap.get(category).get(graph) == undefined) {
-                endpointDataSerieMap.get(category).set(graph, new Map());
+            if( ! blacklistedEndpointList.includes(endpoint)) {
+                if(endpointDataSerieMap.get(category).get(graph) == undefined) {
+                    endpointDataSerieMap.get(category).set(graph, new Map());
+                }
+                endpointDataSerieMap.get(category).get( graph).set(endpoint, count);
             }
-            endpointDataSerieMap.get(category).get( graph).set(endpoint, count);
         });
 
         if(endpointDataSerieMap.size > 0) {
@@ -1255,6 +1492,7 @@ function showCategoryTestNumberContent() {
     unCollapseHtml('testCategoryScatter');
 }
 function redrawCategoryTestNumberChart() {
+    $('#testCategoryScatter').width(mainContentColWidth);
     categoryScatterChart.setOption(categoryTestNumberScatterOption, true);
     categoryScatterChart.resize();
 }
@@ -1275,10 +1513,12 @@ function testTableFill() {
             var endpointUrl = item.endpointUrl.value;
             var rule = item.rule.value;
 
-            if(appliedTestMap.get(endpointUrl) == undefined) {
-                appliedTestMap.set(endpointUrl, []);
+            if( ! blacklistedEndpointList.includes(endpointUrl)) {
+                if(appliedTestMap.get(endpointUrl) == undefined) {
+                    appliedTestMap.set(endpointUrl, []);
+                }
+                appliedTestMap.get(endpointUrl).push(rule);
             }
-            appliedTestMap.get(endpointUrl).push(rule);
         });
 
         var appliedTestData = [];
@@ -1339,7 +1579,7 @@ function testTableFill() {
         fillTestTable();
     });
 }
-setButtonAsTableCollapse('tableRuleDetails', 'rulesTable');
+setButtonAsToggleCollapse('tableRuleDetails', 'rulesTable');
 
 var totalRuntimeScatterOption = {};
 function runtimeStatsFill() {
@@ -1390,6 +1630,7 @@ function runtimeStatsFill() {
     });
 }
 function redrawTotalRuntimeScatterChart() {
+    $('#totalRuntimeScatter').width(mainContentColWidth);
     totalRuntimeChart.setOption(totalRuntimeScatterOption, true);
     totalRuntimeChart.resize();
 }
@@ -1462,49 +1703,10 @@ function averageRuntimeStatsFill() {
     });
 }
 function redrawAverageRuntimeChart() {
+    $('#averageRuntimeScatter').width(mainContentColWidth);
     averageRuntimeChart.setOption(averageRuntimeChartOption, true);
     averageRuntimeChart.resize();
 }
-
-/*
-function availabilityFill() {
-    var availabilityPassedQuery = "SELECT DISTINCT ?g (COUNT(?endpoint) AS ?count) { "+
-    "GRAPH ?g { "+
-    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . "+
-    "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . "+
-    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-    "?trace <http://www.w3.org/ns/earl#result> ?result . "+
-    "?trace <http://www.w3.org/ns/earl#test> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> . "+
-    "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . "+
-    "}  "+
-    "VALUES ?g { "+ graphValuesURIList +" } "+
-    "}";
-    var availabilityFailedQuery = "SELECT DISTINCT ?g (COUNT(?data) AS ?count) { "+
-    "GRAPH ?g { "+
-    "?metadata <http://ns.inria.fr/kg/index#curated> ?data . "+
-    "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . "+
-    "?trace <http://www.w3.org/ns/earl#result> ?result . "+
-    "?trace <http://www.w3.org/ns/earl#test> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> . "+
-    "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#failed> . "+
-    "} "+
-    "VALUES ?g { "+ graphValuesURIList +" } }";
-
-    sparqlQueryJSON(availabilityPassedQuery, jsonPassed => {
-        console.log(jsonPassed)
-            sparqlQueryJSON(availabilityFailedQuery, jsonFailed => {
-                console.log(jsonFailed)
-
-
-            });
-    });
-}
-
-function hideAvailabilityContent() {
-    availabilityScatterChart.setOption({series:[]}, true);
-    collapseHtml('availabilityScatter');
-}*/
-
-
 
 function classAndPropertiesContentFill() {
     var classPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co { " +
@@ -1536,66 +1738,68 @@ function classAndPropertiesContentFill() {
         json.results.bindings.forEach((item, i) => {
             var c = item.c.value;
             var endpointUrl = item.endpointUrl.value;
+            if( ! blacklistedEndpointList.includes(endpointUrl)) {
 
-            if(classCountsEndpointsMap.get(c) == undefined) {
-                classCountsEndpointsMap.set(c, {class:c});
-            }
-            if(item.ct != undefined) {
-                var ct = Number.parseInt(item.ct.value);
-                var currentClassItem = classCountsEndpointsMap.get(c);
-                if(classCountsEndpointsMap.get(c).triples == undefined) {
-                    currentClassItem.triples = 0;
+                if(classCountsEndpointsMap.get(c) == undefined) {
+                    classCountsEndpointsMap.set(c, {class:c});
+                }
+                if(item.ct != undefined) {
+                    var ct = Number.parseInt(item.ct.value);
+                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    if(classCountsEndpointsMap.get(c).triples == undefined) {
+                        currentClassItem.triples = 0;
+                        classCountsEndpointsMap.set(c, currentClassItem);
+                    }
+                    currentClassItem.triples = currentClassItem.triples + ct;
                     classCountsEndpointsMap.set(c, currentClassItem);
                 }
-                currentClassItem.triples = currentClassItem.triples + ct;
-                classCountsEndpointsMap.set(c, currentClassItem);
-            }
-            if(item.cc != undefined) {
-                var cc = Number.parseInt(item.cc.value);
-                var currentClassItem = classCountsEndpointsMap.get(c);
-                if(classCountsEndpointsMap.get(c).classes == undefined) {
-                    currentClassItem.classes = 0;
+                if(item.cc != undefined) {
+                    var cc = Number.parseInt(item.cc.value);
+                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    if(classCountsEndpointsMap.get(c).classes == undefined) {
+                        currentClassItem.classes = 0;
+                        classCountsEndpointsMap.set(c, currentClassItem);
+                    }
+                    currentClassItem.classes = currentClassItem.classes + cc;
                     classCountsEndpointsMap.set(c, currentClassItem);
                 }
-                currentClassItem.classes = currentClassItem.classes + cc;
-                classCountsEndpointsMap.set(c, currentClassItem);
-            }
-            if(item.cp != undefined) {
-                var cp = Number.parseInt(item.cp.value);
-                var currentClassItem = classCountsEndpointsMap.get(c);
-                if(classCountsEndpointsMap.get(c).properties == undefined) {
-                    currentClassItem.properties = 0;
+                if(item.cp != undefined) {
+                    var cp = Number.parseInt(item.cp.value);
+                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    if(classCountsEndpointsMap.get(c).properties == undefined) {
+                        currentClassItem.properties = 0;
+                        classCountsEndpointsMap.set(c, currentClassItem);
+                    }
+                    currentClassItem.properties = currentClassItem.properties + cp;
                     classCountsEndpointsMap.set(c, currentClassItem);
                 }
-                currentClassItem.properties = currentClassItem.properties + cp;
-                classCountsEndpointsMap.set(c, currentClassItem);
-            }
-            if(item.cs != undefined) {
-                var cs = Number.parseInt(item.cs.value);
-                var currentClassItem = classCountsEndpointsMap.get(c);
-                if(classCountsEndpointsMap.get(c).distinctSubjects == undefined) {
-                    currentClassItem.distinctSubjects = 0;
+                if(item.cs != undefined) {
+                    var cs = Number.parseInt(item.cs.value);
+                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    if(classCountsEndpointsMap.get(c).distinctSubjects == undefined) {
+                        currentClassItem.distinctSubjects = 0;
+                        classCountsEndpointsMap.set(c, currentClassItem);
+                    }
+                    currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + cs;
                     classCountsEndpointsMap.set(c, currentClassItem);
                 }
-                currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + cs;
-                classCountsEndpointsMap.set(c, currentClassItem);
-            }
-            if(item.co != undefined) {
-                var co = Number.parseInt(item.co.value);
-                var currentClassItem = classCountsEndpointsMap.get(c);
-                if(classCountsEndpointsMap.get(c).distinctObjects == undefined) {
-                    currentClassItem.distinctObjects = 0;
+                if(item.co != undefined) {
+                    var co = Number.parseInt(item.co.value);
+                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    if(classCountsEndpointsMap.get(c).distinctObjects == undefined) {
+                        currentClassItem.distinctObjects = 0;
+                        classCountsEndpointsMap.set(c, currentClassItem);
+                    }
+                    currentClassItem.distinctObjects = currentClassItem.distinctObjects + co;
                     classCountsEndpointsMap.set(c, currentClassItem);
                 }
-                currentClassItem.distinctObjects = currentClassItem.distinctObjects + co;
-                classCountsEndpointsMap.set(c, currentClassItem);
+                if(classCountsEndpointsMap.get(c).endpoints == undefined) {
+                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    currentClassItem.endpoints = new Set();
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                classCountsEndpointsMap.get(c).endpoints.add(endpointUrl);
             }
-            if(classCountsEndpointsMap.get(c).endpoints == undefined) {
-                var currentClassItem = classCountsEndpointsMap.get(c);
-                currentClassItem.endpoints = new Set();
-                classCountsEndpointsMap.set(c, currentClassItem);
-            }
-            classCountsEndpointsMap.get(c).endpoints.add(endpointUrl);
         });
 
         var classDescriptionData = [];
@@ -1670,45 +1874,47 @@ function classAndPropertiesContentFill() {
             var mapKey = c+p;
             var endpointUrl = item.endpointUrl.value;
 
-            if(classPropertyCountsEndpointsMap.get(mapKey) == undefined) {
-                classPropertyCountsEndpointsMap.set(mapKey, {class:c, property:p});
-            }
-            if(item.pt != undefined) {
-                var pt = Number.parseInt(item.pt.value);
-                var currentClassItem = classCountsEndpointsMap.get(mapKey);
-                if(classPropertyCountsEndpointsMap.get(mapKey).triples == undefined) {
-                    currentClassItem.triples = 0;
+            if( ! blacklistedEndpointList.includes(endpointUrl)) {
+                if(classPropertyCountsEndpointsMap.get(mapKey) == undefined) {
+                    classPropertyCountsEndpointsMap.set(mapKey, {class:c, property:p});
+                }
+                if(item.pt != undefined) {
+                    var pt = Number.parseInt(item.pt.value);
+                    var currentClassItem = classCountsEndpointsMap.get(mapKey);
+                    if(classPropertyCountsEndpointsMap.get(mapKey).triples == undefined) {
+                        currentClassItem.triples = 0;
+                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                    }
+                    currentClassItem.triples = currentClassItem.triples + pt;
                     classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
                 }
-                currentClassItem.triples = currentClassItem.triples + pt;
-                classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-            }
-            if(item.ps != undefined) {
-                var ps = Number.parseInt(item.ps.value);
-                var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
-                if(classPropertyCountsEndpointsMap.get(mapKey).distinctSubjects == undefined) {
-                    currentClassItem.distinctSubjects = 0;
+                if(item.ps != undefined) {
+                    var ps = Number.parseInt(item.ps.value);
+                    var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
+                    if(classPropertyCountsEndpointsMap.get(mapKey).distinctSubjects == undefined) {
+                        currentClassItem.distinctSubjects = 0;
+                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                    }
+                    currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + ps;
                     classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
                 }
-                currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + ps;
-                classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-            }
-            if(item.po != undefined) {
-                var po = Number.parseInt(item.po.value);
-                var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
-                if(classPropertyCountsEndpointsMap.get(mapKey).distinctObjects == undefined) {
-                    currentClassItem.distinctObjects = 0;
+                if(item.po != undefined) {
+                    var po = Number.parseInt(item.po.value);
+                    var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
+                    if(classPropertyCountsEndpointsMap.get(mapKey).distinctObjects == undefined) {
+                        currentClassItem.distinctObjects = 0;
+                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                    }
+                    currentClassItem.distinctObjects = currentClassItem.distinctObjects + po;
                     classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
                 }
-                currentClassItem.distinctObjects = currentClassItem.distinctObjects + po;
-                classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                if(classPropertyCountsEndpointsMap.get(mapKey).endpoints == undefined) {
+                    var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
+                    currentClassItem.endpoints = new Set();
+                    classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                }
+                classPropertyCountsEndpointsMap.get(mapKey).endpoints.add(endpointUrl);
             }
-            if(classPropertyCountsEndpointsMap.get(mapKey).endpoints == undefined) {
-                var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
-                currentClassItem.endpoints = new Set();
-                classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-            }
-            classPropertyCountsEndpointsMap.get(mapKey).endpoints.add(endpointUrl);
         });
 
         var classDescriptionData = [];
@@ -1750,8 +1956,8 @@ function classAndPropertiesContentFill() {
         fillClassPropertiesDescriptionTable()
     });
 }
-setButtonAsTableCollapse('classDescriptionDetails', 'classDescriptionTable');
-setButtonAsTableCollapse('classPropertiesDescriptionDetails', 'classPropertiesDescriptionTable');
+setButtonAsToggleCollapse('classDescriptionDetails', 'classDescriptionTable');
+setButtonAsToggleCollapse('classPropertiesDescriptionDetails', 'classPropertiesDescriptionTable');
 
 var descriptionElementChartOption = {};
 function descriptionElementFill() {
@@ -1814,50 +2020,58 @@ function descriptionElementFill() {
     sparqlQueryJSON(provenanceWhoCheckQuery, json => {
         json.results.bindings.forEach((item, i) => {
             var endpointUrl = item.endpointUrl.value;
-            var who = (item.o != undefined);
-            var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
-            if(currentEndpointItem == undefined) {
-                endpointDescriptionElementMap.set(endpointUrl, {endpoint:endpointUrl})
-                currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl);
+            if( ! blacklistedEndpointList.includes(endpointUrl)) {
+                var who = (item.o != undefined);
+                var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                if(currentEndpointItem == undefined) {
+                    endpointDescriptionElementMap.set(endpointUrl, {endpoint:endpointUrl})
+                    currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl);
+                }
+                currentEndpointItem.who = who;
+                if(who) {
+                    currentEndpointItem.whoValue = item.o.value;
+                }
+                endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
             }
-            currentEndpointItem.who = who;
-            if(who) {
-                currentEndpointItem.whoValue = item.o.value;
-            }
-            endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
         });
         sparqlQueryJSON(provenanceLicenseCheckQuery, json => {
             json.results.bindings.forEach((item, i) => {
                 var endpointUrl = item.endpointUrl.value;
-                var license = (item.o != undefined);
-                var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
-                currentEndpointItem.license = license;
-                if(license) {
-                    currentEndpointItem.licenseValue = item.o.value;
+                if( ! blacklistedEndpointList.includes(endpointUrl)) {
+                    var license = (item.o != undefined);
+                    var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                    currentEndpointItem.license = license;
+                    if(license) {
+                        currentEndpointItem.licenseValue = item.o.value;
+                    }
+                    endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
                 }
-                endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
             });
             sparqlQueryJSON(provenanceDateCheckQuery, json => {
                 json.results.bindings.forEach((item, i) => {
                     var endpointUrl = item.endpointUrl.value;
-                    var time = (item.o != undefined);
-                    var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
-                    currentEndpointItem.time = time;
-                    if(time) {
-                        currentEndpointItem.timeValue = item.o.value;
+                    if( ! blacklistedEndpointList.includes(endpointUrl)) {
+                        var time = (item.o != undefined);
+                        var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                        currentEndpointItem.time = time;
+                        if(time) {
+                            currentEndpointItem.timeValue = item.o.value;
+                        }
+                        endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
                     }
-                    endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
                 });
                 sparqlQueryJSON(provenanceSourceCheckQuery, json => {
                     json.results.bindings.forEach((item, i) => {
                         var endpointUrl = item.endpointUrl.value;
-                        var source = (item.o != undefined);
-                        var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
-                        currentEndpointItem.source = source;
-                        if(source) {
-                            currentEndpointItem.sourceValue = item.o.value;
+                        if( ! blacklistedEndpointList.includes(endpointUrl)) {
+                            var source = (item.o != undefined);
+                            var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                            currentEndpointItem.source = source;
+                            if(source) {
+                                currentEndpointItem.sourceValue = item.o.value;
+                            }
+                            endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
                         }
-                        endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
                     });
 
                     var data = [];
@@ -2081,11 +2295,12 @@ function descriptionElementFill() {
     });
 }
 function redrawDescriptionElementChart() {
+    $('#datasetdescriptionRadar').width(mainContentColWidth);
     datasetdescriptionChart.setOption(descriptionElementChartOption, true);
     datasetdescriptionChart.resize();
 }
-setButtonAsTableCollapse('datasetDescriptionStatDetails', 'datasetDescriptionTable');
-setButtonAsTableCollapse('datasetDescriptionExplain', 'datasetDescriptionExplainText');
+setButtonAsToggleCollapse('datasetDescriptionStatDetails', 'datasetDescriptionTable');
+setButtonAsToggleCollapse('datasetDescriptionExplain', 'datasetDescriptionExplainText');
 
 var shortUrisScatterOption = {};
 function shortUrisFill() {
@@ -2104,11 +2319,13 @@ function shortUrisFill() {
         var graphSet = new Set();
         json.results.bindings.forEach((jsonItem, i) => {
             var endpoint = jsonItem.endpointUrl.value;
-            var shortUriMeasure = Number.parseFloat(jsonItem.measure.value*100);
-            var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+            if( ! blacklistedEndpointList.includes(endpoint)) {
+                var shortUriMeasure = Number.parseFloat(jsonItem.measure.value*100);
+                var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
 
-            graphSet.add(graph);
-            shortUriData.push({graph:graph, endpoint:endpoint, measure:shortUriMeasure})
+                graphSet.add(graph);
+                shortUriData.push({graph:graph, endpoint:endpoint, measure:shortUriMeasure})
+            }
         });
 
         var endpointDataSerieMap = new Map();
@@ -2180,10 +2397,11 @@ function showShortUrisContent() {
     unCollapseHtml('shortUriMeasureRow');
 }
 function redrawShortUrisChart() {
+    $('#shortUrisScatter').width(mainContentColWidth*.8);
     shortUriChart.setOption(shortUrisScatterOption, true);
     shortUriChart.resize();
 }
-setButtonAsTableCollapse('shortUrisDetails', 'shortUrisTable');
+setButtonAsToggleCollapse('shortUrisDetails', 'shortUrisTable');
 
 var rdfDataStructureChartOption = {};
 function rdfDataStructuresFill() {
@@ -2202,11 +2420,13 @@ function rdfDataStructuresFill() {
         var graphSet = new Set();
         json.results.bindings.forEach((jsonItem, i) => {
             var endpoint = jsonItem.endpointUrl.value;
-            var rdfDataStructureMeasure = Number.parseFloat(jsonItem.measure.value*100);
-            var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+            if( ! blacklistedEndpointList.includes(endpoint)) {
+                var rdfDataStructureMeasure = Number.parseFloat(jsonItem.measure.value*100);
+                var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
 
-            graphSet.add(graph);
-            rdfDataStructureData.push({graph:graph, endpoint:endpoint, measure:rdfDataStructureMeasure})
+                graphSet.add(graph);
+                rdfDataStructureData.push({graph:graph, endpoint:endpoint, measure:rdfDataStructureMeasure})
+            }
         });
 
         var endpointDataSerieMap = new Map();
@@ -2276,10 +2496,11 @@ function showRDFDataStructuresContent() {
     unCollapseHtml("rdfDataStructureMeasureRow");
 }
 function redrawRDFDataStructuresChart() {
+    $('#rdfDataStructuresScatter').width(mainContentColWidth*.8);
     rdfDataStructureChart.setOption(rdfDataStructureChartOption, true);
     rdfDataStructureChart.resize();
 }
-setButtonAsTableCollapse('rdfDataStructuresDetails', 'rdfDataStructuresTable');
+setButtonAsToggleCollapse('rdfDataStructuresDetails', 'rdfDataStructuresTable');
 
 var readableLabelChartOption = {};
 function readableLabelsFill() {
@@ -2298,11 +2519,13 @@ function readableLabelsFill() {
         var graphSet = new Set();
         json.results.bindings.forEach((jsonItem, i) => {
             var endpoint = jsonItem.endpointUrl.value;
-            var readableLabelMeasure = Number.parseFloat(jsonItem.measure.value*100);
-            var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+            if( ! blacklistedEndpointList.includes(endpoint)) {
+                var readableLabelMeasure = Number.parseFloat(jsonItem.measure.value*100);
+                var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
 
-            graphSet.add(graph);
-            readableLabelData.push({graph:graph, endpoint:endpoint, measure:readableLabelMeasure})
+                graphSet.add(graph);
+                readableLabelData.push({graph:graph, endpoint:endpoint, measure:readableLabelMeasure})
+            }
         });
 
         var endpointDataSerieMap = new Map();
@@ -2372,7 +2595,126 @@ function showReadableLabelsContent() {
     unCollapseHtml('readableLabelsMeasureRow');
 }
 function redrawReadableLabelsChart() {
+    $('#readableLabelsScatter').width(mainContentColWidth*.8);
     readableLabelChart.setOption(readableLabelChartOption, true);
     readableLabelChart.resize();
 }
-setButtonAsTableCollapse('readableLabelsDetails', 'readableLabelsTable');
+setButtonAsToggleCollapse('readableLabelsDetails', 'readableLabelsTable');
+
+
+var blankNodeChartOption = {};
+function blankNodesFill() {
+    var blankNodesMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+            "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+            "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . " +
+            "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+            "}" +
+            "  VALUES ?g { "+ graphValuesURIList +" } } GROUP BY ?g ?endpointUrl ?measure ";
+
+    sparqlQueryJSON(blankNodesMeasureQuery, json => {
+        var blankNodeData = []
+        var graphSet = new Set();
+        json.results.bindings.forEach((jsonItem, i) => {
+            var endpoint = jsonItem.endpointUrl.value;
+            if( ! blacklistedEndpointList.includes(endpoint)) {
+                var blankNodeMeasure = Number.parseFloat(jsonItem.measure.value*100);
+                var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+
+                graphSet.add(graph);
+                blankNodeData.push({graph:graph, endpoint:endpoint, measure:blankNodeMeasure})
+            }
+        });
+
+        var endpointDataSerieMap = new Map();
+        blankNodeData.forEach((blankNodeItem, i) => {
+            if(endpointDataSerieMap.get(blankNodeItem.endpoint) == undefined) {
+                endpointDataSerieMap.set(blankNodeItem.endpoint, []);
+            }
+            endpointDataSerieMap.get(blankNodeItem.endpoint).push([blankNodeItem.graph, precise(blankNodeItem.measure, 3)]);
+        });
+
+        if(endpointDataSerieMap.size > 0) {
+            showblankNodesContent();
+
+            // Chart
+            var blankNodesSeries = [];
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var chartSerie = {
+                    name:endpoint,
+                    label:'show',
+                    symbolSize: 5,
+                    data:serieData,
+                    type: 'line'
+                };
+
+                blankNodesSeries.push(chartSerie);
+            });
+
+            blankNodeChartOption = getCategoryScatterOption("Usage of blank nodes", [...graphSet].sort((a,b)=>a.localeCompare(b)), blankNodesSeries);
+            blankNodeChart.setOption(blankNodeChartOption, true);
+
+            // Average measure
+            var blankNodeMeasureSum = blankNodeData.map(a => a.measure).reduce((previous, current) => current + previous);
+            var blankNodesAverageMeasure = blankNodeMeasureSum / blankNodeData.length;
+            $('#blankNodesMeasure').text(precise(blankNodesAverageMeasure, 3)+"%");
+
+            // Measire Details
+            var blankNodesDetailTableBody = $('#blankNodesTableBody');
+            endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                var endpointRow = $(document.createElement('tr'));
+
+                var endpointCell = $(document.createElement('td'));
+                endpointCell.text(endpoint);
+                var measureCell = $(document.createElement('td'));
+                var endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+                var measureAverage = endpointMeasureSum / serieData.length;
+                measureCell.text(precise(measureAverage, 3) + "%");
+
+                endpointRow.append(endpointCell);
+                endpointRow.append(measureCell);
+
+                blankNodesDetailTableBody.append(endpointRow);
+            });
+        } else {
+            hideblankNodesContent();
+        }
+
+    });
+}
+function hideblankNodesContent() {
+    blankNodeChart.setOption({series:[]}, true);
+    $('#blankNodeMeasure').empty();
+    collapseHtml('blankNodesMeasureRow');
+    collapseHtml('blankNodesScatter');
+}
+function showblankNodesContent() {
+    unCollapseHtml('blankNodesScatter');
+    unCollapseHtml('blankNodesMeasureRow');
+}
+function redrawblankNodesChart() {
+    $('#blankNodesScatter').width(mainContentColWidth*.8);
+    blankNodeChart.setOption(blankNodeChartOption, true);
+    blankNodeChart.resize();
+}
+setButtonAsToggleCollapse('blankNodesDetails', 'blankNodesTable');
+
+/*
+Vocabulaires en commun
+
+PREFIX void: <http://rdfs.org/ns/void#>
+SELECT DISTINCT ?endpointUrl1 ?endpointUrl2 ?vocabulary1 {
+    ?metadata1 <http://ns.inria.fr/kg/index#curated> ?endpoint1 , ?base1 .
+    ?metadata2 <http://ns.inria.fr/kg/index#curated> ?endpoint2 , ?base2 .
+    ?base1 void:vocabulary ?vocabulary1 .
+    ?base2 void:vocabulary ?vocabulary2 .
+    { ?endpoint1 <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl1 . }
+    UNION { ?endpoint1 <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl1 . }
+    { ?endpoint2 <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl2 . }
+    UNION { ?endpoint2 <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl2 . }
+  FILTER(?vocabulary1 = ?vocabulary2)
+  FILTER(?endpointUrl1 != ?endpointUrl2)
+  } GROUP BY ?vocabulary1 ?endpointUrl1 ?endpointUrl2
+*/

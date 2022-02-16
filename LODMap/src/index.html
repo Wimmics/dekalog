@@ -12,132 +12,177 @@
     <title>KartoGraphI: Knowledge graph cartography and index</title>
 </head>
 <body>
-    <div class="row justify-content-center">
+    <div class="row justify-content-center" id="rootContainer">
         <div class="col-1"></div>
-        <div class="col-10 justify-content-center">
-            <div class="row"><h1>KartoGraphI: Knowledge graph cartography and index</h1><br/><h3>Visualisation of the results obtained by <a href="http://prod-dekalog.inria.fr/sparql">IndeGx</a><h3></div>
-                <div id="kgSelectionDiv" class='row border border-dark rounded-top justify-content-center'>
+        <div class="col-10 justify-content-center" id='mainContentCol'>
+            <div class="container">
+                <h1 class='text-center'>KartoGraphI: Knowledge graph cartography and index</h1>
+                <br/>
+                <h3 class='text-center'>Visualisation of the results obtained by <a href="http://prod-dekalog.inria.fr/sparql">IndeGx</a><h3>
+            </div>
+            <div id="kgSelectionDiv" class='row border border-dark rounded-top justify-content-center'>
+                <div class='col-12'>
                     <h4>Selection of the run sets, each run set concerns a set of endpoints targeted by IndeGx over several runs:</h4>
                     <select id="endpoint-list-select" class="form-select" aria-label="Endpoint list selection">
                     </select>
-                </div>
-                <div class="row border border-dark  justify-content-center">
-                    <div class="col-12 gy-5 justify-content-center">
-                        <div class="container justify-content-center"><h4> Geolocation of the indexed endpoints</h4></div>
-                        <div class="container justify-content-center" id="map"></div>
+                    <div class="row">
+                        <button id="whiteListShowButton" type="button" class="btn btn-link">Included endpoints</button>
                     </div>
+                    <table class="table table-responsive table-hover collapse" id="whiteListTable">
+                        <tbody id="whiteListTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row border border-dark">
+                <ul class="nav nav-tabs" id="tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="geoloc-tab" data-bs-toggle="tab" data-bs-target="#geoloc" type="button" role="tab" aria-controls="geoloc" aria-selected="false">Geolocation of the endpoints</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link " id="vocabRelatedContent-tab" data-bs-toggle="tab" data-bs-target="#vocabRelatedContent" type="button" role="tab" aria-controls="vocabRelatedContent" aria-selected="false">Content representation as graphs</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link " id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="false">Datasets descriptions</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link " id="population-tab" data-bs-toggle="tab" data-bs-target="#population" type="button" role="tab" aria-controls="population" aria-selected="false">Datasets populations</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link " id="sparql-tab" data-bs-toggle="tab" data-bs-target="#sparql" type="button" role="tab" aria-controls="sparql" aria-selected="false">SPARQL coverage of the endpoints</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link " id="quality-tab" data-bs-toggle="tab" data-bs-target="#quality" type="button" role="tab" aria-controls="quality" aria-selected="false">Data quality</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link " id="runtime-tab" data-bs-toggle="tab" data-bs-target="#runtime" type="button" role="tab" aria-controls="runtime" aria-selected="false">Framework runtime</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content" id="tabContent">
+            <div class="row border border-dark  justify-content-center tab-pane fade" id="geoloc" role="tabpanel" aria-labelledby="geoloc-tab">
+                <div class="col-12 gy-5 justify-content-center">
+                    <div class="container justify-content-center"><h4 class='text-center'> Geolocation of the indexed endpoints</h4></div>
+                    <div class="container justify-content-center" id="map"></div>
                     <span> <img src="./img/marker-icon-green.png">: Marker used for endpoints.</span><br/>
                     <span> <img src="./img/marker-icon-orange.png">: Marker used for endpoints that are using a timezone different to the one corresponding to their IP.</span>
-
-                    <div class="col-12 justify-content-center">
-                        <div class="row justify-content-center">
-                            <button id="endpointGeolocDetails" type="button" class="btn btn-link">Details</button>
-                        </div>
-                        <div class="row justify-content-center">
-                            <table id="endpointGeolocTable" class="table table-responsive table-hover collapse">
-                                <thead>
-                                    <tr>
-                                        <th id="endpointGeolocTableEndpointHeader" scope="col">Endpoint</th>
-                                        <th id="endpointGeolocTableLatHeader" scope="col">Latitude</th>
-                                        <th id="endpointGeolocTableLonHeader" scope="col">Longitude</th>
-                                        <th id="endpointGeolocTableCountryHeader" scope="col">Country</th>
-                                        <th id="endpointGeolocTableRegionHeader" scope="col">Region</th>
-                                        <th id="endpointGeolocTableCityHeader" scope="col">City</th>
-                                        <th id="endpointGeolocTableOrgHeader" scope="col">Org</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="endpointGeolocTableBody">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
-                <div class="row border border-dark justify-content-center" id="vocabRelatedContent">
-                    <div class="col-12 justify-content-center gy-5">
-                        <div class="row justify-content-center"><h4>Graphs based on the vocabularies* used in the endpoints</h4></div>
-                        <div class="row justify-content-center" id="vocabs"></div>
-                        <div class="row justify-content-center" id="endpointKeywords"></div>
-                        <div class="row">
-                            <button id="endpointKeywordsDetails" type="button" class="btn btn-link">Details</button>
-                        </div>
-                        <table id="endpointKeywordsTable" class="table table-responsive table-hover collapse">
+                <div class="col-12 justify-content-center">
+                    <div class="row justify-content-center">
+                        <button id="endpointGeolocDetails" type="button" class="btn btn-link">Details</button>
+                    </div>
+                    <div class="row justify-content-center">
+                        <table id="endpointGeolocTable" class="table table-responsive table-hover collapse">
                             <thead>
                                 <tr>
-                                    <th>
-                                        Query
-                                    </th>
-                                    <th>
-                                        SELECT DISTINCT ?endpointUrl ?vocabulary { SERVICE <http://prod-dekalog.inria.fr/sparql> { GRAPH ?g { { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } ?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?endpoint . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary . FILTER(isIri(?vocabulary)) } } SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> { GRAPH <https://lov.linkeddata.es/dataset/lov> { ?vocabURI a <http://purl.org/vocommons/voaf#Vocabulary> . } } } GROUP BY ?endpointUrl ?vocabulary
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th id="endpointKeywordsTableEndpointHeader" scope="col">Endpoint</th>
-                                    <th id="endpointKeywordsTableKeywordHeader" scope="col">Keywords</th>
+                                    <th id="endpointGeolocTableEndpointHeader" scope="col">Endpoint</th>
+                                    <th id="endpointGeolocTableLatHeader" scope="col">Latitude</th>
+                                    <th id="endpointGeolocTableLonHeader" scope="col">Longitude</th>
+                                    <th id="endpointGeolocTableCountryHeader" scope="col">Country</th>
+                                    <th id="endpointGeolocTableRegionHeader" scope="col">Region</th>
+                                    <th id="endpointGeolocTableCityHeader" scope="col">City</th>
+                                    <th id="endpointGeolocTableOrgHeader" scope="col">Org</th>
                                 </tr>
                             </thead>
-                            <tbody id="endpointKeywordsTableBody">
-                            </tbody>
-                        </table>
-                        <span> *: Only the vocabularies listed in <a href="https://lov.linkeddata.es/dataset/lov">Linked Open Vocabularies</a> are shown.</span>
-                    </div>
-                </div>
-                <div class="row border border-dark justify-content-center">
-                    <div class="col-12 justify-content-center gy-5">
-                        <h4>Estimation of the SPARQL features covered by the endpoints</h4>
-                        <div class="row">
-                            <div class="col-12 justify-content-center" id="SPARQLCoverageHisto"><h5>SPARQL</h5></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 justify-content-center" id="histo1"><h5>SPARQL 1.0</h5></div>
-                            <div class="col-6 justify-content-center" id="histo2"><h5>SPARQL 1.1</h5></div>
-                        </div>
-                        <div class="row">
-                            <button id="tableSPARQLFeaturesDetails" type="button" class="btn btn-link">Details</button>
-                        </div>
-                        <table id="SPARQLFeaturesTable" class="table table-responsive table-hover collapse">
-                            <thead>
-                                <tr>
-                                    <th id="SPARQLFeaturesTableEndpointHeader" scope="col">Endpoint</th>
-                                    <th id="SPARQL10FeaturesTableRuleHeader" scope="col">Percentage of SPARQL 1.0 features</th>
-                                    <th id="SPARQL11FeaturesTableRuleHeader" scope="col">Percentage of SPARQL 1.1 features</th>
-                                </tr>
-                            </thead>
-                            <tbody id="SPARQLFeaturesTableBody">
+                            <tbody id="endpointGeolocTableBody">
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="row border border-dark justify-content-center">
-                    <div class="col-12 justify-content-center gy-5">
-                        <h4>Datasets populations</h4>
-                        <div class="row">
-                            <div class="container justify-content-center" id="tripleScatter"><h5>Size of datasets through time</h5></div>
-                            <div class="container justify-content-center" id="classScatter"><h5>Number of classes through time</h5></div>
-                            <div class="container justify-content-center" id="propertyScatter"><h5>Number of properties through time</h5></div>
-                        </div>
+            </div>
+            <div class="row border border-dark justify-content-center tab-pane fade" id="vocabRelatedContent" role="tabpanel" aria-labelledby="vocabRelatedContent-tab">
+                <div class="col-12 justify-content-center gy-5">
+                    <div class="row justify-content-center"><h4 class='text-center'>Graphs based on the vocabularies used in the endpoints</h4></div>
+                    <div class="row justify-content-center" id="vocabs"></div>
+                    <div class="row justify-content-center" id="rawVocabs"></div>
+                    <div class="row justify-content-center" id="endpointKeywords"></div>
+                    <div class="row">
+                        <button id="endpointKeywordsDetails" type="button" class="btn btn-link">Details</button>
                     </div>
-                    <div class="col-12 justify-content-center">
-                        <div class="row">
-                            <div class="container justify-content-center" id="testCategoryScatter"><h5>Proportion of tests passed by categories</h5></div>
-                        </div>
-                        <div class="row">
-                            <button id="tableRuleDetails" type="button" class="btn btn-link">Details</button>
-                        </div>
-                        <table id="rulesTable" class="table table-responsive table-hover collapse">
-                            <thead>
-                                <tr>
-                                    <th id="rulesTableEndpointHeader" scope="col">Endpoint</th>
-                                    <th id="rulesTableRuleHeader" scope="col">Test passed</th>
-                                </tr>
-                            </thead>
-                            <tbody id="rulesTableBody">
-                            </tbody>
-                        </table>
+                    <table id="endpointKeywordsTable" class="table table-responsive table-hover collapse">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Query 1
+                                </th>
+                                <th id="endpointVocabularyQueryCell">
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Query 2
+                                </th>
+                                <th id="endpointKeywordQueryCell">
+                                </th>
+                            </tr>
+                            <tr>
+                                <th id="endpointKeywordsTableEndpointHeader" scope="col">Endpoint</th>
+                                <th id="endpointKeywordsTableKeywordHeader" scope="col">Keywords</th>
+                            </tr>
+                        </thead>
+                        <tbody id="endpointKeywordsTableBody">
+                        </tbody>
+                    </table>
+                    <span> *: Only the vocabularies listed in <a href="https://lov.linkeddata.es/dataset/lov">Linked Open Vocabularies</a> are shown.</span>
+                </div>
+            </div>
+            <div class="row border border-dark justify-content-center tab-pane fade" id="sparql" role="tabpanel" aria-labelledby="sparql-tab">
+                <div class="col-12 justify-content-center gy-5">
+                    <h4 class='text-center'>Estimation of the SPARQL features covered by the endpoints</h4>
+                    <div class="row">
+                        <div class="col-12 justify-content-center" id="SPARQLCoverageHisto"><h5>SPARQL</h5></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 justify-content-center" id="SPARQL10histo"><h5>SPARQL 1.0</h5></div>
+                        <div class="col-6 justify-content-center" id="SPARQL11histo"><h5>SPARQL 1.1</h5></div>
+                    </div>
+                    <div class="row">
+                        <button id="tableSPARQLFeaturesDetails" type="button" class="btn btn-link">Details</button>
+                    </div>
+                    <table id="SPARQLFeaturesTable" class="table table-responsive table-hover collapse">
+                        <thead>
+                            <tr>
+                                <th id="SPARQLFeaturesTableEndpointHeader" scope="col">Endpoint</th>
+                                <th id="SPARQL10FeaturesTableRuleHeader" scope="col">Percentage of SPARQL 1.0 features</th>
+                                <th id="SPARQL11FeaturesTableRuleHeader" scope="col">Percentage of SPARQL 1.1 features</th>
+                            </tr>
+                        </thead>
+                        <tbody id="SPARQLFeaturesTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row border border-dark justify-content-center tab-pane fade" id="population" role="tabpanel" aria-labelledby="population-tab">
+                <div class="col-12 justify-content-center gy-5">
+                    <h4 class='text-center'>Datasets populations</h4>
+                    <div class="row">
+                        <div class="container justify-content-center" id="tripleScatter"><h5>Size of datasets through time</h5></div>
+                        <div class="container justify-content-center" id="classScatter"><h5>Number of classes through time</h5></div>
+                        <div class="container justify-content-center" id="propertyScatter"><h5>Number of properties through time</h5></div>
                     </div>
                 </div>
-                <div class="row border border-dark justify-content-center">
+                <div class="col-12 justify-content-center">
+                    <div class="row">
+                        <div class="container justify-content-center" id="testCategoryScatter"><h5>Proportion of tests passed by categories</h5></div>
+                    </div>
+                    <div class="row">
+                        <button id="tableRuleDetails" type="button" class="btn btn-link">Details</button>
+                    </div>
+                    <table id="rulesTable" class="table table-responsive table-hover collapse">
+                        <thead>
+                            <tr>
+                                <th id="rulesTableEndpointHeader" scope="col">Endpoint</th>
+                                <th id="rulesTableRuleHeader" scope="col">Test passed</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rulesTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                <div class="row border border-dark justify-content-center tab-pane fade" id="description" role="tabpanel" aria-labelledby="description-tab">
                     <div class="col-12 justify-content-center gy-5">
-                        <h4>Datasets Descriptions</h4>
+                        <h4 class='text-center'>Datasets Descriptions</h4>
                         <div class="row" id="datasetdescriptionRadar">
                         </div>
                         <div class="row">
@@ -247,18 +292,18 @@
                             </div>
                     </div>
                 </div>
-                <div class="row border border-dark justify-content-center">
+                <div class="row border border-dark justify-content-center tab-pane fade" id="runtime" role="tabpanel" aria-labelledby="runtime-tab">
                     <div class="col-12 justify-content-center gy-5">
-                        <h4>Runtimes of the dataset description generation</h4>
+                        <h4 class='text-center'>Runtimes of the dataset description generation</h4>
                         <div class="row">
                             <div class="container justify-content-center" id="totalRuntimeScatter"><h5>Total runtime of the framework for each run</h5></div>
                             <div class="container justify-content-center" id="averageRuntimeScatter"><h5>Average runtime of the framework per dataset in each run</h5></div>
                         </div>
                     </div>
                 </div>
-                <div class="row border border-dark justify-content-center">
+                <div class="row border border-dark justify-content-center tab-pane fade" id="quality" role="tabpanel" aria-labelledby="quality-tab">
                     <div class="col-12 gy-5">
-                        <h4>Quality measures</h4>
+                        <h4 class='text-center'>Quality measures</h4>
                         <table class="table table-responsive">
                             <thead>
                                 <tr>
@@ -344,11 +389,32 @@
                                         </table>
                                     </td>
                                 </tr>
+                                <tr id="blankNodesMeasureRow">
+                                    <th scope="row" title="usage of blank node.">Blank node usage</th> <td id="blankNodesMeasure"></td><td><button id="blankNodesDetails" type="button" class="btn btn-link">Details</button></td>
+                                </tr>
+                                <tr>
+                                    <td id="blankNodesScatter" colspan="3"></td>
+                                </tr>
+                                <tr>
+                                    <td class="collapse" id="blankNodesTable" colspan="3">
+                                        <table class="table table-responsive table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th id="blankNodesEndpointHeader" scope="col">Endpoint</th>
+                                                    <th id="blankNodesMeasureHeader" scope="col">Score</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="blankNodesTableBody">
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
                             </tr>
                         </tbody>
                     </table>
                     <span>*: This measure can only be computed for the endpoints that have returned their list of used vocabularies.</span>
                 </div>
+            </div>
                 <div class="row border border-dark  rounded-bottom"><span>This website was created as part of the <a href="https://dekalog.univ-nantes.fr/">ANR project DeKaloG</a>. The code of this site and of the application that generated the RDF data it exploits, are hosted on <a href="https://github.com/Wimmics/dekalog">Github</a></span></div>
             </div>
         </div>

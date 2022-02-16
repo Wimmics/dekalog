@@ -25,8 +25,7 @@
                 UNION { ?dataset dcterms:creator ?o }
                 { ?dataset dcterms:license ?o }
                 UNION {?dataset dcterms:conformsTo ?o }
-                { ?dataset dcterms:license ?o }
-                UNION { ?dataset dcterms:modified ?o }
+                { ?dataset dcterms:modified ?o }
                 UNION { ?dataset prov:wasGeneratedAtTime ?o }
                 UNION { ?dataset dcterms:issued ?o }
                 UNION { ?dataset dcterms:source ?o }
