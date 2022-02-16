@@ -13,6 +13,8 @@
             <multipleLanguages.ttl>
             <basicProvenance.ttl>
             <uriPattern.ttl>
+            <coolUri.ttl>
+            <indicatesUsedVocabularies.ttl>
         ) .
 
 <basicFederatedQuery.ttl> a mf:ManifestEntry ;
@@ -501,7 +503,6 @@
         <../meta/modifiedUpdate.ttl>
     ) .
 
-
 <uriPattern.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
@@ -541,6 +542,128 @@
                             dqv:value "false"^^xsd:boolean
                         ] .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+<coolUri.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl#activity> ;
+                    dqv:hasQualityMeasurement [
+                            a dqv:QualityMeasurement ;
+                            rdfs:label "The endpoint URL is a 'Cool URI'"@en ;
+                            dqv:computedOn $endpointDescription ;
+                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl> ;
+                            dqv:value "true"^^xsd:boolean
+                        ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) ;
+    kgi:onFailure (
+        [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl#activity> ;
+                    dqv:hasQualityMeasurement [
+                            a dqv:QualityMeasurement ;
+                            rdfs:label "The endpoint URL is a 'Cool URI'"@en ;
+                            dqv:computedOn $endpointDescription ;
+                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl> ;
+                            dqv:value "false"^^xsd:boolean
+                        ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+<indicatesUsedVocabularies.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+            CONSTRUCT {
+                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl#activity> ;
+                    dqv:hasQualityMeasurement [
+                            a dqv:QualityMeasurement ;
+                            rdfs:label "Proportion of vocabularies used among the list of vocabularies used"@en ;
+                            dqv:computedOn $endpointDescription ;
+                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl> ;
+                            dqv:value ?measure
+                        ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            } WHERE {
+            {
+                SELECT (COUNT(DISTINCT ?vocabUri) AS ?countUsedVocab){
+                    {
+                        {
+                            SELECT DISTINCT ?elemClass {
+                                ?sClass a ?elemClass .
+                            }
+                        }
+                        BIND(IRI(REPLACE( str(?elemClass), "(#|/)[^#/]*$", "$1")) AS ?nsClass) .
+                        BIND(URI(?nsClass) as ?vocabUri)
+                    }
+                    UNION {
+                        {
+                            SELECT DISTINCT ?elemProp {
+                                ?sProp ?elemProp ?oProp.
+                            }
+                        }
+                        BIND(IRI(REPLACE( str(?elemProp), "(#|/)[^#/]*$", "$1")) AS ?nsProp) .
+                        BIND(URI(?nsProp) as ?vocabUri)
+                    }
+                }
+            }
+                {
+                    SELECT (count(DISTINCT ?vocabulary) AS ?countAssertedVocab) {
+                        ?desc void:vocabulary ?vocabulary .
+                    }
+                }
+                BIND((?countAssertedVocab/?countUsedVocab) AS ?measure)
+            }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) ;
+    kgi:onFailure (
+        [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl#activity> ;
+                    dqv:hasQualityMeasurement [
+                            a dqv:QualityMeasurement ;
+                            rdfs:label "Proportion of vocabularies used among the list of vocabularies used"@en ;
+                            dqv:computedOn $endpointDescription ;
+                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl> ;
+                            dqv:value 0
+                        ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
