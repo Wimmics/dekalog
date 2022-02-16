@@ -12,6 +12,7 @@
             <readableLabels.ttl>
             <multipleLanguages.ttl>
             <basicProvenance.ttl>
+            <uriPattern.ttl>
         ) .
 
 <basicFederatedQuery.ttl> a mf:ManifestEntry ;
@@ -494,6 +495,53 @@
                     }
                 }
                 BIND( (?countLitsWithLang/?countLits) AS ?measure)
+            }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+
+<uriPattern.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl#activity> ;
+                    dqv:hasQualityMeasurement [
+                            a dqv:QualityMeasurement ;
+                            rdfs:label "Presence of the URI pattern used for the resources instanced by the dataset"@en ;
+                            dqv:computedOn $endpointDescription ;
+                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl> ;
+                            dqv:value "true"^^xsd:boolean
+                        ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) ;
+    kgi:onFailure (
+        [ mf:action """PREFIX dqv: <http://www.w3.org/ns/dqv#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            INSERT DATA {
+                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl#activity> ;
+                    dqv:hasQualityMeasurement [
+                            a dqv:QualityMeasurement ;
+                            rdfs:label "Presence of the URI pattern used for the resources instanced by the dataset"@en ;
+                            dqv:computedOn $endpointDescription ;
+                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl> ;
+                            dqv:value "false"^^xsd:boolean
+                        ] .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             """
         ]
