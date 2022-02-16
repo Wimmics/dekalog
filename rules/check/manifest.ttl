@@ -10,6 +10,8 @@
             <RDFDataStructures.ttl>
             <blankNodeUsage.ttl>
             <readableLabels.ttl>
+            <multipleLanguages.ttl>
+            <basicProvenance.ttl>
         ) .
 
 <basicFederatedQuery.ttl> a mf:ManifestEntry ;
@@ -181,9 +183,9 @@
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             } WHERE {
                 {
-                    SELECT (COUNT( DISTINCT ?dataset) AS ?countDataset) {
-                        { ?dataset a void:Dataset . }
-                        UNION { ?dataset a dcat:Dataset }
+                    SELECT (COUNT( DISTINCT ?datasetRaw) AS ?countDataset) {
+                        { ?datasetRaw a void:Dataset . }
+                        UNION { ?datasetRaw a dcat:Dataset }
                     }
                 }
                 {
@@ -237,19 +239,19 @@
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 } WHERE {
                     {
-                        SELECT (COUNT(?uris) AS ?countShort) {
-                            { ?uris ?p ?o } UNION { ?s ?p ?uris }
-                            FILTER(isIRI(?uris))
-                            FILTER( ?p != rdf:type )
-                            FILTER(! CONTAINS(str(?uris), "?") )
-                            BIND(strlen(str(?uris)) AS ?uriLen)
+                        SELECT (COUNT(?urisShort) AS ?countShort) {
+                            { ?urisShort ?pShort ?oShort } UNION { ?sShort ?pShort ?urisShort }
+                            FILTER(isIRI(?urisShort))
+                            FILTER( ?pShort != rdf:type )
+                            FILTER(! CONTAINS(str(?urisShort), "?") )
+                            BIND(strlen(str(?urisShort)) AS ?uriLen)
                             FILTER(?uriLen < 80)
                         }
                     }
                     {
                         SELECT (COUNT(?uris) AS ?countNormal) {
-                            { ?uris ?p ?o } UNION { ?s ?p ?uris }
-                            FILTER( ?p != rdf:type )
+                            { ?uris ?pNormal ?oNormal } UNION { ?sNormal ?pNormal ?uris }
+                            FILTER( ?pNormal != rdf:type )
                             FILTER(isIRI(?uris))
                         }
                     }
@@ -284,12 +286,12 @@
                     {
                         SELECT (COUNT(DISTINCT *) AS ?countStruct) {
                             {
-                                ?s ?p ?o .
-                                VALUES ?p { rdf:type rdf:subject rdf:predicate rdf:object rdfs:member rdf:first rdf:rest }
-                                VALUES ?o { rdf:Statement rdf:Alt rdf:Bag rdf:Seq rdf:Container rdf:List }
+                                ?sStruct ?pStruct ?oStruct .
+                                VALUES ?pStruct { rdf:type rdf:subject rdf:predicate rdf:object rdfs:member rdf:first rdf:rest }
+                                VALUES ?oStruct { rdf:Statement rdf:Alt rdf:Bag rdf:Seq rdf:Container rdf:List }
                             } UNION {
-                                ?s ?p ?o .
-                                FILTER(CONTAINS(str(?p), "http://www.w3.org/1999/02/22-rdf-syntax-ns#_"))
+                                ?sStruct ?pStruct ?oStruct .
+                                FILTER(CONTAINS(str(?pStruct), "http://www.w3.org/1999/02/22-rdf-syntax-ns#_"))
                             }
                         }
                     }
@@ -375,9 +377,9 @@
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             } WHERE {
                 {
-                    SELECT (COUNT(DISTINCT ?r) AS ?countIri) {
-                        { ?r ?p ?o } UNION { ?s ?p ?r }
-                        FILTER(isIRI(?r))
+                    SELECT (COUNT(DISTINCT ?rIri) AS ?countIri) {
+                        { ?rIri ?pIri ?oIri } UNION { ?sIri ?pIri ?rIri }
+                        FILTER(isIRI(?rIri))
                     }
                 }
                 {
@@ -421,8 +423,8 @@
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             } WHERE {
                 {
-                    SELECT (COUNT(DISTINCT ?r) AS ?countResources) {
-                         ?r ?p ?o .
+                    SELECT (COUNT(DISTINCT ?rRes) AS ?countResources) {
+                         ?rRes ?pRes ?oRes .
                     }
                 }
                 {
@@ -452,7 +454,6 @@
             """
         ]
         <../meta/modifiedUpdate.ttl>
-        ]
     ) .
 
 <multipleLanguages.ttl> a mf:ManifestEntry ;
@@ -497,5 +498,4 @@
             """
         ]
         <../meta/modifiedUpdate.ttl>
-        ]
     ) .
