@@ -1,15 +1,27 @@
 import * as echarts from "./echarts.js";
 import $ from 'jquery';
 import 'leaflet';
-var dayjs = require('dayjs')
-var customParseFormat = require('dayjs/plugin/customParseFormat')
-var duration = require('dayjs/plugin/duration');
-var relativeTime = require('dayjs/plugin/relativeTime')
+const dayjs = require('dayjs')
+const customParseFormat = require('dayjs/plugin/customParseFormat')
+const duration = require('dayjs/plugin/duration');
+const relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 dayjs.extend(customParseFormat)
 dayjs.extend(duration)
 import {greenIcon, orangeIcon} from "./leaflet-color-markers.js";
 import {endpointIpMap, timezoneMap, graphLists} from "./data.js";
+
+class KartoChart {
+    constructor(config = {chartObject, option, fillFunction: ()=> {}, redrawFunction: ()=> {}, clearFunction: ()=> {}, hideFunction: ()=> {}, showFunction: () => {}}) {
+        this.chartObject = config.chartObject;
+        this.option = config.option;
+        this.fill = config.fillFunction;
+        this.redraw = config.redrawFunction;
+        this.clear = config.clearFunction;
+        this.hide = config.hideFunction;
+        this.show = config.showFunction;
+    }
+};
 
 // Setup tab menu
 var geolocTabButton = $('#geoloc-tab')
@@ -40,18 +52,6 @@ var qualityTabButton = $('#quality-tab')
 qualityTabButton.on('click', function (event) {
     redrawCharts()
 })
-
-class KartoChart {
-    constructor(config = {chartObject, option, fillFunction, redrawFunction, clearFunction, hideFunction: ()=> {}, showFunction: () => {}}) {
-        this.chartObject = config.chartObject;
-        this.option = config.option;
-        this.fill = config.fillFunction;
-        this.redraw = config.redrawFunction;
-        this.clear = config.clearFunction;
-        this.hide = config.hideFunction;
-        this.show = config.showFunction;
-    }
-};
 
 function sparqlQueryJSON(query, callback, errorCallback) {
     xmlhttpRequestJSON('http://prod-dekalog.inria.fr/sparql?query='+encodeURIComponent(query)+"&format=json", callback, errorCallback);
@@ -172,6 +172,7 @@ function getCategoryScatterOption(title, categories, series) {
         }
     };
 }
+
 function getCategoryScatterDataSeriesFromMap(dataMap) {
     var series = [];
     dataMap.forEach((value, key, map) => {
@@ -187,6 +188,7 @@ function getCategoryScatterDataSeriesFromMap(dataMap) {
     });
     return series;
 }
+
 function setTableHeaderSort(tableBodyId, tableHeadersIds, tableColsSortFunction, tableFillFunction, dataArray) {
     var tableBody = $('#'+tableBodyId);
     tableHeadersIds.forEach((tableheaderId, i) => {
@@ -534,6 +536,7 @@ var endpointMap = new KartoChart({ chartObject: L.map('map').setView([24.5271348
 setButtonAsToggleCollapse('endpointGeolocDetails', 'endpointGeolocTable');
 
 var sparqlCoverCharts = new KartoChart({chartObject:{'sparql10Chart': echarts.init(document.getElementById('SPARQL10histo')), 'sparql11Chart': echarts.init(document.getElementById('SPARQL11histo')), 'sparqlChart': echarts.init(document.getElementById('SPARQLCoverageHisto'))}, 
+        option: {sparql10ChartOption: {}, sparql11ChartOption: {}, sparqlChartOption: {}},
         fillFunction:function() {
 // Create an histogram of the SPARQLES rules passed by endpoint.
     var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) WHERE { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . FILTER(CONTAINS(str(?activity), ?sparqlNorm)) VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } } VALUES ?g { '+ graphValuesURIList +' } } GROUP BY ?endpoint ?sparqlNorm ORDER BY DESC( ?sparqlNorm)';
@@ -797,7 +800,6 @@ var sparqlCoverCharts = new KartoChart({chartObject:{'sparql10Chart': echarts.in
     this.chartObject.sparql11Chart.setOption({series:[]}, true);
     this.chartObject.sparqlChart.setOption({series:[]}, true);
 }});
-sparqlCoverCharts.option = {sparql10ChartOption: {}, sparql11ChartOption: {}, sparqlChartOption: {}};
 setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
 
 
