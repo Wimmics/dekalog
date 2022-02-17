@@ -25,34 +25,34 @@ class KartoChart {
 
 // Setup tab menu
 var geolocTabButton = $('#geoloc-tab')
+var vocabRelatedContentTabButton = $('#vocabRelatedContent-tab')
+var sparqlTabButton = $('#sparql-tab')
+var populationTabButton = $('#population-tab')
+var descriptionTabButton = $('#description-tab')
+var runtimeTabButton = $('#runtime-tab')
+var qualityTabButton = $('#quality-tab')
+var navTabs = [geolocTabButton, vocabRelatedContentTabButton, sparqlTabButton, populationTabButton, descriptionTabButton, runtimeTabButton, qualityTabButton];
 geolocTabButton.on('click', function (event) {
     redrawCharts()
 })
-var vocabRelatedContentTabButton = $('#vocabRelatedContent-tab')
 vocabRelatedContentTabButton.on('click', function (event) {
     redrawCharts()
 })
-var sparqlTabButton = $('#sparql-tab')
 sparqlTabButton.on('click', function (event) {
     redrawCharts()
 })
-var populationTabButton = $('#population-tab')
 populationTabButton.on('click', function (event) {
     redrawCharts()
 })
-var descriptionTabButton = $('#description-tab')
 descriptionTabButton.on('click', function (event) {
     redrawCharts()
 })
-var runtimeTabButton = $('#runtime-tab')
 runtimeTabButton.on('click', function (event) {
     redrawCharts()
 })
-var qualityTabButton = $('#quality-tab')
 qualityTabButton.on('click', function (event) {
     redrawCharts()
 })
-
 function sparqlQueryJSON(query, callback, errorCallback) {
     xmlhttpRequestJSON('http://prod-dekalog.inria.fr/sparql?query=' + encodeURIComponent(query) + "&format=json", callback, errorCallback);
 };
@@ -834,9 +834,7 @@ var vocabRelatedChart = new KartoChart({
             " } " +
             "GROUP BY ?endpointUrl ?vocabulary ";
 
-        console.log("Contact IndeGx START");
         sparqlQueryJSON(sparqlesVocabularies, json => {
-            console.log("Contact IndeGx Done");
 
             var endpointSet = new Set();
             var vocabSet = new Set();
@@ -859,7 +857,6 @@ var vocabRelatedChart = new KartoChart({
             });
 
             function generateRawVocabContent(chart) {
-                console.log("generateRawVocabContent");
                 var jsonRawVocabNodes = new Set();
                 var jsonRawVocabLinks = new Set();
 
@@ -893,9 +890,7 @@ var vocabRelatedChart = new KartoChart({
 
             // Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
             var knownVocabulariesLOV = new Set();
-            console.log("Contact LOV for vocabularies START");
             xmlhttpRequestJSON("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list", responseLOV => {
-                console.log("Contact LOV for vocabularies DONE");
                 responseLOV.forEach((item, i) => {
                     knownVocabulariesLOV.add(item.uri)
                 });
@@ -904,9 +899,7 @@ var vocabRelatedChart = new KartoChart({
             });
 
             var knownVocabulariesPrefixCC = new Set();
-            console.log("Contact PrefixCC START");
             xmlhttpRequestJSON("http://prefix.cc/context", responsePrefixCC => {
-                console.log("Contact PrefixCC DONE");
                 for (var prefix of Object.keys(responsePrefixCC['@context'])) {
                     knownVocabulariesPrefixCC.add(responsePrefixCC['@context'][prefix])
                 };
@@ -915,7 +908,6 @@ var vocabRelatedChart = new KartoChart({
             });
 
             function generateVocabContent(chart) {
-                console.log("generateVocabContent ")
                 var gatherVocab = new Map();
                 // Filtering according to ontology repositories
                 rawVocabSet.forEach(vocabulariUri => {
@@ -1106,49 +1098,41 @@ var vocabRelatedChart = new KartoChart({
         });
 
         this.hideEndpointVocabularyContent = function () {
-            console.log("hideEndpointVocabularyContent")
             this.hideEndpointRawVocabularyContent();
             this.hideEndpointKnownVocabularyContent();
         }
         this.hideEndpointRawVocabularyContent = function () {
-            console.log("hideEndpointRawVocabularyContent")
             this.chartObject.rawVocabChart.setOption({ series: [] }, true);
             collapseHtml('rawVocabs');
         }
         this.hideEndpointKnownVocabularyContent = function () {
-            console.log("hideEndpointKnownVocabularyContent")
             this.chartObject.vocabChart.setOption({ series: [] }, true);
             collapseHtml('vocabs');
             collapseHtml('knowVocabEndpointMeasureRow');
             collapseHtml('knowVocabEndpointTable');
         }
         this.hideEndpointKeywordContent = function () {
-            console.log("hideEndpointKeywordContent")
             this.chartObject.keywordChart.setOption({ series: [] }, true);
             collapseHtml('endpointKeywords');
             collapseHtml('endpointKeywordsDetails');
             $('#endpointKeywordsTableBody').empty();
         }
         this.showEndpointVocabularyContent = function () {
-            console.log("showEndpointVocabularyContent")
             this.show();
             this.showEndpointKnownVocabularyContent();
             this.showEndpointRawVocabularyContent();
         }
         this.showEndpointRawVocabularyContent = function () {
-            console.log("showEndpointRawVocabularyContent")
             this.show();
             unCollapseHtml('rawVocabs');
         }
         this.showEndpointKnownVocabularyContent = function () {
-            console.log("showEndpointKnownVocabularyContent")
             this.show();
             unCollapseHtml('knowVocabEndpointMeasureRow');
             unCollapseHtml('knowVocabEndpointTable');
             unCollapseHtml('vocabs');
         }
         this.showEndpointKeywordContent = function () {
-            console.log("showEndpointKeywordContent")
             this.show();
             unCollapseHtml('endpointKeywords');
             unCollapseHtml('endpointKeywordsDetails');
@@ -1164,7 +1148,6 @@ var vocabRelatedChart = new KartoChart({
         this.redraw()
     },
     redrawFunction: function () {
-        console.log("redraw")
         $('#vocabs').width(mainContentColWidth);
         $('#rawVocabs').width(mainContentColWidth);
         $('#endpointKeywords').width(mainContentColWidth);
@@ -1182,7 +1165,6 @@ var vocabRelatedChart = new KartoChart({
         $('#endpointKeywordQueryCell').append(codeQuery2Div);
     },
     clearFunction: function () {
-        console.log("clear")
         this.chartObject.vocabChart.setOption({ series: [] }, true);
         this.chartObject.rawVocabChart.setOption({ series: [] }, true);
         this.chartObject.keywordChart.setOption({ series: [] }, true);
@@ -2836,4 +2818,8 @@ $(function () {
         var blackistedEndpointIndexListRaw = urlParams.get(blackListedEndpointParameter);
         blackistedEndpointIndexList = JSON.parse(decodeURI(blackistedEndpointIndexListRaw));
     }
+
+
+    geolocTabButton.trigger('click');
+    geolocTabButton.trigger('click');
 });
