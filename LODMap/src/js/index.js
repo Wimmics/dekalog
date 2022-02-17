@@ -822,9 +822,10 @@ setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
 var vocabRelatedChart = new KartoChart({
     chartObject: { vocabChart: echarts.init(document.getElementById('vocabs')), rawVocabChart: echarts.init(document.getElementById('rawVocabs')), keywordChart: echarts.init(document.getElementById('endpointKeywords')) },
     option: { vocabOption: {}, rawVocabOption: {}, keywordOption: {} },
+    sparqlesVocabulariesQuery: '',
     fillFunction: function () {
         // Create an force graph with the graph linked by co-ocurrence of vocabularies
-        sparqlesVocabularies = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
+        this.sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
             "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
             "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
             "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
@@ -834,7 +835,7 @@ var vocabRelatedChart = new KartoChart({
             " } " +
             "GROUP BY ?endpointUrl ?vocabulary ";
 
-        sparqlQueryJSON(sparqlesVocabularies, json => {
+        sparqlQueryJSON(this.sparqlesVocabulariesQuery, json => {
 
             var endpointSet = new Set();
             var vocabSet = new Set();
@@ -1157,7 +1158,7 @@ var vocabRelatedChart = new KartoChart({
         this.chartObject.rawVocabChart.resize();
         this.chartObject.keywordChart.setOption(this.option.keywordOption, true);
         this.chartObject.keywordChart.resize();
-        var codeQuery1Div = $(document.createElement('code')).text(sparqlesVocabularies);
+        var codeQuery1Div = $(document.createElement('code')).text(this.sparqlesVocabulariesQuery);
         $('#endpointVocabularyQueryCell').empty()
         $('#endpointVocabularyQueryCell').append(codeQuery1Div)
         var codeQuery2Div = $(document.createElement('code')).text('SELECT DISTINCT ?endpointUrl ?vocabulary { SERVICE <http://prod-dekalog.inria.fr/sparql> { GRAPH ?g { { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } ?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?endpoint . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary . FILTER(isIri(?vocabulary)) } VALUES ?g { ' + graphValuesURIList + ' } } SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> { GRAPH <https://lov.linkeddata.es/dataset/lov> { ?vocabURI a <http://purl.org/vocommons/voaf#Vocabulary> . } } } GROUP BY ?endpointUrl ?vocabulary');
