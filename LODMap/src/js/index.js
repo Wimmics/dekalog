@@ -890,20 +890,31 @@ var vocabRelatedChart = new KartoChart({
             // https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list // done
 
             // Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
-            var knownVocabulariesLOV = new Set();
+            var knownVocabularies = new Set();
             xmlhttpRequestJSON("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list", responseLOV => {
                 responseLOV.forEach((item, i) => {
-                    knownVocabulariesLOV.add(item.uri)
+                    knownVocabularies.add(item.uri)
                 });
+                
                 this.clear();
                 generateVocabContent(this);
             });
 
-            var knownVocabulariesPrefixCC = new Set();
             xmlhttpRequestJSON("http://prefix.cc/context", responsePrefixCC => {
                 for (var prefix of Object.keys(responsePrefixCC['@context'])) {
-                    knownVocabulariesPrefixCC.add(responsePrefixCC['@context'][prefix])
+                    knownVocabularies.add(responsePrefixCC['@context'][prefix])
                 };
+                this.clear();
+                generateVocabContent(this);
+            });
+
+            xmlhttpRequestJSON("https://www.ebi.ac.uk/ols/api/ontologies?page=0&size=1000", responseOLS => {
+                responseOLS._embedded.ontologies.forEach(ontologyItem => {
+                    if(ontologyItem.config.baseUris.length > 0) {
+                        var ontology = ontologyItem.config.baseUris[0]
+                        knownVocabularies.add(ontology);
+                    }
+                });
                 this.clear();
                 generateVocabContent(this);
             });
@@ -912,13 +923,13 @@ var vocabRelatedChart = new KartoChart({
                 var gatherVocab = new Map();
                 // Filtering according to ontology repositories
                 rawVocabSet.forEach(vocabulariUri => {
-                    if (knownVocabulariesLOV.has(vocabulariUri) || knownVocabulariesPrefixCC.has(vocabulariUri)) {
+                    if (knownVocabularies.has(vocabulariUri)) {
                         vocabSet.add(vocabulariUri);
                     }
                 });
                 rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
                     vocabulariUriSet.forEach(vocabulariUri => {
-                        if (knownVocabulariesLOV.has(vocabulariUri) || knownVocabulariesPrefixCC.has(vocabulariUri)) {
+                        if (knownVocabularies.has(vocabulariUri)) {
                             if (!gatherVocab.has(endpointUri)) {
                                 gatherVocab.set(endpointUri, new Set());
                             }
