@@ -55,7 +55,7 @@
                         <button class="nav-link " id="quality-tab" data-bs-toggle="tab" data-bs-target="#quality" type="button" role="tab" aria-controls="quality" aria-selected="false">Data quality</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link " id="runtime-tab" data-bs-toggle="tab" data-bs-target="#runtime" type="button" role="tab" aria-controls="runtime" aria-selected="false">Framework runtime</button>
+                        <button class="nav-link " id="runtime-tab" data-bs-toggle="tab" data-bs-target="#runtime" type="button" role="tab" aria-controls="runtime" aria-selected="false">Framework information</button>
                     </li>
                 </ul>
             </div>
@@ -160,24 +160,6 @@
                         <div class="container justify-content-center" id="classScatter"><h5>Number of classes through time</h5></div>
                         <div class="container justify-content-center" id="propertyScatter"><h5>Number of properties through time</h5></div>
                     </div>
-                </div>
-                <div class="col-12 justify-content-center">
-                    <div class="row">
-                        <div class="container justify-content-center" id="testCategoryScatter"><h5>Proportion of tests passed by categories</h5></div>
-                    </div>
-                    <div class="row">
-                        <button id="tableRuleDetails" type="button" class="btn btn-link">Details</button>
-                    </div>
-                    <table id="rulesTable" class="table table-responsive table-hover collapse">
-                        <thead>
-                            <tr>
-                                <th id="rulesTableEndpointHeader" scope="col">Endpoint</th>
-                                <th id="rulesTableRuleHeader" scope="col">Test passed</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rulesTableBody">
-                        </tbody>
-                    </table>
                 </div>
             </div>
                 <div class="row border border-dark justify-content-center tab-pane fade" id="description" role="tabpanel" aria-labelledby="description-tab">
@@ -299,6 +281,24 @@
                             <div class="container justify-content-center" id="totalRuntimeScatter"><h5>Total runtime of the framework for each run</h5></div>
                             <div class="container justify-content-center" id="averageRuntimeScatter"><h5>Average runtime of the framework per dataset in each run</h5></div>
                         </div>
+                    </div>
+                    <div class="col-12 justify-content-center">
+                        <div class="row">
+                            <div class="container justify-content-center" id="testCategoryScatter"><h5>Proportion of tests passed by categories</h5></div>
+                        </div>
+                        <div class="row">
+                            <button id="tableRuleDetails" type="button" class="btn btn-link">Details</button>
+                        </div>
+                        <table id="rulesTable" class="table table-responsive table-hover collapse">
+                            <thead>
+                                <tr>
+                                    <th id="rulesTableEndpointHeader" scope="col">Endpoint</th>
+                                    <th id="rulesTableRuleHeader" scope="col">Test passed</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rulesTableBody">
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="row border border-dark justify-content-center tab-pane fade" id="quality" role="tabpanel" aria-labelledby="quality-tab">
