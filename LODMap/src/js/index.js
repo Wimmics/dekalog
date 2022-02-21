@@ -226,7 +226,6 @@ function getSpinner() {
 
 function refresh() {
     mainContentColWidth = $('#mainContentCol').width();
-    graphValuesURIList = generateGraphValuesURI(graphList);
     clear();
     whiteListFill();
     endpointMap.fill();
@@ -284,11 +283,16 @@ function redrawCharts() {
     blankNodesChart.redraw();
 }
 
-function generateGraphValuesURI(graphs) {
-    var result = "";
-    graphs.forEach((item, i) => {
-        result += " <" + item + "> ";
+function generateGraphValueFilterClause() {
+    var result = "FILTER( ";
+    graphList.forEach((item, i) => {
+        if(i > 0) {
+            result += " || REGEX( str(?g) , '" + item + "' )";
+        } else {
+            result += "REGEX( str(?g) , '" + item + "' )";
+        }
     });
+    result += " )";
     return result;
 }
 
@@ -348,7 +352,7 @@ function whiteListFill() {
         "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
         '?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . ' +
         '} ' +
-        'VALUES ?g { ' + graphValuesURIList + ' } ' +
+        generateGraphValueFilterClause() +
         '} ' +
         'GROUP BY ?endpointUrl';
     sparqlQueryJSON(endpointListQuery, json => {
@@ -455,7 +459,7 @@ var endpointMap = new KartoChart({
             if (!blacklistedEndpointList.includes(endpoint)) {
 
                 // Filter the endpoints according to their graphs
-                var endpointInGraphQuery = "ASK { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <" + endpoint + "> . } VALUES ?g { " + graphValuesURIList + " } }";
+                var endpointInGraphQuery = "ASK { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <" + endpoint + "> . } " + generateGraphValueFilterClause() + " }";
                 sparqlQueryJSON(endpointInGraphQuery, jsonAskResponse => {
                     var booleanResponse = jsonAskResponse.boolean;
 
@@ -464,7 +468,7 @@ var endpointMap = new KartoChart({
                         // http://worldtimeapi.org/pages/examples
                         var markerIcon = greenIcon;
                         var endpointTimezoneSPARQL = new Map();
-                        var timezoneSPARQLquery = "SELECT DISTINCT ?timezone { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <" + endpoint + "> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone } VALUES ?g { " + graphValuesURIList + " } }";
+                        var timezoneSPARQLquery = "SELECT DISTINCT ?timezone { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <" + endpoint + "> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone } " + generateGraphValueFilterClause() + " }";
                         sparqlQueryJSON(timezoneSPARQLquery, jsonResponse => {
                             jsonResponse.results.bindings.forEach((itemResponse, i) => {
                                 endpointTimezoneSPARQL.set(endpoint, itemResponse.timezone.value);
@@ -502,7 +506,7 @@ var endpointMap = new KartoChart({
                             endpointGeolocData.push(endpointItem);
                             addLineToEndpointGeolocTable(endpointItem);
                             endpointMarker.on('click', clickEvent => {
-                                var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + endpoint + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } VALUES ?g { " + graphValuesURIList + " } }";
+                                var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + endpoint + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } " + generateGraphValueFilterClause() + " }";
                                 sparqlQueryJSON(labelQuery, responseLabels => {
 
                                     var popupString = "<table> <thead> <tr> <th colspan='2'> <a href='" + endpoint + "' >" + endpoint + "</a> </th> </tr> </thead>";
@@ -555,7 +559,7 @@ var sparqlCoverCharts = new KartoChart({
     option: { sparql10ChartOption: {}, sparql11ChartOption: {}, sparqlChartOption: {} },
     fillFunction: function () {
         // Create an histogram of the SPARQLES rules passed by endpoint.
-        var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) WHERE { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . FILTER(CONTAINS(str(?activity), ?sparqlNorm)) VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } } VALUES ?g { ' + graphValuesURIList + ' } } GROUP BY ?endpoint ?sparqlNorm ORDER BY DESC( ?sparqlNorm)';
+        var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) WHERE { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . FILTER(CONTAINS(str(?activity), ?sparqlNorm)) VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } } ' + generateGraphValueFilterClause() + ' } GROUP BY ?endpoint ?sparqlNorm ORDER BY DESC( ?sparqlNorm)';
         sparqlQueryJSON(sparqlesFeatureQuery, json => {
             var endpointSet = new Set();
             var jsonBaseFeatureSparqles = [];
@@ -825,13 +829,13 @@ var vocabRelatedChart = new KartoChart({
     sparqlesVocabulariesQuery: '',
     fillFunction: function () {
         // Create an force graph with the graph linked by co-ocurrence of vocabularies
-        this.sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary ?g { GRAPH ?g { " +
+        this.sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
             "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
             "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
             "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
             "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
             "} " +
-            'VALUES ?g { ' + graphValuesURIList + ' } ' +
+            generateGraphValueFilterClause() +
             " } " +
             "GROUP BY ?endpointUrl ?vocabulary ";
 
@@ -844,16 +848,13 @@ var vocabRelatedChart = new KartoChart({
             json.results.bindings.forEach((bindingItem, i) => {
                 var vocabulariUri = bindingItem.vocabulary.value;
                 var endpointUri = bindingItem.endpointUrl.value;
-                var graphUri = bindingItem.g.value;
                 if (!blacklistedEndpointList.includes(endpointUri)) {
                     endpointSet.add(endpointUri);
-                    if (graphList.some(graphListItem => graphUri.localeCompare(graphListItem) == 0)) {
                         rawVocabSet.add(vocabulariUri);
                         if (!rawGatherVocab.has(endpointUri)) {
                             rawGatherVocab.set(endpointUri, new Set());
                         }
                         rawGatherVocab.get(endpointUri).add(vocabulariUri);
-                    }
                 }
             });
 
@@ -1172,7 +1173,7 @@ var vocabRelatedChart = new KartoChart({
         var codeQuery1Div = $(document.createElement('code')).text(this.sparqlesVocabulariesQuery);
         $('#endpointVocabularyQueryCell').empty()
         $('#endpointVocabularyQueryCell').append(codeQuery1Div)
-        var codeQuery2Div = $(document.createElement('code')).text('SELECT DISTINCT ?endpointUrl ?vocabulary { SERVICE <http://prod-dekalog.inria.fr/sparql> { GRAPH ?g { { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } ?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?endpoint . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary . FILTER(isIri(?vocabulary)) } VALUES ?g { ' + graphValuesURIList + ' } } SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> { GRAPH <https://lov.linkeddata.es/dataset/lov> { ?vocabURI a <http://purl.org/vocommons/voaf#Vocabulary> . } } } GROUP BY ?endpointUrl ?vocabulary');
+        var codeQuery2Div = $(document.createElement('code')).text('SELECT DISTINCT ?endpointUrl ?vocabulary { SERVICE <http://prod-dekalog.inria.fr/sparql> { GRAPH ?g { { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } ?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?endpoint . ?base <http://rdfs.org/ns/void#vocabulary> ?vocabulary . FILTER(isIri(?vocabulary)) } ' + generateGraphValueFilterClause() + ' } SERVICE <https://lov.linkeddata.es/dataset/lov/sparql> { GRAPH <https://lov.linkeddata.es/dataset/lov> { ?vocabURI a <http://purl.org/vocommons/voaf#Vocabulary> . } } } GROUP BY ?endpointUrl ?vocabulary');
         $('#endpointKeywordQueryCell').empty();
         $('#endpointKeywordQueryCell').append(codeQuery2Div);
     },
@@ -1198,7 +1199,8 @@ var tripleChart = new KartoChart({
             "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
             "?base <http://rdfs.org/ns/void#triples> ?rawO ." +
             "}" +
-            " VALUES ?g { " + graphValuesURIList + " } } GROUP BY ?g ?endpointUrl ?o ORDER BY DESC(?g) DESC(?endpointUrl)";
+            generateGraphValueFilterClause() + 
+            "} GROUP BY ?g ?endpointUrl ?o ORDER BY DESC(?g) DESC(?endpointUrl)";
         sparqlQueryJSON(triplesSPARQLquery, json => {
             var endpointDataSerieMap = new Map();
             json.results.bindings.forEach((itemResult, i) => {
@@ -1260,7 +1262,8 @@ var classNumberChart = new KartoChart({
             "?metadata <http://purl.org/dc/terms/modified> ?modifDate ." +
             "?base <http://rdfs.org/ns/void#classes> ?rawO ." +
             "}" +
-            "  VALUES ?g { " + graphValuesURIList + " } } GROUP BY ?g ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl) DESC(?modifDate)";
+            generateGraphValueFilterClause() + 
+            "} GROUP BY ?g ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl) DESC(?modifDate)";
         sparqlQueryJSON(classesSPARQLquery, json => {
             var endpointDataSerieMap = new Map();
             //var xAxisDataSet = new Set();
@@ -1323,7 +1326,8 @@ var propertyNumberChart = new KartoChart({
             "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
             "?base <http://rdfs.org/ns/void#properties> ?rawO ." +
             "}" +
-            "  VALUES ?g { " + graphValuesURIList + " } } GROUP BY ?endpointUrl ?g ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";
+            generateGraphValueFilterClause() + 
+            "} GROUP BY ?endpointUrl ?g ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";
         sparqlQueryJSON(propertiesSPARQLquery, json => {
             var endpointDataSerieMap = new Map();
             json.results.bindings.forEach((itemResult, i) => {
@@ -1398,7 +1402,8 @@ var categoryTestNumberChart = new KartoChart({
             "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/' " +
             "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' " +
             "}" +
-            "}  VALUES ?g { " + graphValuesURIList + " } " +
+            "}  "+ 
+            generateGraphValueFilterClause() +
             "} GROUP BY ?g ?category ?endpointUrl";
         sparqlQueryJSON(testCategoryQuery, json => {
             var endpointDataSerieMap = new Map();
@@ -1520,7 +1525,7 @@ function testTableFill() {
         "?curated <http://www.w3.org/ns/prov#wasGeneratedBy> ?rule . " +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "} " +
-        "VALUES ?g { " + graphValuesURIList + " } " +
+        generateGraphValueFilterClause() +
         "} GROUP BY ?endpointUrl ?rule ORDER BY DESC(?endpointUrl) ";
     sparqlQueryJSON(appliedTestQuery, json => {
         var appliedTestMap = new Map();
@@ -1600,7 +1605,7 @@ var totalRuntimeChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('totalRuntimeScatter')),
     option: {},
     fillFunction: function () {
-        var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?data . ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . }  VALUES ?g { " + graphValuesURIList + " } }";
+        var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?data . ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . }  " + generateGraphValueFilterClause() + " }";
         var runtimeDataSerie = []
         var runtimeSerie = []
         sparqlQueryJSON(maxMinTimeQuery, jsonResponse => {
@@ -1660,22 +1665,29 @@ var averageRuntimeChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('averageRuntimeScatter')),
     option: {},
     fillFunction: function () {
-        var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?data . ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . }  VALUES ?g { " + graphValuesURIList + " } }";
+        var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end)" +
+        " { " + 
+        "GRAPH ?g {" + 
+        " ?metadata <http://ns.inria.fr/kg/index#curated> ?data ." + 
+        " ?metadata <http://ns.inria.fr/kg/index#trace> ?trace ." + 
+        " ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime ." + 
+        " ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " + 
+        "}" + 
+        "  " + generateGraphValueFilterClause() +
+         " }";
         var runtimeDataSerie = []
         var runtimeSerie = []
         sparqlQueryJSON(maxMinTimeQuery, jsonResponse => {
 
-            var numberOfEndpointQuery = "SELECT DISTINCT ?g (COUNT(?dataset) AS ?count) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . }  VALUES ?g { " + graphValuesURIList + " } }";
+            var numberOfEndpointQuery = "SELECT DISTINCT ?g (COUNT(?endpointUrl) AS ?count) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?dataset . { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } } " + generateGraphValueFilterClause() + " }";
             sparqlQueryJSON(numberOfEndpointQuery, numberOfEndpointJson => {
                 var numberEndpointMap = new Map();
                 numberOfEndpointJson.results.bindings.forEach((numberEndpointItem, i) => {
                     var graph = numberEndpointItem.g.value;
-                    if (graphList.includes(graph)) {
                         graph = graph.replace('http://ns.inria.fr/indegx#', '');
                         var count = numberEndpointItem.count.value;
 
                         numberEndpointMap.set(graph, count);
-                    }
                 });
 
                 var graphSet = new Set();
@@ -1759,7 +1771,8 @@ function classAndPropertiesContentFill() {
         "} " +
         "FILTER(! isBlank(?c)) " +
         "}" +
-        "  VALUES ?g { " + graphValuesURIList + " } } GROUP BY ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co ";
+        generateGraphValueFilterClause() + 
+        "} GROUP BY ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co ";
     sparqlQueryJSON(classPartitionQuery, json => {
         var classCountsEndpointsMap = new Map();
         json.results.bindings.forEach((item, i) => {
@@ -1891,7 +1904,8 @@ function classAndPropertiesContentFill() {
         "?classPropertyPartition <http://rdfs.org/ns/void#distinctObjects> ?po . " +
         "} " +
         "}" +
-        "  VALUES ?g { " + graphValuesURIList + " } } GROUP BY ?endpointUrl ?c ?p ?pt ?po ?ps ";
+        generateGraphValueFilterClause() + 
+        "} GROUP BY ?endpointUrl ?c ?p ?pt ?po ?ps ";
     sparqlQueryJSON(classPropertyPartitionQuery, json => {
 
         var classPropertyCountsEndpointsMap = new Map();
@@ -2002,7 +2016,7 @@ var descriptionElementChart = new KartoChart({
             "UNION { ?dataset <http://purl.org/dc/terms/publisher> ?o } " +
             "} " +
             "} " +
-            "VALUES ?g { " + graphValuesURIList + " } " +
+            generateGraphValueFilterClause() + 
             "} ";
         var provenanceLicenseCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
             "GRAPH ?g { " +
@@ -2015,7 +2029,7 @@ var descriptionElementChart = new KartoChart({
             "UNION {?dataset <http://purl.org/dc/terms/conformsTo> ?o } " +
             "} " +
             "} " +
-            "VALUES ?g { " + graphValuesURIList + " } " +
+            generateGraphValueFilterClause() +
             "} ";
         var provenanceDateCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
             "GRAPH ?g { " +
@@ -2029,7 +2043,7 @@ var descriptionElementChart = new KartoChart({
             "UNION { ?dataset <http://purl.org/dc/terms/issued> ?o } " +
             "} " +
             "} " +
-            "VALUES ?g { " + graphValuesURIList + " } " +
+            generateGraphValueFilterClause() +
             "} ";
         var provenanceSourceCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
             "GRAPH ?g { " +
@@ -2043,7 +2057,7 @@ var descriptionElementChart = new KartoChart({
             "UNION { ?dataset <http://purl.org/dc/terms/format> ?o } " +
             "} " +
             "} " +
-            "VALUES ?g { " + graphValuesURIList + " } " +
+            generateGraphValueFilterClause() +
             "} ";
         var endpointDescriptionElementMap = new Map();
         sparqlQueryJSON(provenanceWhoCheckQuery, json => {
@@ -2348,7 +2362,8 @@ var shortUriChart = new KartoChart({
             "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> . " +
             "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
             "}" +
-            "  VALUES ?g { " + graphValuesURIList + " } } GROUP BY ?g ?endpointUrl ?measure ";
+            generateGraphValueFilterClause() +
+            " } GROUP BY ?g ?endpointUrl ?measure ";
         this.shortUrisMeasureQuery = shortUrisMeasureQuery;
         $('#shortUrisQueryCell').empty();
         $('#shortUrisQueryCell').append($(document.createElement('code')).text(shortUrisMeasureQuery))
@@ -2461,7 +2476,8 @@ var rdfDataStructureChart = new KartoChart({
             "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . " +
             "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
             "}" +
-            "  VALUES ?g { " + graphValuesURIList + " } } GROUP BY ?g ?endpointUrl ?measure ";
+            generateGraphValueFilterClause() + 
+            " } GROUP BY ?g ?endpointUrl ?measure ";
         $('#rdfDataStructuresQueryCell').empty();
         $('#rdfDataStructuresQueryCell').append($(document.createElement('code')).text(this.query));
 
@@ -2564,8 +2580,9 @@ var readableLabelsChart = new KartoChart({
             "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
             "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . " +
             "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-            "}" +
-            "  VALUES ?g { " + graphValuesURIList + " } } GROUP BY ?g ?endpointUrl ?measure ";
+            "} " +
+            generateGraphValueFilterClause() + 
+            " } GROUP BY ?g ?endpointUrl ?measure ";
         $('#readableLabelsQueryCell').empty();
         $('#readableLabelsQueryCell').append($(document.createElement('code')).text(this.query))
 
@@ -2670,7 +2687,9 @@ var blankNodesChart = new KartoChart({
             "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . " +
             "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
             "}" +
-            "  VALUES ?g { " + graphValuesURIList + " } } GROUP BY ?g ?endpointUrl ?measure ";
+            generateGraphValueFilterClause() + 
+            " } " + 
+            "GROUP BY ?g ?endpointUrl ?measure ";
         $('#blankNodesQueryCell').empty();
         $('#blankNodesQueryCell').append($(document.createElement('code')).text(this.query))
 
@@ -2771,7 +2790,6 @@ setButtonAsToggleCollapse('blankNodesDetails', 'blankNodesTable');
 var mainContentColWidth = 0; // Used to initialize graph width;
 
 var graphList = [];
-var graphValuesURIList = "";
 var currentGraphSetIndex = 0;
 const graphSetIndexParameter = "graphSetIndex";
 var endpointList = [];
