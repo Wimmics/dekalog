@@ -1,0 +1,31 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: IndeGx
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Pierre Maillot
+    email: pierre.maillot@inria.fr
+    affiliation: INRIA
+    orcid: 'https://orcid.org/0000-0002-9814-439X'
+repository-code: 'https://github.com/Wimmics/dekalog'
+url: 'http://prod-dekalog.inria.fr/'
+abstract: >-
+  IndeGx is a framework for the creation of an index
+  of a set of SPARQL endpoints. The framework relies
+  only on available semantic web technologies and the
+  index appears as an RDF database. The index is
+  primilarly composed of the self-description
+  available in the endpoint. This original
+  description is verified and expanded by the
+  framework, using SPARQL queries.
+keywords:
+  - Metadata
+  - Quality
+  - SPARQL
+  - Semantic Web
+license: GPL-3.0
