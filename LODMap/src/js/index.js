@@ -559,7 +559,19 @@ var sparqlCoverCharts = new KartoChart({
     option: { sparql10ChartOption: {}, sparql11ChartOption: {}, sparqlChartOption: {} },
     fillFunction: function () {
         // Create an histogram of the SPARQLES rules passed by endpoint.
-        var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) WHERE { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . FILTER(CONTAINS(str(?activity), ?sparqlNorm)) VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } } ' + generateGraphValueFilterClause() + ' } GROUP BY ?endpoint ?sparqlNorm ORDER BY DESC( ?sparqlNorm)';
+var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) { '+
+    'GRAPH ?g { '+
+    '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . '+
+    '?metadata <http://ns.inria.fr/kg/index#curated> ?base . '+
+    'OPTIONAL { '+
+    '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . '+
+    'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) '+
+    'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } '+
+    '} '+
+    '} ' + 
+    generateGraphValueFilterClause() + ' } '+
+    'GROUP BY ?endpoint ?sparqlNorm '+
+    'ORDER BY DESC( ?sparqlNorm)';
         sparqlQueryJSON(sparqlesFeatureQuery, json => {
             var endpointSet = new Set();
             var jsonBaseFeatureSparqles = [];
@@ -569,12 +581,15 @@ var sparqlCoverCharts = new KartoChart({
                 var endpointUrl = bindingItem.endpoint.value;
                 if (!blacklistedEndpointList.includes(endpointUrl)) {
                     endpointSet.add(endpointUrl);
-                    var feature = bindingItem.sparqlNorm.value;
+                    var feature = undefined;
+                    if( bindingItem.sparqlNorm != undefined) {
+                        feature = bindingItem.sparqlNorm.value;
+                    }
                     var count = bindingItem.count.value;
-                    if (feature.localeCompare("SPARQL10") == 0) {
+                    if (feature == undefined || feature.localeCompare("SPARQL10") == 0) {
                         sparql10Map.set(endpointUrl, Number(count));
                     }
-                    if (feature.localeCompare("SPARQL11") == 0) {
+                    if (feature == undefined || feature.localeCompare("SPARQL11") == 0) {
                         sparql11Map.set(endpointUrl, Number(count));
                     }
                 }
@@ -594,7 +609,7 @@ var sparqlCoverCharts = new KartoChart({
             var chart11ValueMap = new Map();
             var chartSPARQLValueMap = new Map();
 
-            for (var i = 0; i < 10; i++) {
+            for (var i = -1; i < 10; i++) {
                 chart10ValueMap.set(i, 0);
                 chart11ValueMap.set(i, 0);
                 chartSPARQLValueMap.set(i, 0);
@@ -603,19 +618,28 @@ var sparqlCoverCharts = new KartoChart({
             var sparql11Step = maxSparql11 / 10;
             var sparqlTotalStep = maxSparqlTotal / 10;
             jsonBaseFeatureSparqles.forEach((item) => {
-                var itemBinSparql10 = Math.floor(item.sparql10 / sparql10Step);
-                if (itemBinSparql10 == 10) {
-                    itemBinSparql10 = 9;
+                var itemBinSparql10 = -1;
+                if(item.sparql10 > 0) {
+                    itemBinSparql10 = Math.floor(item.sparql10 / sparql10Step);
+                    if (itemBinSparql10 == 10) {
+                        itemBinSparql10 = 9;
+                    }
                 }
                 chart10ValueMap.set(itemBinSparql10, chart10ValueMap.get(itemBinSparql10) + 1);
-                var itemBinSparql11 = Math.floor(item.sparql11 / sparql11Step);
-                if (itemBinSparql11 == 10) {
-                    itemBinSparql11 = 9;
+                var itemBinSparql11 = -1;
+                if(item.sparql11 > 0) {
+                    itemBinSparql11 = Math.floor(item.sparql11 / sparql11Step);
+                    if (itemBinSparql11 == 10) {
+                        itemBinSparql11 = 9;
+                    }
                 }
                 chart11ValueMap.set(itemBinSparql11, chart11ValueMap.get(itemBinSparql11) + 1);
-                var itemBinSparqlTotal = Math.floor(item.sparqlTotal / sparqlTotalStep);
-                if (itemBinSparqlTotal == 10) {
-                    itemBinSparqlTotal = 9;
+                var itemBinSparqlTotal = -1;
+                if(item.sparql11 > 0 || item.sparql10 > 0) {
+                    var itemBinSparqlTotal = Math.floor(item.sparqlTotal / sparqlTotalStep);
+                    if (itemBinSparqlTotal == 10) {
+                        itemBinSparqlTotal = 9;
+                    }
                 }
                 chartSPARQLValueMap.set(itemBinSparqlTotal, chartSPARQLValueMap.get(itemBinSparqlTotal) + 1);
             });
@@ -624,20 +648,38 @@ var sparqlCoverCharts = new KartoChart({
             var chart11DataMap = new Map();
             var chartSPARQLDataMap = new Map();
             var categorySet = new Set();
-            chart10ValueMap.forEach((value, key, map) => {
-                var categoryName = "[ " + ((key) * 10).toString() + "%, " + ((key + 1) * 10).toString() + " % ]";
+            chart10ValueMap.forEach((binCount, itemBin, map) => {
+                var categoryName = "[ " + ((itemBin) * 10).toString() + "%, " + ((itemBin + 1) * 10).toString() + " % ]";
+                if(itemBin == 0) {
+                    categoryName = "] " + ((itemBin) * 10).toString() + "%, " + ((itemBin + 1) * 10).toString() + " % ]";
+                }
+                if(itemBin == -1) {
+                    categoryName = "[ 0% ]";
+                }
                 categorySet.add(categoryName);
-                chart10DataMap.set(categoryName, value);
+                chart10DataMap.set(categoryName, binCount);
             });
-            chart11ValueMap.forEach((value, key, map) => {
-                var categoryName = "[ " + ((key) * 10).toString() + "%, " + ((key + 1) * 10).toString() + " % ]";
+            chart11ValueMap.forEach((binCount, itemBin, map) => {
+                var categoryName = "[ " + ((itemBin) * 10).toString() + "%, " + ((itemBin + 1) * 10).toString() + " % ]";
+                if(itemBin == 0) {
+                    categoryName = "] " + ((itemBin) * 10).toString() + "%, " + ((itemBin + 1) * 10).toString() + " % ]";
+                }
+                if(itemBin == -1) {
+                    categoryName = "[ 0% ]";
+                }
                 categorySet.add(categoryName);
-                chart11DataMap.set(categoryName, value);
+                chart11DataMap.set(categoryName, binCount);
             });
-            chartSPARQLValueMap.forEach((value, key, map) => {
-                var categoryName = "[ " + ((key) * 10).toString() + "%, " + ((key + 1) * 10).toString() + " % ]";
+            chartSPARQLValueMap.forEach((binCount, itemBin, map) => {
+                var categoryName = "[ " + ((itemBin) * 10).toString() + "%, " + ((itemBin + 1) * 10).toString() + " % ]";
+                if(itemBin == 0) {
+                    categoryName = "] " + ((itemBin) * 10).toString() + "%, " + ((itemBin + 1) * 10).toString() + " % ]";
+                }
+                if(itemBin == -1) {
+                    categoryName = "[ 0% ]";
+                }
                 categorySet.add(categoryName);
-                chartSPARQLDataMap.set(categoryName, value);
+                chartSPARQLDataMap.set(categoryName, binCount);
             });
             var categories = ([...categorySet]).sort((a, b) => a.localeCompare(b));
 
@@ -705,7 +747,7 @@ var sparqlCoverCharts = new KartoChart({
                     type: 'value',
                     max: 'dataMax',
                 },
-                color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
+                color: ["#060705ff", "#10200Eff", "#1A3917ff", "#245121ff", "#2E6A2Aff", "#388333ff", "#419C3Cff", "#4BB545ff", "#55CD4Fff", "#5FE658ff", "#69FF61ff"],
                 series: sparql10Series,
             };
             this.option.sparql11ChartOption = {
@@ -735,7 +777,7 @@ var sparqlCoverCharts = new KartoChart({
                     type: 'value',
                     max: 'dataMax',
                 },
-                color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
+                color: ["#060705ff", "#10200Eff", "#1A3917ff", "#245121ff", "#2E6A2Aff", "#388333ff", "#419C3Cff", "#4BB545ff", "#55CD4Fff", "#5FE658ff", "#69FF61ff"],
                 series: sparql11Series,
             };
             this.option.sparqlChartOption = {
@@ -765,7 +807,7 @@ var sparqlCoverCharts = new KartoChart({
                     type: 'value',
                     max: 'dataMax',
                 },
-                color: ["#000000", "#001C02", "#003805", "#005407", "#007009", "#008D0C", "#00A90E", "#00C510", "#00E113", "#00FD15"],
+                color: ["#060705ff", "#10200Eff", "#1A3917ff", "#245121ff", "#2E6A2Aff", "#388333ff", "#419C3Cff", "#4BB545ff", "#55CD4Fff", "#5FE658ff", "#69FF61ff"],
                 series: sparqlCategorySeries,
             };
 
@@ -971,7 +1013,7 @@ var vocabRelatedChart = new KartoChart({
                     });
                     
 
-                    chart.option.vocabOption = getForceGraphOption('Endpoints and known vocabularies*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
+                    chart.option.vocabOption = getForceGraphOption('Endpoints and vocabularies with filtering*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
                     chart.chartObject.vocabChart.setOption(chart.option.vocabOption, true);
 
                     // Measure Table
