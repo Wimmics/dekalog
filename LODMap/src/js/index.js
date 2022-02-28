@@ -235,15 +235,16 @@ function refresh() {
     classNumberChart.fill();
     propertyNumberChart.fill();
     categoryTestNumberChart.fill();
-    testTableFill();
     totalRuntimeChart.fill();
     averageRuntimeChart.fill();
-    classAndPropertiesContentFill();
     descriptionElementChart.fill();
     shortUriChart.fill();
     rdfDataStructureChart.fill();
     readableLabelsChart.fill();
     blankNodesChart.fill();
+    totalCategoryTestNumberChart.fill();
+    classAndPropertiesContentFill();
+    testTableFill();
 }
 
 function clear() {
@@ -259,6 +260,7 @@ function clear() {
     rdfDataStructureChart.hide();
     readableLabelsChart.hide();
     blankNodesChart.hide();
+    totalCategoryTestNumberChart.hide();
     descriptionElementChart.clear();
     $('#endpointKnownVocabsTableBody').empty();
     $('#rulesTableBody').empty();
@@ -281,12 +283,13 @@ function redrawCharts() {
     rdfDataStructureChart.redraw();
     readableLabelsChart.redraw();
     blankNodesChart.redraw();
+    totalCategoryTestNumberChart.redraw();
 }
 
 function generateGraphValueFilterClause() {
     var result = "FILTER( ";
     graphList.forEach((item, i) => {
-        if(i > 0) {
+        if (i > 0) {
             result += " || REGEX( str(?g) , '" + item + "' )";
         } else {
             result += "REGEX( str(?g) , '" + item + "' )";
@@ -559,19 +562,19 @@ var sparqlCoverCharts = new KartoChart({
     option: { sparql10ChartOption: {}, sparql11ChartOption: {}, sparqlChartOption: {} },
     fillFunction: function () {
         // Create an histogram of the SPARQLES rules passed by endpoint.
-var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) { '+
-    'GRAPH ?g { '+
-    '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . '+
-    '?metadata <http://ns.inria.fr/kg/index#curated> ?base . '+
-    'OPTIONAL { '+
-    '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . '+
-    'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) '+
-    'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } '+
-    '} '+
-    '} ' + 
-    generateGraphValueFilterClause() + ' } '+
-    'GROUP BY ?endpoint ?sparqlNorm '+
-    'ORDER BY DESC( ?sparqlNorm)';
+        var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) { ' +
+            'GRAPH ?g { ' +
+            '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ' +
+            '?metadata <http://ns.inria.fr/kg/index#curated> ?base . ' +
+            'OPTIONAL { ' +
+            '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . ' +
+            'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) ' +
+            'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } ' +
+            '} ' +
+            '} ' +
+            generateGraphValueFilterClause() + ' } ' +
+            'GROUP BY ?endpoint ?sparqlNorm ' +
+            'ORDER BY DESC( ?sparqlNorm)';
         sparqlQueryJSON(sparqlesFeatureQuery, json => {
             var endpointSet = new Set();
             var jsonBaseFeatureSparqles = [];
@@ -582,7 +585,7 @@ var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINC
                 if (!blacklistedEndpointList.includes(endpointUrl)) {
                     endpointSet.add(endpointUrl);
                     var feature = undefined;
-                    if( bindingItem.sparqlNorm != undefined) {
+                    if (bindingItem.sparqlNorm != undefined) {
                         feature = bindingItem.sparqlNorm.value;
                     }
                     var count = bindingItem.count.value;
@@ -619,7 +622,7 @@ var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINC
             var sparqlTotalStep = maxSparqlTotal / 10;
             jsonBaseFeatureSparqles.forEach((item) => {
                 var itemBinSparql10 = -1;
-                if(item.sparql10 > 0) {
+                if (item.sparql10 > 0) {
                     itemBinSparql10 = Math.floor(item.sparql10 / sparql10Step);
                     if (itemBinSparql10 == 10) {
                         itemBinSparql10 = 9;
@@ -627,7 +630,7 @@ var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINC
                 }
                 chart10ValueMap.set(itemBinSparql10, chart10ValueMap.get(itemBinSparql10) + 1);
                 var itemBinSparql11 = -1;
-                if(item.sparql11 > 0) {
+                if (item.sparql11 > 0) {
                     itemBinSparql11 = Math.floor(item.sparql11 / sparql11Step);
                     if (itemBinSparql11 == 10) {
                         itemBinSparql11 = 9;
@@ -635,7 +638,7 @@ var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINC
                 }
                 chart11ValueMap.set(itemBinSparql11, chart11ValueMap.get(itemBinSparql11) + 1);
                 var itemBinSparqlTotal = -1;
-                if(item.sparql11 > 0 || item.sparql10 > 0) {
+                if (item.sparql11 > 0 || item.sparql10 > 0) {
                     var itemBinSparqlTotal = Math.floor(item.sparqlTotal / sparqlTotalStep);
                     if (itemBinSparqlTotal == 10) {
                         itemBinSparqlTotal = 9;
@@ -650,10 +653,10 @@ var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINC
             var categorySet = new Set();
             chart10ValueMap.forEach((binCount, itemBin, map) => {
                 var categoryName = "[ " + ((itemBin) * 10).toString() + "%, " + ((itemBin + 1) * 10).toString() + " % ]";
-                if(itemBin == 0) {
+                if (itemBin == 0) {
                     categoryName = "] " + ((itemBin) * 10).toString() + "%, " + ((itemBin + 1) * 10).toString() + " % ]";
                 }
-                if(itemBin == -1) {
+                if (itemBin == -1) {
                     categoryName = "[ 0% ]";
                 }
                 categorySet.add(categoryName);
@@ -661,10 +664,10 @@ var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINC
             });
             chart11ValueMap.forEach((binCount, itemBin, map) => {
                 var categoryName = "[ " + ((itemBin) * 10).toString() + "%, " + ((itemBin + 1) * 10).toString() + " % ]";
-                if(itemBin == 0) {
+                if (itemBin == 0) {
                     categoryName = "] " + ((itemBin) * 10).toString() + "%, " + ((itemBin + 1) * 10).toString() + " % ]";
                 }
-                if(itemBin == -1) {
+                if (itemBin == -1) {
                     categoryName = "[ 0% ]";
                 }
                 categorySet.add(categoryName);
@@ -672,10 +675,10 @@ var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINC
             });
             chartSPARQLValueMap.forEach((binCount, itemBin, map) => {
                 var categoryName = "[ " + ((itemBin) * 10).toString() + "%, " + ((itemBin + 1) * 10).toString() + " % ]";
-                if(itemBin == 0) {
+                if (itemBin == 0) {
                     categoryName = "] " + ((itemBin) * 10).toString() + "%, " + ((itemBin + 1) * 10).toString() + " % ]";
                 }
-                if(itemBin == -1) {
+                if (itemBin == -1) {
                     categoryName = "[ 0% ]";
                 }
                 categorySet.add(categoryName);
@@ -892,11 +895,11 @@ var vocabRelatedChart = new KartoChart({
                 var endpointUri = bindingItem.endpointUrl.value;
                 if (!blacklistedEndpointList.includes(endpointUri)) {
                     endpointSet.add(endpointUri);
-                        rawVocabSet.add(vocabulariUri);
-                        if (!rawGatherVocab.has(endpointUri)) {
-                            rawGatherVocab.set(endpointUri, new Set());
-                        }
-                        rawGatherVocab.get(endpointUri).add(vocabulariUri);
+                    rawVocabSet.add(vocabulariUri);
+                    if (!rawGatherVocab.has(endpointUri)) {
+                        rawGatherVocab.set(endpointUri, new Set());
+                    }
+                    rawGatherVocab.get(endpointUri).add(vocabulariUri);
                 }
             });
 
@@ -938,7 +941,7 @@ var vocabRelatedChart = new KartoChart({
                 responseLOV.forEach((item, i) => {
                     knownVocabularies.add(item.uri)
                 });
-                
+
                 this.clear();
                 generateVocabContent(this);
             });
@@ -953,7 +956,7 @@ var vocabRelatedChart = new KartoChart({
 
             xmlhttpRequestJSON("https://www.ebi.ac.uk/ols/api/ontologies?page=0&size=1000", responseOLS => {
                 responseOLS._embedded.ontologies.forEach(ontologyItem => {
-                    if(ontologyItem.config.baseUris.length > 0) {
+                    if (ontologyItem.config.baseUris.length > 0) {
                         var ontology = ontologyItem.config.baseUris[0]
                         knownVocabularies.add(ontology);
                     }
@@ -1011,7 +1014,7 @@ var vocabRelatedChart = new KartoChart({
                             jsonVocabLinks.add({ source: endpointUrl, target: vocab });
                         });
                     });
-                    
+
 
                     chart.option.vocabOption = getForceGraphOption('Endpoints and vocabularies with filtering*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
                     chart.chartObject.vocabChart.setOption(chart.option.vocabOption, true);
@@ -1241,7 +1244,7 @@ var tripleChart = new KartoChart({
             "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
             "?base <http://rdfs.org/ns/void#triples> ?rawO ." +
             "}" +
-            generateGraphValueFilterClause() + 
+            generateGraphValueFilterClause() +
             "} GROUP BY ?g ?endpointUrl ?o ORDER BY DESC(?g) DESC(?endpointUrl)";
         sparqlQueryJSON(triplesSPARQLquery, json => {
             var endpointDataSerieMap = new Map();
@@ -1304,7 +1307,7 @@ var classNumberChart = new KartoChart({
             "?metadata <http://purl.org/dc/terms/modified> ?modifDate ." +
             "?base <http://rdfs.org/ns/void#classes> ?rawO ." +
             "}" +
-            generateGraphValueFilterClause() + 
+            generateGraphValueFilterClause() +
             "} GROUP BY ?g ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl) DESC(?modifDate)";
         sparqlQueryJSON(classesSPARQLquery, json => {
             var endpointDataSerieMap = new Map();
@@ -1368,7 +1371,7 @@ var propertyNumberChart = new KartoChart({
             "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
             "?base <http://rdfs.org/ns/void#properties> ?rawO ." +
             "}" +
-            generateGraphValueFilterClause() + 
+            generateGraphValueFilterClause() +
             "} GROUP BY ?endpointUrl ?g ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";
         sparqlQueryJSON(propertiesSPARQLquery, json => {
             var endpointDataSerieMap = new Map();
@@ -1444,7 +1447,7 @@ var categoryTestNumberChart = new KartoChart({
             "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/' " +
             "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' " +
             "}" +
-            "}  "+ 
+            "}  " +
             generateGraphValueFilterClause() +
             "} GROUP BY ?g ?category ?endpointUrl";
         sparqlQueryJSON(testCategoryQuery, json => {
@@ -1554,6 +1557,135 @@ var categoryTestNumberChart = new KartoChart({
     },
     redrawFunction: function () {
         $('#testCategoryScatter').width(mainContentColWidth);
+        this.chartObject.setOption(this.option, true);
+        this.chartObject.resize();
+    }
+});
+
+var totalCategoryTestNumberChart = new KartoChart({
+    chartObject: echarts.init(document.getElementById('totalTestCategoryScatter')),
+    option: {},
+    fillFunction: function () {
+        // Number of tests passed by test categories
+        var testCategoryQuery = "SELECT DISTINCT ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
+            "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
+            "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
+            "?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl ." +
+            "?metadata <http://purl.org/dc/terms/modified> ?modifDate . " +
+            "?trace <http://www.w3.org/ns/earl#test> ?test . " +
+            "?trace <http://www.w3.org/ns/earl#result> ?result . " +
+            "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . " +
+            "FILTER(STRSTARTS(str(?test), ?category)) " +
+            "VALUES ?category { " +
+            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/' " +
+            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/' " +
+            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/' " +
+            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/' " +
+            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/' " +
+            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' " +
+            "}" +
+            "}  " +
+            generateGraphValueFilterClause() +
+            "} GROUP BY ?category ?endpointUrl";
+        sparqlQueryJSON(testCategoryQuery, json => {
+            var endpointDataSerieMap = new Map();
+            json.results.bindings.forEach((itemResult, i) => {
+                var category = itemResult.category.value;
+
+                endpointDataSerieMap.set(category, new Map());
+            });
+            json.results.bindings.forEach((itemResult, i) => {
+                var category = itemResult.category.value;
+                var count = itemResult.count.value;
+                var endpoint = itemResult.endpointUrl.value;
+
+                if (!blacklistedEndpointList.includes(endpoint)) {
+                    endpointDataSerieMap.get(category).set(endpoint, count);
+                }
+            });
+
+            if (endpointDataSerieMap.size > 0) {
+                this.show();
+
+                var triplesSeries = [];
+                var categoryXAxisData = [];
+                endpointDataSerieMap.forEach((endpointMap, category, map1) => {
+                    var categoryName = category.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/", "").replace("/", "").replace("check", "Quality").replace('computed', "Computed").replace('asserted', "Asserted").replace("sportal", 'SPORTAL');
+                    categoryXAxisData.push(categoryName);
+                    var dataCategory = [];
+                    var totalEndpointGraph = 0;
+                    endpointMap.forEach((count, endpoint, map3) => {
+                        totalEndpointGraph = totalEndpointGraph + Number.parseInt(count);
+                    });
+                    var numberOfEndpoint = endpointMap.size;
+                    var avgEndpointGraph = precise(totalEndpointGraph / numberOfEndpoint);
+                    var percentageAvrEndpointCategory = avgEndpointGraph;
+                    if (category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 8) * 100);
+                    } else if (category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 4) * 100);
+                    } else if (category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 10) * 100);
+                    } else if (category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/")) {
+                        percentageAvrEndpointCategory = (precise(percentageAvrEndpointCategory / 23) * 100);
+                    } else if (category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 25) * 100);
+                    } else if (category.startsWith("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/")) {
+                        percentageAvrEndpointCategory = precise((percentageAvrEndpointCategory / 20) * 100);
+                    }
+
+                    dataCategory.push(percentageAvrEndpointCategory);
+                    var chartSerie = {
+                        name: categoryName,
+                        label: {
+                            show: true,
+                            formatter: "{a}"
+                        },
+                        symbolSize: 5,
+                        data: dataCategory,
+                        type: 'bar'
+                    };
+                    triplesSeries.push(chartSerie);
+                });
+                console.log(triplesSeries)
+
+                var categoriesArray = categoryXAxisData.sort((a, b) => a.localeCompare(b));
+                triplesSeries.sort((a, b) => a.name.localeCompare(b.name))
+
+                this.option = {
+                    title: {
+                        left: 'center',
+                        text: "Proportion of tests passed by category for all runs",
+                    },
+                    xAxis: {
+                        show:false,
+                        type: 'category',
+                        //    data:categoriesArray
+                    },
+                    yAxis: {
+                        max: 100
+                    },
+                    series: triplesSeries,
+                    tooltip: {
+                        show: 'true'
+                    }
+                };
+
+                this.chartObject.setOption(this.option, true);
+            } else {
+                this.hide();
+            }
+        });
+    },
+    hideFunction: function () {
+        this.chartObject.setOption({ series: [] }, true);
+        collapseHtml('totalTestCategoryScatter');
+    },
+    showFunction: function () {
+        unCollapseHtml('totalTestCategoryScatter');
+    },
+    redrawFunction: function () {
+        $('#totalTestCategoryScatter').width(mainContentColWidth);
         this.chartObject.setOption(this.option, true);
         this.chartObject.resize();
     }
@@ -1708,15 +1840,15 @@ var averageRuntimeChart = new KartoChart({
     option: {},
     fillFunction: function () {
         var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end)" +
-        " { " + 
-        "GRAPH ?g {" + 
-        " ?metadata <http://ns.inria.fr/kg/index#curated> ?data ." + 
-        " ?metadata <http://ns.inria.fr/kg/index#trace> ?trace ." + 
-        " ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime ." + 
-        " ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " + 
-        "}" + 
-        "  " + generateGraphValueFilterClause() +
-         " }";
+            " { " +
+            "GRAPH ?g {" +
+            " ?metadata <http://ns.inria.fr/kg/index#curated> ?data ." +
+            " ?metadata <http://ns.inria.fr/kg/index#trace> ?trace ." +
+            " ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime ." +
+            " ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
+            "}" +
+            "  " + generateGraphValueFilterClause() +
+            " }";
         var runtimeDataSerie = []
         var runtimeSerie = []
         sparqlQueryJSON(maxMinTimeQuery, jsonResponse => {
@@ -1726,10 +1858,10 @@ var averageRuntimeChart = new KartoChart({
                 var numberEndpointMap = new Map();
                 numberOfEndpointJson.results.bindings.forEach((numberEndpointItem, i) => {
                     var graph = numberEndpointItem.g.value;
-                        graph = graph.replace('http://ns.inria.fr/indegx#', '');
-                        var count = numberEndpointItem.count.value;
+                    graph = graph.replace('http://ns.inria.fr/indegx#', '');
+                    var count = numberEndpointItem.count.value;
 
-                        numberEndpointMap.set(graph, count);
+                    numberEndpointMap.set(graph, count);
                 });
 
                 var graphSet = new Set();
@@ -1813,7 +1945,7 @@ function classAndPropertiesContentFill() {
         "} " +
         "FILTER(! isBlank(?c)) " +
         "}" +
-        generateGraphValueFilterClause() + 
+        generateGraphValueFilterClause() +
         "} GROUP BY ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co ";
     sparqlQueryJSON(classPartitionQuery, json => {
         var classCountsEndpointsMap = new Map();
@@ -1946,7 +2078,7 @@ function classAndPropertiesContentFill() {
         "?classPropertyPartition <http://rdfs.org/ns/void#distinctObjects> ?po . " +
         "} " +
         "}" +
-        generateGraphValueFilterClause() + 
+        generateGraphValueFilterClause() +
         "} GROUP BY ?endpointUrl ?c ?p ?pt ?po ?ps ";
     sparqlQueryJSON(classPropertyPartitionQuery, json => {
 
@@ -2058,7 +2190,7 @@ var descriptionElementChart = new KartoChart({
             "UNION { ?dataset <http://purl.org/dc/terms/publisher> ?o } " +
             "} " +
             "} " +
-            generateGraphValueFilterClause() + 
+            generateGraphValueFilterClause() +
             "} ";
         var provenanceLicenseCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
             "GRAPH ?g { " +
@@ -2518,7 +2650,7 @@ var rdfDataStructureChart = new KartoChart({
             "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . " +
             "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
             "}" +
-            generateGraphValueFilterClause() + 
+            generateGraphValueFilterClause() +
             " } GROUP BY ?g ?endpointUrl ?measure ";
         $('#rdfDataStructuresQueryCell').empty();
         $('#rdfDataStructuresQueryCell').append($(document.createElement('code')).text(this.query));
@@ -2623,7 +2755,7 @@ var readableLabelsChart = new KartoChart({
             "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . " +
             "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
             "} " +
-            generateGraphValueFilterClause() + 
+            generateGraphValueFilterClause() +
             " } GROUP BY ?g ?endpointUrl ?measure ";
         $('#readableLabelsQueryCell').empty();
         $('#readableLabelsQueryCell').append($(document.createElement('code')).text(this.query))
@@ -2729,8 +2861,8 @@ var blankNodesChart = new KartoChart({
             "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . " +
             "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
             "}" +
-            generateGraphValueFilterClause() + 
-            " } " + 
+            generateGraphValueFilterClause() +
+            " } " +
             "GROUP BY ?g ?endpointUrl ?measure ";
         $('#blankNodesQueryCell').empty();
         $('#blankNodesQueryCell').append($(document.createElement('code')).text(this.query))

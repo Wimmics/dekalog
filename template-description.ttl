@@ -1,0 +1,101 @@
+@prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:        <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcat:       <http://www.w3.org/ns/dcat#>.
+@prefix foaf:       <http://xmlns.com/foaf/0.1/> .
+@prefix prov:       <http://www.w3.org/ns/prov#> .
+@prefix schema:		<http://schema.org/> .
+@prefix void:       <http://rdfs.org/ns/void#> .
+@prefix sd:     	<http://www.w3.org/ns/sparql-service-description#> .
+@prefix dce:        <http://purl.org/dc/elements/1.1/>.
+@prefix dct:        <http://purl.org/dc/terms/> .
+@prefix skos:       <http://www.w3.org/2004/02/skos/core#> .
+
+# Below is a non-exhaustive template for the description of a RDF dataset and its associated endpoint.
+# This template tries to use as much of the most common vocabularies as possible to create a basic description.
+# The resources linked to this description should also be described in the Dataset when relevant.
+# Repeated information as objects of different properties will facilitate the access to the description for future users and should be kept.
+
+<dataset-uri>
+    a   dcat:Dataset, void:Dataset, schema:Dataset, prov:Entity ;
+    dct:title       "Name of the dataset" ;
+    schema:name     "Name of the dataset" ;
+    skos:prefLabel  "Name of the dataset" ;
+    rdfs:label      "Name of the dataset" ;
+    dct:description     "Long description of the dataset" ;
+    schema:description  "Long description of the dataset" ;
+    rdfs:comment        "Long description of the dataset" ;
+
+    foaf:homepage       "Url of a web page describing this dataset, if any" ;
+    dcat:landingPage    "Url of a web page describing this dataset, if any" ;
+
+    dcat:contactPoint   "Contact information for this dataset, preferably an email adress or a VCard" ;
+
+    dct:creator             <Uri of creator(s)> , "Avoid string literals when possible" ;
+    schema:author           <Uri of creator(s)> , "Avoid string literals when possible" ;
+    dct:publisher           <Uri of creator(s)> , "Avoid string literals when possible" ;
+    prov:wasAttributedTo    <Uri of creator(s)> , "Avoid string literals when possible" ;
+    schema:publisher        <Uri of creator(s)>, <publisher(s)> , "Avoid string literals when possible" ;
+    schema:editor           <Uri of creator(s)>, <editor(s)> , "Avoid string literals when possible" ;
+    dct:contributor         <Uri of contributor(s)> , "Avoid string literals when possible" ;
+
+    dct:licence     <Uri/Url of licence> ;
+    schema:licence  <Uri/Url of licence> ;
+    owl:versionInfo "Version number" ;
+    schema:version  "Version number" ;
+
+	dct:language       "Lang", "tags", "used", "in", "the", "literals", "if", "any" ;
+    schema:inLanguage  "Lang", "tags", "used", "in", "the", "literals", "if", "any" ;
+
+    dct:issued              "Date time of creation"^^xsd:date ;
+    prov:wasGeneratedAtTime "Date time of creation"^^xsd:date ;
+    schema:datePublished    "Date time of creation/publication"^^xsd:date ;
+    dct:modified            "Date time of the last modification"^^xsd:date ;
+
+    dct:subject     "Keywords", "describing", "the", "content", "of", "the", "dataset" , "strings", "or", <URIs> ;
+    dcat:keyword    "Keywords", "describing", "the", "content", "of", "the", "dataset" , "strings", "or", <URIs> ;
+    schema:keywords "Keywords", "describing", "the", "content", "of", "the", "dataset" , "strings", "or", <URIs> ;
+
+    void:uriSpace           "Namespace of the uris of the resources created in the dataset, if any" ;
+    void:uriRegexPattern    "Namespace of the uris of the resources created in the dataset, if any, as a regex pattern" ;
+
+    void:sparqlEndpoint <Url of the SPARQL endpoint> ;
+    dcat:distribution [
+        a               dcat:Distribution ;
+        dct:title       "This dataset's endpoint" ;
+        dcat:accessURL  <Url of the SPARQL endpoint> ;
+        dcat:mediaType  "application/sparql-query"
+    ] ;
+
+    void:dataDump       <Url where the dataset can be downloaded as a file, if any> ;
+    dcat:distribution [
+        a                   dcat:Distribution ;
+        dct:title           "This dataset's archive title" ;
+        dcat:downloadUrl    <Url where the dataset can be downloaded as a file, if any> ;
+        dct:format          "Format of the dump file"
+    ] ;
+
+    dcat:service <endpoint-uri> .
+
+<endpoint-uri>
+    a sd:Service, dcat:DataService , prov:Entity ;
+    dcat:servesDataset      <dataset-uri> ;
+    sd:endpoint             <Url of the SPARQL endpoint> ;
+    dcat:endpointUrl        <Url of the SPARQL endpoint> .
+
+    dct:creator             <Uri of creator(s) of the endpoint> , "Avoid string literals when possible" ;
+    prov:wasAttributedTo    <Uri of creator(s) of the endpoint> , "Avoid string literals when possible" ;
+
+
+# The given template can be expanded using the DCAT, PROV-O, Schema, VoID, SPARQL-SD, DCTERMS, or any other vocabulary.
+# As much as possible, every URI should have a label or a title.
+# As an example, here are some elements that can be use to expand the dataset description:
+#
+#<dataset-uri>
+#    schema:isBasedOn        <Uri of the source of the dataset, if relevant> ;
+#    prov:wasDerivedFrom     <Uri of the source of the dataset, if relevant> ;
+#    prov:wasGeneratedBy     <Uri of the process at the origin of the dataset> ;
+#
+#    void:triples        "Number of triples in the dataset"^^xsd:integer;
+#
+#    void:vocabulary <Uri(s) of the vocabularies/ontologies used in the dataset> .
