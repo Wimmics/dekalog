@@ -235,15 +235,15 @@ function refresh() {
     classNumberChart.fill();
     propertyNumberChart.fill();
     categoryTestNumberChart.fill();
-    testTableFill();
     totalRuntimeChart.fill();
     averageRuntimeChart.fill();
-    classAndPropertiesContentFill();
     descriptionElementChart.fill();
     shortUriChart.fill();
     rdfDataStructureChart.fill();
     readableLabelsChart.fill();
     blankNodesChart.fill();
+    classAndPropertiesContentFill();
+    testTableFill();
 }
 
 function clear() {
