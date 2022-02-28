@@ -34,12 +34,14 @@ LODMap/dist/
 
 *.out
 
-LODMap/.idea/
-
 VoiDMatic/.parcel-cache/
 
 VoiDMatic/dist/
 
+VoiDMatic/node_modules/
+
 VoiDMatic/package-lock.json
 
-VoiDMatic/node_modules/
+LODMap/.idea/
+
+VoiDMatic/
