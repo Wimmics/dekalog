@@ -9,7 +9,9 @@ dayjs.extend(relativeTime)
 dayjs.extend(customParseFormat)
 dayjs.extend(duration)
 import { greenIcon, orangeIcon } from "./leaflet-color-markers.js";
-import { endpointIpMap, timezoneMap, graphLists } from "./data.js";
+const endpointIpMap = require('../data/endpointIpGeoloc.json');
+const timezoneMap = require('../data/timezoneMap.json');
+const graphLists = require('../data/runSets.json');
 
 class KartoChart {
     constructor(config = { chartObject, option, fillFunction: () => { }, redrawFunction: () => { }, clearFunction: () => { }, hideFunction: () => { }, showFunction: () => { }, divId }) {
@@ -1647,7 +1649,6 @@ var totalCategoryTestNumberChart = new KartoChart({
                     };
                     triplesSeries.push(chartSerie);
                 });
-                console.log(triplesSeries)
 
                 var categoriesArray = categoryXAxisData.sort((a, b) => a.localeCompare(b));
                 triplesSeries.sort((a, b) => a.name.localeCompare(b.name))
