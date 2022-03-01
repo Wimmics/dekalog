@@ -1,0 +1,522 @@
+[
+    {
+        "key": "Europe/Dublin",
+        "value": {
+            "abbreviation": "GMT",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T09:19:44.007273+00:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 0,
+            "timezone": "Europe/Dublin",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.007273+00:00",
+            "utc_offset": "+00:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Asia/Tokyo",
+        "value": {
+            "abbreviation": "JST",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T18:19:44.007460+09:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 32400,
+            "timezone": "Asia/Tokyo",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.007460+00:00",
+            "utc_offset": "+09:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/Madrid",
+        "value": {
+            "abbreviation": "CET",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T10:19:44.006408+01:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 3600,
+            "timezone": "Europe/Madrid",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.006408+00:00",
+            "utc_offset": "+01:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/Berlin",
+        "value": {
+            "abbreviation": "CET",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T10:19:44.007529+01:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 3600,
+            "timezone": "Europe/Berlin",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.007529+00:00",
+            "utc_offset": "+01:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/Paris",
+        "value": {
+            "abbreviation": "CET",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T10:19:44.006807+01:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 3600,
+            "timezone": "Europe/Paris",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.006807+00:00",
+            "utc_offset": "+01:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "America/Toronto",
+        "value": {
+            "abbreviation": "EST",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T04:19:44.007677-05:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": -18000,
+            "timezone": "America/Toronto",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.007677+00:00",
+            "utc_offset": "-05:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/Zurich",
+        "value": {
+            "abbreviation": "CET",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T10:19:44.034286+01:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 3600,
+            "timezone": "Europe/Zurich",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.034286+00:00",
+            "utc_offset": "+01:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "America/New_York",
+        "value": {
+            "abbreviation": "EST",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T04:19:44.034815-05:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": -18000,
+            "timezone": "America/New_York",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.034815+00:00",
+            "utc_offset": "-05:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/Amsterdam",
+        "value": {
+            "abbreviation": "CET",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T10:19:44.037359+01:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 3600,
+            "timezone": "Europe/Amsterdam",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.037359+00:00",
+            "utc_offset": "+01:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/Helsinki",
+        "value": {
+            "abbreviation": "EET",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T11:19:44.038993+02:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 7200,
+            "timezone": "Europe/Helsinki",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.038993+00:00",
+            "utc_offset": "+02:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/London",
+        "value": {
+            "abbreviation": "GMT",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T09:19:44.038483+00:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 0,
+            "timezone": "Europe/London",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.038483+00:00",
+            "utc_offset": "+00:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/Rome",
+        "value": {
+            "abbreviation": "CET",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T10:19:44.043388+01:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 3600,
+            "timezone": "Europe/Rome",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.043388+00:00",
+            "utc_offset": "+01:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Asia/Seoul",
+        "value": {
+            "abbreviation": "KST",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T18:19:44.057782+09:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 32400,
+            "timezone": "Asia/Seoul",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.057782+00:00",
+            "utc_offset": "+09:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/Warsaw",
+        "value": {
+            "abbreviation": "CET",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T10:19:44.063490+01:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 3600,
+            "timezone": "Europe/Warsaw",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.063490+00:00",
+            "utc_offset": "+01:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Asia/Taipei",
+        "value": {
+            "abbreviation": "CST",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T17:19:44.063653+08:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 28800,
+            "timezone": "Asia/Taipei",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.063653+00:00",
+            "utc_offset": "+08:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Australia/Sydney",
+        "value": {
+            "abbreviation": "AEDT",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T20:19:44.065675+11:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": true,
+            "dst_from": "2021-10-02T16:00:00+00:00",
+            "dst_offset": 3600,
+            "dst_until": "2022-04-02T16:00:00+00:00",
+            "raw_offset": 36000,
+            "timezone": "Australia/Sydney",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.065675+00:00",
+            "utc_offset": "+11:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "America/Los_Angeles",
+        "value": {
+            "abbreviation": "PST",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T01:19:44.065585-08:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": -28800,
+            "timezone": "America/Los_Angeles",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.065585+00:00",
+            "utc_offset": "-08:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Australia/Melbourne",
+        "value": {
+            "abbreviation": "AEDT",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T20:19:44.066294+11:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": true,
+            "dst_from": "2021-10-02T16:00:00+00:00",
+            "dst_offset": 3600,
+            "dst_until": "2022-04-02T16:00:00+00:00",
+            "raw_offset": 36000,
+            "timezone": "Australia/Melbourne",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.066294+00:00",
+            "utc_offset": "+11:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/Copenhagen",
+        "value": {
+            "abbreviation": "CET",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T10:19:44.091021+01:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 3600,
+            "timezone": "Europe/Copenhagen",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.091021+00:00",
+            "utc_offset": "+01:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/Sofia",
+        "value": {
+            "abbreviation": "EET",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T11:19:44.092083+02:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 7200,
+            "timezone": "Europe/Sofia",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.092083+00:00",
+            "utc_offset": "+02:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Asia/Singapore",
+        "value": {
+            "abbreviation": "+08",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T17:19:44.091390+08:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 28800,
+            "timezone": "Asia/Singapore",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.091390+00:00",
+            "utc_offset": "+08:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/Prague",
+        "value": {
+            "abbreviation": "CET",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T10:19:44.099124+01:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 3600,
+            "timezone": "Europe/Prague",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.099124+00:00",
+            "utc_offset": "+01:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/Vienna",
+        "value": {
+            "abbreviation": "CET",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T10:19:44.116863+01:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 3600,
+            "timezone": "Europe/Vienna",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.116863+00:00",
+            "utc_offset": "+01:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "America/Chicago",
+        "value": {
+            "abbreviation": "CST",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T03:19:44.116781-06:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": -21600,
+            "timezone": "America/Chicago",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.116781+00:00",
+            "utc_offset": "-06:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Asia/Hong_Kong",
+        "value": {
+            "abbreviation": "HKT",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T17:19:44.099718+08:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 28800,
+            "timezone": "Asia/Hong_Kong",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.099718+00:00",
+            "utc_offset": "+08:00",
+            "week_number": 3
+        }
+    },
+    {
+        "key": "Europe/Stockholm",
+        "value": {
+            "abbreviation": "CET",
+            "client_ip": "2a01:cb1d:33e:5700:5c65:a05b:3884:e14c",
+            "datetime": "2022-01-17T10:19:44.102024+01:00",
+            "day_of_week": 1,
+            "day_of_year": 17,
+            "dst": false,
+            "dst_from": null,
+            "dst_offset": 0,
+            "dst_until": null,
+            "raw_offset": 3600,
+            "timezone": "Europe/Stockholm",
+            "unixtime": 1642411184,
+            "utc_datetime": "2022-01-17T09:19:44.102024+00:00",
+            "utc_offset": "+01:00",
+            "week_number": 3
+        }
+    }
+]
