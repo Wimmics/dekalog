@@ -754,6 +754,7 @@ var sparqlCoverCharts = new KartoChart({
                 },
                 xAxis: {
                     type: 'category',
+                    data: ["SPARQL 1.0 features"],
                     show: false,
                     splitLine: { show: false },
                     splitArea: { show: false }
@@ -785,6 +786,7 @@ var sparqlCoverCharts = new KartoChart({
                 },
                 xAxis: {
                     type: 'category',
+                    data: ["SPARQL 1.1 features"],
 //                    data: [...categories],
                     show: false,
                     splitLine: { show: false },
@@ -817,6 +819,7 @@ var sparqlCoverCharts = new KartoChart({
                 },
                 xAxis: {
                     type: 'category',
+                    data: ["All SPARQL features"],
 //                    data: categories,
                     splitLine: { show: false },
                     splitArea: { show: false },
