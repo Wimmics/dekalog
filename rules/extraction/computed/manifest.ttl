@@ -23,10 +23,13 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl#activity> .
+                INSERT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl#activity> .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
             """
         ]
@@ -42,6 +45,7 @@
                         FILTER( isLiteral(?o) )
                         FILTER( ?lang != "" )
                     }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
         ]
@@ -55,10 +59,13 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphList.ttl#activity> .
+                INSERT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphList.ttl#activity> .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphList.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphList.ttl> ;
                             prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
             """
         ]
@@ -71,11 +78,11 @@
             PREFIX earl: <http://www.w3.org/ns/earl#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             CONSTRUCT {
-                $metadataDescription a prov:Entity , earl:TestSubject ;
-                    prov:wasDerivedFrom $endpointUrl ;
-                    kgi:curated $endpointDescription .
-                $endpointDescription sd:availableGraphs $graphList .
-                $graphList sd:namedGraph [
+                ?metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasDerivedFrom ?endpointUrl ;
+                    kgi:curated ?endpointDescription .
+                ?endpointDescription sd:availableGraphs ?graphList .
+                ?graphList sd:namedGraph [
                         a sd:NamedGraph ;
                         sd:name ?graph
                     ] .
@@ -84,6 +91,9 @@
                 SELECT DISTINCT ?graph WHERE {
                     GRAPH ?graph { ?s ?p ?o }
                 }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Graphs")) AS ?graphList)
             }
             """
         ]
@@ -100,10 +110,13 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphListCorese.ttl#activity> .
+                INSERT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphListCorese.ttl#activity> .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphListCorese.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphListCorese.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
             """
         ]
@@ -115,8 +128,8 @@
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             CONSTRUCT {
-                $endpointDescription sd:availableGraphs $graphList .
-                $graphList sd:namedGraph [
+                ?endpointDescription sd:availableGraphs ?graphList .
+                ?graphList sd:namedGraph [
                         a sd:NamedGraph ;
                         sd:name ?graph
                     ] .
@@ -128,6 +141,8 @@
                     }
                     FILTER(STRSTARTS(str(?graph), $namespace))
                 }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Graphs")) AS ?graphList)
             }"""
         ]
         <../../meta/modifiedUpdate.ttl>
@@ -140,10 +155,13 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> .
+                INSERT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
             """
         ]
@@ -154,15 +172,17 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                $metadataDescription a prov:Entity , earl:TestSubject ;
+                ?metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
-                    kgi:curated $datasetDescription .
-                $datasetDescription void:vocabulary ?ns .
+                    kgi:curated ?datasetDescription .
+                ?datasetDescription void:vocabulary ?ns .
             }
             WHERE {
                 { SELECT DISTINCT ?elem { ?s ?elem ?o .
                 } }
                 BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
         """
         ]
@@ -174,15 +194,17 @@
                 PREFIX dcterms: <http://purl.org/dc/terms/>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                $metadataDescription a prov:Entity , earl:TestSubject ;
+                ?metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
-                    kgi:curated $datasetDescription .
-                $datasetDescription void:vocabulary IRI(?ns) .
+                    kgi:curated ?datasetDescription .
+                ?datasetDescription void:vocabulary IRI(?ns) .
             }
             WHERE {
                 { SELECT DISTINCT ?elem { ?s a ?elem .
                 } }
                 BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
             """
         ]
@@ -200,10 +222,13 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> .
+                INSERT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
             """
         ]
@@ -214,10 +239,10 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                $metadataDescription a prov:Entity , earl:TestSubject ;
+                ?metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
-                    kgi:curated $datasetDescription .
-                $datasetDescription void:vocabulary ?ns .
+                    kgi:curated ?datasetDescription .
+                ?datasetDescription void:vocabulary ?ns .
             }
             WHERE {
                 SERVICE $endpointUrl {
@@ -226,6 +251,8 @@
                     }
                 }
                 BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
             """
         ]
@@ -236,10 +263,10 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                $metadataDescription a prov:Entity , earl:TestSubject ;
+                ?metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
-                    kgi:curated $datasetDescription .
-                $datasetDescription void:vocabulary ?ns .
+                    kgi:curated ?datasetDescription .
+                ?datasetDescription void:vocabulary ?ns .
             }
             WHERE {
                 SERVICE $endpointUrl {
@@ -248,6 +275,8 @@
                     }
                 }
                 BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }"""
         ]
         <../../meta/modifiedUpdate.ttl>
@@ -261,10 +290,13 @@
                     PREFIX prov: <http://www.w3.org/ns/prov#>
                     PREFIX earl: <http://www.w3.org/ns/earl#>
                     PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                    INSERT DATA {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyListCoreseLOV.ttl#activity> .
+                    INSERT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyListCoreseLOV.ttl#activity> .
                         prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyListCoreseLOV.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>  .
+                }
+                WHERE {
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
                 """
             ]
@@ -279,10 +311,10 @@
                     PREFIX voaf: <http://purl.org/vocommons/voaf#>
                     PREFIX dcterms: <http://purl.org/dc/terms/>
                     CONSTRUCT {
-                        $metadataDescription a prov:Entity , earl:TestSubject ;
+                        ?metadataDescription a prov:Entity , earl:TestSubject ;
                             prov:wasDerivedFrom $rawEndpointUrl ;
-                            kgi:curated $datasetDescription .
-                        $datasetDescription void:vocabulary ?vocabURI .
+                            kgi:curated ?datasetDescription .
+                        ?datasetDescription void:vocabulary ?vocabURI .
                         ?vocabURI a voaf:Vocabulary ;
                             vann:preferredNamespaceUri ?uri ;
                             vann:preferredNamespacePrefix ?prefix ;
@@ -303,6 +335,8 @@
                                     dcterms:title ?title .
                             }
                         }
+                        BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                        BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                     }
                 """
             ]
@@ -315,10 +349,10 @@
                     PREFIX kgi: <http://ns.inria.fr/kgindex#>
                     PREFIX dcterms: <http://purl.org/dc/terms/>
                     CONSTRUCT {
-                        $metadataDescription a prov:Entity , earl:TestSubject ;
+                        ?metadataDescription a prov:Entity , earl:TestSubject ;
                             prov:wasDerivedFrom $rawEndpointUrl ;
-                            kgi:curated $datasetDescription .
-                        $datasetDescription void:vocabulary ?vocabURI .
+                            kgi:curated ?datasetDescription .
+                        ?datasetDescription void:vocabulary ?vocabURI .
                         ?vocabURI a voaf:Vocabulary ;
                             vann:preferredNamespaceUri ?uri ;
                             vann:preferredNamespacePrefix ?prefix ;
@@ -339,6 +373,8 @@
                                     dcterms:title ?title .
                             }
                         }
+                        BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                        BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                     }
                 """
             ]
@@ -350,8 +386,10 @@
     kgi:onFailure (
         [
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-                DELETE WHERE {
-                    $datasetDescription void:classes ?classCount .
+                DELETE {
+                    ?datasetDescription void:classes ?classCount .
+                } WHERE {
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
         ]
@@ -360,10 +398,13 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                INSERT DATA {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/classCount.ttl#activity> .
+                INSERT {
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/classCount.ttl#activity> .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/classCount.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/classCount.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
             """
         ]
@@ -378,7 +419,7 @@
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX owl: <http://www.w3.org/2002/07/owl#>
                 CONSTRUCT {
-                    $datasetDescription void:classes ?count .
+                    ?datasetDescription void:classes ?count .
                 }
                 WHERE {
                     SELECT (count(?class) AS ?count)
@@ -391,6 +432,7 @@
                             UNION { ?whatever a ?class }
                         }
                     }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
         ]
@@ -401,8 +443,10 @@
     kgi:onFailure (
         [
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-                DELETE WHERE {
-                    $datasetDescription void:properties ?propCount .
+                DELETE {
+                    ?datasetDescription void:properties ?propCount .
+                } WHERE {
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
         ]
@@ -411,10 +455,12 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                INSERT DATA {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/propertyCount.ttl#activity> .
+                INSERT {
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/propertyCount.ttl#activity> .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/propertyCount.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/propertyCount.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            } WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
             """
         ]
@@ -429,7 +475,7 @@
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX owl: <http://www.w3.org/2002/07/owl#>
                 CONSTRUCT {
-                    $datasetDescription void:properties ?count .
+                    ?datasetDescription void:properties ?count .
                 }
                 WHERE {
                     SELECT (count(?p) AS ?count)
@@ -440,6 +486,7 @@
                             ?s ?p ?o
                         }
                     }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
         ]
@@ -450,8 +497,10 @@
     kgi:onFailure (
         [
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-                DELETE WHERE {
-                    $datasetDescription void:triples ?propCount .
+                DELETE {
+                    ?datasetDescription void:triples ?propCount .
+                } WHERE {
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
         ]
@@ -460,10 +509,13 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                INSERT DATA {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/tripleCount.ttl#activity> .
+                INSERT {
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/tripleCount.ttl#activity> .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/tripleCount.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/tripleCount.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
             """
         ]
@@ -476,7 +528,7 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                    $datasetDescription void:triples ?count .
+                    ?datasetDescription void:triples ?count .
                 }
                 WHERE {
                     SELECT (count(*) AS ?count) WHERE {
@@ -486,6 +538,7 @@
                            ?s ?p ?o .
                         }
                     }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
         ]
@@ -497,10 +550,11 @@
         [
             mf:action """PREFIX schema: <https://schema.org/>
                 CONSTRUCT {
-                    $endpointDescription schema:broadcastTimezone ?timezone .
+                    ?endpointDescription schema:broadcastTimezone ?timezone .
                 } WHERE {
                     BIND(TZ(NOW()) AS ?timezone)
                     FILTER(?timezone != "")
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
                 }"""
         ]
         <../../meta/modifiedUpdate.ttl>

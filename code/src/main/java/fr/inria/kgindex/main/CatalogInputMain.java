@@ -69,7 +69,7 @@ public class CatalogInputMain {
         options.addOption(Option.builder(OPT_OUTPUT)
                 .required(false)
                 .hasArg()
-                .desc("Output filename. Default is 'output.trig'.")
+                .desc("Output filename. Default is 'output.ttl'.")
                 .build());
         options.addOption(Option.builder(OPT_MANIFEST)
                 .required(false)
@@ -89,9 +89,9 @@ public class CatalogInputMain {
                 formatter.printHelp( APP_NAME, options );
             }
 
-            String outputFilename = "output.trig";
+            String outputFilename = "output.ttl";
             if(cmd.hasOption(OPT_OUTPUT)) {
-                outputFilename = cmd.getOptionValue(OPT_OUTPUT, "output.trig");
+                outputFilename = cmd.getOptionValue(OPT_OUTPUT, "output.ttl");
             }
             if(cmd.hasOption(OPT_TIMEOUT)) {
                 String queryTimeoutString = cmd.getOptionValue(OPT_TIMEOUT, DEFAULT_TIMEOUT);
@@ -178,7 +178,7 @@ public class CatalogInputMain {
                     logger.trace("START dataset " + endpointUrl );
 
                     // Faire l'extraction de description selon nos regles
-                    Path tmpDatasetDescFile = Files.createTempFile(null, ".trig");
+                    Path tmpDatasetDescFile = Files.createTempFile(null, ".ttl");
 
                     DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetNames);
                     result.getDefaultModel().add(KGIndex.catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());

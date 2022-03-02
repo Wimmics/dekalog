@@ -137,7 +137,7 @@ public class InteractionApplication {
                                         .build();
                                 QueryEngineHTTP actionExecution = new QueryEngineHTTP(action.getEndpointUrl(), constructQuery, client);
                                 actionExecution.addParam("timeout", String.valueOf(action.getTimeout()));
-                                actionExecution.addParam("format", Lang.TRIG.getContentType().getContentTypeStr());
+                                actionExecution.addParam("format", Lang.TTL.getContentType().getContentTypeStr());
                                 actionExecution.setTimeout(action.getTimeout(), TimeUnit.MILLISECONDS, action.getTimeout(), TimeUnit.MILLISECONDS);
 
                                 try {
