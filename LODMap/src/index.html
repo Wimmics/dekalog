@@ -216,18 +216,86 @@
                         <div class="row mb-4">
                             <h3 class='text-center'>Datasets populations</h3>
                         </div>
-                        <div class="row">
-                            <div class="container justify-content-center" id="tripleScatter">
-                                <h5>Size of datasets through
-                                    time</h5>
+                        <div class="row border border-gray">
+                            <div class="col-4" id="tripleScatter">
+                                <h5>Size of datasets through time</h5>
                             </div>
-                            <div class="container justify-content-center" id="classScatter">
-                                <h5>Number of classes through
-                                    time</h5>
+                            <div class="col-4" id="classScatter">
+                                <h5>Number of classes through time</h5>
                             </div>
-                            <div class="container justify-content-center" id="propertyScatter">
-                                <h5>Number of properties
-                                    through time</h5>
+                            <div class="col-4" id="propertyScatter">
+                                <h5>Number of properties through time</h5>
+                            </div>
+                        </div>
+                        <div class="row border border-gray">
+                            <div class="col-12">
+                                <div class="row">
+                                    <button id="classDescriptionDetails" type="button" class="btn btn-link">
+                                        Details about the classes
+                                    </button>
+                                    <button id="classPropertiesDescriptionDetails" type="button" class="btn btn-link">
+                                        Details about the properties appearing around the instances of each class
+                                    </button>
+                                </div>
+                                <div class="row">
+                                    <table id="classDescriptionTable" class="table table-responsive table-hover collapse">
+                                        <thead>
+                                            <tr>
+                                                <th id="classDescriptionTableClassHeader" scope="col">Class</th>
+                                                <th id="classDescriptionTableTriplesHeader" scope="col">Number of instances</th>
+                                                <th id="classDescriptionTableClassesHeader" scope="col">Number of classes used
+                                                    conjointly
+                                                </th>
+                                                <th id="classDescriptionTablePropertiesHeader" scope="col">Number of properties
+                                                    used
+                                                    conjointly
+                                                </th>
+                                                <th id="classDescriptionTableDistinctSubjectsHeader" scope="col">Number of
+                                                    distinct
+                                                    subjects linked to instances
+                                                </th>
+                                                <th id="classDescriptionTableDistinctObjectsHeader" scope="col">Number of
+                                                    distinct
+                                                    objects linked to instances
+                                                </th>
+                                                <th id="classDescriptionTableEndpointsHeader" scope="col">Number of endpoints
+                                                    using this
+                                                    class
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="classDescriptionTableBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <table id="classPropertiesDescriptionTable"
+                                        class="table table-responsive table-hover collapse">
+                                        <thead>
+                                            <tr>
+                                                <th id="classPropertiesDescriptionTableClassHeader" scope="col">Class</th>
+                                                <th id="classPropertiesDescriptionTablePropertyHeader" scope="col">Property</th>
+                                                <th id="classPropertiesDescriptionTableTriplesHeader" scope="col">Number of
+                                                    instances
+                                                </th>
+                                                <th id="classPropertiesDescriptionTableDistinctSubjectsHeader" scope="col">
+                                                    Number of
+                                                    distinct subjects
+                                                </th>
+                                                <th id="classPropertiesDescriptionTableDistinctObjectsHeader" scope="col">Number
+                                                    of
+                                                    distinct objects
+                                                </th>
+                                                <th id="classPropertiesDescriptionTableEndpointsHeader" scope="col">Number of
+                                                    endpoints
+                                                    using this class and property
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="classPropertiesDescriptionTableBody">
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -332,73 +400,6 @@
                                     </tr>
                                 </thead>
                                 <tbody id="datasetDescriptionTableBody">
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row">
-                            <button id="classDescriptionDetails" type="button" class="btn btn-link">
-                                Details about the classes
-                            </button>
-                            <button id="classPropertiesDescriptionDetails" type="button" class="btn btn-link">
-                                Details about the properties appearing around the instances of each class
-                            </button>
-                        </div>
-                        <div class="row">
-                            <table id="classDescriptionTable" class="table table-responsive table-hover collapse">
-                                <thead>
-                                    <tr>
-                                        <th id="classDescriptionTableClassHeader" scope="col">Class</th>
-                                        <th id="classDescriptionTableTriplesHeader" scope="col">Number of instances</th>
-                                        <th id="classDescriptionTableClassesHeader" scope="col">Number of classes used
-                                            conjointly
-                                        </th>
-                                        <th id="classDescriptionTablePropertiesHeader" scope="col">Number of properties
-                                            used
-                                            conjointly
-                                        </th>
-                                        <th id="classDescriptionTableDistinctSubjectsHeader" scope="col">Number of
-                                            distinct
-                                            subjects linked to instances
-                                        </th>
-                                        <th id="classDescriptionTableDistinctObjectsHeader" scope="col">Number of
-                                            distinct
-                                            objects linked to instances
-                                        </th>
-                                        <th id="classDescriptionTableEndpointsHeader" scope="col">Number of endpoints
-                                            using this
-                                            class
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody id="classDescriptionTableBody">
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row">
-                            <table id="classPropertiesDescriptionTable"
-                                class="table table-responsive table-hover collapse">
-                                <thead>
-                                    <tr>
-                                        <th id="classPropertiesDescriptionTableClassHeader" scope="col">Class</th>
-                                        <th id="classPropertiesDescriptionTablePropertyHeader" scope="col">Property</th>
-                                        <th id="classPropertiesDescriptionTableTriplesHeader" scope="col">Number of
-                                            instances
-                                        </th>
-                                        <th id="classPropertiesDescriptionTableDistinctSubjectsHeader" scope="col">
-                                            Number of
-                                            distinct subjects
-                                        </th>
-                                        <th id="classPropertiesDescriptionTableDistinctObjectsHeader" scope="col">Number
-                                            of
-                                            distinct objects
-                                        </th>
-                                        <th id="classPropertiesDescriptionTableEndpointsHeader" scope="col">Number of
-                                            endpoints
-                                            using this class and property
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody id="classPropertiesDescriptionTableBody">
                                 </tbody>
                             </table>
                         </div>

@@ -754,6 +754,7 @@ var sparqlCoverCharts = new KartoChart({
                 },
                 xAxis: {
                     type: 'category',
+                    data: ["SPARQL 1.0 features"],
                     show: false,
                     splitLine: { show: false },
                     splitArea: { show: false }
@@ -785,6 +786,7 @@ var sparqlCoverCharts = new KartoChart({
                 },
                 xAxis: {
                     type: 'category',
+                    data: ["SPARQL 1.1 features"],
 //                    data: [...categories],
                     show: false,
                     splitLine: { show: false },
@@ -817,6 +819,7 @@ var sparqlCoverCharts = new KartoChart({
                 },
                 xAxis: {
                     type: 'category',
+                    data: ["All SPARQL features"],
 //                    data: categories,
                     splitLine: { show: false },
                     splitArea: { show: false },
@@ -2199,6 +2202,7 @@ var descriptionElementChart = new KartoChart({
             "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
             "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
             "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+            "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
             "OPTIONAL {" +
             "{ ?dataset <http://purl.org/dc/terms/creator> ?o } " +
             "UNION { ?dataset <http://purl.org/dc/terms/contributor> ?o } " +
@@ -2213,6 +2217,7 @@ var descriptionElementChart = new KartoChart({
             "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
             "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
             "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+            "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
             "OPTIONAL {" +
             "{ ?dataset <http://purl.org/dc/terms/license> ?o } " +
             "UNION {?dataset <http://purl.org/dc/terms/conformsTo> ?o } " +
@@ -2226,6 +2231,7 @@ var descriptionElementChart = new KartoChart({
             "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
             "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
             "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+            "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
             "OPTIONAL {" +
             " { ?dataset <http://purl.org/dc/terms/modified> ?o } " +
             "UNION { ?dataset <http://www.w3.org/ns/prov#wasGeneratedAtTime> ?o } " +
@@ -2240,6 +2246,7 @@ var descriptionElementChart = new KartoChart({
             "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
             "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
             "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+            "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
             "OPTIONAL {" +
             "{ ?dataset <http://purl.org/dc/terms/source> ?o } " +
             "UNION { ?dataset <http://www.w3.org/ns/prov#wasDerivedFrom> ?o } " +
