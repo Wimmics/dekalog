@@ -45,3 +45,7 @@ VoiDMatic/package-lock.json
 LODMap/.idea/
 
 VoiDMatic/
+
+LODMap/src/data/retrieveEndpointGeolocList/node_modules/
+
+LODMap/src/data/retrieveEndpointGeolocList/package-lock.json
