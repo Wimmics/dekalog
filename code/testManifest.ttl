@@ -8,5 +8,5 @@
 
 <> a mf:Manifest ;
     mf:include (
-        <file:///user/pmaillot/home/git/dekalog/rules/manifest.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/extraction/asserted/manifest.ttl>
     ) .

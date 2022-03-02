@@ -44,8 +44,16 @@
                         ?res ?p ?o .
                     }
                 } WHERE {
-                    ?res sd:endpoint $endpointUrl .
-                    ?res ?p ?o .
+                    {
+                        ?res sd:endpoint $endpointUrl .
+                        ?res ?p ?o .
+                    }
+                    UNION {
+                        GRAPH ?g {
+                            ?res sd:endpoint $endpointUrl .
+                            ?res ?p ?o .
+                        }
+                    }
                 }"""
         ]
         [
@@ -59,8 +67,16 @@
                         ?s ?p ?res .
                    }
                 } WHERE {
-                   ?res sd:endpoint $endpointUrl .
-                   ?s ?p ?res .
+                    {
+                       ?res sd:endpoint $endpointUrl .
+                       ?s ?p ?res .
+                    }
+                    UNION {
+                        GRAPH ?g {
+                           ?res sd:endpoint $endpointUrl .
+                           ?s ?p ?res .
+                        }
+                    }
                 }"""
         ]
         <../../meta/modifiedUpdate.ttl>
@@ -104,8 +120,16 @@
                         ?res ?p ?o .
                     }
                 } WHERE {
-                    ?res sd:endpoint ?endpoint .
-                    ?res ?p ?o .
+                    {
+                        ?res sd:endpoint ?endpoint .
+                        ?res ?p ?o .
+                    }
+                    UNION {
+                        GRAPH ?g {
+                            ?res sd:endpoint ?endpoint .
+                            ?res ?p ?o .
+                        }
+                    }
                     FILTER(CONTAINS(str(?endpoint), "locahost"))
                 }"""
         ]
@@ -120,8 +144,16 @@
                         ?s ?p ?res .
                    }
                 } WHERE {
-                    ?res sd:endpoint ?endpoint .
-                   ?s ?p ?res .
+                    {
+                        ?res sd:endpoint ?endpoint .
+                        ?s ?p ?res .
+                    }
+                    UNION {
+                        GRAPH ?g {
+                            ?res sd:endpoint ?endpoint .
+                            ?s ?p ?res .
+                        }
+                    }
                    FILTER(CONTAINS(str(?endpoint), "locahost"))
                 }"""
         ]
@@ -179,10 +211,20 @@
                     }
                 }
                 WHERE {
-                    { ?res a dcat:Dataset }
-                    UNION { ?res a void:Dataset }
-                    ?res ?p $endpointUrl .
-                    ?res ?pp ?o .
+                    {
+                        { ?res a dcat:Dataset }
+                        UNION { ?res a void:Dataset }
+                        ?res ?p $endpointUrl .
+                        ?res ?pp ?o .
+                    }
+                    UNION {
+                        GRAPH ?g {
+                            { ?res a dcat:Dataset }
+                            UNION { ?res a void:Dataset }
+                            ?res ?p $endpointUrl .
+                            ?res ?pp ?o .
+                        }
+                    }
                  }"""
         ]
         [
@@ -204,10 +246,20 @@
                     }
                 }
                 WHERE {
-                    { ?res a dcat:Dataset }
-                    UNION { ?res a void:Dataset }
-                    ?res ?p $endpointUrl .
-                    ?s ?pp ?res .
+                    {
+                        { ?res a dcat:Dataset }
+                        UNION { ?res a void:Dataset }
+                        ?res ?p $endpointUrl .
+                        ?s ?pp ?res .
+                    }
+                    UNION {
+                        GRAPH ?g {
+                            { ?res a dcat:Dataset }
+                            UNION { ?res a void:Dataset }
+                            ?res ?p $endpointUrl .
+                            ?s ?pp ?res .
+                        }
+                    }
                  }"""
         ]
         <../../meta/modifiedUpdate.ttl>
@@ -249,10 +301,20 @@
                     }
                 }
                 WHERE {
-                    { ?res a dcat:Dataset }
-                    UNION { ?res a void:Dataset }
-                    ?res ?p ?endpoint .
-                    ?res ?pp ?o .
+                    {
+                        { ?res a dcat:Dataset }
+                        UNION { ?res a void:Dataset }
+                        ?res ?p ?endpoint .
+                        ?res ?pp ?o .
+                    }
+                    UNION {
+                        GRAPH ?g {
+                            { ?res a dcat:Dataset }
+                            UNION { ?res a void:Dataset }
+                            ?res ?p ?endpoint .
+                            ?res ?pp ?o .
+                        }
+                    }
                     FILTER( CONTAINS( str(?endpoint), "localhost") )
                  }"""
         ]
@@ -275,10 +337,20 @@
                     }
                 }
                 WHERE {
-                    { ?res a dcat:Dataset }
-                    UNION { ?res a void:Dataset }
-                    ?res ?p ?endpoint .
-                    ?s ?pp ?res .
+                    {
+                        { ?res a dcat:Dataset }
+                        UNION { ?res a void:Dataset }
+                        ?res ?p ?endpoint .
+                        ?s ?pp ?res .
+                    }
+                    UNION {
+                        GRAPH ?g {
+                            { ?res a dcat:Dataset }
+                            UNION { ?res a void:Dataset }
+                            ?res ?p ?endpoint .
+                            ?s ?pp ?res .
+                        }
+                    }
                     FILTER( CONTAINS( str(?endpoint), "localhost") )
                  }"""
         ]
