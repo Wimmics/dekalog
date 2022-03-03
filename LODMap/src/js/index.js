@@ -1,6 +1,7 @@
 import * as echarts from "./echarts.js";
 import $, { get } from 'jquery';
 import 'leaflet';
+const ttl_read = require('@graphy/content.ttl.read');
 const dayjs = require('dayjs')
 const customParseFormat = require('dayjs/plugin/customParseFormat')
 const duration = require('dayjs/plugin/duration');
@@ -60,12 +61,17 @@ function sparqlQueryJSON(query, callback, errorCallback) {
 };
 
 function xmlhttpRequestJSON(url, callback, errorCallback) {
+    xmlhttpRequestPlain(url, response => {
+        callback(JSON.parse(response))
+    }, errorCallback);
+};
+
+function xmlhttpRequestPlain(url, callback, errorCallback) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                var response = JSON.parse(this.responseText);
-                callback(response);
+                callback(this.responseText);
             } else if (errorCallback != undefined) {
                 errorCallback(this);
             }
@@ -247,6 +253,7 @@ function refresh() {
     totalCategoryTestNumberChart.fill();
     classAndPropertiesContentFill();
     testTableFill();
+    sparqlFeaturesFill()
 }
 
 function clear() {
@@ -559,6 +566,99 @@ var endpointMap = new KartoChart({
 });
 setButtonAsToggleCollapse('endpointGeolocDetails', 'endpointGeolocTable');
 
+function sparqlFeaturesFill() {
+    const sparqlFeatureQuery = 'SELECT DISTINCT ?endpoint ?activity { ' +
+    'GRAPH ?g { ' +
+    '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ' +
+    '?metadata <http://ns.inria.fr/kg/index#curated> ?base . ' +
+    'OPTIONAL { ' +
+    '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . ' +
+    'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) ' +
+    'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } ' +
+    '} ' +
+    '} ' +
+    generateGraphValueFilterClause() + ' } ' +
+    'GROUP BY ?endpoint ?activity ' +
+    'ORDER BY DESC( ?endpoint)';
+    var endpointFeatureMap = new Map();
+    var featuresShortName = new Map();
+    var sparqlFeaturesDataArray = [];
+    sparqlQueryJSON(sparqlFeatureQuery, json => {
+        endpointFeatureMap = new Map();
+        var featuresSet = new Set();
+        json.results.bindings.forEach(bindingItem => {
+            const endpointUrl = bindingItem.endpoint.value;
+            if(! endpointFeatureMap.has(endpointUrl)) {
+                endpointFeatureMap.set(endpointUrl, new Set());
+            }
+            if(bindingItem.activity != undefined) {
+                const activity = bindingItem.activity.value;
+                if(! endpointFeatureMap.has(endpointUrl)) {
+                    endpointFeatureMap.set(endpointUrl, new Set());
+                }
+                endpointFeatureMap.get(endpointUrl).add(activity);
+                featuresSet.add(activity);
+                featuresShortName.set(activity, activity.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_", "").replace(".ttl#activity", ""))
+            }
+        });
+
+        sparqlFeaturesDataArray = [];
+        endpointFeatureMap.forEach((featureSet, endpointUrl, map) => {
+            sparqlFeaturesDataArray.push({ endpoint:endpointUrl, features:featureSet });
+        });
+
+        sparqlFeaturesDataArray.sort((a, b) => {
+            return a.endpoint.localeCompare(b.endpoint);
+        });
+
+        var featuresDescriptionMap = new Map();
+        var featuresQueryMap = new Map();
+        function fillFeaturesTable() {
+            var tableBody = $('#SPARQLFeaturesTableBody');
+            tableBody.empty();
+            sparqlFeaturesDataArray.forEach((item, i) => {
+                var endpoint = item.endpoint;
+                var endpointRow = $(document.createElement("tr"));
+                var endpointCell = $(document.createElement("td"));
+                var featuresCell = $(document.createElement("td"));
+                item.features.forEach(feature => {
+                    var featureName = featuresShortName.get(feature);
+                    var featureAloneCell = $(document.createElement("p"));
+                    featureAloneCell.addClass(featureName+"Feature");
+                    featureAloneCell.prop("title", featuresDescriptionMap.get(feature) + "\n" + featuresQueryMap.get(feature))
+                    featureAloneCell.text(featureName);
+                    featuresCell.append(featureAloneCell);
+                })
+                endpointCell.text(endpoint);
+                endpointRow.append(endpointCell);
+                endpointRow.append(featuresCell);
+                tableBody.append(endpointRow);
+            });
+        }
+    
+        setTableHeaderSort("SPARQLFeaturesTableBody", ["SPARQLFeaturesTableEndpointHeader", "SPARQLFeaturesTableFeaturesHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.features.size - b.features.size], fillFeaturesTable, sparqlFeaturesDataArray);
+    
+        fillFeaturesTable();
+
+        featuresSet.forEach(featureItem => {
+            xmlhttpRequestPlain(featureItem, ttlFile => {
+                ttl_read(ttlFile, {
+                    // whew! simplified inline events style  ;)
+                    data(y_quad) {
+                        if(y_quad.predicate.value.localeCompare("http://purl.org/dc/terms/description") == 0) {
+                            featuresDescriptionMap.set(featureItem, y_quad.object.value);
+                        }
+                        if(y_quad.predicate.value.localeCompare("http://ns.inria.fr/kg/index#query") == 0) {
+                            featuresQueryMap.set(featureItem, y_quad.object.value);
+                        }
+                    }
+                });
+            });
+        });
+    });
+}
+setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
+
 var sparqlCoverCharts = new KartoChart({
     chartObject: { 'sparql10Chart': echarts.init(document.getElementById('SPARQL10histo')), 'sparql11Chart': echarts.init(document.getElementById('SPARQL11histo')), 'sparqlChart': echarts.init(document.getElementById('SPARQLCoverageHisto')) },
     option: { sparql10ChartOption: {}, sparql11ChartOption: {}, sparqlChartOption: {} },
@@ -820,7 +920,6 @@ var sparqlCoverCharts = new KartoChart({
                 xAxis: {
                     type: 'category',
                     data: ["All SPARQL features"],
-//                    data: categories,
                     splitLine: { show: false },
                     splitArea: { show: false },
                     show: false
@@ -840,7 +939,7 @@ var sparqlCoverCharts = new KartoChart({
             });
 
             function fillTestTable() {
-                var tableBody = $('#SPARQLFeaturesTableBody');
+                var tableBody = $('#SPARQLFeaturesCountTableBody');
                 tableBody.empty();
                 jsonBaseFeatureSparqles.forEach((item, i) => {
                     var endpoint = item.endpoint;
@@ -860,7 +959,7 @@ var sparqlCoverCharts = new KartoChart({
                 });
             }
 
-            setTableHeaderSort("SPARQLFeaturesTableBody", ["SPARQLFeaturesTableEndpointHeader", "SPARQL10FeaturesTableRuleHeader", "SPARQL11FeaturesTableRuleHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.sparql10 - b.sparql10, (a, b) => a.sparql11 - b.sparql11], fillTestTable, jsonBaseFeatureSparqles);
+            setTableHeaderSort("SPARQLFeaturesCountTableBody", ["SPARQLFeaturesCountTableEndpointHeader", "SPARQL10FeaturesTableRuleHeader", "SPARQL11FeaturesTableRuleHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.sparql10 - b.sparql10, (a, b) => a.sparql11 - b.sparql11], fillTestTable, jsonBaseFeatureSparqles);
 
             fillTestTable();
         });
@@ -885,7 +984,7 @@ var sparqlCoverCharts = new KartoChart({
         this.chartObject.sparqlChart.setOption({ series: [] }, true);
     }
 });
-setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
+setButtonAsToggleCollapse('tableSPARQLFeaturesStatsDetails', 'SPARQLFeaturesCountTable');
 
 var vocabRelatedChart = new KartoChart({
     chartObject: { vocabChart: echarts.init(document.getElementById('vocabs')), rawVocabChart: echarts.init(document.getElementById('rawVocabs')), keywordChart: echarts.init(document.getElementById('endpointKeywords')) },
