@@ -12,7 +12,15 @@
     kgi:query """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         ASK
         WHERE {
-            ?res sd:endpoint ?endpoint .
-            FILTER(CONTAINS(str(?endpoint), "locahost"))
+            {
+                ?res sd:endpoint ?endpoint .
+                FILTER(CONTAINS(str(?endpoint), "locahost"))
+            }
+            UNION {
+                GRAPH ?g {
+                    ?res sd:endpoint ?endpoint .
+                    FILTER(CONTAINS(str(?endpoint), "locahost"))
+                }
+            }
         }
         $LIMIT""" .

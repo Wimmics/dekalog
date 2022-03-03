@@ -17,6 +17,9 @@
         WHERE {
             { ?res a dcat:Dataset }
             UNION { ?res a void:Dataset }
-            ?res ?p ?endpoint .
+            UNION { GRAPH ?g { ?res a dcat:Dataset } }
+            UNION { GRAPH ?g { ?res a void:Dataset } }
+            { ?res ?p ?endpoint }
+            UNION { GRAPH ?g { ?res ?p ?endpoint } } .
             FILTER(CONTAINS(str(?endpoint), "localhost"))
         }""" .

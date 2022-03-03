@@ -17,5 +17,8 @@
         WHERE {
             { ?res a dcat:Dataset }
             UNION { ?res a void:Dataset }
-            ?res ?p $endpointUrl .
+            UNION { GRAPH ?g { ?res a dcat:Dataset } }
+            UNION { GRAPH ?g { ?res a void:Dataset } }
+            { ?res ?p $endpointUrl }
+            UNION { GRAPH ?g { ?res ?p $endpointUrl } } .
         }""" .

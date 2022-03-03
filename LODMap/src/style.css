@@ -1,3 +1,11 @@
+body {
+    padding:10px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color:#555;
+}
+
 #ignoredEndpoints { width:100% }
 #map { width: 100%; height: 900px; }
 #endpointKeywords { width: 100%; height: 500px; }
@@ -6,10 +14,11 @@
 #histo1 { width: 49%; height: 500px; }
 #histo2 { width: 49%; height: 500px; }
 #SPARQLCoverageHisto { width: 100%; height: 500px; }
-#tripleScatter { width: 33%; height: 300px; }
-#classScatter { width: 33%; height: 300px; }
-#propertyScatter { width: 33%; height: 300px; }
+#tripleScatter { width: 100%; height: 300px; }
+#classScatter { width: 100%; height: 300px; }
+#propertyScatter { width: 100%; height: 300px; }
 #testCategoryScatter { width: 100%; height: 300px; }
+#totalTestCategoryScatter { width: 100%; height: 300px; }
 #descriptionSizeScatter { width: 100%; height: 500px; }
 #totalRuntimeScatter { width: 100%; height: 250px; }
 #averageRuntimeScatter { width: 100%; height: 250px; }

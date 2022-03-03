@@ -12,6 +12,13 @@
     kgi:query """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
         ASK
         WHERE {
-            ?res sd:endpoint $endpointUrl .
+            {
+                ?res sd:endpoint $endpointUrl . 
+            }
+            UNION {
+                GRAPH ?g {
+                    ?res sd:endpoint $endpointUrl .
+                }
+            }
         }
         $LIMIT""" .
