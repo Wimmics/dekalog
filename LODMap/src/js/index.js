@@ -706,6 +706,12 @@ var sparqlCoverCharts = new KartoChart({
             endpointSet.forEach((item) => {
                 var sparql10 = sparql10Map.get(item);
                 var sparql11 = sparql11Map.get(item);
+                if(sparql10 == undefined) {
+                    sparql10 = 0;
+                }
+                if(sparql11 == undefined) {
+                    sparql11 = 0;
+                }
                 var sparqlJSONObject = { 'endpoint': item, 'sparql10': sparql10, 'sparql11': sparql11, 'sparqlTotal': (sparql10 + sparql11) };
                 jsonBaseFeatureSparqles.push(sparqlJSONObject);
             });
