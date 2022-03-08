@@ -13,6 +13,7 @@ import { greenIcon, orangeIcon } from "./leaflet-color-markers.js";
 const endpointIpMap = require('../data/endpointIpGeoloc.json');
 const timezoneMap = require('../data/timezoneMap.json');
 const graphLists = require('../data/runSets.json');
+const sparqlFeatureDesc = require('../data/SPARQLFeatureDescriptions.json');
 
 class KartoChart {
     constructor(config = { chartObject, option, fillFunction: () => { }, redrawFunction: () => { }, clearFunction: () => { }, hideFunction: () => { }, showFunction: () => { }, divId }) {
@@ -567,19 +568,27 @@ var endpointMap = new KartoChart({
 setButtonAsToggleCollapse('endpointGeolocDetails', 'endpointGeolocTable');
 
 function sparqlFeaturesFill() {
+
+    var featuresDescriptionMap = new Map();
+    var featuresQueryMap = new Map();
+    sparqlFeatureDesc.forEach(featureDesc => {
+        featuresDescriptionMap.set(featureDesc.feature, featureDesc.description);
+        featuresQueryMap.set(featureDesc.feature, featureDesc.query);
+    });
+
     const sparqlFeatureQuery = 'SELECT DISTINCT ?endpoint ?activity { ' +
-    'GRAPH ?g { ' +
-    '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ' +
-    '?metadata <http://ns.inria.fr/kg/index#curated> ?base . ' +
-    'OPTIONAL { ' +
-    '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . ' +
-    'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) ' +
-    'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } ' +
-    '} ' +
-    '} ' +
-    generateGraphValueFilterClause() + ' } ' +
-    'GROUP BY ?endpoint ?activity ' +
-    'ORDER BY DESC( ?endpoint)';
+        'GRAPH ?g { ' +
+        '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ' +
+        '?metadata <http://ns.inria.fr/kg/index#curated> ?base . ' +
+        'OPTIONAL { ' +
+        '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . ' +
+        'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) ' +
+        'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } ' +
+        '} ' +
+        '} ' +
+        generateGraphValueFilterClause() + ' } ' +
+        'GROUP BY ?endpoint ?activity ' +
+        'ORDER BY DESC( ?endpoint)';
     var endpointFeatureMap = new Map();
     var featuresShortName = new Map();
     var sparqlFeaturesDataArray = [];
@@ -588,12 +597,12 @@ function sparqlFeaturesFill() {
         var featuresSet = new Set();
         json.results.bindings.forEach(bindingItem => {
             const endpointUrl = bindingItem.endpoint.value;
-            if(! endpointFeatureMap.has(endpointUrl)) {
+            if (!endpointFeatureMap.has(endpointUrl)) {
                 endpointFeatureMap.set(endpointUrl, new Set());
             }
-            if(bindingItem.activity != undefined) {
+            if (bindingItem.activity != undefined) {
                 const activity = bindingItem.activity.value;
-                if(! endpointFeatureMap.has(endpointUrl)) {
+                if (!endpointFeatureMap.has(endpointUrl)) {
                     endpointFeatureMap.set(endpointUrl, new Set());
                 }
                 endpointFeatureMap.get(endpointUrl).add(activity);
@@ -604,15 +613,13 @@ function sparqlFeaturesFill() {
 
         sparqlFeaturesDataArray = [];
         endpointFeatureMap.forEach((featureSet, endpointUrl, map) => {
-            sparqlFeaturesDataArray.push({ endpoint:endpointUrl, features:featureSet });
+            var sortedFeatureArray = [...featureSet].sort((a,b) => a.localeCompare(b));
+            sparqlFeaturesDataArray.push({ endpoint: endpointUrl, features: sortedFeatureArray });
         });
 
         sparqlFeaturesDataArray.sort((a, b) => {
             return a.endpoint.localeCompare(b.endpoint);
         });
-
-        var featuresDescriptionMap = new Map();
-        var featuresQueryMap = new Map();
         function fillFeaturesTable() {
             var tableBody = $('#SPARQLFeaturesTableBody');
             tableBody.empty();
@@ -624,8 +631,8 @@ function sparqlFeaturesFill() {
                 item.features.forEach(feature => {
                     var featureName = featuresShortName.get(feature);
                     var featureAloneCell = $(document.createElement("p"));
-                    featureAloneCell.addClass(featureName+"Feature");
-                    featureAloneCell.prop("title", featuresDescriptionMap.get(feature) + "\n" + featuresQueryMap.get(feature))
+                    featureAloneCell.addClass(featureName + "Feature");
+                        featureAloneCell.prop("title", featuresDescriptionMap.get(feature) + "\n" + featuresQueryMap.get(feature));
                     featureAloneCell.text(featureName);
                     featuresCell.append(featureAloneCell);
                 })
@@ -635,26 +642,10 @@ function sparqlFeaturesFill() {
                 tableBody.append(endpointRow);
             });
         }
-    
-        setTableHeaderSort("SPARQLFeaturesTableBody", ["SPARQLFeaturesTableEndpointHeader", "SPARQLFeaturesTableFeaturesHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.features.size - b.features.size], fillFeaturesTable, sparqlFeaturesDataArray);
-    
-        fillFeaturesTable();
 
-        featuresSet.forEach(featureItem => {
-            xmlhttpRequestPlain(featureItem, ttlFile => {
-                ttl_read(ttlFile, {
-                    // whew! simplified inline events style  ;)
-                    data(y_quad) {
-                        if(y_quad.predicate.value.localeCompare("http://purl.org/dc/terms/description") == 0) {
-                            featuresDescriptionMap.set(featureItem, y_quad.object.value);
-                        }
-                        if(y_quad.predicate.value.localeCompare("http://ns.inria.fr/kg/index#query") == 0) {
-                            featuresQueryMap.set(featureItem, y_quad.object.value);
-                        }
-                    }
-                });
-            });
-        });
+        setTableHeaderSort("SPARQLFeaturesTableBody", ["SPARQLFeaturesTableEndpointHeader", "SPARQLFeaturesTableFeaturesHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.features.size - b.features.size], fillFeaturesTable, sparqlFeaturesDataArray);
+
+        fillFeaturesTable();
     });
 }
 setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
@@ -706,10 +697,10 @@ var sparqlCoverCharts = new KartoChart({
             endpointSet.forEach((item) => {
                 var sparql10 = sparql10Map.get(item);
                 var sparql11 = sparql11Map.get(item);
-                if(sparql10 == undefined) {
+                if (sparql10 == undefined) {
                     sparql10 = 0;
                 }
-                if(sparql11 == undefined) {
+                if (sparql11 == undefined) {
                     sparql11 = 0;
                 }
                 var sparqlJSONObject = { 'endpoint': item, 'sparql10': sparql10, 'sparql11': sparql11, 'sparqlTotal': (sparql10 + sparql11) };
@@ -893,7 +884,7 @@ var sparqlCoverCharts = new KartoChart({
                 xAxis: {
                     type: 'category',
                     data: ["SPARQL 1.1 features"],
-//                    data: [...categories],
+                    //                    data: [...categories],
                     show: false,
                     splitLine: { show: false },
                     splitArea: { show: false }
@@ -1781,7 +1772,7 @@ var totalCategoryTestNumberChart = new KartoChart({
                         text: "Proportion of tests passed by category for all runs",
                     },
                     xAxis: {
-                        show:false,
+                        show: false,
                         type: 'category',
                         //    data:categoriesArray
                     },
