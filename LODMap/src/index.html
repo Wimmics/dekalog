@@ -148,14 +148,14 @@
                             <thead>
                                 <tr>
                                     <th>
-                                        Query 1
+                                        Query for the list of vocabularies
                                     </th>
                                     <th id="endpointVocabularyQueryCell">
                                     </th>
                                 </tr>
                                 <tr>
                                     <th>
-                                        Query 2
+                                        Query for the list of keywords
                                     </th>
                                     <th id="endpointKeywordQueryCell">
                                     </th>
@@ -192,16 +192,27 @@
                             </div>
                         </div>
                         <div class="row">
-                            <button id="tableSPARQLFeaturesDetails" type="button" class="btn btn-link">Details</button>
+                            <button id="tableSPARQLFeaturesStatsDetails" type="button" class="btn btn-link">Details of the statistics</button>
+                            <button id="tableSPARQLFeaturesDetails" type="button" class="btn btn-link">Details of the supported features</button>
                         </div>
-                        <table id="SPARQLFeaturesTable" class="table table-responsive table-hover collapse">
+                        <table id="SPARQLFeaturesCountTable" class="table table-responsive table-hover collapse">
                             <thead>
                                 <tr>
-                                    <th id="SPARQLFeaturesTableEndpointHeader" scope="col">Endpoint</th>
+                                    <th id="SPARQLFeaturesCountTableEndpointHeader" scope="col">Endpoint</th>
                                     <th id="SPARQL10FeaturesTableRuleHeader" scope="col">Percentage of SPARQL 1.0
                                         features</th>
                                     <th id="SPARQL11FeaturesTableRuleHeader" scope="col">Percentage of SPARQL 1.1
                                         features</th>
+                                </tr>
+                            </thead>
+                            <tbody id="SPARQLFeaturesCountTableBody">
+                            </tbody>
+                        </table>
+                        <table id="SPARQLFeaturesTable" class="table table-responsive table-hover collapse">
+                            <thead>
+                                <tr>
+                                    <th id="SPARQLFeaturesTableEndpointHeader" scope="col">Endpoint</th>
+                                    <th id="SPARQLFeaturesTableFeaturesHeader" scope="col">Feature</th>
                                 </tr>
                             </thead>
                             <tbody id="SPARQLFeaturesTableBody">
