@@ -7,4 +7,5 @@ module fr.inria.kgindex {
     requires org.apache.jena.rdfconnection;
     requires java.net.http;
     requires org.apache.httpcomponents.httpclient;
+    requires org.apache.commons.codec;
 }

@@ -207,6 +207,7 @@ public class CatalogInputMain {
                     describedDataset.getNames().forEach(name -> {
                         result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), RDFS.label, name);
                     });
+                    
                     DatasetDescriptionExtraction.extractIndexDescriptionForDataset(describedDataset, tmpDatasetDescFile.toString());
                     logger.trace("END dataset " + endpointUrl);
                     logger.trace("Transfert to result START");
