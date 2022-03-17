@@ -90,6 +90,9 @@ public class QueryTestExecution extends TestExecution {
                     } else if (QueryFactory.create(queryString).isSelectType()) {
                         ResultSet testResults = testQueryExecution.execSelect();
                         passed = true;
+                    } else if (QueryFactory.create(queryString).isConstructType()) {
+                        Model testResults = testQueryExecution.execConstruct();
+                        passed = true;
                     }
                     testQueryExecution.close();
                 } catch(Exception e) {

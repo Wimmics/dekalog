@@ -1,0 +1,207 @@
+[
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILREGEX-i.ttl#activity",
+        "description": "SPARQL SELECT query with a single-triple pattern and a FILTER operator filtering variables containing the 'thi' string, ignoring case",
+        "query": "SELECT *\n        WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type> ?val .\n        \tFILTER regex(?val, \"thi\", \"i\")\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELAVG.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query selecting using the average aggregate function",
+        "query": "SELECT (AVG(?o) AS ?avg)\n        WHERE {\n        \t<http://nonsensical.com/1> ?p ?o\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELGRAPHUNION.ttl#activity",
+        "description": "SPARQL SELECT query with a UNION of two triple patterns using GRAPH in one of the union sides",
+        "query": "SELECT *\n        {\n           { <http://nonsensical.com/1> <http://example.org/type> ?o }\n          UNION\n           { GRAPH ?g { ?s <http://example.org/type> ?o } }\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELBIND.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query using the BIND operator",
+        "query": "SELECT ?z\n        {\n          <http://nonsensical.com/1> ?p ?o .\n          BIND(?o+10 AS ?z)\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_ASK.ttl#activity",
+        "description": "SPARQL ASK.",
+        "query": "ASK {\n    ?s ?p ?o\n    }"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILIRI.ttl#activity",
+        "description": "SPARQL SELECT query with a single-triple pattern and a FILTER operator filtering for variables being an IRI",
+        "query": "SELECT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?v . FILTER isIRI(?v) . } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILNOTEXISTS.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query filtering for non existing triple patterns (FILTER NOT EXISTS operator)",
+        "query": "SELECT *\n        WHERE\n        {\t?s <http://example.org/type> <http://example.org/thing> .\n        \tFILTER NOT EXISTS {\n        \t\t?s <http://example.org/sameAs> <http://nonsensical.com/1>\n        \t}\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELPATHS.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query containing a Property Path expression",
+        "query": "SELECT * WHERE {\n            <http://nonsensical.com/1> <http://example.org/type>* ?z\n        }  LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELGRAPHJOIN.ttl#activity",
+        "description": "SPARQL SELECT query with a join of two triple patterns using GRAPH in one of the triple patterns",
+        "query": "SELECT * {\n          <http://nonsensical.com/1> <http://example.org/type> ?o .\n            GRAPH ?g { ?o <http://example.org/type> ?q }\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILSTR.ttl#activity",
+        "description": "SPARQL SELECT query with a single-triple pattern and a FILTER operator filering for variables containing string values",
+        "query": "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n        SELECT * WHERE {\n            <http://nonsensical.com/1> <http://example.org/type> ?v .\n            FILTER(datatype(xsd:string(?v)) = xsd:string) .\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELSUBQ.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query using with a subquery",
+        "query": "SELECT ?y\n        where {\n        {\n        \tSELECT * where { <http://nonsensical.com/1> <http://example.org/type>  ?y}}\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILSTART.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query filtering for the STRSTARTS string function",
+        "query": "SELECT ?s ?str WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type> ?str\n        \tFILTER STRSTARTS(STR(?str), \"h\")\n        }"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELVALUES.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query using the VALUES operator for restricting queries",
+        "query": "SELECT ?o\n            {\n               <http://nonsensical.com/1> ?p  ?o\n            }\n            VALUES ?o {\n             <http://example.org/thing>\n            }"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILBLANK.ttl#activity",
+        "description": "SPARQL SELECT query with a single-triple pattern filtering only blank nodes",
+        "query": "SELECT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?v FILTER isBlank(?v) . } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELSERVICE.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query containing a SERVICE call to DBpedia",
+        "query": "SELECT ?o\n        {\n          <http://nonsensical.com/1> <http://example.org/type> ?o .\n          SERVICE <http://dbpedia.org/sparql> {\n            <http://nonsensical.com/2> <http://example.org/type> ?o\n          }\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELJOIN.ttl#activity",
+        "description": "SPARQL SELECT query with two triple patterns and a join",
+        "query": "SELECT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?o . ?o ?p <http://example.org/thing> } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFROM.ttl#activity",
+        "description": "SPARQL SELECT query with a single-triple pattern and a FROM NAMED clause",
+        "query": "SELECT * FROM <http://non.default.graph.com/graph1>\n        FROM NAMED <http://non.default.graph.com/graph2> { <http://nonsensical.com/1> <http://example.org/type> ?o } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILREGEX.ttl#activity",
+        "description": "PARQL SELECT query with a single-triple pattern and a FILTER operator filtering variables containing the 'thi' string, case sensitive",
+        "query": "SELECT *\n        WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type> ?val\n        \tFILTER regex(?val, \"thi\")\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILBOOL.ttl#activity",
+        "description": "SPARQL SELECT query with a single-triple pattern and a boolean in the object position",
+        "query": "\n        SELECT * WHERE {\n        ?s ?o false\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELUNION.ttl#activity",
+        "description": "SPARQL SELECT query with a UNION of two triple patterns",
+        "query": "SELECT * WHERE { {?s <http://example.org/type> <http://example.org/thing>} UNION {?s <http://example.org/type> <http://example.org/string>}} LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELMIN.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query using the MIN average function",
+        "query": "SELECT (MIN(?o) AS ?min)\n        WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type>  ?o\n        }\n        LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_CON-.ttl#activity",
+        "description": "SPARQL 1.1 using the short CONSTRUCT form",
+        "query": "CONSTRUCT WHERE { <http://nonsensical.com/1> ?p ?o} LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SEL-REDUCED.ttl#activity",
+        "description": "SPARQL SELECT query with a UNION of two triple patterns using REDUCED.",
+        "query": "SELECT DISTINCT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?o } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_ASKFILNOTIN.ttl#activity",
+        "description": "SPARQL 1.1 ASK query filtering using the NOT IN operator",
+        "query": "ASK {\n        \tFILTER(2 NOT IN ())\n        }"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_CON.ttl#activity",
+        "description": "SPARQL CONSTRUCT query with a single-triple pattern returning an RDF graph of resources and their types.",
+        "query": "\n        CONSTRUCT { ?x <http://example.org/type> ?o }\n        WHERE\n        {\n          <http://nonsensical.com/1> <http://example.org/type> ?o .\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELSUBQGRAPH.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query using with a subquery and a GRAPH operator",
+        "query": "SELECT ?y where {\n        \tgraph ?g {\n        \t\t{ SELECT * where {<http://nonsensical.com/1> <http://example.org/type>  ?y} }\n        \t}\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELMAX.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query using the MAX average function",
+        "query": "SELECT (MAX(?o) AS ?max)\n        WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type> ?o\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_CONJOIN.ttl#activity",
+        "description": "SPARQL CONSTRUCT query with two triple patterns and a join returning an RDF graph of resources and their types.",
+        "query": "\n        CONSTRUCT { ?x <http://example.org/type> ?v }\n        WHERE\n        {\n        <http://nonsensical.com/1> <http://example.org/type> ?o .\n        ?o <http://example.org/type> ?x\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SEL-DISTINCT.ttl#activity",
+        "description": "SPARQL SELECT query with a single-triple pattern using DISTINCT.",
+        "query": "SELECT DISTINCT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?o } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELEMPTY.ttl#activity",
+        "description": "SPARQL SELECT query with a single-triple pattern returning no results (using a non existing URI).",
+        "query": "SELECT * WHERE { ?s <http://example.org/type> <http://nonsensical.com/1> } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELSUM.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query using with a subquery",
+        "query": "PREFIX : <http://www.example.org/>\n        SELECT (SUM(?o) AS ?sum)\n        WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type>  ?o\n        }\n        LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELBNODE.ttl#activity",
+        "description": "SPARQL SELECT query with a single-triple pattern querying for a random blank node.",
+        "query": "select distinct * where {?c <http://example.org/type> _:bn} LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILNUM.ttl#activity",
+        "description": "SPARQL SELECT query with a single-triple pattern and an integer in the object position",
+        "query": "SELECT * WHERE {\n        ?s ?o 12\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELFILNOTBOUND.ttl#activity",
+        "description": "SPARQL SELECT query with a single-triple pattern filtering only unbound optional nodes",
+        "query": "SELECT *\n        WHERE\n            { <http://nonsensical.com/1> <http://example.org/type> ?c .\n              OPTIONAL\n                { ?c <http://example.org/type> ?e } .\n              FILTER (! bound(?e))\n            } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILCONTAINS.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query using filtering results using the string CONTAINS operator",
+        "query": "SELECT * WHERE {\n        \t<http://nonsensical.com/1> <http://example.org/type> ?str\n        \tFILTER CONTAINS(?str, \"a\")\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELMINUS.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query using the MINUS operator",
+        "query": "SELECT *\n        WHERE\n        {\t<http://nonsensical.com/1> <http://example.org/type> ?type .\n        \tMINUS {\n        \t\t?type <http://example.org/sameAs> ?same\n        \t}\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELOPT.ttl#activity",
+        "description": "SPARQL SELECT query with two triple patterns and an optional",
+        "query": "SELECT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?o OPTIONAL {?o ?p ?x}} LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SEL.ttl#activity",
+        "description": "SPARQL SELECT query with a single-triple pattern.",
+        "query": "SELECT * WHERE { <http://nonsensical.com/1> <http://example.org/type> ?o }  LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILABS.ttl#activity",
+        "description": "SPARQL 1.1 SELECT query filtering for the absolute value of an integer",
+        "query": "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n        SELECT * WHERE {\n        \t?num <http://example.org/type> xsd:integer\n        \tFILTER(ABS(?num) >= 2)\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_CONOPT.ttl#activity",
+        "description": "SPARQL CONSTRUCT query with two triple patterns and an optional returning an RDF graph of resources and their types",
+        "query": "\n        CONSTRUCT { ?x <http://example.org/type> ?v }\n        WHERE\n        {\n          <http://nonsensical.com/1> <http://example.org/type> ?o .\n          OPTIONAL {?o <http://example.org/type> ?v }\n        } LIMIT 10"
+    },
+    {
+        "feature": "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_SELGRAPH.ttl#activity",
+        "description": "SPARQL SELECT query with a GRAPH operator and a single triple pattern",
+        "query": "SELECT * {\n            GRAPH ?g { <http://nonsensical.com/1> <http://example.org/type> ?o }\n        } LIMIT 10"
+    }
+]
