@@ -67,7 +67,18 @@ kgi:catalogRoot
     dcat:endpointUrl        <http://prod-dekalog.inria.fr/sparql> ;
 
     dct:creator             <https://orcid.org/0000-0002-9814-439X> , <https://orcid.org/0000-0001-9064-0463> ;
-    prov:wasAttributedTo    <https://orcid.org/0000-0002-9814-439X> , <https://orcid.org/0000-0001-9064-0463> .
+    prov:wasAttributedTo    <https://orcid.org/0000-0002-9814-439X> , <https://orcid.org/0000-0001-9064-0463> ;
+    sd:feature sd:DereferencesURIs,
+       sd:UnionDefaultGraph ;
+    sd:resultFormat <http://www.w3.org/ns/formats/N-Triples>,
+        <http://www.w3.org/ns/formats/N3>,
+        <http://www.w3.org/ns/formats/RDF_XML>,
+        <http://www.w3.org/ns/formats/RDFa>,
+        <http://www.w3.org/ns/formats/SPARQL_Results_CSV>,
+        <http://www.w3.org/ns/formats/SPARQL_Results_JSON>,
+        <http://www.w3.org/ns/formats/SPARQL_Results_XML>,
+        <http://www.w3.org/ns/formats/Turtle> ;
+    sd:supportedLanguage sd:SPARQL10Query .
 
 
 <https://ror.org/0496p8026>
