@@ -20,10 +20,25 @@ class KartoChart {
         this.chartObject = config.chartObject;
         this.option = config.option;
         this.fill = config.fillFunction;
+        if(this.fill === undefined) {
+            this.fill = () => { };
+        }
         this.redraw = config.redrawFunction;
+        if(this.redraw === undefined) {
+            this.redraw = () => { };
+        }
         this.clear = config.clearFunction;
+        if(this.clear === undefined) {
+            this.clear = () => { };
+        }
         this.hide = config.hideFunction;
+        if(this.hide === undefined) {
+            this.hide = () => { };
+        }
         this.show = config.showFunction;
+        if(this.show === undefined) {
+            this.show = () => { };
+        }
     }
 };
 
@@ -37,25 +52,25 @@ var runtimeTabButton = $('#runtime-tab')
 var qualityTabButton = $('#quality-tab')
 var navTabs = [geolocTabButton, vocabRelatedContentTabButton, sparqlTabButton, populationTabButton, descriptionTabButton, runtimeTabButton, qualityTabButton];
 geolocTabButton.on('click', function (event) {
-    redrawCharts()
+    redrawGeolocContent()
 })
 vocabRelatedContentTabButton.on('click', function (event) {
-    redrawCharts()
+    redrawVocabRelatedContent()
 })
 sparqlTabButton.on('click', function (event) {
-    redrawCharts()
+    redrawSparqlCoverContent()
 })
 populationTabButton.on('click', function (event) {
-    redrawCharts()
+    redrawDatasetPopulationsContent()
 })
 descriptionTabButton.on('click', function (event) {
-    redrawCharts()
+    redrawDatasetDescriptionContent()
 })
 runtimeTabButton.on('click', function (event) {
-    redrawCharts()
+    redrawFrameworkInformationContent()
 })
 qualityTabButton.on('click', function (event) {
-    redrawCharts()
+    redrawDataQualityContent()
 })
 function sparqlQueryJSON(query, callback, errorCallback) {
     xmlhttpRequestJSON('http://prod-dekalog.inria.fr/sparql?query=' + encodeURIComponent(query) + "&format=json", callback, errorCallback);
@@ -233,67 +248,57 @@ function getSpinner() {
     return result;
 }
 
+var geolocContent = [];
+var sparqlCoverContent = [];
+var vocabRelatedContent = [];
+var datasetDescriptionContent = [];
+var dataQualityContent = [];
+var datasetPopulationsContent = [];
+var frameworkInformationContent = [];
+var allContent = [];
+
 function refresh() {
     mainContentColWidth = $('#mainContentCol').width();
     clear();
     whiteListFill();
-    endpointMap.fill();
-    sparqlCoverCharts.fill();
-    vocabRelatedChart.fill();
-    tripleChart.fill();
-    classNumberChart.fill();
-    propertyNumberChart.fill();
-    categoryTestNumberChart.fill();
-    totalRuntimeChart.fill();
-    averageRuntimeChart.fill();
-    descriptionElementChart.fill();
-    shortUriChart.fill();
-    rdfDataStructureChart.fill();
-    readableLabelsChart.fill();
-    blankNodesChart.fill();
-    totalCategoryTestNumberChart.fill();
-    classAndPropertiesContentFill();
-    testTableFill();
-    sparqlFeaturesFill()
+    allContent.forEach((content, i) => {content.fill()});
 }
 
 function clear() {
-    endpointMap.clear();
-    sparqlCoverCharts.clear();
-    vocabRelatedChart.clear();
-    tripleChart.hide();
-    classNumberChart.hide();
-    propertyNumberChart.hide();
-    categoryTestNumberChart.hide();
-    totalRuntimeChart.clear();
-    shortUriChart.clear();
-    rdfDataStructureChart.hide();
-    readableLabelsChart.hide();
-    blankNodesChart.hide();
-    totalCategoryTestNumberChart.hide();
-    descriptionElementChart.clear();
-    $('#endpointKnownVocabsTableBody').empty();
-    $('#rulesTableBody').empty();
-    $('#endpointKeywordsTableBody').empty();
+    allContent.forEach((content, i) => {content.clear()});
+}
+
+function redrawGeolocContent() {
+    geolocContent.forEach(content => content.redraw());
+}
+
+function redrawSparqlCoverContent() {
+    sparqlCoverContent.forEach(content => content.redraw());
+}
+
+function redrawVocabRelatedContent() {
+    vocabRelatedContent.forEach(content => content.redraw());
+}
+
+function redrawDatasetDescriptionContent() {
+    datasetDescriptionContent.forEach(content => content.redraw());
+}
+
+function redrawDataQualityContent() {
+    dataQualityContent.forEach(content => content.redraw());
+}
+
+function redrawDatasetPopulationsContent() {
+    datasetPopulationsContent.forEach(content => content.redraw());
+}
+
+function redrawFrameworkInformationContent() {
+    frameworkInformationContent.forEach(content => content.redraw());
 }
 
 function redrawCharts() {
     mainContentColWidth = $('#mainContentCol').width();
-    endpointMap.redraw();
-    sparqlCoverCharts.redraw();
-    vocabRelatedChart.redraw();
-    tripleChart.redraw();
-    classNumberChart.redraw();
-    propertyNumberChart.redraw();
-    categoryTestNumberChart.redraw();
-    descriptionElementChart.redraw();
-    totalRuntimeChart.redraw();
-    averageRuntimeChart.redraw();
-    shortUriChart.redraw();
-    rdfDataStructureChart.redraw();
-    readableLabelsChart.redraw();
-    blankNodesChart.redraw();
-    totalCategoryTestNumberChart.redraw();
+    allContent.forEach((content, i) => {content.redraw()});
 }
 
 function generateGraphValueFilterClause() {
@@ -567,87 +572,88 @@ var endpointMap = new KartoChart({
 });
 setButtonAsToggleCollapse('endpointGeolocDetails', 'endpointGeolocTable');
 
-function sparqlFeaturesFill() {
+var sparqlFeaturesContent = new KartoChart({
+    fillFunction: function () {
+        var featuresDescriptionMap = new Map();
+        var featuresQueryMap = new Map();
+        sparqlFeatureDesc.forEach(featureDesc => {
+            featuresDescriptionMap.set(featureDesc.feature, featureDesc.description);
+            featuresQueryMap.set(featureDesc.feature, featureDesc.query);
+        });
 
-    var featuresDescriptionMap = new Map();
-    var featuresQueryMap = new Map();
-    sparqlFeatureDesc.forEach(featureDesc => {
-        featuresDescriptionMap.set(featureDesc.feature, featureDesc.description);
-        featuresQueryMap.set(featureDesc.feature, featureDesc.query);
-    });
-
-    const sparqlFeatureQuery = 'SELECT DISTINCT ?endpoint ?activity { ' +
-        'GRAPH ?g { ' +
-        '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ' +
-        '?metadata <http://ns.inria.fr/kg/index#curated> ?base . ' +
-        'OPTIONAL { ' +
-        '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . ' +
-        'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) ' +
-        'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } ' +
-        '} ' +
-        '} ' +
-        generateGraphValueFilterClause() + ' } ' +
-        'GROUP BY ?endpoint ?activity ' +
-        'ORDER BY DESC( ?endpoint)';
-    var endpointFeatureMap = new Map();
-    var featuresShortName = new Map();
-    var sparqlFeaturesDataArray = [];
-    sparqlQueryJSON(sparqlFeatureQuery, json => {
-        endpointFeatureMap = new Map();
-        var featuresSet = new Set();
-        json.results.bindings.forEach(bindingItem => {
-            const endpointUrl = bindingItem.endpoint.value;
-            if (!endpointFeatureMap.has(endpointUrl)) {
-                endpointFeatureMap.set(endpointUrl, new Set());
-            }
-            if (bindingItem.activity != undefined) {
-                const activity = bindingItem.activity.value;
+        const sparqlFeatureQuery = 'SELECT DISTINCT ?endpoint ?activity { ' +
+            'GRAPH ?g { ' +
+            '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ' +
+            '?metadata <http://ns.inria.fr/kg/index#curated> ?base . ' +
+            'OPTIONAL { ' +
+            '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . ' +
+            'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) ' +
+            'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } ' +
+            '} ' +
+            '} ' +
+            generateGraphValueFilterClause() + ' } ' +
+            'GROUP BY ?endpoint ?activity ' +
+            'ORDER BY DESC( ?endpoint)';
+        var endpointFeatureMap = new Map();
+        var featuresShortName = new Map();
+        var sparqlFeaturesDataArray = [];
+        sparqlQueryJSON(sparqlFeatureQuery, json => {
+            endpointFeatureMap = new Map();
+            var featuresSet = new Set();
+            json.results.bindings.forEach(bindingItem => {
+                const endpointUrl = bindingItem.endpoint.value;
                 if (!endpointFeatureMap.has(endpointUrl)) {
                     endpointFeatureMap.set(endpointUrl, new Set());
                 }
-                endpointFeatureMap.get(endpointUrl).add(activity);
-                featuresSet.add(activity);
-                featuresShortName.set(activity, activity.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_", "").replace(".ttl#activity", ""))
-            }
-        });
-
-        sparqlFeaturesDataArray = [];
-        endpointFeatureMap.forEach((featureSet, endpointUrl, map) => {
-            var sortedFeatureArray = [...featureSet].sort((a,b) => a.localeCompare(b));
-            sparqlFeaturesDataArray.push({ endpoint: endpointUrl, features: sortedFeatureArray });
-        });
-
-        sparqlFeaturesDataArray.sort((a, b) => {
-            return a.endpoint.localeCompare(b.endpoint);
-        });
-        function fillFeaturesTable() {
-            var tableBody = $('#SPARQLFeaturesTableBody');
-            tableBody.empty();
-            sparqlFeaturesDataArray.forEach((item, i) => {
-                var endpoint = item.endpoint;
-                var endpointRow = $(document.createElement("tr"));
-                var endpointCell = $(document.createElement("td"));
-                var featuresCell = $(document.createElement("td"));
-                item.features.forEach(feature => {
-                    var featureName = featuresShortName.get(feature);
-                    var featureAloneCell = $(document.createElement("p"));
-                    featureAloneCell.addClass(featureName + "Feature");
-                        featureAloneCell.prop("title", featuresDescriptionMap.get(feature) + "\n" + featuresQueryMap.get(feature));
-                    featureAloneCell.text(featureName);
-                    featuresCell.append(featureAloneCell);
-                })
-                endpointCell.text(endpoint);
-                endpointRow.append(endpointCell);
-                endpointRow.append(featuresCell);
-                tableBody.append(endpointRow);
+                if (bindingItem.activity != undefined) {
+                    const activity = bindingItem.activity.value;
+                    if (!endpointFeatureMap.has(endpointUrl)) {
+                        endpointFeatureMap.set(endpointUrl, new Set());
+                    }
+                    endpointFeatureMap.get(endpointUrl).add(activity);
+                    featuresSet.add(activity);
+                    featuresShortName.set(activity, activity.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_", "").replace(".ttl#activity", ""))
+                }
             });
-        }
 
-        setTableHeaderSort("SPARQLFeaturesTableBody", ["SPARQLFeaturesTableEndpointHeader", "SPARQLFeaturesTableFeaturesHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.features.size - b.features.size], fillFeaturesTable, sparqlFeaturesDataArray);
+            sparqlFeaturesDataArray = [];
+            endpointFeatureMap.forEach((featureSet, endpointUrl, map) => {
+                var sortedFeatureArray = [...featureSet].sort((a, b) => a.localeCompare(b));
+                sparqlFeaturesDataArray.push({ endpoint: endpointUrl, features: sortedFeatureArray });
+            });
 
-        fillFeaturesTable();
-    });
-}
+            sparqlFeaturesDataArray.sort((a, b) => {
+                return a.endpoint.localeCompare(b.endpoint);
+            });
+            function fillFeaturesTable() {
+                var tableBody = $('#SPARQLFeaturesTableBody');
+                tableBody.empty();
+                sparqlFeaturesDataArray.forEach((item, i) => {
+                    var endpoint = item.endpoint;
+                    var endpointRow = $(document.createElement("tr"));
+                    var endpointCell = $(document.createElement("td"));
+                    var featuresCell = $(document.createElement("td"));
+                    item.features.forEach(feature => {
+                        var featureName = featuresShortName.get(feature);
+                        var featureAloneCell = $(document.createElement("p"));
+                        featureAloneCell.addClass(featureName + "Feature");
+                        featureAloneCell.prop("title", featuresDescriptionMap.get(feature) + "\n" + featuresQueryMap.get(feature));
+                        featureAloneCell.text(featureName);
+                        featuresCell.append(featureAloneCell);
+                    })
+                    endpointCell.text(endpoint);
+                    endpointRow.append(endpointCell);
+                    endpointRow.append(featuresCell);
+                    tableBody.append(endpointRow);
+                });
+            }
+
+            setTableHeaderSort("SPARQLFeaturesTableBody", ["SPARQLFeaturesTableEndpointHeader", "SPARQLFeaturesTableFeaturesHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.features.size - b.features.size], fillFeaturesTable, sparqlFeaturesDataArray);
+
+            fillFeaturesTable();
+        });
+    }
+});
 setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
 
 var sparqlCoverCharts = new KartoChart({
@@ -851,7 +857,7 @@ var sparqlCoverCharts = new KartoChart({
                 },
                 xAxis: {
                     type: 'category',
-                    data: ["SPARQL 1.0 features"],
+                    data: ["Endpoints supporting SPARQL 1.0 features"],
                     show: false,
                     splitLine: { show: false },
                     splitArea: { show: false }
@@ -883,7 +889,7 @@ var sparqlCoverCharts = new KartoChart({
                 },
                 xAxis: {
                     type: 'category',
-                    data: ["SPARQL 1.1 features"],
+                    data: ["Endpoints supporting SPARQL 1.1 features"],
                     //                    data: [...categories],
                     show: false,
                     splitLine: { show: false },
@@ -916,7 +922,7 @@ var sparqlCoverCharts = new KartoChart({
                 },
                 xAxis: {
                     type: 'category',
-                    data: ["All SPARQL features"],
+                    data: ["Endpoints supporting SPARQL 1.0 and 1.1 features"],
                     splitLine: { show: false },
                     splitArea: { show: false },
                     show: false
@@ -968,17 +974,23 @@ var sparqlCoverCharts = new KartoChart({
         $('#SPARQL11histo').height(500);
         $('#SPARQLCoverageHisto').width(mainContentColWidth);
 
+        $(this.chartObject.sparql10Chart.getDom()).removeClass('placeholder');
         this.chartObject.sparql10Chart.setOption(this.option.sparql10ChartOption, true);
         this.chartObject.sparql10Chart.resize();
+        $(this.chartObject.sparql11Chart.getDom()).removeClass('placeholder');
         this.chartObject.sparql11Chart.setOption(this.option.sparql11ChartOption, true);
         this.chartObject.sparql11Chart.resize();
+        $(this.chartObject.sparqlChart.getDom()).removeClass('placeholder');
         this.chartObject.sparqlChart.setOption(this.option.sparqlChartOption, true);
         this.chartObject.sparqlChart.resize();
     },
     clearFunction: function () {
         this.chartObject.sparql10Chart.setOption({ series: [] }, true);
+        $(this.chartObject.sparql10Chart.getDom()).addClass('placeholder');
         this.chartObject.sparql11Chart.setOption({ series: [] }, true);
+        $(this.chartObject.sparql11Chart.getDom()).addClass('placeholder');
         this.chartObject.sparqlChart.setOption({ series: [] }, true);
+        $(this.chartObject.sparqlChart.getDom()).addClass('placeholder');
     }
 });
 setButtonAsToggleCollapse('tableSPARQLFeaturesStatsDetails', 'SPARQLFeaturesCountTable');
@@ -1805,88 +1817,93 @@ var totalCategoryTestNumberChart = new KartoChart({
     }
 });
 
-function testTableFill() {
+var testTableContent = new KartoChart({
+    fillFunction: function () {
 
-    var appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?rule { " +
-        "GRAPH ?g { " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?curated . " +
-        "?curated <http://www.w3.org/ns/prov#wasGeneratedBy> ?rule . " +
-        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-        "} " +
-        generateGraphValueFilterClause() +
-        "} GROUP BY ?endpointUrl ?rule ORDER BY DESC(?endpointUrl) ";
-    sparqlQueryJSON(appliedTestQuery, json => {
-        var appliedTestMap = new Map();
-        json.results.bindings.forEach((item, i) => {
-            var endpointUrl = item.endpointUrl.value;
-            var rule = item.rule.value;
+        var appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?rule { " +
+            "GRAPH ?g { " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?curated . " +
+            "?curated <http://www.w3.org/ns/prov#wasGeneratedBy> ?rule . " +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "} " +
+            generateGraphValueFilterClause() +
+            "} GROUP BY ?endpointUrl ?rule ORDER BY DESC(?endpointUrl) ";
+        sparqlQueryJSON(appliedTestQuery, json => {
+            var appliedTestMap = new Map();
+            json.results.bindings.forEach((item, i) => {
+                var endpointUrl = item.endpointUrl.value;
+                var rule = item.rule.value;
 
-            if (!blacklistedEndpointList.includes(endpointUrl)) {
-                if (appliedTestMap.get(endpointUrl) == undefined) {
-                    appliedTestMap.set(endpointUrl, []);
-                }
-                appliedTestMap.get(endpointUrl).push(rule);
-            }
-        });
-
-        var appliedTestData = [];
-        appliedTestMap.forEach((rules, endpoint, map) => {
-            rules.sort((a, b) => a.localeCompare(b))
-            appliedTestData.push({ 'endpoint': endpoint, 'rules': rules })
-        });
-
-        appliedTestData.sort((a, b) => {
-            return a.endpoint.localeCompare(b.endpoint);
-        });
-
-        function fillTestTable() {
-            var tableBody = $('#rulesTableBody');
-            tableBody.empty();
-            appliedTestData.forEach((item, i) => {
-                var endpoint = item.endpoint;
-                var rules = item.rules;
-                var endpointRow = $(document.createElement("tr"));
-                var endpointCell = $(document.createElement("td"));
-                endpointCell.attr('rowspan', rules.length);
-                endpointCell.text(endpoint);
-                endpointRow.append(endpointCell);
-                tableBody.append(endpointRow);
-                rules.forEach((item, i) => {
-                    var ruleCell = $(document.createElement("td"));
-                    ruleCell.text(item);
-                    if (i == 0) {
-                        endpointRow.append(ruleCell);
-                    } else {
-                        var ruleRow = $(document.createElement("tr"));
-                        ruleRow.append(ruleCell);
-                        tableBody.append(ruleRow);
+                if (!blacklistedEndpointList.includes(endpointUrl)) {
+                    if (appliedTestMap.get(endpointUrl) == undefined) {
+                        appliedTestMap.set(endpointUrl, []);
                     }
-                });
+                    appliedTestMap.get(endpointUrl).push(rule);
+                }
             });
-        }
 
-        var tableBody = $('#ruleTableBody');
-        $('#rulesTableEndpointHeader').on('click', function () {
-            tableBody.empty();
-            if (tableBody.hasClass('sortEndpointDesc')) {
-                tableBody.removeClass('sortEndpointDesc');
-                tableBody.addClass('sortEndpointAsc');
-                appliedTestData.sort((a, b) => {
-                    return a.endpoint.localeCompare(b.endpoint);
-                });
-            } else {
-                tableBody.addClass('sortEndpointDesc');
-                tableBody.removeClass('sortEndpointAsc');
-                appliedTestData.sort((a, b) => {
-                    return - a.endpoint.localeCompare(b.endpoint);
+            var appliedTestData = [];
+            appliedTestMap.forEach((rules, endpoint, map) => {
+                rules.sort((a, b) => a.localeCompare(b))
+                appliedTestData.push({ 'endpoint': endpoint, 'rules': rules })
+            });
+
+            appliedTestData.sort((a, b) => {
+                return a.endpoint.localeCompare(b.endpoint);
+            });
+
+            function fillTestTable() {
+                var tableBody = $('#rulesTableBody');
+                tableBody.empty();
+                appliedTestData.forEach((item, i) => {
+                    var endpoint = item.endpoint;
+                    var rules = item.rules;
+                    var endpointRow = $(document.createElement("tr"));
+                    var endpointCell = $(document.createElement("td"));
+                    endpointCell.attr('rowspan', rules.length);
+                    endpointCell.text(endpoint);
+                    endpointRow.append(endpointCell);
+                    tableBody.append(endpointRow);
+                    rules.forEach((item, i) => {
+                        var ruleCell = $(document.createElement("td"));
+                        ruleCell.text(item);
+                        if (i == 0) {
+                            endpointRow.append(ruleCell);
+                        } else {
+                            var ruleRow = $(document.createElement("tr"));
+                            ruleRow.append(ruleCell);
+                            tableBody.append(ruleRow);
+                        }
+                    });
                 });
             }
+
+            var tableBody = $('#ruleTableBody');
+            $('#rulesTableEndpointHeader').on('click', function () {
+                tableBody.empty();
+                if (tableBody.hasClass('sortEndpointDesc')) {
+                    tableBody.removeClass('sortEndpointDesc');
+                    tableBody.addClass('sortEndpointAsc');
+                    appliedTestData.sort((a, b) => {
+                        return a.endpoint.localeCompare(b.endpoint);
+                    });
+                } else {
+                    tableBody.addClass('sortEndpointDesc');
+                    tableBody.removeClass('sortEndpointAsc');
+                    appliedTestData.sort((a, b) => {
+                        return - a.endpoint.localeCompare(b.endpoint);
+                    });
+                }
+                fillTestTable();
+            });
+
             fillTestTable();
         });
-
-        fillTestTable();
-    });
-}
+    },
+    clearFunction: function() {
+        $('#rulesTableBody').empty();
+    }
+});
 setButtonAsToggleCollapse('tableRuleDetails', 'rulesTable');
 
 var totalRuntimeChart = new KartoChart({
@@ -2035,256 +2052,258 @@ var averageRuntimeChart = new KartoChart({
     }
 });
 
-function classAndPropertiesContentFill() {
-    var classPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co { " +
-        "GRAPH ?g {" +
-        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
-        "?base <http://rdfs.org/ns/void#classPartition> ?classPartition . " +
-        "?classPartition <http://rdfs.org/ns/void#class> ?c . " +
-        "OPTIONAL { " +
-        "?classPartition <http://rdfs.org/ns/void#triples> ?ct . " +
-        "} " +
-        "OPTIONAL { " +
-        "?classPartition <http://rdfs.org/ns/void#classes> ?cc . " +
-        "} " +
-        "OPTIONAL { " +
-        "?classPartition <http://rdfs.org/ns/void#properties> ?cp . " +
-        "} " +
-        "OPTIONAL { " +
-        "?classPartition <http://rdfs.org/ns/void#distinctSubjects> ?cs . " +
-        "} " +
-        "OPTIONAL { " +
-        "?classPartition <http://rdfs.org/ns/void#distinctObjects> ?co . " +
-        "} " +
-        "FILTER(! isBlank(?c)) " +
-        "}" +
-        generateGraphValueFilterClause() +
-        "} GROUP BY ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co ";
-    sparqlQueryJSON(classPartitionQuery, json => {
-        var classCountsEndpointsMap = new Map();
-        json.results.bindings.forEach((item, i) => {
-            var c = item.c.value;
-            var endpointUrl = item.endpointUrl.value;
-            if (!blacklistedEndpointList.includes(endpointUrl)) {
+var classAndPropertiesContent = new KartoChart({
+    fillFunction: function () {
+        var classPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+            "?base <http://rdfs.org/ns/void#classPartition> ?classPartition . " +
+            "?classPartition <http://rdfs.org/ns/void#class> ?c . " +
+            "OPTIONAL { " +
+            "?classPartition <http://rdfs.org/ns/void#triples> ?ct . " +
+            "} " +
+            "OPTIONAL { " +
+            "?classPartition <http://rdfs.org/ns/void#classes> ?cc . " +
+            "} " +
+            "OPTIONAL { " +
+            "?classPartition <http://rdfs.org/ns/void#properties> ?cp . " +
+            "} " +
+            "OPTIONAL { " +
+            "?classPartition <http://rdfs.org/ns/void#distinctSubjects> ?cs . " +
+            "} " +
+            "OPTIONAL { " +
+            "?classPartition <http://rdfs.org/ns/void#distinctObjects> ?co . " +
+            "} " +
+            "FILTER(! isBlank(?c)) " +
+            "}" +
+            generateGraphValueFilterClause() +
+            "} GROUP BY ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co ";
+        sparqlQueryJSON(classPartitionQuery, json => {
+            var classCountsEndpointsMap = new Map();
+            json.results.bindings.forEach((item, i) => {
+                var c = item.c.value;
+                var endpointUrl = item.endpointUrl.value;
+                if (!blacklistedEndpointList.includes(endpointUrl)) {
 
-                if (classCountsEndpointsMap.get(c) == undefined) {
-                    classCountsEndpointsMap.set(c, { class: c });
-                }
-                if (item.ct != undefined) {
-                    var ct = Number.parseInt(item.ct.value);
-                    var currentClassItem = classCountsEndpointsMap.get(c);
-                    if (classCountsEndpointsMap.get(c).triples == undefined) {
-                        currentClassItem.triples = 0;
+                    if (classCountsEndpointsMap.get(c) == undefined) {
+                        classCountsEndpointsMap.set(c, { class: c });
+                    }
+                    if (item.ct != undefined) {
+                        var ct = Number.parseInt(item.ct.value);
+                        var currentClassItem = classCountsEndpointsMap.get(c);
+                        if (classCountsEndpointsMap.get(c).triples == undefined) {
+                            currentClassItem.triples = 0;
+                            classCountsEndpointsMap.set(c, currentClassItem);
+                        }
+                        currentClassItem.triples = currentClassItem.triples + ct;
                         classCountsEndpointsMap.set(c, currentClassItem);
                     }
-                    currentClassItem.triples = currentClassItem.triples + ct;
-                    classCountsEndpointsMap.set(c, currentClassItem);
-                }
-                if (item.cc != undefined) {
-                    var cc = Number.parseInt(item.cc.value);
-                    var currentClassItem = classCountsEndpointsMap.get(c);
-                    if (classCountsEndpointsMap.get(c).classes == undefined) {
-                        currentClassItem.classes = 0;
+                    if (item.cc != undefined) {
+                        var cc = Number.parseInt(item.cc.value);
+                        var currentClassItem = classCountsEndpointsMap.get(c);
+                        if (classCountsEndpointsMap.get(c).classes == undefined) {
+                            currentClassItem.classes = 0;
+                            classCountsEndpointsMap.set(c, currentClassItem);
+                        }
+                        currentClassItem.classes = currentClassItem.classes + cc;
                         classCountsEndpointsMap.set(c, currentClassItem);
                     }
-                    currentClassItem.classes = currentClassItem.classes + cc;
-                    classCountsEndpointsMap.set(c, currentClassItem);
-                }
-                if (item.cp != undefined) {
-                    var cp = Number.parseInt(item.cp.value);
-                    var currentClassItem = classCountsEndpointsMap.get(c);
-                    if (classCountsEndpointsMap.get(c).properties == undefined) {
-                        currentClassItem.properties = 0;
+                    if (item.cp != undefined) {
+                        var cp = Number.parseInt(item.cp.value);
+                        var currentClassItem = classCountsEndpointsMap.get(c);
+                        if (classCountsEndpointsMap.get(c).properties == undefined) {
+                            currentClassItem.properties = 0;
+                            classCountsEndpointsMap.set(c, currentClassItem);
+                        }
+                        currentClassItem.properties = currentClassItem.properties + cp;
                         classCountsEndpointsMap.set(c, currentClassItem);
                     }
-                    currentClassItem.properties = currentClassItem.properties + cp;
-                    classCountsEndpointsMap.set(c, currentClassItem);
-                }
-                if (item.cs != undefined) {
-                    var cs = Number.parseInt(item.cs.value);
-                    var currentClassItem = classCountsEndpointsMap.get(c);
-                    if (classCountsEndpointsMap.get(c).distinctSubjects == undefined) {
-                        currentClassItem.distinctSubjects = 0;
+                    if (item.cs != undefined) {
+                        var cs = Number.parseInt(item.cs.value);
+                        var currentClassItem = classCountsEndpointsMap.get(c);
+                        if (classCountsEndpointsMap.get(c).distinctSubjects == undefined) {
+                            currentClassItem.distinctSubjects = 0;
+                            classCountsEndpointsMap.set(c, currentClassItem);
+                        }
+                        currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + cs;
                         classCountsEndpointsMap.set(c, currentClassItem);
                     }
-                    currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + cs;
-                    classCountsEndpointsMap.set(c, currentClassItem);
-                }
-                if (item.co != undefined) {
-                    var co = Number.parseInt(item.co.value);
-                    var currentClassItem = classCountsEndpointsMap.get(c);
-                    if (classCountsEndpointsMap.get(c).distinctObjects == undefined) {
-                        currentClassItem.distinctObjects = 0;
+                    if (item.co != undefined) {
+                        var co = Number.parseInt(item.co.value);
+                        var currentClassItem = classCountsEndpointsMap.get(c);
+                        if (classCountsEndpointsMap.get(c).distinctObjects == undefined) {
+                            currentClassItem.distinctObjects = 0;
+                            classCountsEndpointsMap.set(c, currentClassItem);
+                        }
+                        currentClassItem.distinctObjects = currentClassItem.distinctObjects + co;
                         classCountsEndpointsMap.set(c, currentClassItem);
                     }
-                    currentClassItem.distinctObjects = currentClassItem.distinctObjects + co;
-                    classCountsEndpointsMap.set(c, currentClassItem);
+                    if (classCountsEndpointsMap.get(c).endpoints == undefined) {
+                        var currentClassItem = classCountsEndpointsMap.get(c);
+                        currentClassItem.endpoints = new Set();
+                        classCountsEndpointsMap.set(c, currentClassItem);
+                    }
+                    classCountsEndpointsMap.get(c).endpoints.add(endpointUrl);
                 }
-                if (classCountsEndpointsMap.get(c).endpoints == undefined) {
-                    var currentClassItem = classCountsEndpointsMap.get(c);
-                    currentClassItem.endpoints = new Set();
-                    classCountsEndpointsMap.set(c, currentClassItem);
-                }
-                classCountsEndpointsMap.get(c).endpoints.add(endpointUrl);
-            }
-        });
-
-        var classDescriptionData = [];
-        classCountsEndpointsMap.forEach((countsItem, classKey, map) => {
-            classDescriptionData.push(countsItem);
-        });
-
-        setTableHeaderSort("classDescriptionTableBody", ["classDescriptionTableClassHeader", "classDescriptionTableTriplesHeader", "classDescriptionTableClassesHeader", "classDescriptionTablePropertiesHeader", "classDescriptionTableDistinctSubjectsHeader", "classDescriptionTableDistinctObjectsHeader", "classDescriptionTableEndpointsHeader"], [(a, b) => a.class.localeCompare(b.class), (a, b) => b.triples - a.triples, (a, b) => b.classes - a.classes, (a, b) => b.properties - a.properties, (a, b) => b.distinctSubjects - a.distinctSubjects, (a, b) => b.distinctObjects - a.distinctObjects, (a, b) => b.endpoints.size - a.endpoints.size], fillclassDescriptionTable, classDescriptionData);
-        classDescriptionData.sort((a, b) => a.class.localeCompare(b.class));
-
-        function fillclassDescriptionTable() {
-            var tableBody = $("#classDescriptionTableBody");
-            tableBody.empty();
-            classDescriptionData.forEach((countsItem, i) => {
-                var classRow = $(document.createElement("tr"))
-                var classCell = $(document.createElement("td"))
-                var classTriplesCell = $(document.createElement("td"))
-                var classClassesCell = $(document.createElement("td"))
-                var classPropertiesCell = $(document.createElement("td"))
-                var classDistinctSubjectsCell = $(document.createElement("td"))
-                var classDistinctObjectsCell = $(document.createElement("td"))
-                var endpointsCell = $(document.createElement("td"))
-
-                classCell.text(countsItem.class);
-                classTriplesCell.text(countsItem.triples);
-                classClassesCell.text(countsItem.classes);
-                classPropertiesCell.text(countsItem.properties);
-                classDistinctSubjectsCell.text(countsItem.distinctSubjects);
-                classDistinctObjectsCell.text(countsItem.distinctObjects);
-                endpointsCell.text(countsItem.endpoints.size);
-
-                classRow.append(classCell);
-                classRow.append(classTriplesCell);
-                classRow.append(classClassesCell);
-                classRow.append(classPropertiesCell);
-                classRow.append(classDistinctSubjectsCell);
-                classRow.append(classDistinctObjectsCell);
-                classRow.append(endpointsCell);
-                tableBody.append(classRow);
             });
-        }
-        fillclassDescriptionTable()
 
-
-    });
-
-    var classPropertyPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?p ?pt ?po ?ps { " +
-        "GRAPH ?g {" +
-        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
-        "?base <http://rdfs.org/ns/void#classPartition> ?classPartition . " +
-        "?classPartition <http://rdfs.org/ns/void#class> ?c . " +
-        "?classPartition <http://rdfs.org/ns/void#propertyPartition> ?classPropertyPartition . " +
-        "?classPropertyPartition <http://rdfs.org/ns/void#property> ?p . " +
-        "OPTIONAL { " +
-        "?classPropertyPartition <http://rdfs.org/ns/void#triples> ?pt . " +
-        "} " +
-        "OPTIONAL { " +
-        "?classPropertyPartition <http://rdfs.org/ns/void#distinctSubjects> ?ps . " +
-        "} " +
-        "OPTIONAL { " +
-        "?classPropertyPartition <http://rdfs.org/ns/void#distinctObjects> ?po . " +
-        "} " +
-        "}" +
-        generateGraphValueFilterClause() +
-        "} GROUP BY ?endpointUrl ?c ?p ?pt ?po ?ps ";
-    sparqlQueryJSON(classPropertyPartitionQuery, json => {
-
-        var classPropertyCountsEndpointsMap = new Map();
-        json.results.bindings.forEach((item, i) => {
-            var c = item.c.value;
-            var p = item.p.value;
-            var mapKey = c + p;
-            var endpointUrl = item.endpointUrl.value;
-
-            if (!blacklistedEndpointList.includes(endpointUrl)) {
-                if (classPropertyCountsEndpointsMap.get(mapKey) == undefined) {
-                    classPropertyCountsEndpointsMap.set(mapKey, { class: c, property: p });
-                }
-                if (item.pt != undefined) {
-                    var pt = Number.parseInt(item.pt.value);
-                    var currentClassItem = classCountsEndpointsMap.get(mapKey);
-                    if (classPropertyCountsEndpointsMap.get(mapKey).triples == undefined) {
-                        currentClassItem.triples = 0;
-                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-                    }
-                    currentClassItem.triples = currentClassItem.triples + pt;
-                    classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-                }
-                if (item.ps != undefined) {
-                    var ps = Number.parseInt(item.ps.value);
-                    var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
-                    if (classPropertyCountsEndpointsMap.get(mapKey).distinctSubjects == undefined) {
-                        currentClassItem.distinctSubjects = 0;
-                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-                    }
-                    currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + ps;
-                    classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-                }
-                if (item.po != undefined) {
-                    var po = Number.parseInt(item.po.value);
-                    var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
-                    if (classPropertyCountsEndpointsMap.get(mapKey).distinctObjects == undefined) {
-                        currentClassItem.distinctObjects = 0;
-                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-                    }
-                    currentClassItem.distinctObjects = currentClassItem.distinctObjects + po;
-                    classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-                }
-                if (classPropertyCountsEndpointsMap.get(mapKey).endpoints == undefined) {
-                    var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
-                    currentClassItem.endpoints = new Set();
-                    classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-                }
-                classPropertyCountsEndpointsMap.get(mapKey).endpoints.add(endpointUrl);
-            }
-        });
-
-        var classDescriptionData = [];
-        classPropertyCountsEndpointsMap.forEach((countsItem, classKey, map) => {
-            classDescriptionData.push(countsItem);
-        });
-        classDescriptionData.sort((a, b) => a.class.localeCompare(b.class));
-
-        setTableHeaderSort("classPropertiesDescriptionTableBody", ["classPropertiesDescriptionTableClassHeader", "classPropertiesDescriptionTablePropertyHeader", "classPropertiesDescriptionTableTriplesHeader", "classPropertiesDescriptionTableDistinctSubjectsHeader", "classPropertiesDescriptionTableDistinctObjectsHeader", "classPropertiesDescriptionTableEndpointsHeader"], [(a, b) => a.class.localeCompare(b.class), (a, b) => b.property.localeCompare(a.property), (a, b) => b.triples - a.triples, (a, b) => b.distinctSubjects - a.distinctSubjects, (a, b) => b.distinctObjects - a.distinctObjects, (a, b) => b.endpoints.size - a.endpoints.size], fillClassPropertiesDescriptionTable, classDescriptionData);
-
-        function fillClassPropertiesDescriptionTable() {
-            var tableBody = $("#classPropertiesDescriptionTableBody");
-            tableBody.empty();
-            classDescriptionData.forEach((countsItem, i) => {
-                var classRow = $(document.createElement("tr"))
-                var classCell = $(document.createElement("td"))
-                var classTriplesCell = $(document.createElement("td"))
-                var classPropertyCell = $(document.createElement("td"))
-                var classDistinctSubjectsCell = $(document.createElement("td"))
-                var classDistinctObjectsCell = $(document.createElement("td"))
-                var endpointsCell = $(document.createElement("td"))
-
-                classCell.text(countsItem.class);
-                classTriplesCell.text(countsItem.triples);
-                classPropertyCell.text(countsItem.property);
-                classDistinctSubjectsCell.text(countsItem.distinctSubjects);
-                classDistinctObjectsCell.text(countsItem.distinctObjects);
-                endpointsCell.text(countsItem.endpoints.size);
-
-                classRow.append(classCell);
-                classRow.append(classPropertyCell);
-                classRow.append(classTriplesCell);
-                classRow.append(classDistinctSubjectsCell);
-                classRow.append(classDistinctObjectsCell);
-                classRow.append(endpointsCell);
-                tableBody.append(classRow);
+            var classDescriptionData = [];
+            classCountsEndpointsMap.forEach((countsItem, classKey, map) => {
+                classDescriptionData.push(countsItem);
             });
-        }
-        fillClassPropertiesDescriptionTable()
-    });
-}
+
+            setTableHeaderSort("classDescriptionTableBody", ["classDescriptionTableClassHeader", "classDescriptionTableTriplesHeader", "classDescriptionTableClassesHeader", "classDescriptionTablePropertiesHeader", "classDescriptionTableDistinctSubjectsHeader", "classDescriptionTableDistinctObjectsHeader", "classDescriptionTableEndpointsHeader"], [(a, b) => a.class.localeCompare(b.class), (a, b) => b.triples - a.triples, (a, b) => b.classes - a.classes, (a, b) => b.properties - a.properties, (a, b) => b.distinctSubjects - a.distinctSubjects, (a, b) => b.distinctObjects - a.distinctObjects, (a, b) => b.endpoints.size - a.endpoints.size], fillclassDescriptionTable, classDescriptionData);
+            classDescriptionData.sort((a, b) => a.class.localeCompare(b.class));
+
+            function fillclassDescriptionTable() {
+                var tableBody = $("#classDescriptionTableBody");
+                tableBody.empty();
+                classDescriptionData.forEach((countsItem, i) => {
+                    var classRow = $(document.createElement("tr"))
+                    var classCell = $(document.createElement("td"))
+                    var classTriplesCell = $(document.createElement("td"))
+                    var classClassesCell = $(document.createElement("td"))
+                    var classPropertiesCell = $(document.createElement("td"))
+                    var classDistinctSubjectsCell = $(document.createElement("td"))
+                    var classDistinctObjectsCell = $(document.createElement("td"))
+                    var endpointsCell = $(document.createElement("td"))
+
+                    classCell.text(countsItem.class);
+                    classTriplesCell.text(countsItem.triples);
+                    classClassesCell.text(countsItem.classes);
+                    classPropertiesCell.text(countsItem.properties);
+                    classDistinctSubjectsCell.text(countsItem.distinctSubjects);
+                    classDistinctObjectsCell.text(countsItem.distinctObjects);
+                    endpointsCell.text(countsItem.endpoints.size);
+
+                    classRow.append(classCell);
+                    classRow.append(classTriplesCell);
+                    classRow.append(classClassesCell);
+                    classRow.append(classPropertiesCell);
+                    classRow.append(classDistinctSubjectsCell);
+                    classRow.append(classDistinctObjectsCell);
+                    classRow.append(endpointsCell);
+                    tableBody.append(classRow);
+                });
+            }
+            fillclassDescriptionTable()
+
+
+        });
+
+        var classPropertyPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?p ?pt ?po ?ps { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+            "?base <http://rdfs.org/ns/void#classPartition> ?classPartition . " +
+            "?classPartition <http://rdfs.org/ns/void#class> ?c . " +
+            "?classPartition <http://rdfs.org/ns/void#propertyPartition> ?classPropertyPartition . " +
+            "?classPropertyPartition <http://rdfs.org/ns/void#property> ?p . " +
+            "OPTIONAL { " +
+            "?classPropertyPartition <http://rdfs.org/ns/void#triples> ?pt . " +
+            "} " +
+            "OPTIONAL { " +
+            "?classPropertyPartition <http://rdfs.org/ns/void#distinctSubjects> ?ps . " +
+            "} " +
+            "OPTIONAL { " +
+            "?classPropertyPartition <http://rdfs.org/ns/void#distinctObjects> ?po . " +
+            "} " +
+            "}" +
+            generateGraphValueFilterClause() +
+            "} GROUP BY ?endpointUrl ?c ?p ?pt ?po ?ps ";
+        sparqlQueryJSON(classPropertyPartitionQuery, json => {
+
+            var classPropertyCountsEndpointsMap = new Map();
+            json.results.bindings.forEach((item, i) => {
+                var c = item.c.value;
+                var p = item.p.value;
+                var mapKey = c + p;
+                var endpointUrl = item.endpointUrl.value;
+
+                if (!blacklistedEndpointList.includes(endpointUrl)) {
+                    if (classPropertyCountsEndpointsMap.get(mapKey) == undefined) {
+                        classPropertyCountsEndpointsMap.set(mapKey, { class: c, property: p });
+                    }
+                    if (item.pt != undefined) {
+                        var pt = Number.parseInt(item.pt.value);
+                        var currentClassItem = classCountsEndpointsMap.get(mapKey);
+                        if (classPropertyCountsEndpointsMap.get(mapKey).triples == undefined) {
+                            currentClassItem.triples = 0;
+                            classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                        }
+                        currentClassItem.triples = currentClassItem.triples + pt;
+                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                    }
+                    if (item.ps != undefined) {
+                        var ps = Number.parseInt(item.ps.value);
+                        var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
+                        if (classPropertyCountsEndpointsMap.get(mapKey).distinctSubjects == undefined) {
+                            currentClassItem.distinctSubjects = 0;
+                            classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                        }
+                        currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + ps;
+                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                    }
+                    if (item.po != undefined) {
+                        var po = Number.parseInt(item.po.value);
+                        var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
+                        if (classPropertyCountsEndpointsMap.get(mapKey).distinctObjects == undefined) {
+                            currentClassItem.distinctObjects = 0;
+                            classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                        }
+                        currentClassItem.distinctObjects = currentClassItem.distinctObjects + po;
+                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                    }
+                    if (classPropertyCountsEndpointsMap.get(mapKey).endpoints == undefined) {
+                        var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
+                        currentClassItem.endpoints = new Set();
+                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                    }
+                    classPropertyCountsEndpointsMap.get(mapKey).endpoints.add(endpointUrl);
+                }
+            });
+
+            var classDescriptionData = [];
+            classPropertyCountsEndpointsMap.forEach((countsItem, classKey, map) => {
+                classDescriptionData.push(countsItem);
+            });
+            classDescriptionData.sort((a, b) => a.class.localeCompare(b.class));
+
+            setTableHeaderSort("classPropertiesDescriptionTableBody", ["classPropertiesDescriptionTableClassHeader", "classPropertiesDescriptionTablePropertyHeader", "classPropertiesDescriptionTableTriplesHeader", "classPropertiesDescriptionTableDistinctSubjectsHeader", "classPropertiesDescriptionTableDistinctObjectsHeader", "classPropertiesDescriptionTableEndpointsHeader"], [(a, b) => a.class.localeCompare(b.class), (a, b) => b.property.localeCompare(a.property), (a, b) => b.triples - a.triples, (a, b) => b.distinctSubjects - a.distinctSubjects, (a, b) => b.distinctObjects - a.distinctObjects, (a, b) => b.endpoints.size - a.endpoints.size], fillClassPropertiesDescriptionTable, classDescriptionData);
+
+            function fillClassPropertiesDescriptionTable() {
+                var tableBody = $("#classPropertiesDescriptionTableBody");
+                tableBody.empty();
+                classDescriptionData.forEach((countsItem, i) => {
+                    var classRow = $(document.createElement("tr"))
+                    var classCell = $(document.createElement("td"))
+                    var classTriplesCell = $(document.createElement("td"))
+                    var classPropertyCell = $(document.createElement("td"))
+                    var classDistinctSubjectsCell = $(document.createElement("td"))
+                    var classDistinctObjectsCell = $(document.createElement("td"))
+                    var endpointsCell = $(document.createElement("td"))
+
+                    classCell.text(countsItem.class);
+                    classTriplesCell.text(countsItem.triples);
+                    classPropertyCell.text(countsItem.property);
+                    classDistinctSubjectsCell.text(countsItem.distinctSubjects);
+                    classDistinctObjectsCell.text(countsItem.distinctObjects);
+                    endpointsCell.text(countsItem.endpoints.size);
+
+                    classRow.append(classCell);
+                    classRow.append(classPropertyCell);
+                    classRow.append(classTriplesCell);
+                    classRow.append(classDistinctSubjectsCell);
+                    classRow.append(classDistinctObjectsCell);
+                    classRow.append(endpointsCell);
+                    tableBody.append(classRow);
+                });
+            }
+            fillClassPropertiesDescriptionTable()
+        });
+    }
+});
 setButtonAsToggleCollapse('classDescriptionDetails', 'classDescriptionTable');
 setButtonAsToggleCollapse('classPropertiesDescriptionDetails', 'classPropertiesDescriptionTable');
 
@@ -2640,7 +2659,7 @@ var descriptionElementChart = new KartoChart({
     }
 });
 setButtonAsToggleCollapse('datasetDescriptionStatDetails', 'datasetDescriptionTable');
-setButtonAsToggleCollapse('datasetDescriptionExplain', 'datasetDescriptionExplainText');
+//setButtonAsToggleCollapse('datasetDescriptionExplain', 'datasetDescriptionExplainText');
 
 var shortUriChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('shortUrisScatter')),
@@ -3092,6 +3111,14 @@ var url = new URL(window.location);
 var urlParams = new URLSearchParams(url.search);
 $(function () {
     mainContentColWidth = $('#mainContentCol').width();
+    geolocContent = [endpointMap];
+    sparqlCoverContent = [sparqlCoverCharts, testTableContent, sparqlFeaturesContent]
+    vocabRelatedContent = [vocabRelatedChart];
+    datasetDescriptionContent = [descriptionElementChart];
+    dataQualityContent = [blankNodesChart, readableLabelsChart, rdfDataStructureChart, shortUriChart];
+    datasetPopulationsContent = [tripleChart, classNumberChart, propertyNumberChart, classAndPropertiesContent];
+    frameworkInformationContent = [categoryTestNumberChart, totalRuntimeChart, averageRuntimeChart, totalCategoryTestNumberChart];
+    allContent = geolocContent.concat(sparqlCoverContent).concat(vocabRelatedContent).concat(datasetDescriptionContent).concat(dataQualityContent).concat(datasetPopulationsContent).concat(frameworkInformationContent);
 
     // Initialization of the map
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
