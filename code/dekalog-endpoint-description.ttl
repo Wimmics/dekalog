@@ -1,0 +1,109 @@
+@prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:        <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcat:       <http://www.w3.org/ns/dcat#>.
+@prefix foaf:       <http://xmlns.com/foaf/0.1/> .
+@prefix prov:       <http://www.w3.org/ns/prov#> .
+@prefix schema:		<http://schema.org/> .
+@prefix void:       <http://rdfs.org/ns/void#> .
+@prefix sd:     	<http://www.w3.org/ns/sparql-service-description#> .
+@prefix dct:        <http://purl.org/dc/terms/> .
+@prefix skos:       <http://www.w3.org/2004/02/skos/core#> .
+@prefix kgi:        <http://ns.inria.fr/kg/index#> .
+
+kgi:catalogRoot
+    a   dcat:Dataset, void:Dataset, schema:Dataset, prov:Entity ;
+    dct:title       "IndeGx datasets descriptions"@en ;
+    schema:name     "IndeGx datasets descriptions"@en ;
+    skos:prefLabel  "IndeGx datasets descriptions"@en ;
+    rdfs:label      "IndeGx datasets descriptions"@en ;
+    dct:description     "This dataset contains les results of IndeGx extraction of descriptions of datasets and endpoints."@en ;
+    schema:description  "This dataset contains les results of IndeGx extraction of descriptions of datasets and endpoints."@en ;
+    rdfs:comment        "This dataset contains les results of IndeGx extraction of descriptions of datasets and endpoints."@en ;
+
+    foaf:homepage       <http://prod-dekalog.inria.fr> ;
+    dcat:landingPage    <http://prod-dekalog.inria.fr> ;
+
+    dcat:contactPoint   "pierre.maillot@inria.fr" ;
+
+    dct:creator             <https://orcid.org/0000-0002-9814-439X> ;
+    schema:author           <https://orcid.org/0000-0002-9814-439X> ;
+    dct:publisher           <https://ror.org/0496p8026> , <https://ror.org/02kvxyf05> , <https://ror.org/02feahw73> , <https://team.inria.fr/wimmics/> ;
+    prov:wasAttributedTo    <https://orcid.org/0000-0002-9814-439X> ;
+    schema:publisher        <https://ror.org/0496p8026> , <https://ror.org/02kvxyf05> , <https://ror.org/02feahw73> , <https://team.inria.fr/wimmics/> ;
+    schema:editor           <https://orcid.org/0000-0002-9814-439X> , <https://orcid.org/0000-0001-9064-0463> , <https://orcid.org/0000-0001-5959-5561> ;
+    dct:contributor         <https://orcid.org/0000-0001-9064-0463> , <https://orcid.org/0000-0001-5959-5561> ;
+
+    dct:licence     <https://www.gnu.org/licenses/gpl-3.0> ;
+    schema:licence  <https://www.gnu.org/licenses/gpl-3.0> ;
+
+	dct:language        "en" , "de" , "fi" ;
+    schema:inLanguage   "en" , "de" , "fi" ;
+    void:vocabulary     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> , <http://www.w3.org/2000/01/rdf-schema#> , <http://www.w3.org/2002/07/owl#> , <http://purl.org/dc/terms/> , <http://www.w3.org/ns/sparql-service-description#> , <http://rdfs.org/ns/void#> , <http://www.w3.org/ns/dcat#> , <http://ns.inria.fr/kg/index#> , <http://www.w3.org/ns/prov#> , <http://schema.org/> , <http://ldf.fi/void-ext#> , <http://creativecommons.org/ns#> , <http://www.w3.org/2004/02/skos/core#> , <http://xmlns.com/foaf/0.1/> , <http://purl.org/dc/elements/1.1/> , <http://www.w3.org/ns/earl#> , <http://spdx.org/rdf/terms#> , <http://www.w3.org/ns/dqv#> , <http://purl.org/nkos/> , <https://schema.org/> , <http://purl.org/goodrelations/v1#> , <http://www.w3.org/ns/hydra/core#> , <http://www.openlinksw.com/schemas/VSPX#> , <http://www.w3.org/2001/vcard-rdf/3.0#> , <http://ldf.fi/schema/ldf/> , <http://www.ebusiness-unibw.org/ontologies/eclass/5.1.4/#> ;
+
+    prov:wasGeneratedBy     <https://github.com/Wimmics/dekalog> ;
+
+    dct:subject     "Metadata" , "Quality" ;
+    dcat:keyword    "Metadata" , "Quality" ;
+    schema:keywords "Metadata" , "Quality" ;
+
+    void:uriSpace           "http://ns.inria.fr/kg/index#" ;
+    void:uriRegexPattern    "http://ns.inria.fr/kg/index#*" ;
+
+    void:sparqlEndpoint <http://prod-dekalog.inria.fr/sparql> ;
+    dcat:distribution [
+        a               dcat:Distribution ;
+        dct:title       "This dataset's endpoint" ;
+        dcat:accessURL  <http://prod-dekalog.inria.fr/sparql> ;
+        dcat:mediaType  "application/sparql-query"
+    ] ;
+
+    dcat:service <http://prod-dekalog.inria.fr/sparql> .
+
+<http://prod-dekalog.inria.fr/sparql>
+    a sd:Service, dcat:DataService , prov:Entity ;
+    dcat:servesDataset      kgi:catalogRoot ;
+    sd:endpoint             <http://prod-dekalog.inria.fr/sparql> ;
+    dcat:endpointUrl        <http://prod-dekalog.inria.fr/sparql> ;
+
+    dct:creator             <https://orcid.org/0000-0002-9814-439X> , <https://orcid.org/0000-0001-9064-0463> ;
+    prov:wasAttributedTo    <https://orcid.org/0000-0002-9814-439X> , <https://orcid.org/0000-0001-9064-0463> .
+
+
+<https://ror.org/0496p8026>
+    a foaf:Organization;
+    foaf:name "University Côte d'Azur";
+    foaf:homepage <https://univ-cotedazur.fr>.
+
+<https://ror.org/02kvxyf05>
+    a foaf:Organization;
+    foaf:name "Inria";
+    foaf:homepage <https://www.inria.fr>.
+
+<https://ror.org/02feahw73>
+    a foaf:Organization;
+    foaf:name "CNRS";
+    foaf:homepage <https://www.cnrs.fr>.
+
+<https://team.inria.fr/wimmics/> a foaf:Organization; foaf:name "Wimmics research team".
+
+<https://orcid.org/0000-0002-9814-439X>
+    a foaf:Person ;
+    foaf:name "Pierre MAILLOT" ;
+    schema:name "Pierre MAILLOT" ;
+    schema:sameAs <https://cv.archives-ouvertes.fr/pierre-maillot>, <https://www.researchgate.net/profile/Pierre-Maillot> .
+
+<https://orcid.org/0000-0001-9064-0463>
+    a foaf:Person;
+    foaf:name "Franck MICHEL";
+    schema:name "Franck MICHEL";
+    foaf:homepage <https://w3id.org/people/franckmichel>;
+    schema:sameAs <https://cv.archives-ouvertes.fr/fmichel/>, <https://www.researchgate.net/profile/Franck_Michel3>.
+
+<https://orcid.org/0000-0001-5959-5561>
+    a foaf:Person;
+    schema:name "Catherine FARON";
+    foaf:name "Catherine FARON";
+    foaf:homepage <http://www.i3s.unice.fr/~faron/>;
+    schema:sameAs <https://cv.archives-ouvertes.fr/catherine-faron-zucker>,
+        <https://www.researchgate.net/profile/Catherine_Faron-Zucker>.
