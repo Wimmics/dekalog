@@ -316,22 +316,7 @@
                     role="tabpanel" aria-labelledby="description-tab">
                     <div class="col-12 justify-content-center gy-5">
                         <h3 class='mb-4 text-center'>Datasets Descriptions</h3>
-                        <div class="row" id="datasetdescriptionRadar"></div>
-                        <div class="row">
-                            <div class="col-6">
-                                <button id="datasetDescriptionExplain" type="button"
-                                    class="btn btn-link justify-content-center">
-                                    Explanations about the dataset description elements
-                                </button>
-                            </div>
-                            <div class="col-6">
-                                <button id="datasetDescriptionStatDetails" type="button"
-                                    class="btn btn-link justify-content-center">
-                                    Details about the dataset description elements
-                                </button>
-                            </div>
-                        </div>
-                        <div class='row collapse' id='datasetDescriptionExplainText'>
+                        <div class='row justify-content-left' id='datasetDescriptionExplainText'>
                             <p>
                                 The dataset description information are composed of 4 categories:
                             <ul class="list-unstyled">
@@ -398,6 +383,17 @@
                                     the dataset "e.g".
                                 </figcaption>
                             </figure>
+                        </div>
+                        <div class="row" id="datasetdescriptionRadar"></div>
+                        <div class="row justify-content-center">
+                            <div class="'col-4"></div>
+                            <div class="col-2">
+                                <button id="datasetDescriptionStatDetails" type="button"
+                                    class="btn btn-link justify-content-center">
+                                    Details about the dataset description elements
+                                </button>
+                            </div>
+                            <div class="'col-4"></div>
                         </div>
                         <div class="row">
                             <table id="datasetDescriptionTable" class="table table-responsive table-hover collapse">

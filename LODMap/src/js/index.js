@@ -2659,7 +2659,7 @@ var descriptionElementChart = new KartoChart({
     }
 });
 setButtonAsToggleCollapse('datasetDescriptionStatDetails', 'datasetDescriptionTable');
-setButtonAsToggleCollapse('datasetDescriptionExplain', 'datasetDescriptionExplainText');
+//setButtonAsToggleCollapse('datasetDescriptionExplain', 'datasetDescriptionExplainText');
 
 var shortUriChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('shortUrisScatter')),
