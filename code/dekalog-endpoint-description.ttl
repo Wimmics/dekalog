@@ -34,8 +34,8 @@ kgi:catalogRoot
     schema:editor           <https://orcid.org/0000-0002-9814-439X> , <https://orcid.org/0000-0001-9064-0463> , <https://orcid.org/0000-0001-5959-5561> ;
     dct:contributor         <https://orcid.org/0000-0001-9064-0463> , <https://orcid.org/0000-0001-5959-5561> ;
 
-    dct:licence     <https://www.gnu.org/licenses/gpl-3.0> ;
-    schema:licence  <https://www.gnu.org/licenses/gpl-3.0> ;
+    dct:license     <https://www.gnu.org/licenses/gpl-3.0> ;
+    schema:license  <https://www.gnu.org/licenses/gpl-3.0> ;
 
 	dct:language        "en" , "de" , "fi" ;
     schema:inLanguage   "en" , "de" , "fi" ;
@@ -53,7 +53,7 @@ kgi:catalogRoot
     void:sparqlEndpoint <http://prod-dekalog.inria.fr/sparql> ;
     dcat:distribution [
         a               dcat:Distribution ;
-        dct:title       "This dataset's endpoint" ;
+        dct:title       "IndeGx's endpoint" ;
         dcat:accessURL  <http://prod-dekalog.inria.fr/sparql> ;
         dcat:mediaType  "application/sparql-query"
     ] ;
