@@ -123,7 +123,7 @@ public class InteractionApplication {
                         tmpModel.close();
 
                         try {
-                            if (queryString.contains("CONSTRUCT") && ! queryString.contains("GRAPH")) {
+                            if (queryString.contains("CONSTRUCT")) {
                                 Query constructQuery = QueryFactory.create(queryString);
                                 org.apache.http.client.config.RequestConfig requestConfig = org.apache.http.client.config.RequestConfig.copy(org.apache.http.client.config.RequestConfig.DEFAULT)
                                         .setSocketTimeout(Math.toIntExact(action.getTimeout()))
@@ -137,7 +137,7 @@ public class InteractionApplication {
                                         .build();
                                 QueryEngineHTTP actionExecution = new QueryEngineHTTP(action.getEndpointUrl(), constructQuery, client);
                                 actionExecution.addParam("timeout", String.valueOf(action.getTimeout()));
-                                actionExecution.addParam("format", Lang.TRIG.getContentType().getContentTypeStr());
+                                actionExecution.addParam("format", Lang.TTL.getContentType().getContentTypeStr());
                                 actionExecution.setTimeout(action.getTimeout(), TimeUnit.MILLISECONDS, action.getTimeout(), TimeUnit.MILLISECONDS);
 
                                 try {
@@ -157,36 +157,11 @@ public class InteractionApplication {
                                     logger.trace(this._entry.getFileResource() + " action could not be added because of unknown Exception");
                                 }
                                 actionExecution.close();
-                            } else if (queryString.contains("INSERT") || queryString.contains("DELETE")) {
+                            } else if (queryString.contains("INSERT")
+                                    || queryString.contains("DELETE")) {
                                 UpdateRequest insertUpdate = UpdateFactory.create(queryString);
                                 UpdateAction.execute(insertUpdate, this._datasetDescription);
                                 this._datasetDescription.commit();
-                            } else if (queryString.contains("CONSTRUCT") && queryString.contains("GRAPH")) {
-                                // Tentative d'envoyer la requête sans passer par Jena
-                                try {
-                                    HttpClient client = InteractionsUtils.getHttpClient();
-                                    URI queryURL = URI.create(action.getEndpointUrl()
-                                            + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString())
-                                            + "&timeout=" + action.getTimeout()
-                                            + "&format=" + Lang.TRIG.getContentType().getContentTypeStr());
-                                    HttpRequest request = HttpRequest.newBuilder()
-                                            .uri(queryURL)
-                                            .GET()
-                                            .timeout(Duration.of(action.getTimeout(), ChronoUnit.MILLIS))
-                                            .header("Accept", Lang.TRIG.getContentType().getContentTypeStr())
-                                            .build();
-                                    Dataset bodyData = DatasetFactory.create();
-                                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                                    if(response.statusCode() == 200) {
-                                        String bodyString = response.body();
-                                        bodyString = bodyString.replace("= {", " {");
-                                        StringReader bodyReader = new StringReader(bodyString);
-                                        RDFDataMgr.read(bodyData, bodyReader, "", Lang.TRIG);
-                                        DatasetUtils.addDataset(result, bodyData);
-                                    }
-                                } catch (RiotException | InterruptedException | IOException e1) {
-                                    logger.error(e1);
-                                }
                             }
                         } catch (QueryExceptionHTTP e) {
                             logger.info(e);
@@ -209,7 +184,7 @@ public class InteractionApplication {
                                                 .uri(queryURL)
                                                 .GET()
                                                 .timeout(Duration.of(action.getTimeout(), ChronoUnit.MILLIS))
-                                                .header("Accept", "application/x-trig")
+                                                .header("Accept", "text/turtle")
                                                 .build();
                                     } catch (UnsupportedEncodingException e1) {
                                         e1.printStackTrace();
@@ -221,7 +196,7 @@ public class InteractionApplication {
                                         bodyString = bodyString.replace("= {", " {");
                                         StringReader bodyReader = new StringReader(bodyString);
                                         try {
-                                            RDFDataMgr.read(bodyData, bodyReader, "", Lang.TRIG);
+                                            RDFDataMgr.read(bodyData, bodyReader, "", Lang.TTL);
                                         } catch(RiotException er) {
                                             logger.error(bodyString);
                                             throw er;

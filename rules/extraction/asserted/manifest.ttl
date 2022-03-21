@@ -39,10 +39,6 @@
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                          kgi:curated $endpointDescription ;
                          kgi:original ?res .
-                    GRAPH $rawEndpointUrl {
-                        ?res sd:endpoint $endpointUrl .
-                        ?res ?p ?o .
-                    }
                 } WHERE {
                     {
                         ?res sd:endpoint $endpointUrl .
@@ -63,9 +59,6 @@
                 CONSTRUCT {
                    ?s ?p $endpointDescription .
                    $metadataDescription kgi:original ?res .
-                   GRAPH $rawEndpointUrl {
-                        ?s ?p ?res .
-                   }
                 } WHERE {
                     {
                        ?res sd:endpoint $endpointUrl .
@@ -115,10 +108,6 @@
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                          kgi:curated $endpointDescription ;
                          kgi:original ?res .
-                    GRAPH $rawEndpointUrl {
-                        ?res sd:endpoint $rawEndpointUrl .
-                        ?res ?p ?o .
-                    }
                 } WHERE {
                     {
                         ?res sd:endpoint ?endpoint .
@@ -140,9 +129,6 @@
                 CONSTRUCT {
                    ?s ?p $endpointDescription .
                    $metadataDescription kgi:original ?res .
-                   GRAPH $rawEndpointUrl {
-                        ?s ?p ?res .
-                   }
                 } WHERE {
                     {
                         ?res sd:endpoint ?endpoint .
@@ -206,9 +192,6 @@
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
-                    GRAPH $rawEndpointUrl {
-                        ?res ?pp ?o .
-                    }
                 }
                 WHERE {
                     {
@@ -241,9 +224,6 @@
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
                         prov:wasDerivedFrom ?res .
                     ?s ?pp $datasetDescription .
-                    GRAPH $rawEndpointUrl {
-                        ?s ?pp ?res .
-                    }
                 }
                 WHERE {
                     {
@@ -296,9 +276,6 @@
                     $metadataDescription a prov:Entity , earl:TestSubject ;
                         kgi:curated $datasetDescription ;
                         kgi:original ?res .
-                    GRAPH $rawEndpointUrl {
-                        ?res ?pp ?o .
-                    }
                 }
                 WHERE {
                     {
@@ -332,9 +309,6 @@
                         kgi:original ?res .
                     $datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
                     ?s ?pp $datasetDescription .
-                    GRAPH $rawEndpointUrl {
-                        ?s ?pp ?res .
-                    }
                 }
                 WHERE {
                     {
