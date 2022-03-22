@@ -8,3 +8,4 @@ This depot contains the code and data files created by the WIMMICS team as part 
 - [rules/](https://github.com/Wimmics/dekalog/tree/master/rules) contains the rules followed by our framework for the generation of an endpoint description in our index.
 - [docs/](https://github.com/Wimmics/dekalog/tree/master/docs) contains the preliminary design document in which we discussed the basic concepts and methods used in our framework.
 - [LODMap/](https://github.com/Wimmics/dekalog/tree/master/LODMap) contains the code for the [KartoGraphI website](http://prod-dekalog.inria.fr/).
+- The file [template-description.ttl](https://github.com/Wimmics/dekalog/blob/master/template-description.ttl) is a basic template for the description of knowledge bases.
