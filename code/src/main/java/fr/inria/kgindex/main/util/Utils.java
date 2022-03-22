@@ -16,10 +16,6 @@ public class Utils {
     public static String manifestRootFile = "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/manifest.ttl";
     public static final String vocabularyFile = "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/dekalog_vocabulary.ttl";
 
-    public static String PLACEHOLDER_DATASETDESCRIPTION = "$datasetDescription";
-    public static String PLACEHOLDER_ENDPOINTDESCRIPTION = "$endpointDescription";
-    public static String PLACEHOLDER_METADATADESCRIPTION = "$metadataDescription";
-    public static String PLACEHOLDER_GRAPHLIST = "$graphList";
     public static String PLACEHOLDER_LIMIT = "$LIMIT";
     public static String PLACEHOLDER_DATETIME = "$dateLiteral";
     public static String PLACEHOLDER_FROM = "$FROM";
@@ -28,11 +24,7 @@ public class Utils {
     public static String PLACEHOLDER_RAWENDPOINTURL = "$rawEndpointUrl";
 
     public static boolean queryNeedsRewriting(String queryString) {
-        return queryString.contains(PLACEHOLDER_DATASETDESCRIPTION)
-                || queryString.contains(PLACEHOLDER_ENDPOINTDESCRIPTION)
-                || queryString.contains(PLACEHOLDER_METADATADESCRIPTION)
-                || queryString.contains(PLACEHOLDER_GRAPHLIST)
-                || queryString.contains(PLACEHOLDER_LIMIT)
+        return queryString.contains(PLACEHOLDER_LIMIT)
                 || queryString.contains(PLACEHOLDER_DATETIME)
                 || queryString.contains(PLACEHOLDER_FROM)
                 || queryString.contains(PLACEHOLDER_NAMESPACE)
@@ -51,10 +43,6 @@ public class Utils {
         HashSet<String> result = new HashSet<String>();
 
         if(queryNeedsRewriting(queryString)) {
-            queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_DATASETDESCRIPTION), "<" + describedDataset.getDatasetDescriptionResource().getURI() + ">");
-            queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_ENDPOINTDESCRIPTION), "<" + describedDataset.getEndpointDescriptionResource().getURI() + ">");
-            queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_METADATADESCRIPTION), "<" + describedDataset.getMetadataDescriptionResource().getURI() + ">");
-            queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_GRAPHLIST), "<" + describedDataset.getGraphListResource().getURI() + ">");
             queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_LIMIT), "");
             queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_RAWENDPOINTURL), "<" + describedDataset.getEndpointUrl() + ">");
             Date date = new Date();

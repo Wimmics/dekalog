@@ -11,7 +11,7 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
 kgi:catalogTest a dcat:Catalog ;
-    dcat:dataset  kgi:wasabi .
+    dcat:dataset kgi:local .
 
 kgi:BNBDataset void:sparqlEndpoint <https://bnb.data.bl.uk/sparql> ;
     rdfs:label "BNB".
@@ -42,3 +42,6 @@ kgi:dbpedia void:sparqlEndpoint <http://dbpedia.org/sparql> ;
 
 kgi:wasabi void:sparqlEndpoint <http://wasabi.inria.fr/sparql> ;
     rdfs:label "WASABI" .
+
+kgi:local void:sparqlEndpoint <http://localhost:3030/experiment/query> ;
+    rdfs:label "local" .
