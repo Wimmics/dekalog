@@ -10,6 +10,11 @@
 @prefix dct:        <http://purl.org/dc/terms/> .
 @prefix skos:       <http://www.w3.org/2004/02/skos/core#> .
 @prefix kgi:        <http://ns.inria.fr/kg/index#> .
+@prefix virtrdf:	<http://www.openlinksw.com/schemas/virtrdf#> .
+@prefix bif:	<bif:> .
+@prefix sql:	<sql:> .
+@prefix formats:	<http://www.w3.org/ns/formats/> .
+@prefix dekalog:	<http://prod-dekalog.inria.fr/> .
 
 kgi:catalogRoot
     a   dcat:Dataset, void:Dataset, schema:Dataset, prov:Entity ;
@@ -58,28 +63,59 @@ kgi:catalogRoot
         dcat:mediaType  "application/sparql-query"
     ] ;
 
-    dcat:service <http://prod-dekalog.inria.fr/sparql> .
+    dcat:service <http://prod-dekalog.inria.fr/sparql-sd> .
 
-<http://prod-dekalog.inria.fr/sparql>
+<http://prod-dekalog.inria.fr/sparql-sd>
     a sd:Service, dcat:DataService , prov:Entity ;
-    dcat:servesDataset      kgi:catalogRoot ;
-    sd:endpoint             <http://prod-dekalog.inria.fr/sparql> ;
-    dcat:endpointUrl        <http://prod-dekalog.inria.fr/sparql> ;
-
+    dcat:servesDataset kgi:catalogRoot ;
+    sd:endpoint             dekalog:sparql ;
+    dcat:endpointUrl        dekalog:sparql ;
     dct:creator             <https://orcid.org/0000-0002-9814-439X> , <https://orcid.org/0000-0001-9064-0463> ;
     prov:wasAttributedTo    <https://orcid.org/0000-0002-9814-439X> , <https://orcid.org/0000-0001-9064-0463> ;
-    sd:feature sd:DereferencesURIs,
-       sd:UnionDefaultGraph ;
-    sd:resultFormat <http://www.w3.org/ns/formats/N-Triples>,
-        <http://www.w3.org/ns/formats/N3>,
-        <http://www.w3.org/ns/formats/RDF_XML>,
-        <http://www.w3.org/ns/formats/RDFa>,
-        <http://www.w3.org/ns/formats/SPARQL_Results_CSV>,
-        <http://www.w3.org/ns/formats/SPARQL_Results_JSON>,
-        <http://www.w3.org/ns/formats/SPARQL_Results_XML>,
-        <http://www.w3.org/ns/formats/Turtle> ;
-    sd:supportedLanguage sd:SPARQL10Query .
-
+    sd:feature 	sd:UnionDefaultGraph ,
+    		sd:RequiresDataset ,
+    		sd:EmptyGraphs ,
+    		sd:BasicFederatedQuery ;
+    sd:resultFormat formats:N3 ,
+    		formats:N-triples ,
+    		formats:RDFa ,
+    		formats:RDF_XML ,
+    		formats:SPARQL_Results_XML ,
+    		formats:SPARQL_Results_JSON ,
+    		formats:SPARQL_Results_CSV ,
+    		formats:Turtle ,
+    		virtrdf:FileFormat_SPARQL_Results_HTML ,
+    		virtrdf:FileFormat_SPARQL_Results_Spreadsheet ,
+    		virtrdf:FileFormat_SPARQL_Results_Javascript ,
+    		virtrdf:FileFormat_SPARQL_Results_CXML ,
+    		virtrdf:FileFormat_SPARQL_Results_CXML_QR ,
+    		virtrdf:FileFormat_Triples_RDF_JSON ,
+    		virtrdf:FileFormat_Triples_XHTML_RDFa ,
+    		virtrdf:FileFormat_Triples_ATOM_XML ,
+    		virtrdf:FileFormat_Triples_ODATA_JSON ,
+    		virtrdf:FileFormat_Triples_HTML_list ,
+    		virtrdf:FileFormat_Triples_HTML_table ,
+    		virtrdf:FileFormat_Triples_HTML_Microdata ,
+    		virtrdf:FileFormat_Triples_Microdata_JSON ,
+    		virtrdf:FileFormat_Triples_CSV ,
+    		virtrdf:FileFormat_Triples_CXML ,
+    		virtrdf:FileFormat_Triples_CXML_QR ,
+    		virtrdf:FileFormat_Quads_TriG ;
+    sd:supportedLanguage sd:SPARQL10Query ,
+    		sd:SPARQL11Query ;
+	sd:languageExtension	virtrdf:SSG_SD_QUAD_MAP ,
+		virtrdf:SSG_SD_OPTION ,
+		virtrdf:SSG_SD_IN ,
+		virtrdf:SSG_SD_LIKE ,
+		virtrdf:SSG_SD_GLOBALS ,
+		virtrdf:SSG_SD_BI ,
+		virtrdf:SSG_SD_VIRTSPECIFIC ,
+		virtrdf:SSG_SD_SERVICE ,
+		virtrdf:SSG_SD_TRANSIT ,
+		virtrdf:SSG_SD_SPARQL11_DRAFT ;
+	sd:propertyFeature	bif:contains ;
+	sd:extensionFunction	bif:abs ;
+	sd:extensionAggregate	sql:STDDEV .
 
 <https://ror.org/0496p8026>
     a foaf:Organization;
