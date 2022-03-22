@@ -1416,7 +1416,7 @@ var tripleChart = new KartoChart({
         //unCollapseHtml('triplesContentCol');
     },
     redrawFunction: function () {
-        $('#tripleScatter').width(mainContentColWidth / 3);
+        $('#tripleScatter').width(mainContentColWidth);
         this.chartObject.setOption(this.option, true);
         this.chartObject.resize();
     }
@@ -1481,7 +1481,7 @@ var classNumberChart = new KartoChart({
         //unCollapseHtml('tableClassesDetails');
     },
     redrawFunction: function () {
-        $('#classScatter').width(mainContentColWidth / 3);
+        $('#classScatter').width(mainContentColWidth);
         this.chartObject.setOption(this.option, true);
         this.chartObject.resize();
     }
@@ -1546,7 +1546,7 @@ var propertyNumberChart = new KartoChart({
         //unCollapseHtml('tablePropertiesDetails');
     },
     redrawFunction: function () {
-        $('#propertyScatter').width(mainContentColWidth / 3);
+        $('#propertyScatter').width(mainContentColWidth);
         this.chartObject.setOption(this.option, true);
         this.chartObject.resize();
     }
