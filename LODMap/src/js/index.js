@@ -3,6 +3,7 @@ import $, { get } from 'jquery';
 import 'leaflet';
 const ttl_read = require('@graphy/content.ttl.read');
 const dayjs = require('dayjs')
+const md5 = require('md5');
 const customParseFormat = require('dayjs/plugin/customParseFormat')
 const duration = require('dayjs/plugin/duration');
 const relativeTime = require('dayjs/plugin/relativeTime')
@@ -10,6 +11,7 @@ dayjs.extend(relativeTime)
 dayjs.extend(customParseFormat)
 dayjs.extend(duration)
 import { greenIcon, orangeIcon } from "./leaflet-color-markers.js";
+const whiteListFile = require('../data/cache/whiteLists.json');
 const endpointIpMap = require('../data/endpointIpGeoloc.json');
 const timezoneMap = require('../data/timezoneMap.json');
 const graphLists = require('../data/runSets.json');
@@ -20,23 +22,23 @@ class KartoChart {
         this.chartObject = config.chartObject;
         this.option = config.option;
         this.fill = config.fillFunction;
-        if(this.fill === undefined) {
+        if (this.fill === undefined) {
             this.fill = () => { };
         }
         this.redraw = config.redrawFunction;
-        if(this.redraw === undefined) {
+        if (this.redraw === undefined) {
             this.redraw = () => { };
         }
         this.clear = config.clearFunction;
-        if(this.clear === undefined) {
+        if (this.clear === undefined) {
             this.clear = () => { };
         }
         this.hide = config.hideFunction;
-        if(this.hide === undefined) {
+        if (this.hide === undefined) {
             this.hide = () => { };
         }
         this.show = config.showFunction;
-        if(this.show === undefined) {
+        if (this.show === undefined) {
             this.show = () => { };
         }
     }
@@ -261,11 +263,11 @@ function refresh() {
     mainContentColWidth = $('#mainContentCol').width();
     clear();
     whiteListFill();
-    allContent.forEach((content, i) => {content.fill()});
+    allContent.forEach((content, i) => { content.fill() });
 }
 
 function clear() {
-    allContent.forEach((content, i) => {content.clear()});
+    allContent.forEach((content, i) => { content.clear() });
 }
 
 function redrawGeolocContent() {
@@ -298,7 +300,7 @@ function redrawFrameworkInformationContent() {
 
 function redrawCharts() {
     mainContentColWidth = $('#mainContentCol').width();
-    allContent.forEach((content, i) => {content.redraw()});
+    allContent.forEach((content, i) => { content.redraw() });
 }
 
 function generateGraphValueFilterClause() {
@@ -364,27 +366,22 @@ function setButtonAsToggleCollapse(buttonId, tableId) {
 
 function whiteListFill() {
     var tableBody = $('#whiteListTableBody');
-    var endpointListQuery = 'SELECT DISTINCT ?endpointUrl WHERE {' +
-        ' GRAPH ?g { ' +
-        "{ ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
-        "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        '?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . ' +
-        '} ' +
-        generateGraphValueFilterClause() +
-        '} ' +
-        'GROUP BY ?endpointUrl';
-    sparqlQueryJSON(endpointListQuery, json => {
-        tableBody.empty();
-        endpointList = [];
-        blacklistedEndpointList = [];
-        blackistedEndpointIndexList = [];
-        json.results.bindings.forEach((item) => {
-            endpointList.push(item.endpointUrl.value);
-        });
-        endpointList.sort((a, b) => a.localeCompare(b))
-        endpointList.forEach((item, i) => {
-            tableBody.append(generateCheckEndpointLine(item, i));
-        });
+
+    var graphListEndpointKey = md5(''.concat(graphList));
+    tableBody.empty();
+    endpointList = [];
+    blacklistedEndpointList = [];
+    blackistedEndpointIndexList = [];
+    var whiteEndpointList = whiteListFile[graphListEndpointKey]
+    whiteEndpointList.forEach((endpointUrl) => {
+        if (!(new Set(blackistedEndpointIndexList)).has(endpointUrl)) {
+            endpointList.push(endpointUrl);
+        }
+    });
+
+    endpointList.sort((a, b) => a.localeCompare(b))
+    endpointList.forEach((item, i) => {
+        tableBody.append(generateCheckEndpointLine(item, i));
     });
 
     function generateCheckEndpointLine(endpointUrl, i) {
@@ -1900,7 +1897,7 @@ var testTableContent = new KartoChart({
             fillTestTable();
         });
     },
-    clearFunction: function() {
+    clearFunction: function () {
         $('#rulesTableBody').empty();
     }
 });

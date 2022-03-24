@@ -18,6 +18,8 @@
       "buffer": "^6.0.3",
       "events": "^3.3.0",
       "graphy": "^4.3.4",
-      "process": "^0.11.10"
+      "md5": "^2.3.0",
+      "process": "^0.11.10",
+      "xmlhttprequest": "^1.8.0"
    }
 }
