@@ -7,6 +7,7 @@ const dataFilePrefix = "./src/data/cache/";
 const timezoneMap = require('./src/data/timezoneMap.json');
 const whiteListFilename = dataFilePrefix + "whiteLists.json";
 const geolocFilename = dataFilePrefix + "geolocData.json";
+const sparqlCoverageFilename = dataFilePrefix + "sparqlCoverageData.json";
 const endpointIpMap = require('./src/data/endpointIpGeoloc.json');
 
 
@@ -131,12 +132,6 @@ function endpointMapfill() {
                 if (endpointTimezoneSPARQL.get(endpoint) != undefined) {
                     sparqlTimezone = endpointTimezoneSPARQL.get(endpoint).padStart(6, '-').padStart(6, '+');
                 }
-                var badTimezone = false;
-                if (sparqlTimezone != undefined
-                    && ipTimezone != undefined
-                    && sparqlTimezone.localeCompare(ipTimezone) != 0) {
-                    badTimezone = true;
-                }
 
                 endpointItem = { endpoint: endpoint, lat: item.value.geoloc.lat, lon: item.value.geoloc.lon, country: "", region: "", city: "", org: "", timezone: ipTimezone, sparqlTimezone: sparqlTimezone };
                 if (item.value.geoloc.country != undefined) {
@@ -170,7 +165,7 @@ function endpointMapfill() {
                     if (endpointItem.org != undefined) {
                         popupString += "<tr><td>Organization: </td><td>" + endpointItem.org + "</td></tr>";
                     }
-                    if(endpointItem.timezone != undefined) {
+                    if (endpointItem.timezone != undefined) {
                         var badTimezone = endpointItem.timezone.localeCompare(endpointItem.sparqlTimezone) != 0;
                         if (badTimezone) {
                             popupString += "<tr><td>Timezone of endpoint URL: </td><td>" + endpointItem.timezone + "</td></tr>";
@@ -184,11 +179,14 @@ function endpointMapfill() {
                     popupString += "</table>"
                     endpointItem.popupHTML = popupString;
                 })
+                .catch(error => {
+                    console.log(error)
+                })
             ).then(() => {
                 endpointGeolocData.push(endpointItem);
             })
             .catch(error => {
-                console.log(error);
+                console.log(error)
             })
     }))
         .then(() => {
@@ -200,10 +198,80 @@ function endpointMapfill() {
             }
         })
         .catch(error => {
-            console.log(error);
+            console.log(error)
         })
 
 }
 
+function SPARQLCoverageFill() {
+    console.log("TEST")
+    // Create an histogram of the SPARQLES rules passed by endpoint.
+    var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) { ' +
+        'GRAPH ?g { ' +
+        '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ' +
+        '?metadata <http://ns.inria.fr/kg/index#curated> ?base . ' +
+        'OPTIONAL { ' +
+        '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . ' +
+        'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) ' +
+        'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } ' +
+        '} ' +
+        '} ' +
+        '} ' +
+        'GROUP BY ?endpoint ?sparqlNorm ' +
+        'ORDER BY DESC( ?sparqlNorm)';
+    var jsonBaseFeatureSparqles = [];
+    return sparqlQueryPromise(sparqlesFeatureQuery)
+        .then(json => {
+            var endpointSet = new Set();
+            var sparql10Map = new Map();
+            var sparql11Map = new Map();
+            json.results.bindings.forEach((bindingItem, i) => {
+                var endpointUrl = bindingItem.endpoint.value;
+                endpointSet.add(endpointUrl);
+                var feature = undefined;
+                if (bindingItem.sparqlNorm != undefined) {
+                    feature = bindingItem.sparqlNorm.value;
+                }
+                var count = bindingItem.count.value;
+                if (feature == undefined || feature.localeCompare("SPARQL10") == 0) {
+                    sparql10Map.set(endpointUrl, Number(count));
+                }
+                if (feature == undefined || feature.localeCompare("SPARQL11") == 0) {
+                    sparql11Map.set(endpointUrl, Number(count));
+                }
+            });
+
+            endpointSet.forEach((item) => {
+                var sparql10 = sparql10Map.get(item);
+                var sparql11 = sparql11Map.get(item);
+                if (sparql10 == undefined) {
+                    sparql10 = 0;
+                }
+                if (sparql11 == undefined) {
+                    sparql11 = 0;
+                }
+                var sparqlJSONObject = { 'endpoint': item, 'sparql10': sparql10, 'sparql11': sparql11, 'sparqlTotal': (sparql10 + sparql11) };
+                jsonBaseFeatureSparqles.push(sparqlJSONObject);
+            });
+
+
+        })
+        .then(() => {
+            try {
+                var content = JSON.stringify(jsonBaseFeatureSparqles);
+                fs.writeFileSync(sparqlCoverageFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
+
 whiteListFill()
-.then(endpointMapfill());
+    .finally(endpointMapfill())
+    .finally(SPARQLCoverageFill())
+    .catch(error => {
+        console.log(error)
+    });
