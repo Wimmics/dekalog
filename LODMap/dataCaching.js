@@ -3,12 +3,14 @@ var md5 = require('md5');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 const graphLists = require('./src/data/runSets.json');
-const dataFilePrefix = "./src/data/cache/";
 const timezoneMap = require('./src/data/timezoneMap.json');
+const endpointIpMap = require('./src/data/endpointIpGeoloc.json');
+const dataFilePrefix = "./src/data/cache/";
+
 const whiteListFilename = dataFilePrefix + "whiteLists.json";
 const geolocFilename = dataFilePrefix + "geolocData.json";
 const sparqlCoverageFilename = dataFilePrefix + "sparqlCoverageData.json";
-const endpointIpMap = require('./src/data/endpointIpGeoloc.json');
+const sparqlFeaturesFilename = dataFilePrefix + "sparqlFeaturesData.json";
 
 
 function generateGraphValueFilterClause(graphList) {
@@ -204,7 +206,6 @@ function endpointMapfill() {
 }
 
 function SPARQLCoverageFill() {
-    console.log("TEST")
     // Create an histogram of the SPARQLES rules passed by endpoint.
     var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) { ' +
         'GRAPH ?g { ' +
@@ -220,6 +221,7 @@ function SPARQLCoverageFill() {
         'GROUP BY ?endpoint ?sparqlNorm ' +
         'ORDER BY DESC( ?sparqlNorm)';
     var jsonBaseFeatureSparqles = [];
+    var sparqlFeaturesDataArray = [];
     return sparqlQueryPromise(sparqlesFeatureQuery)
         .then(json => {
             var endpointSet = new Set();
@@ -257,9 +259,65 @@ function SPARQLCoverageFill() {
 
         })
         .then(() => {
+            const sparqlFeatureQuery = 'SELECT DISTINCT ?endpoint ?activity { ' +
+            'GRAPH ?g { ' +
+            '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ' +
+            '?metadata <http://ns.inria.fr/kg/index#curated> ?base . ' +
+            'OPTIONAL { ' +
+            '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . ' +
+            'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) ' +
+            'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } ' +
+            '} ' +
+            '} ' +
+            '} ' +
+            'GROUP BY ?endpoint ?activity ' +
+            'ORDER BY DESC( ?endpoint)';
+        var endpointFeatureMap = new Map();
+        var featuresShortName = new Map();
+        return sparqlQueryPromise(sparqlFeatureQuery)
+        .then(json => {
+            console.log(json)
+            endpointFeatureMap = new Map();
+            var featuresSet = new Set();
+            json.results.bindings.forEach(bindingItem => {
+                const endpointUrl = bindingItem.endpoint.value;
+                if (!endpointFeatureMap.has(endpointUrl)) {
+                    endpointFeatureMap.set(endpointUrl, new Set());
+                }
+                if (bindingItem.activity != undefined) {
+                    const activity = bindingItem.activity.value;
+                    if (!endpointFeatureMap.has(endpointUrl)) {
+                        endpointFeatureMap.set(endpointUrl, new Set());
+                    }
+                    featuresSet.add(activity);
+                    if(featuresShortName.get(activity) == undefined) {
+                        featuresShortName.set(activity, activity.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_", "sparql10:").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_", "sparql11:").replace(".ttl#activity", ""))
+                    }
+                    endpointFeatureMap.get(endpointUrl).add(featuresShortName.get(activity));
+                }
+            });
+            console.log(endpointFeatureMap)
+            endpointFeatureMap.forEach((featureSet, endpointUrl, map) => {
+                var sortedFeatureArray = [...featureSet].sort((a, b) => a.localeCompare(b));
+                sparqlFeaturesDataArray.push({ endpoint: endpointUrl, features: sortedFeatureArray });
+            });
+
+            sparqlFeaturesDataArray.sort((a, b) => {
+                return a.endpoint.localeCompare(b.endpoint);
+            });
+        })
+        })
+        .then(() => {
             try {
                 var content = JSON.stringify(jsonBaseFeatureSparqles);
                 fs.writeFileSync(sparqlCoverageFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            try {
+                var content = JSON.stringify(sparqlFeaturesDataArray);
+                console.log(content)
+                fs.writeFileSync(sparqlFeaturesFilename, content)
             } catch (err) {
                 console.error(err)
             }

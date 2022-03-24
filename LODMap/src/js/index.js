@@ -15,6 +15,7 @@ import { greenIcon, orangeIcon } from "./leaflet-color-markers.js";
 const whiteListFile = require('../data/cache/whiteLists.json');
 const geolocData = require('../data/cache/geolocData.json');
 const sparqlCoverCount = require('../data/cache/sparqlCoverageData.json')
+const sparqlFeaturesData = require('../data/cache/sparqlFeaturesData.json')
 
 var filteredEndpointWhiteList = [];
 
@@ -504,49 +505,10 @@ var sparqlFeaturesContent = new KartoChart({
             featuresDescriptionMap.set(featureDesc.feature, featureDesc.description);
             featuresQueryMap.set(featureDesc.feature, featureDesc.query);
         });
+        
+        sparqlFeaturesDataArray = sparqlFeaturesData.filter(endpointItem => ((!(new Set(blackistedEndpointIndexList)).has(endpointItem.endpoint)) && (new Set(filteredEndpointWhiteList).has(endpointItem.endpoint))));
 
-        const sparqlFeatureQuery = 'SELECT DISTINCT ?endpoint ?activity { ' +
-            'GRAPH ?g { ' +
-            '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ' +
-            '?metadata <http://ns.inria.fr/kg/index#curated> ?base . ' +
-            'OPTIONAL { ' +
-            '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . ' +
-            'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) ' +
-            'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } ' +
-            '} ' +
-            '} ' +
-            generateGraphValueFilterClause() + ' } ' +
-            'GROUP BY ?endpoint ?activity ' +
-            'ORDER BY DESC( ?endpoint)';
-        var endpointFeatureMap = new Map();
-        var featuresShortName = new Map();
-        var sparqlFeaturesDataArray = [];
-        sparqlQueryJSON(sparqlFeatureQuery, json => {
-            endpointFeatureMap = new Map();
-            var featuresSet = new Set();
-            json.results.bindings.forEach(bindingItem => {
-                const endpointUrl = bindingItem.endpoint.value;
-                if (!endpointFeatureMap.has(endpointUrl)) {
-                    endpointFeatureMap.set(endpointUrl, new Set());
-                }
-                if (bindingItem.activity != undefined) {
-                    const activity = bindingItem.activity.value;
-                    if (!endpointFeatureMap.has(endpointUrl)) {
-                        endpointFeatureMap.set(endpointUrl, new Set());
-                    }
-                    endpointFeatureMap.get(endpointUrl).add(activity);
-                    featuresSet.add(activity);
-                    featuresShortName.set(activity, activity.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_", "").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_", "").replace(".ttl#activity", ""))
-                }
-            });
-
-            sparqlFeaturesDataArray = [];
-            endpointFeatureMap.forEach((featureSet, endpointUrl, map) => {
-                var sortedFeatureArray = [...featureSet].sort((a, b) => a.localeCompare(b));
-                sparqlFeaturesDataArray.push({ endpoint: endpointUrl, features: sortedFeatureArray });
-            });
-
-            sparqlFeaturesDataArray.sort((a, b) => {
+        sparqlFeaturesDataArray.sort((a, b) => {
                 return a.endpoint.localeCompare(b.endpoint);
             });
             function fillFeaturesTable() {
@@ -558,11 +520,10 @@ var sparqlFeaturesContent = new KartoChart({
                     var endpointCell = $(document.createElement("td"));
                     var featuresCell = $(document.createElement("td"));
                     item.features.forEach(feature => {
-                        var featureName = featuresShortName.get(feature);
                         var featureAloneCell = $(document.createElement("p"));
-                        featureAloneCell.addClass(featureName + "Feature");
+                        featureAloneCell.addClass(feature + "Feature");
                         featureAloneCell.prop("title", featuresDescriptionMap.get(feature) + "\n" + featuresQueryMap.get(feature));
-                        featureAloneCell.text(featureName);
+                        featureAloneCell.text(feature);
                         featuresCell.append(featureAloneCell);
                     })
                     endpointCell.text(endpoint);
@@ -575,7 +536,6 @@ var sparqlFeaturesContent = new KartoChart({
             setTableHeaderSort("SPARQLFeaturesTableBody", ["SPARQLFeaturesTableEndpointHeader", "SPARQLFeaturesTableFeaturesHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.features.size - b.features.size], fillFeaturesTable, sparqlFeaturesDataArray);
 
             fillFeaturesTable();
-        });
     }
 });
 setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
