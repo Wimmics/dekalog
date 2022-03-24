@@ -7,9 +7,6 @@ const dataFilePrefix = "./src/data/cache/";
 const timezoneMap = require('./src/data/timezoneMap.json');
 const whiteListFilename = dataFilePrefix + "whiteLists.json";
 const geolocFilename = dataFilePrefix + "geolocData.json";
-const whiteListFile = require(whiteListFilename);
-const geolocFile = require(geolocFilename);
-var whiteListMap = new Map(new Map(Object.entries(whiteListFile)));
 const endpointIpMap = require('./src/data/endpointIpGeoloc.json');
 
 
@@ -44,6 +41,7 @@ function xmlHTTPRequestGetPromise(url) {
         };
         xhr.onerror = function () {
             reject({
+                url: url,
                 response: xhr.responseText,
                 status: xhr.status,
                 statusText: xhr.statusText
@@ -55,7 +53,6 @@ function xmlHTTPRequestGetPromise(url) {
 
 function xmlhttpRequestJSONPromise(url) {
     return xmlHTTPRequestGetPromise(url).then(response => {
-        console.log(url)
         return JSON.parse(response);
     });
 }
@@ -173,10 +170,12 @@ function endpointMapfill() {
                     if (endpointItem.org != undefined) {
                         popupString += "<tr><td>Organization: </td><td>" + endpointItem.org + "</td></tr>";
                     }
-                    var badTimezone = endpointItem.timezone.localeCompare(endpointItem.sparqlTimezone) != 0;
-                    if (badTimezone) {
-                        popupString += "<tr><td>Timezone of endpoint URL: </td><td>" + endpointItem.timezone + "</td></tr>";
-                        popupString += "<tr><td>Timezone declared by endpoint: </td><td>" + endpointItem.sparqlTimezone + "</td></tr>";
+                    if(endpointItem.timezone != undefined) {
+                        var badTimezone = endpointItem.timezone.localeCompare(endpointItem.sparqlTimezone) != 0;
+                        if (badTimezone) {
+                            popupString += "<tr><td>Timezone of endpoint URL: </td><td>" + endpointItem.timezone + "</td></tr>";
+                            popupString += "<tr><td>Timezone declared by endpoint: </td><td>" + endpointItem.sparqlTimezone + "</td></tr>";
+                        }
                     }
                     if (responseLabels.results.bindings.size > 0) {
                         popupString += "<tr><td colspan='2'>" + responseLabels + "</td></tr>";
@@ -184,7 +183,6 @@ function endpointMapfill() {
                     popupString += "</tbody>"
                     popupString += "</table>"
                     endpointItem.popupHTML = popupString;
-                    console.log(endpointItem)
                 })
             ).then(() => {
                 endpointGeolocData.push(endpointItem);
