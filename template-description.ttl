@@ -17,7 +17,7 @@
 # Repeated information as objects of different properties will facilitate the access to the description for future users and should be kept.
 
 <dataset-uri>
-    a   dcat:Dataset, void:Dataset, schema:Dataset, prov:Entity ;
+    a   dcat:Dataset , void:Dataset , schema:Dataset , prov:Entity , sd:Dataset ;
     dct:title       "Name of the dataset" ;
     schema:name     "Name of the dataset" ;
     skos:prefLabel  "Name of the dataset" ;
@@ -35,8 +35,8 @@
     schema:author           <Uri of creator(s)> , "Avoid string literals when possible" ;
     dct:publisher           <Uri of creator(s)> , "Avoid string literals when possible" ;
     prov:wasAttributedTo    <Uri of creator(s)> , "Avoid string literals when possible" ;
-    schema:publisher        <Uri of creator(s)>, <publisher(s)> , "Avoid string literals when possible" ;
-    schema:editor           <Uri of creator(s)>, <editor(s)> , "Avoid string literals when possible" ;
+    schema:publisher        <Uri of creator(s)> , <publisher(s)> , "Avoid string literals when possible" ;
+    schema:editor           <Uri of creator(s)> , <editor(s)> , "Avoid string literals when possible" ;
     dct:contributor         <Uri of contributor(s)> , "Avoid string literals when possible" ;
 
     dct:license     <Uri/Url of license> ;
@@ -44,17 +44,17 @@
     owl:versionInfo "Version number" ;
     schema:version  "Version number" ;
 
-	dct:language       "Lang", "tags", "used", "in", "the", "literals", "if", "any" ;
-    schema:inLanguage  "Lang", "tags", "used", "in", "the", "literals", "if", "any" ;
+	dct:language       "Lang" , "tags" , "used" , "in" , "the" , "literals" , "if" , "any" ;
+    schema:inLanguage  "Lang" , "tags" , "used" , "in" , "the" , "literals" , "if" , "any" ;
 
     dct:issued              "Date time of creation"^^xsd:date ;
     prov:wasGeneratedAtTime "Date time of creation"^^xsd:date ;
     schema:datePublished    "Date time of creation/publication"^^xsd:date ;
     dct:modified            "Date time of the last modification"^^xsd:date ;
 
-    dct:subject     "Keywords", "describing", "the", "content", "of", "the", "dataset" , "strings", "or", <URIs> ;
-    dcat:keyword    "Keywords", "describing", "the", "content", "of", "the", "dataset" , "strings", "or", <URIs> ;
-    schema:keywords "Keywords", "describing", "the", "content", "of", "the", "dataset" , "strings", "or", <URIs> ;
+    dct:subject     "Keywords" , "describing" , "the" , "content" , "of" , "the" , "dataset" , "strings" , "or" , <URIs> ;
+    dcat:keyword    "Keywords" , "describing" , "the" , "content" , "of" , "the" , "dataset" , "strings" , "or" , <URIs> ;
+    schema:keywords "Keywords" , "describing" , "the" , "content" , "of" , "the" , "dataset" , "strings" , "or" , <URIs> ;
 
     void:uriSpace           "Namespace of the uris of the resources created in the dataset, if any" ;
     void:uriRegexPattern    "Namespace of the uris of the resources created in the dataset, if any, as a regex pattern" ;
@@ -75,7 +75,16 @@
         dct:format          "Format of the dump file"
     ] ;
 
-    dcat:service <endpoint-uri> .
+    dcat:service <endpoint-uri> ;
+
+    sd:defaultGraph <Resource used to describe the default graph> ;
+    sd:namedGraph <Resource used to describe a named graph> .
+
+<Resource used to describe the default graph> a sd:Graph ;
+    dct:modified            "Date time of the last modification"^^xsd:date .
+
+<Resource used to describe a named graph> a Graph, NamedGraph ;
+    sd:name                 <URI of the named graph> .
 
 <endpoint-uri>
     a sd:Service, dcat:DataService , prov:Entity ;
@@ -86,6 +95,9 @@
     dct:creator             <Uri of creator(s) of the endpoint> , "Avoid string literals when possible" ;
     prov:wasAttributedTo    <Uri of creator(s) of the endpoint> , "Avoid string literals when possible" ;
 
+    sd:availableGraphs      <dataset-uri> ;
+    sd:defaultDataset       <dataset-uri> .
+
 
 # The given template can be expanded using the DCAT, PROV-O, Schema, VoID, SPARQL-SD, DCTERMS, or any other vocabulary.
 # As much as possible, every URI should have a label or a title.
@@ -95,7 +107,21 @@
 #    schema:isBasedOn        <Uri of the source of the dataset, if relevant> ;
 #    prov:wasDerivedFrom     <Uri of the source of the dataset, if relevant> ;
 #    prov:wasGeneratedBy     <Uri of the process at the origin of the dataset> ;
+
+#    void:vocabulary      <Uri(s) of the vocabularies/ontologies used in the dataset> .
 #
-#    void:triples        "Number of triples in the dataset"^^xsd:integer;
+#    void:triples        "Number of triples in the dataset"^^xsd:integer ;
+#    void:classes        "Number of classes in the dataset"^^xsd:integer ;
+#    void:properties     "Number of properties in the dataset"^^xsd:integer ;
 #
-#    void:vocabulary <Uri(s) of the vocabularies/ontologies used in the dataset> .
+#<Resource used to describe the default graph>
+#    void:triples        "Number of triples in the graph"^^xsd:integer ;
+#    void:classes        "Number of classes in the graph"^^xsd:integer ;
+#    void:properties     "Number of properties in the graph"^^xsd:integer .
+#
+#<Resource used to describe a named graph>
+#    void:triples        "Number of triples in the graph"^^xsd:integer ;
+#    void:classes        "Number of classes in the graph"^^xsd:integer ;
+#    void:properties     "Number of properties in the graph"^^xsd:integer .
+#
+# Each graph can be described using the DCTerms, Prov-O, VoId vocabularies
