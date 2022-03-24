@@ -11,7 +11,12 @@ dayjs.extend(relativeTime)
 dayjs.extend(customParseFormat)
 dayjs.extend(duration)
 import { greenIcon, orangeIcon } from "./leaflet-color-markers.js";
+// Cached files
 const whiteListFile = require('../data/cache/whiteLists.json');
+const geolocData = require('../data/cache/geolocData.json');
+
+var filteredEndpointWhiteList = [];
+
 const endpointIpMap = require('../data/endpointIpGeoloc.json');
 const timezoneMap = require('../data/timezoneMap.json');
 const graphLists = require('../data/runSets.json');
@@ -350,6 +355,12 @@ function changeGraphSetIndex(index) {
     urlParams.append(graphSetIndexParameter, index);
     history.pushState(null, null, '?' + urlParams.toString());
     graphList = graphLists[index].graphs;
+    var graphListEndpointKey = md5(''.concat(graphList));
+    filteredEndpointWhiteList = whiteListFile[graphListEndpointKey]
+    filteredEndpointWhiteList.forEach((endpointUrl) => {
+        endpointList.push(endpointUrl);
+    });
+    
     refresh();
     redrawCharts();
 }
@@ -367,17 +378,10 @@ function setButtonAsToggleCollapse(buttonId, tableId) {
 function whiteListFill() {
     var tableBody = $('#whiteListTableBody');
 
-    var graphListEndpointKey = md5(''.concat(graphList));
     tableBody.empty();
     endpointList = [];
     blacklistedEndpointList = [];
     blackistedEndpointIndexList = [];
-    var whiteEndpointList = whiteListFile[graphListEndpointKey]
-    whiteEndpointList.forEach((endpointUrl) => {
-        if (!(new Set(blackistedEndpointIndexList)).has(endpointUrl)) {
-            endpointList.push(endpointUrl);
-        }
-    });
 
     endpointList.sort((a, b) => a.localeCompare(b))
     endpointList.forEach((item, i) => {
@@ -427,10 +431,11 @@ var endpointMap = new KartoChart({
     fillFunction: function () {
         var endpointGeolocTableBody = $('#endpointGeolocTableBody');
         endpointGeolocTableBody.empty();
-        var endpointGeolocData = [];
 
         $('#map').width(mainContentColWidth);
         this.chartObject.invalidateSize();
+
+        var graphEndpointGeolocData = geolocData.filter(endpointGeoloc => ((!(new Set(blackistedEndpointIndexList)).has(endpointGeoloc.endpoint)) && (new Set(filteredEndpointWhiteList).has(endpointGeoloc.endpoint))))
 
         function addLineToEndpointGeolocTable(item) {
             var endpointRow = $(document.createElement('tr'));
@@ -461,102 +466,23 @@ var endpointMap = new KartoChart({
         }
         function endpointGeolocTableFill() {
             endpointGeolocTableBody.empty();
-            endpointGeolocData.forEach((item, i) => {
+            graphEndpointGeolocData.forEach((item, i) => {
                 addLineToEndpointGeolocTable(item);
             });
         }
 
-        setTableHeaderSort('endpointGeolocTableBody', ['endpointGeolocTableEndpointHeader', 'endpointGeolocTableLatHeader', 'endpointGeolocTableLonHeader', 'endpointGeolocTableCountryHeader', 'endpointGeolocTableRegionHeader', 'endpointGeolocTableCityHeader', 'endpointGeolocTableOrgHeader'], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.lat - b.lat, (a, b) => a.lon - b.lon, (a, b) => a.country.localeCompare(b.country), (a, b) => a.region.localeCompare(b.region), (a, b) => a.city.localeCompare(b.city), (a, b) => a.org.localeCompare(b.org)], endpointGeolocTableFill, endpointGeolocData)
-        // Marked map with the geoloc of each endpoint
-        endpointIpMap.forEach((item, i) => {
-            // Add the markers for each endpoints.
-            var endpoint = item.key;
-            if (!blacklistedEndpointList.includes(endpoint)) {
+        setTableHeaderSort('endpointGeolocTableBody', ['endpointGeolocTableEndpointHeader', 'endpointGeolocTableLatHeader', 'endpointGeolocTableLonHeader', 'endpointGeolocTableCountryHeader', 'endpointGeolocTableRegionHeader', 'endpointGeolocTableCityHeader', 'endpointGeolocTableOrgHeader'], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.lat - b.lat, (a, b) => a.lon - b.lon, (a, b) => a.country.localeCompare(b.country), (a, b) => a.region.localeCompare(b.region), (a, b) => a.city.localeCompare(b.city), (a, b) => a.org.localeCompare(b.org)], endpointGeolocTableFill, geolocData);
 
-                // Filter the endpoints according to their graphs
-                var endpointInGraphQuery = "ASK { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <" + endpoint + "> . } " + generateGraphValueFilterClause() + " }";
-                sparqlQueryJSON(endpointInGraphQuery, jsonAskResponse => {
-                    var booleanResponse = jsonAskResponse.boolean;
+        graphEndpointGeolocData.forEach(endpointGeoloc => {
+            var markerIcon = greenIcon;
 
-                    if (booleanResponse) {
-                        // Study of the timezones
-                        // http://worldtimeapi.org/pages/examples
-                        var markerIcon = greenIcon;
-                        var endpointTimezoneSPARQL = new Map();
-                        var timezoneSPARQLquery = "SELECT DISTINCT ?timezone { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <" + endpoint + "> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone } " + generateGraphValueFilterClause() + " }";
-                        sparqlQueryJSON(timezoneSPARQLquery, jsonResponse => {
-                            jsonResponse.results.bindings.forEach((itemResponse, i) => {
-                                endpointTimezoneSPARQL.set(endpoint, itemResponse.timezone.value);
-                            });
-
-                            var ipTimezoneArrayFiltered = timezoneMap.filter(itemtza => itemtza.key == item.value.geoloc.timezone);
-                            var ipTimezone;
-                            if (ipTimezoneArrayFiltered.length > 0) {
-                                ipTimezone = ipTimezoneArrayFiltered[0].value.utc_offset;
-                            }
-                            var sparqlTimezone = endpointTimezoneSPARQL.get(endpoint);
-                            var badTimezone = false;
-                            if (sparqlTimezone != undefined
-                                && ipTimezone != undefined
-                                && (ipTimezone.padStart(6, '-') != sparqlTimezone.padStart(6, '-')) // addding + and - at the beginnig in case they are missing
-                                && (ipTimezone.padStart(6, '+') != sparqlTimezone.padStart(6, '+'))) {
-                                badTimezone = true;
-                                markerIcon = orangeIcon;
-                            }
-
-                            var endpointMarker = L.marker([item.value.geoloc.lat, item.value.geoloc.lon], { icon: markerIcon });
-                            var endpointItem = { endpoint: endpoint, lat: item.value.geoloc.lat, lon: item.value.geoloc.lon, country: "", region: "", city: "", org: "" };
-                            if (item.value.geoloc.country != undefined) {
-                                endpointItem.country = item.value.geoloc.country;
-                            }
-                            if (item.value.geoloc.regionName != undefined) {
-                                endpointItem.region = item.value.geoloc.regionName;
-                            }
-                            if (item.value.geoloc.city != undefined) {
-                                endpointItem.city = item.value.geoloc.city;
-                            }
-                            if (item.value.geoloc.org != undefined) {
-                                endpointItem.org = item.value.geoloc.org;
-                            }
-                            endpointGeolocData.push(endpointItem);
-                            addLineToEndpointGeolocTable(endpointItem);
-                            endpointMarker.on('click', clickEvent => {
-                                var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + endpoint + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . } " + generateGraphValueFilterClause() + " }";
-                                sparqlQueryJSON(labelQuery, responseLabels => {
-
-                                    var popupString = "<table> <thead> <tr> <th colspan='2'> <a href='" + endpoint + "' >" + endpoint + "</a> </th> </tr> </thead>";
-                                    popupString += "</body>"
-                                    if (item.value.geoloc.country != undefined) {
-                                        popupString += "<tr><td>Country: </td><td>" + item.value.geoloc.country + "</td></tr>";
-                                    }
-                                    if (item.value.geoloc.regionName != undefined) {
-                                        popupString += "<tr><td>Region: </td><td>" + item.value.geoloc.regionName + "</td></tr>";
-                                    }
-                                    if (item.value.geoloc.city != undefined) {
-                                        popupString += "<tr><td>City: </td><td>" + item.value.geoloc.city + "</td></tr>";
-                                    }
-                                    if (item.value.geoloc.org != undefined) {
-                                        popupString += "<tr><td>Organization: </td><td>" + item.value.geoloc.org + "</td></tr>";
-                                    }
-                                    if (badTimezone) {
-                                        popupString += "<tr><td>Timezone of endpoint URL: </td><td>" + ipTimezone + "</td></tr>";
-                                        popupString += "<tr><td>Timezone declared by endpoint: </td><td>" + sparqlTimezone + "</td></tr>";
-                                    }
-                                    if (responseLabels.results.bindings.size > 0) {
-                                        popupString += "<tr><td colspan='2'>" + responseLabels + "</td></tr>";
-                                    }
-                                    popupString += "</tbody>"
-                                    popupString += "</table>"
-                                    endpointMarker.bindPopup(popupString).openPopup();
-
-                                });
-                            });
-                            endpointMarker.addTo(this.layerGroup);
-                        });
-                    }
-                });
-            }
+            var endpointMarker = L.marker([endpointGeoloc.lat, endpointGeoloc.lon], { icon: markerIcon });
+            endpointMarker.on('click', clickEvent => {
+                endpointMarker.bindPopup(endpointGeoloc.popupHTML).openPopup();
+            });
+            endpointMarker.addTo(this.layerGroup);
         });
+        endpointGeolocTableFill();
     },
     redrawFunction: function () {
         $('#map').width(mainContentColWidth);

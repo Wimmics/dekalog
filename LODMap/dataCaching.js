@@ -61,16 +61,16 @@ function xmlhttpRequestJSONPromise(url) {
 }
 
 function sparqlQueryPromise(query) {
-    if(query.includes("SELECT") || query.includes("ASK")) {
+    if (query.includes("SELECT") || query.includes("ASK")) {
         return xmlhttpRequestJSONPromise('http://prod-dekalog.inria.fr/sparql?query=' + encodeURIComponent(query) + '&format=json');
-    } 
+    }
     else {
         throw "ERROR " + query;
-    }  
+    }
 }
 
 function whiteListFill() {
-    Promise.all(
+    return Promise.all(
         graphLists.map(graphListItem => {
             var graphList = graphListItem.graphs
             var endpointListQuery = 'SELECT DISTINCT ?endpointUrl WHERE {' +
@@ -79,6 +79,7 @@ function whiteListFill() {
                 "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
                 '?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . ' +
                 '} ' +
+                generateGraphValueFilterClause(graphList) +
                 '} ' +
                 'GROUP BY ?endpointUrl';
             var graphListKey = md5(''.concat(graphList));
@@ -130,7 +131,7 @@ function endpointMapfill() {
                     ipTimezone = ipTimezoneArrayFiltered[0].value.utc_offset.padStart(6, '-').padStart(6, '+');
                 }
                 var sparqlTimezone;
-                if(endpointTimezoneSPARQL.get(endpoint) != undefined) {
+                if (endpointTimezoneSPARQL.get(endpoint) != undefined) {
                     sparqlTimezone = endpointTimezoneSPARQL.get(endpoint).padStart(6, '-').padStart(6, '+');
                 }
                 var badTimezone = false;
@@ -140,7 +141,7 @@ function endpointMapfill() {
                     badTimezone = true;
                 }
 
-                endpointItem = { endpoint: endpoint, lat: item.value.geoloc.lat, lon: item.value.geoloc.lon, country: "", region: "", city: "", org: "", timezone:ipTimezone, sparqlTimezone:sparqlTimezone };
+                endpointItem = { endpoint: endpoint, lat: item.value.geoloc.lat, lon: item.value.geoloc.lon, country: "", region: "", city: "", org: "", timezone: ipTimezone, sparqlTimezone: sparqlTimezone };
                 if (item.value.geoloc.country != undefined) {
                     endpointItem.country = item.value.geoloc.country;
                 }
@@ -192,19 +193,19 @@ function endpointMapfill() {
                 console.log(error);
             })
     }))
-    .then(() => {
-        try {
-            var content = JSON.stringify(endpointGeolocData);
-            fs.writeFileSync(geolocFilename, content)
-        } catch (err) {
-            console.error(err)
-        }
-    })
-    .catch(error => {
-        console.log(error);
-    })
+        .then(() => {
+            try {
+                var content = JSON.stringify(endpointGeolocData);
+                fs.writeFileSync(geolocFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        })
 
 }
 
-whiteListFill();
-endpointMapfill();
+whiteListFill()
+.then(endpointMapfill());
