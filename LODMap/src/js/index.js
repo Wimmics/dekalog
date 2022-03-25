@@ -996,8 +996,15 @@ var sparqlCoverCharts = new KartoChart({
 setButtonAsToggleCollapse('tableSPARQLFeaturesStatsDetails', 'SPARQLFeaturesCountTable');
 
 var vocabRelatedChart = new KartoChart({
-    chartObject: { vocabChart: echarts.init(document.getElementById('vocabs')), rawVocabChart: echarts.init(document.getElementById('rawVocabs')), keywordChart: echarts.init(document.getElementById('endpointKeywords')) },
-    option: { vocabOption: {}, rawVocabOption: {}, keywordOption: {} },
+    chartObject: { 
+        vocabChart: echarts.init(document.getElementById('vocabs')), 
+        // rawVocabChart: echarts.init(document.getElementById('rawVocabs')), 
+        keywordChart: echarts.init(document.getElementById('endpointKeywords')) 
+    },
+    option: { 
+        vocabOption: {}, 
+        // rawVocabOption: {}, 
+        keywordOption: {} },
     sparqlesVocabulariesQuery: '',
     fillFunction: function () {
         // Create an force graph with the graph linked by co-ocurrence of vocabularies
@@ -1030,32 +1037,32 @@ var vocabRelatedChart = new KartoChart({
                 }
             });
 
-            function generateRawVocabContent(chart) {
-                var jsonRawVocabNodes = new Set();
-                var jsonRawVocabLinks = new Set();
+            // function generateRawVocabContent(chart) {
+            //     var jsonRawVocabNodes = new Set();
+            //     var jsonRawVocabLinks = new Set();
 
-                endpointSet.forEach(item => {
-                    jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-                });
-                rawVocabSet.forEach(item => {
-                    jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
-                });
-                rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                    endpointVocabs.forEach((vocab, i) => {
-                        jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
-                    });
-                });
-                if (jsonRawVocabNodes.size > 0 && jsonRawVocabLinks.size > 0) {
-                    chart.showEndpointRawVocabularyContent();
+            //     endpointSet.forEach(item => {
+            //         jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
+            //     });
+            //     rawVocabSet.forEach(item => {
+            //         jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
+            //     });
+            //     rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+            //         endpointVocabs.forEach((vocab, i) => {
+            //             jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
+            //         });
+            //     });
+            //     if (jsonRawVocabNodes.size > 0 && jsonRawVocabLinks.size > 0) {
+            //         chart.showEndpointRawVocabularyContent();
 
-                    chart.option.rawVocabOption = getForceGraphOption('Endpoints and vocabularies without filtering', ["Vocabulary", "Endpoint"], [...jsonRawVocabNodes], [...jsonRawVocabLinks]);
-                    chart.chartObject.rawVocabChart.setOption(chart.option.rawVocabOption, true);
-                } else {
-                    chart.hideEndpointRawVocabularyContent();
-                }
-            }
+            //         chart.option.rawVocabOption = getForceGraphOption('Endpoints and vocabularies without filtering', ["Vocabulary", "Endpoint"], [...jsonRawVocabNodes], [...jsonRawVocabLinks]);
+            //         chart.chartObject.rawVocabChart.setOption(chart.option.rawVocabOption, true);
+            //     } else {
+            //         chart.hideEndpointRawVocabularyContent();
+            //     }
+            // }
 
-            generateRawVocabContent(this);
+            // generateRawVocabContent(this);
 
             // https://obofoundry.org/ // No ontology URL available in ontology description
             // http://prefix.cc/context // done
@@ -1283,13 +1290,13 @@ var vocabRelatedChart = new KartoChart({
         });
 
         this.hideEndpointVocabularyContent = function () {
-            this.hideEndpointRawVocabularyContent();
+            // this.hideEndpointRawVocabularyContent();
             this.hideEndpointKnownVocabularyContent();
         }
-        this.hideEndpointRawVocabularyContent = function () {
-            this.chartObject.rawVocabChart.setOption({ series: [] }, true);
-            collapseHtml('rawVocabs');
-        }
+        // this.hideEndpointRawVocabularyContent = function () {
+        //     this.chartObject.rawVocabChart.setOption({ series: [] }, true);
+        //     collapseHtml('rawVocabs');
+        // }
         this.hideEndpointKnownVocabularyContent = function () {
             this.chartObject.vocabChart.setOption({ series: [] }, true);
             collapseHtml('vocabs');
@@ -1309,7 +1316,7 @@ var vocabRelatedChart = new KartoChart({
         }
         this.showEndpointRawVocabularyContent = function () {
             this.show();
-            unCollapseHtml('rawVocabs');
+            // unCollapseHtml('rawVocabs');
         }
         this.showEndpointKnownVocabularyContent = function () {
             this.show();
@@ -1334,12 +1341,12 @@ var vocabRelatedChart = new KartoChart({
     },
     redrawFunction: function () {
         $('#vocabs').width(mainContentColWidth);
-        $('#rawVocabs').width(mainContentColWidth);
+        // $('#rawVocabs').width(mainContentColWidth);
         $('#endpointKeywords').width(mainContentColWidth);
         this.chartObject.vocabChart.setOption(this.option.vocabOption, true);
         this.chartObject.vocabChart.resize();
-        this.chartObject.rawVocabChart.setOption(this.option.rawVocabOption, true);
-        this.chartObject.rawVocabChart.resize();
+        // this.chartObject.rawVocabChart.setOption(this.option.rawVocabOption, true);
+        // this.chartObject.rawVocabChart.resize();
         this.chartObject.keywordChart.setOption(this.option.keywordOption, true);
         this.chartObject.keywordChart.resize();
         var codeQuery1Div = $(document.createElement('code')).text(this.sparqlesVocabulariesQuery);
@@ -1351,7 +1358,7 @@ var vocabRelatedChart = new KartoChart({
     },
     clearFunction: function () {
         this.chartObject.vocabChart.setOption({ series: [] }, true);
-        this.chartObject.rawVocabChart.setOption({ series: [] }, true);
+        // this.chartObject.rawVocabChart.setOption({ series: [] }, true);
         this.chartObject.keywordChart.setOption({ series: [] }, true);
         $('#endpointVocabularyQueryCell').empty()
         $('#endpointKeywordQueryCell').empty();
