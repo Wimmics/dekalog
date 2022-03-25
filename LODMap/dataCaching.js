@@ -14,6 +14,8 @@ const sparqlFeaturesFilename = dataFilePrefix + "sparqlFeaturesData.json";
 const vocabEndpointFilename = dataFilePrefix + "vocabEndpointData.json";
 const knownVocabsFilename = dataFilePrefix + "knownVocabsData.json";
 const vocabkeywordsFilename = dataFilePrefix + "vocabkeywordsData.json";
+const tripleCountFilename = dataFilePrefix + "tripleCountData.json";
+const classCountFilename = dataFilePrefix + "classCountData.json";
 
 const LOVFilename = dataFilePrefix + "knownVocabulariesLOV.json"
 
@@ -478,10 +480,102 @@ function vocabFill() {
         })
 }
 
+function tripleDataFill() {
+    // Scatter plot of the number of triples through time
+    var triplesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) { " +
+        "GRAPH ?g {" +
+        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+        "?base <http://rdfs.org/ns/void#triples> ?rawO ." +
+        "}" +
+        "} GROUP BY ?g ?endpointUrl ?o ORDER BY DESC(?g) DESC(?endpointUrl)";
+    var endpointTripleData = [];
+    return sparqlQueryPromise(triplesSPARQLquery)
+        .then(json => {
+            json.results.bindings.forEach((itemResult, i) => {
+                var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                var endpointUrl = itemResult.endpointUrl.value;
+                var triples = Number.parseInt(itemResult.o.value);
+                endpointTripleData.push({endpoint:endpointUrl, graph:graph, triples:triples})
+            });
+        })
+        .then(() => {
+            try {
+                var content = JSON.stringify(endpointTripleData);
+                fs.writeFileSync(tripleCountFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
+
+function classDataFill() {
+    // Scatter plot of the number of classes through time
+    var classesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) ?modifDate { " +
+        "GRAPH ?g {" +
+        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+        "?metadata <http://purl.org/dc/terms/modified> ?modifDate ." +
+        "?base <http://rdfs.org/ns/void#classes> ?rawO ." +
+        "}" +
+        "} GROUP BY ?g ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl) DESC(?modifDate)";
+    var endpointClassCountData = [];
+    return sparqlQueryPromise(classesSPARQLquery)
+        .then(json => {
+        json.results.bindings.forEach((itemResult, i) => {
+            var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+            var endpointUrl = itemResult.endpointUrl.value;
+            var triples = Number.parseInt(itemResult.o.value);
+            endpointClassCountData.push({endpoint:endpointUrl, graph:graph, classes:triples})
+        });
+
+    })
+    .then(() => {
+        try {
+            var content = JSON.stringify(endpointClassCountData);
+            fs.writeFileSync(classCountFilename, content)
+        } catch (err) {
+            console.error(err)
+        }
+        
+    })
+    .catch(error => {
+        console.log(error)
+    });
+}
+
+function propertyDataFill() {
+    // scatter plot of the number of properties through time
+    var propertiesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) { " +
+        "GRAPH ?g {" +
+        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+        "?base <http://rdfs.org/ns/void#properties> ?rawO ." +
+        "}" +
+        "} GROUP BY ?endpointUrl ?g ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";
+        var endpointPropertyCountData = [];
+    return sparqlQueryPromise(propertiesSPARQLquery)
+    .then(json => {
+        json.results.bindings.forEach((itemResult, i) => {
+            var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+            var endpointUrl = itemResult.endpointUrl.value;
+            var properties = Number.parseInt(itemResult.o.value);
+            endpointPropertyCountData.push({endpoint:endpointUrl, graph:graph, properties:properties})
+        });
+    })
+}
+
 whiteListFill()
     .finally(endpointMapfill())
     .finally(SPARQLCoverageFill())
     .finally(vocabFill())
+    .finally(tripleDataFill())
+    .finally(classDataFill())
+    .finally(propertyDataFill())
     .catch(error => {
         console.log(error)
     });
