@@ -11,6 +11,11 @@ const whiteListFilename = dataFilePrefix + "whiteLists.json";
 const geolocFilename = dataFilePrefix + "geolocData.json";
 const sparqlCoverageFilename = dataFilePrefix + "sparqlCoverageData.json";
 const sparqlFeaturesFilename = dataFilePrefix + "sparqlFeaturesData.json";
+const vocabEndpointFilename = dataFilePrefix + "vocabEndpointData.json";
+const knownVocabsFilename = dataFilePrefix + "knownVocabsData.json";
+const vocabkeywordsFilename = dataFilePrefix + "vocabkeywordsData.json";
+
+const LOVFilename = dataFilePrefix + "knownVocabulariesLOV.json"
 
 
 function generateGraphValueFilterClause(graphList) {
@@ -89,9 +94,10 @@ function whiteListFill() {
                     json.results.bindings.forEach((item) => {
                         endpointList.push(item.endpointUrl.value);
                     });
-                    return { graphListKey: graphListKey, endpoints: endpointList };
+                    return graphListKey;
                 });
-        })).then(graphListItemArray => {
+        }))
+        .then(graphListItemArray => {
             var tmpWhiteListMap = {};
             graphListItemArray.forEach(graphListItem => {
                 tmpWhiteListMap[graphListItem.graphListKey] = graphListItem.endpoints;
@@ -191,7 +197,7 @@ function endpointMapfill() {
                 console.log(error)
             })
     }))
-        .then(() => {
+        .finally(() => {
             try {
                 var content = JSON.stringify(endpointGeolocData);
                 fs.writeFileSync(geolocFilename, content)
@@ -260,54 +266,52 @@ function SPARQLCoverageFill() {
         })
         .then(() => {
             const sparqlFeatureQuery = 'SELECT DISTINCT ?endpoint ?activity { ' +
-            'GRAPH ?g { ' +
-            '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ' +
-            '?metadata <http://ns.inria.fr/kg/index#curated> ?base . ' +
-            'OPTIONAL { ' +
-            '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . ' +
-            'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) ' +
-            'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } ' +
-            '} ' +
-            '} ' +
-            '} ' +
-            'GROUP BY ?endpoint ?activity ' +
-            'ORDER BY DESC( ?endpoint)';
-        var endpointFeatureMap = new Map();
-        var featuresShortName = new Map();
-        return sparqlQueryPromise(sparqlFeatureQuery)
-        .then(json => {
-            console.log(json)
-            endpointFeatureMap = new Map();
-            var featuresSet = new Set();
-            json.results.bindings.forEach(bindingItem => {
-                const endpointUrl = bindingItem.endpoint.value;
-                if (!endpointFeatureMap.has(endpointUrl)) {
-                    endpointFeatureMap.set(endpointUrl, new Set());
-                }
-                if (bindingItem.activity != undefined) {
-                    const activity = bindingItem.activity.value;
-                    if (!endpointFeatureMap.has(endpointUrl)) {
-                        endpointFeatureMap.set(endpointUrl, new Set());
-                    }
-                    featuresSet.add(activity);
-                    if(featuresShortName.get(activity) == undefined) {
-                        featuresShortName.set(activity, activity.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_", "sparql10:").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_", "sparql11:").replace(".ttl#activity", ""))
-                    }
-                    endpointFeatureMap.get(endpointUrl).add(featuresShortName.get(activity));
-                }
-            });
-            console.log(endpointFeatureMap)
-            endpointFeatureMap.forEach((featureSet, endpointUrl, map) => {
-                var sortedFeatureArray = [...featureSet].sort((a, b) => a.localeCompare(b));
-                sparqlFeaturesDataArray.push({ endpoint: endpointUrl, features: sortedFeatureArray });
-            });
+                'GRAPH ?g { ' +
+                '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ' +
+                '?metadata <http://ns.inria.fr/kg/index#curated> ?base . ' +
+                'OPTIONAL { ' +
+                '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . ' +
+                'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) ' +
+                'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } ' +
+                '} ' +
+                '} ' +
+                '} ' +
+                'GROUP BY ?endpoint ?activity ' +
+                'ORDER BY DESC( ?endpoint)';
+            var endpointFeatureMap = new Map();
+            var featuresShortName = new Map();
+            return sparqlQueryPromise(sparqlFeatureQuery)
+                .then(json => {
+                    endpointFeatureMap = new Map();
+                    var featuresSet = new Set();
+                    json.results.bindings.forEach(bindingItem => {
+                        const endpointUrl = bindingItem.endpoint.value;
+                        if (!endpointFeatureMap.has(endpointUrl)) {
+                            endpointFeatureMap.set(endpointUrl, new Set());
+                        }
+                        if (bindingItem.activity != undefined) {
+                            const activity = bindingItem.activity.value;
+                            if (!endpointFeatureMap.has(endpointUrl)) {
+                                endpointFeatureMap.set(endpointUrl, new Set());
+                            }
+                            featuresSet.add(activity);
+                            if (featuresShortName.get(activity) == undefined) {
+                                featuresShortName.set(activity, activity.replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/SPARQLES_", "sparql10:").replace("https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_", "sparql11:").replace(".ttl#activity", ""))
+                            }
+                            endpointFeatureMap.get(endpointUrl).add(featuresShortName.get(activity));
+                        }
+                    });
+                    endpointFeatureMap.forEach((featureSet, endpointUrl, map) => {
+                        var sortedFeatureArray = [...featureSet].sort((a, b) => a.localeCompare(b));
+                        sparqlFeaturesDataArray.push({ endpoint: endpointUrl, features: sortedFeatureArray });
+                    });
 
-            sparqlFeaturesDataArray.sort((a, b) => {
-                return a.endpoint.localeCompare(b.endpoint);
-            });
+                    sparqlFeaturesDataArray.sort((a, b) => {
+                        return a.endpoint.localeCompare(b.endpoint);
+                    });
+                })
         })
-        })
-        .then(() => {
+        .finally(() => {
             try {
                 var content = JSON.stringify(jsonBaseFeatureSparqles);
                 fs.writeFileSync(sparqlCoverageFilename, content)
@@ -316,8 +320,155 @@ function SPARQLCoverageFill() {
             }
             try {
                 var content = JSON.stringify(sparqlFeaturesDataArray);
-                console.log(content)
                 fs.writeFileSync(sparqlFeaturesFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
+
+function vocabFill() {
+    // Create an force graph with the graph linked by co-ocurrence of vocabularies
+    sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
+        "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+        "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
+        "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
+        "} " +
+        " } " +
+        "GROUP BY ?endpointUrl ?vocabulary ";
+    var knownVocabularies = new Set();
+    var rawGatherVocab = new Map();
+    var gatherVocabData = [];
+    var rawVocabSet = new Set();
+    var vocabSet = new Set();
+    var keywordSet = new Set();
+    var vocabKeywordData = [];
+
+    return sparqlQueryPromise(sparqlesVocabulariesQuery)
+        .then(json => {
+
+            var endpointSet = new Set();
+            json.results.bindings.forEach((bindingItem, i) => {
+                var vocabulariUri = bindingItem.vocabulary.value;
+                var endpointUri = bindingItem.endpointUrl.value;
+                endpointSet.add(endpointUri);
+                rawVocabSet.add(vocabulariUri);
+                if (!rawGatherVocab.has(endpointUri)) {
+                    rawGatherVocab.set(endpointUri, new Set());
+                }
+                rawGatherVocab.get(endpointUri).add(vocabulariUri);
+            });
+
+            // https://obofoundry.org/ // No ontology URL available in ontology description
+            // http://prefix.cc/context // done
+            // http://data.bioontology.org/resource_index/resources?apikey=b86b12d8-dc46-4528-82e3-13fbdabf5191 // No ontology URL available in ontology description
+            // https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list // done
+
+            // Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
+        })
+        .then(xmlhttpRequestJSONPromise("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list")
+            .then(responseLOV => {
+                responseLOV.forEach((item, i) => {
+                    knownVocabularies.add(item.uri)
+                });
+                try {
+                    var content = JSON.stringify(responseLOV);
+                    fs.writeFileSync(LOVFilename, content)
+                } catch (err) {
+                    console.error(err)
+                }
+            }))
+        .then(xmlhttpRequestJSONPromise("http://prefix.cc/context")
+            .then(responsePrefixCC => {
+                for (var prefix of Object.keys(responsePrefixCC['@context'])) {
+                    knownVocabularies.add(responsePrefixCC['@context'][prefix])
+                };
+            }))
+        .then(xmlhttpRequestJSONPromise("https://www.ebi.ac.uk/ols/api/ontologies?page=0&size=1000")
+            .then(responseOLS => {
+                responseOLS._embedded.ontologies.forEach(ontologyItem => {
+                    if (ontologyItem.config.baseUris.length > 0) {
+                        var ontology = ontologyItem.config.baseUris[0]
+                        knownVocabularies.add(ontology);
+                    }
+                });
+            }))
+        .then(() => {
+            // Filtering according to ontology repositories
+            rawVocabSet.forEach(vocabulariUri => {
+                if (knownVocabularies.has(vocabulariUri)) {
+                    vocabSet.add(vocabulariUri);
+                }
+            });
+            rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
+                gatherVocabData.push({ endpoint: endpointUri, vocabularies: [...vocabulariUriSet] })
+            });
+
+            var queryArray = [];
+            var vocabArray = [...vocabSet];
+            for (var i = 20; i < vocabArray.length + 20; i += 20) {
+                var vocabSetSlice = vocabArray.slice(i - 20, i); // Slice the array into arrays of 20 elements
+                // Endpoint and vocabulary keywords graph
+                var vocabularyQueryValues = "";
+                vocabSetSlice.forEach((item, i) => {
+                    vocabularyQueryValues += "<" + item + ">";
+                    vocabularyQueryValues += " ";
+                });
+
+                var keywordLOVQuery = "SELECT DISTINCT ?vocabulary ?keyword { " +
+                    "GRAPH <https://lov.linkeddata.es/dataset/lov> { " +
+                    "   ?vocabulary a <http://purl.org/vocommons/voaf#Vocabulary> . " +
+                    "   ?vocabulary <http://www.w3.org/ns/dcat#keyword> ?keyword . " +
+                    "} " +
+                    "VALUES ?vocabulary { " + vocabularyQueryValues + " } " +
+                    "}"
+                queryArray.push(xmlhttpRequestJSONPromise("https://lov.linkeddata.es/dataset/lov/sparql?query=" + encodeURIComponent(keywordLOVQuery) + "&format=json"));
+            }
+
+            return Promise.all(queryArray)
+                .then(jsonKeywordsArray => {
+                    var vocabKeywordMap = new Map();
+                    jsonKeywordsArray.forEach(jsonKeywords => {
+                        jsonKeywords.results.bindings.forEach((keywordItem, i) => {
+                            var keyword = keywordItem.keyword.value;
+                            var vocab = keywordItem.vocabulary.value;
+                            if (vocabKeywordMap.get(vocab) == undefined) {
+                                vocabKeywordMap.set(vocab, []);
+                            }
+                            vocabKeywordMap.get(vocab).push(keyword);
+
+                            keywordSet.add(keyword);
+                        });
+                    })
+                    vocabKeywordMap.forEach((keywordList, vocab) => {
+                        vocabKeywordData.push({ vocabulary: vocab, keywords: keywordList })
+                    })
+                })
+        })
+        .finally(() => {
+            try {
+                var content = JSON.stringify(gatherVocabData);
+                fs.writeFileSync(vocabEndpointFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+        })
+        .finally(() => {
+            try {
+                var content = JSON.stringify([...knownVocabularies]);
+                fs.writeFileSync(knownVocabsFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+        })
+        .finally(() => {
+            try {
+                var content = JSON.stringify(vocabKeywordData);
+                fs.writeFileSync(vocabkeywordsFilename, content)
             } catch (err) {
                 console.error(err)
             }
@@ -330,6 +481,7 @@ function SPARQLCoverageFill() {
 whiteListFill()
     .finally(endpointMapfill())
     .finally(SPARQLCoverageFill())
+    .finally(vocabFill())
     .catch(error => {
         console.log(error)
     });
