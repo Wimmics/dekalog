@@ -13,9 +13,11 @@ const sparqlCoverageFilename = dataFilePrefix + "sparqlCoverageData.json";
 const sparqlFeaturesFilename = dataFilePrefix + "sparqlFeaturesData.json";
 const vocabEndpointFilename = dataFilePrefix + "vocabEndpointData.json";
 const knownVocabsFilename = dataFilePrefix + "knownVocabsData.json";
-const vocabkeywordsFilename = dataFilePrefix + "vocabkeywordsData.json";
+const vocabKeywordsFilename = dataFilePrefix + "vocabKeywordsData.json";
 const tripleCountFilename = dataFilePrefix + "tripleCountData.json";
 const classCountFilename = dataFilePrefix + "classCountData.json";
+const propertyCountFilename = dataFilePrefix + "propertyCountData.json";
+const categoryTestCountFilename = dataFilePrefix + "categoryTestCountData.json";
 
 const LOVFilename = dataFilePrefix + "knownVocabulariesLOV.json"
 
@@ -77,6 +79,7 @@ function sparqlQueryPromise(query) {
 }
 
 function whiteListFill() {
+    console.log("whiteListFill START")
     return Promise.all(
         graphLists.map(graphListItem => {
             var graphList = graphListItem.graphs
@@ -96,17 +99,18 @@ function whiteListFill() {
                     json.results.bindings.forEach((item) => {
                         endpointList.push(item.endpointUrl.value);
                     });
-                    return graphListKey;
+                    return { graphKey:graphListKey, endpoints:endpointList};
                 });
         }))
         .then(graphListItemArray => {
             var tmpWhiteListMap = {};
             graphListItemArray.forEach(graphListItem => {
-                tmpWhiteListMap[graphListItem.graphListKey] = graphListItem.endpoints;
+                tmpWhiteListMap[graphListItem.graphKey] = graphListItem.endpoints;
             });
             try {
                 var content = JSON.stringify(tmpWhiteListMap);
                 fs.writeFileSync(whiteListFilename, content)
+                console.log("whiteListFill END")
             } catch (err) {
                 console.error(err)
             }
@@ -117,6 +121,7 @@ function whiteListFill() {
 
 
 function endpointMapfill() {
+    console.log("endpointMapfill START")
     var endpointGeolocData = [];
 
     // Marked map with the geoloc of each endpoint
@@ -203,6 +208,7 @@ function endpointMapfill() {
             try {
                 var content = JSON.stringify(endpointGeolocData);
                 fs.writeFileSync(geolocFilename, content)
+                console.log("endpointMapfill END")
             } catch (err) {
                 console.error(err)
             }
@@ -214,6 +220,7 @@ function endpointMapfill() {
 }
 
 function SPARQLCoverageFill() {
+    console.log("SPARQLCoverageFill START")
     // Create an histogram of the SPARQLES rules passed by endpoint.
     var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) { ' +
         'GRAPH ?g { ' +
@@ -326,6 +333,7 @@ function SPARQLCoverageFill() {
             } catch (err) {
                 console.error(err)
             }
+            console.log("SPARQLCoverageFill END")
         })
         .catch(error => {
             console.log(error)
@@ -333,6 +341,7 @@ function SPARQLCoverageFill() {
 }
 
 function vocabFill() {
+    console.log("vocabFill START")
     // Create an force graph with the graph linked by co-ocurrence of vocabularies
     sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
         "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
@@ -470,10 +479,11 @@ function vocabFill() {
         .finally(() => {
             try {
                 var content = JSON.stringify(vocabKeywordData);
-                fs.writeFileSync(vocabkeywordsFilename, content)
+                fs.writeFileSync(vocabKeywordsFilename, content)
             } catch (err) {
                 console.error(err)
             }
+            console.log("vocabFill END")
         })
         .catch(error => {
             console.log(error)
@@ -481,6 +491,7 @@ function vocabFill() {
 }
 
 function tripleDataFill() {
+    console.log("tripleDataFill START")
     // Scatter plot of the number of triples through time
     var triplesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) { " +
         "GRAPH ?g {" +
@@ -506,7 +517,7 @@ function tripleDataFill() {
             } catch (err) {
                 console.error(err)
             }
-            
+            console.log("tripleDataFill END")
         })
         .catch(error => {
             console.log(error)
@@ -514,6 +525,7 @@ function tripleDataFill() {
 }
 
 function classDataFill() {
+    console.log("classDataFill START")
     // Scatter plot of the number of classes through time
     var classesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) ?modifDate { " +
         "GRAPH ?g {" +
@@ -541,7 +553,7 @@ function classDataFill() {
         } catch (err) {
             console.error(err)
         }
-        
+        console.log("classDataFill END")
     })
     .catch(error => {
         console.log(error)
@@ -549,6 +561,7 @@ function classDataFill() {
 }
 
 function propertyDataFill() {
+    console.log("propertyDataFill START")
     // scatter plot of the number of properties through time
     var propertiesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) { " +
         "GRAPH ?g {" +
@@ -567,6 +580,65 @@ function propertyDataFill() {
             endpointPropertyCountData.push({endpoint:endpointUrl, graph:graph, properties:properties})
         });
     })
+    .then(() => {
+        try {
+            var content = JSON.stringify(endpointPropertyCountData);
+            fs.writeFileSync(propertyCountFilename, content)
+        } catch (err) {
+            console.error(err)
+        }
+        console.log("propertyDataFill END")
+    })
+    .catch(error => {
+        console.log(error)
+    });
+}
+
+function categoryTestCountFill() {
+    console.log("categoryTestCountFill START")
+    var testCategoryData = [];
+    // Number of tests passed by test categories
+    var testCategoryQuery = "SELECT DISTINCT ?g ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
+        "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
+        "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
+        "?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl ." +
+        "?metadata <http://purl.org/dc/terms/modified> ?modifDate . " +
+        "?trace <http://www.w3.org/ns/earl#test> ?test . " +
+        "?trace <http://www.w3.org/ns/earl#result> ?result . " +
+        "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . " +
+        "FILTER(STRSTARTS(str(?test), ?category)) " +
+        "VALUES ?category { " +
+        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/' " +
+        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/' " +
+        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/' " +
+        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/' " +
+        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/' " +
+        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' " +
+        "}" +
+        "}  " +
+        "} GROUP BY ?g ?category ?endpointUrl";
+    return sparqlQueryPromise(testCategoryQuery)
+    .then(json => {
+        json.results.bindings.forEach((itemResult, i) => {
+            var category = itemResult.category.value;
+            var count = itemResult.count.value;
+            var endpoint = itemResult.endpointUrl.value;
+            var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+            testCategoryData.push({category:category, graph:graph, endpoint:endpoint, count:count });
+        });
+    })
+    .then(() => {
+        try {
+            var content = JSON.stringify(testCategoryData);
+            fs.writeFileSync(categoryTestCountFilename, content)
+        } catch (err) {
+            console.error(err)
+        }
+        console.log("categoryTestCountFill END")
+    })
+    .catch(error => {
+        console.log(error)
+    });
 }
 
 whiteListFill()
@@ -576,6 +648,7 @@ whiteListFill()
     .finally(tripleDataFill())
     .finally(classDataFill())
     .finally(propertyDataFill())
+    .finally(categoryTestCountFill())
     .catch(error => {
         console.log(error)
     });
