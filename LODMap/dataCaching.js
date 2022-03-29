@@ -1,5 +1,12 @@
 const fs = require('fs');
-var md5 = require('md5');
+const dayjs = require('dayjs')
+const md5 = require('md5');
+const customParseFormat = require('dayjs/plugin/customParseFormat')
+const duration = require('dayjs/plugin/duration');
+const relativeTime = require('dayjs/plugin/relativeTime')
+dayjs.extend(relativeTime)
+dayjs.extend(customParseFormat)
+dayjs.extend(duration)
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 const graphLists = require('./src/data/runSets.json');
@@ -18,9 +25,18 @@ const tripleCountFilename = dataFilePrefix + "tripleCountData.json";
 const classCountFilename = dataFilePrefix + "classCountData.json";
 const propertyCountFilename = dataFilePrefix + "propertyCountData.json";
 const categoryTestCountFilename = dataFilePrefix + "categoryTestCountData.json";
+const totalCategoryTestCountFilename = dataFilePrefix + "totalCategoryTestCountData.json";
+const endpointTestsDataFilename = dataFilePrefix + "endpointTestsData.json";
+const totalRuntimeDataFilename = dataFilePrefix + "totalRuntimeData.json";
+const averageRuntimeDataFilename = dataFilePrefix + "averageRuntimeData.json";
+const classPropertyDataFilename = dataFilePrefix + "classPropertyData.json";
 
 const LOVFilename = dataFilePrefix + "knownVocabulariesLOV.json"
 
+// Parse the date in any format
+function parseDate(input, format) {
+    return dayjs(input, format);
+}
 
 function generateGraphValueFilterClause(graphList) {
     var result = "FILTER( ";
@@ -44,7 +60,8 @@ function xmlHTTPRequestGetPromise(url) {
                 resolve(xhr.responseText);
             } else {
                 reject({
-                    url: url,
+                    url: decodeURIComponent(url),
+                    encodedUrl: url,
                     response: xhr.responseText,
                     status: xhr.status,
                     statusText: xhr.statusText
@@ -53,7 +70,8 @@ function xmlHTTPRequestGetPromise(url) {
         };
         xhr.onerror = function () {
             reject({
-                url: url,
+                url: decodeURIComponent(url),
+                encodedUrl: url,
                 response: xhr.responseText,
                 status: xhr.status,
                 statusText: xhr.statusText
@@ -99,7 +117,7 @@ function whiteListFill() {
                     json.results.bindings.forEach((item) => {
                         endpointList.push(item.endpointUrl.value);
                     });
-                    return { graphKey:graphListKey, endpoints:endpointList};
+                    return { graphKey: graphListKey, endpoints: endpointList };
                 });
         }))
         .then(graphListItemArray => {
@@ -507,7 +525,7 @@ function tripleDataFill() {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var triples = Number.parseInt(itemResult.o.value);
-                endpointTripleData.push({endpoint:endpointUrl, graph:graph, triples:triples})
+                endpointTripleData.push({ endpoint: endpointUrl, graph: graph, triples: triples })
             });
         })
         .then(() => {
@@ -538,26 +556,26 @@ function classDataFill() {
     var endpointClassCountData = [];
     return sparqlQueryPromise(classesSPARQLquery)
         .then(json => {
-        json.results.bindings.forEach((itemResult, i) => {
-            var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-            var endpointUrl = itemResult.endpointUrl.value;
-            var triples = Number.parseInt(itemResult.o.value);
-            endpointClassCountData.push({endpoint:endpointUrl, graph:graph, classes:triples})
-        });
+            json.results.bindings.forEach((itemResult, i) => {
+                var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                var endpointUrl = itemResult.endpointUrl.value;
+                var triples = Number.parseInt(itemResult.o.value);
+                endpointClassCountData.push({ endpoint: endpointUrl, graph: graph, classes: triples })
+            });
 
-    })
-    .then(() => {
-        try {
-            var content = JSON.stringify(endpointClassCountData);
-            fs.writeFileSync(classCountFilename, content)
-        } catch (err) {
-            console.error(err)
-        }
-        console.log("classDataFill END")
-    })
-    .catch(error => {
-        console.log(error)
-    });
+        })
+        .then(() => {
+            try {
+                var content = JSON.stringify(endpointClassCountData);
+                fs.writeFileSync(classCountFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            console.log("classDataFill END")
+        })
+        .catch(error => {
+            console.log(error)
+        });
 }
 
 function propertyDataFill() {
@@ -570,28 +588,28 @@ function propertyDataFill() {
         "?base <http://rdfs.org/ns/void#properties> ?rawO ." +
         "}" +
         "} GROUP BY ?endpointUrl ?g ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";
-        var endpointPropertyCountData = [];
+    var endpointPropertyCountData = [];
     return sparqlQueryPromise(propertiesSPARQLquery)
-    .then(json => {
-        json.results.bindings.forEach((itemResult, i) => {
-            var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-            var endpointUrl = itemResult.endpointUrl.value;
-            var properties = Number.parseInt(itemResult.o.value);
-            endpointPropertyCountData.push({endpoint:endpointUrl, graph:graph, properties:properties})
+        .then(json => {
+            json.results.bindings.forEach((itemResult, i) => {
+                var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                var endpointUrl = itemResult.endpointUrl.value;
+                var properties = Number.parseInt(itemResult.o.value);
+                endpointPropertyCountData.push({ endpoint: endpointUrl, graph: graph, properties: properties })
+            });
+        })
+        .then(() => {
+            try {
+                var content = JSON.stringify(endpointPropertyCountData);
+                fs.writeFileSync(propertyCountFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            console.log("propertyDataFill END")
+        })
+        .catch(error => {
+            console.log(error)
         });
-    })
-    .then(() => {
-        try {
-            var content = JSON.stringify(endpointPropertyCountData);
-            fs.writeFileSync(propertyCountFilename, content)
-        } catch (err) {
-            console.error(err)
-        }
-        console.log("propertyDataFill END")
-    })
-    .catch(error => {
-        console.log(error)
-    });
 }
 
 function categoryTestCountFill() {
@@ -618,27 +636,376 @@ function categoryTestCountFill() {
         "}  " +
         "} GROUP BY ?g ?category ?endpointUrl";
     return sparqlQueryPromise(testCategoryQuery)
-    .then(json => {
+        .then(json => {
+            json.results.bindings.forEach((itemResult, i) => {
+                var category = itemResult.category.value;
+                var count = itemResult.count.value;
+                var endpoint = itemResult.endpointUrl.value;
+                var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                testCategoryData.push({ category: category, graph: graph, endpoint: endpoint, count: count });
+            });
+        })
+        .then(() => {
+            try {
+                var content = JSON.stringify(testCategoryData);
+                fs.writeFileSync(categoryTestCountFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            console.log("categoryTestCountFill END")
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
+
+function totalCategoryTestCountFill() {
+    console.log("totalCategoryTestCountFill START")
+    // Number of tests passed by test categories
+    var testCategoryQuery = "SELECT DISTINCT ?category ?g (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
+        "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
+        "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
+        "?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl ." +
+        "?metadata <http://purl.org/dc/terms/modified> ?modifDate . " +
+        "?trace <http://www.w3.org/ns/earl#test> ?test . " +
+        "?trace <http://www.w3.org/ns/earl#result> ?result . " +
+        "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . " +
+        "FILTER(STRSTARTS(str(?test), ?category)) " +
+        "VALUES ?category { " +
+        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/' " +
+        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/' " +
+        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/' " +
+        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/' " +
+        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/' " +
+        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' " +
+        "}" +
+        "}  " +
+        "} GROUP BY ?g ?category ?endpointUrl";
+    var totalTestCategoryData = [];
+    return sparqlQueryPromise(testCategoryQuery).then(json => {
         json.results.bindings.forEach((itemResult, i) => {
             var category = itemResult.category.value;
             var count = itemResult.count.value;
             var endpoint = itemResult.endpointUrl.value;
-            var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-            testCategoryData.push({category:category, graph:graph, endpoint:endpoint, count:count });
+            var graph = itemResult.g.value;
+
+            totalTestCategoryData.push({ category: category, endpoint: endpoint, graph: graph, count: count })
         });
     })
-    .then(() => {
-        try {
-            var content = JSON.stringify(testCategoryData);
-            fs.writeFileSync(categoryTestCountFilename, content)
-        } catch (err) {
-            console.error(err)
-        }
-        console.log("categoryTestCountFill END")
+        .then(() => {
+            try {
+                var content = JSON.stringify(totalTestCategoryData);
+                fs.writeFileSync(totalCategoryTestCountFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            console.log("totalCategoryTestCountFill END")
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
+
+function endpointTestsDataFill() {
+    console.log("endpointTestsDataFill START")
+
+    var appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?g ?rule { " +
+        "GRAPH ?g { " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?curated . " +
+        "?curated <http://www.w3.org/ns/prov#wasGeneratedBy> ?rule . " +
+        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "} " +
+        "} GROUP BY ?endpointUrl ?rule ORDER BY DESC(?endpointUrl) ";
+    var endpointTestsData = [];
+    return sparqlQueryPromise(appliedTestQuery)
+        .then(json => {
+            json.results.bindings.forEach((item, i) => {
+                var endpointUrl = item.endpointUrl.value;
+                var rule = item.rule.value;
+                var graph = item.g.value;
+
+                endpointTestsData.push({ endpoint: endpointUrl, activity: rule, graph: graph })
+            });
+        })
+        .then(() => {
+            try {
+                var content = JSON.stringify(endpointTestsData);
+                fs.writeFileSync(endpointTestsDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            console.log("endpointTestsDataFill END")
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
+
+function totalRuntimeDataFill() {
+    console.log("totalRuntimeDataFill START")
+    var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?data . ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . }   }";
+    var totalRuntimeData = []
+    return sparqlQueryPromise(maxMinTimeQuery).then(jsonResponse => {
+        jsonResponse.results.bindings.forEach((itemResult, i) => {
+            var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+            var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
+            var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
+            var runtimeData = dayjs.duration(end.diff(start));
+            totalRuntimeData.push({ graph: graph, start: start, end: end, runtime: runtimeData })
+        });
     })
-    .catch(error => {
-        console.log(error)
-    });
+        .then(() => {
+            try {
+                var content = JSON.stringify(totalRuntimeData);
+                fs.writeFileSync(totalRuntimeDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            console.log("totalRuntimeDataFill END")
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
+
+function averageRuntimeDataFill() {
+    var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end)" +
+        " { " +
+        "GRAPH ?g {" +
+        " ?metadata <http://ns.inria.fr/kg/index#curated> ?data ." +
+        " ?metadata <http://ns.inria.fr/kg/index#trace> ?trace ." +
+        " ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime ." +
+        " ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
+        "} " +
+        "}";
+    var averageRuntimeData = [];
+    var graphStartEndMap = new Map();
+    return sparqlQueryPromise(maxMinTimeQuery)
+        .then(jsonResponse => {
+            jsonResponse.results.bindings.forEach((itemResult, i) => {
+                var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
+                var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
+                var runtime = dayjs.duration(end.diff(start));
+
+                graphStartEndMap.set(graph, { start: start, end: end, runtime: runtime });
+            })
+        }).then(() => {
+            var numberOfEndpointQuery = "SELECT DISTINCT ?g (COUNT(?endpointUrl) AS ?count) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?dataset . { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } } }";
+            sparqlQueryPromise(numberOfEndpointQuery)
+                .then(numberOfEndpointJson => {
+                    numberOfEndpointJson.results.bindings.forEach((numberEndpointItem, i) => {
+                        var graph = numberEndpointItem.g.value;
+                        graph = graph.replace('http://ns.inria.fr/indegx#', '');
+                        var count = numberEndpointItem.count.value;
+                        graphStartEndMap.get(graph).count = count
+                        averageRuntimeData.push(graphStartEndMap.get(graph))
+                    });
+                });
+        })
+        .then(() => {
+            try {
+                var content = JSON.stringify(averageRuntimeData);
+                fs.writeFileSync(averageRuntimeDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            console.log("averageRuntimeDataFill END")
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
+
+
+function classAndPropertiesDataFill() {
+    console.log("classAndPropertiesDataFill START")
+    var classPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co { " +
+        "GRAPH ?g {" +
+        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+        "?base <http://rdfs.org/ns/void#classPartition> ?classPartition . " +
+        "?classPartition <http://rdfs.org/ns/void#class> ?c . " +
+        "OPTIONAL { " +
+        "?classPartition <http://rdfs.org/ns/void#triples> ?ct . " +
+        "} " +
+        "OPTIONAL { " +
+        "?classPartition <http://rdfs.org/ns/void#classes> ?cc . " +
+        "} " +
+        "OPTIONAL { " +
+        "?classPartition <http://rdfs.org/ns/void#properties> ?cp . " +
+        "} " +
+        "OPTIONAL { " +
+        "?classPartition <http://rdfs.org/ns/void#distinctSubjects> ?cs . " +
+        "} " +
+        "OPTIONAL { " +
+        "?classPartition <http://rdfs.org/ns/void#distinctObjects> ?co . " +
+        "} " +
+        "FILTER(! isBlank(?c)) " +
+        "}" +
+        "} GROUP BY ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co ";
+        var classSet = new Set();
+        var classCountsEndpointsMap = new Map();
+        var classPropertyCountsEndpointsMap = new Map();
+        var classContentData = [];
+    return sparqlQueryPromise(classPartitionQuery)
+        .then(json => {
+            json.results.bindings.forEach((item, i) => {
+                var c = item.c.value;
+                classSet.add(c);
+                var endpointUrl = item.endpointUrl.value;
+                    if (classCountsEndpointsMap.get(c) == undefined) {
+                        classCountsEndpointsMap.set(c, { class: c });
+                    }
+                    if (item.ct != undefined) {
+                        var ct = Number.parseInt(item.ct.value);
+                        var currentClassItem = classCountsEndpointsMap.get(c);
+                        if (classCountsEndpointsMap.get(c).triples == undefined) {
+                            currentClassItem.triples = 0;
+                            classCountsEndpointsMap.set(c, currentClassItem);
+                        }
+                        currentClassItem.triples = currentClassItem.triples + ct;
+                        classCountsEndpointsMap.set(c, currentClassItem);
+                    }
+                    if (item.cc != undefined) {
+                        var cc = Number.parseInt(item.cc.value);
+                        var currentClassItem = classCountsEndpointsMap.get(c);
+                        if (classCountsEndpointsMap.get(c).classes == undefined) {
+                            currentClassItem.classes = 0;
+                            classCountsEndpointsMap.set(c, currentClassItem);
+                        }
+                        currentClassItem.classes = currentClassItem.classes + cc;
+                        classCountsEndpointsMap.set(c, currentClassItem);
+                    }
+                    if (item.cp != undefined) {
+                        var cp = Number.parseInt(item.cp.value);
+                        var currentClassItem = classCountsEndpointsMap.get(c);
+                        if (classCountsEndpointsMap.get(c).properties == undefined) {
+                            currentClassItem.properties = 0;
+                            classCountsEndpointsMap.set(c, currentClassItem);
+                        }
+                        currentClassItem.properties = currentClassItem.properties + cp;
+                        classCountsEndpointsMap.set(c, currentClassItem);
+                    }
+                    if (item.cs != undefined) {
+                        var cs = Number.parseInt(item.cs.value);
+                        var currentClassItem = classCountsEndpointsMap.get(c);
+                        if (classCountsEndpointsMap.get(c).distinctSubjects == undefined) {
+                            currentClassItem.distinctSubjects = 0;
+                            classCountsEndpointsMap.set(c, currentClassItem);
+                        }
+                        currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + cs;
+                        classCountsEndpointsMap.set(c, currentClassItem);
+                    }
+                    if (item.co != undefined) {
+                        var co = Number.parseInt(item.co.value);
+                        var currentClassItem = classCountsEndpointsMap.get(c);
+                        if (classCountsEndpointsMap.get(c).distinctObjects == undefined) {
+                            currentClassItem.distinctObjects = 0;
+                            classCountsEndpointsMap.set(c, currentClassItem);
+                        }
+                        currentClassItem.distinctObjects = currentClassItem.distinctObjects + co;
+                        classCountsEndpointsMap.set(c, currentClassItem);
+                    }
+                    if (classCountsEndpointsMap.get(c).endpoints == undefined) {
+                        var currentClassItem = classCountsEndpointsMap.get(c);
+                        currentClassItem.endpoints = new Set();
+                        classCountsEndpointsMap.set(c, currentClassItem);
+                    }
+                    classCountsEndpointsMap.get(c).endpoints.add(endpointUrl);
+            });
+        })
+        .then(() => {
+            var classPropertyPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?p ?pt ?po ?ps { " +
+                "GRAPH ?g {" +
+                "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+                "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+                "?base <http://rdfs.org/ns/void#classPartition> ?classPartition . " +
+                "?classPartition <http://rdfs.org/ns/void#class> ?c . " +
+                "?classPartition <http://rdfs.org/ns/void#propertyPartition> ?classPropertyPartition . " +
+                "?classPropertyPartition <http://rdfs.org/ns/void#property> ?p . " +
+                "OPTIONAL { " +
+                "?classPropertyPartition <http://rdfs.org/ns/void#triples> ?pt . " +
+                "} " +
+                "OPTIONAL { " +
+                "?classPropertyPartition <http://rdfs.org/ns/void#distinctSubjects> ?ps . " +
+                "} " +
+                "OPTIONAL { " +
+                "?classPropertyPartition <http://rdfs.org/ns/void#distinctObjects> ?po . " +
+                "} " +
+                "}" +
+                "} GROUP BY ?endpointUrl ?c ?p ?pt ?po ?ps ";
+            return sparqlQueryPromise(classPropertyPartitionQuery).then(json => {
+                json.results.bindings.forEach((item, i) => {
+                    var c = item.c.value;
+                    var p = item.p.value;
+                    var endpointUrl = item.endpointUrl.value;
+
+                    classSet.add(c);
+
+                        if (classPropertyCountsEndpointsMap.get(c) == undefined) {
+                            classPropertyCountsEndpointsMap.set(c, new Map());
+                        }
+                        if(classPropertyCountsEndpointsMap.get(c).get(p) == undefined) {
+                            classPropertyCountsEndpointsMap.get(c).set(p, { property:p });
+                        }
+                        if (item.pt != undefined) {
+                            var pt = Number.parseInt(item.pt.value);
+                            if (classPropertyCountsEndpointsMap.get(c).get(p).triples == undefined) {
+                                classPropertyCountsEndpointsMap.get(c).get(p).triples = 0;
+                            }
+                            classPropertyCountsEndpointsMap.get(c).get(p).triples = classPropertyCountsEndpointsMap.get(c).get(p).triples + pt;
+                        }
+                        if (item.ps != undefined) {
+                            var ps = Number.parseInt(item.ps.value);
+                            if (classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects == undefined) {
+                                classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects = 0;
+                            }
+                            classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects = classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects + ps;
+                        }
+                        if (item.po != undefined) {
+                            var po = Number.parseInt(item.po.value);
+                            if (classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects == undefined) {
+                                classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects = 0;
+                            }
+                            classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects = classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects + po;
+                        }
+                        if (classPropertyCountsEndpointsMap.get(c).get(p).endpoints == undefined) {
+                            classPropertyCountsEndpointsMap.get(c).get(p).endpoints = new Set();
+                        }
+                        classPropertyCountsEndpointsMap.get(c).get(p).endpoints.add(endpointUrl);
+                });
+                
+            });
+        })
+        .then(() => {
+            classSet.forEach(className => {
+                var classCountItem = classCountsEndpointsMap.get(className);
+                var classItem = classCountItem;
+                if(classCountItem == undefined) {
+                    classItem = { class:className };
+                }
+                var classPropertyItem = classPropertyCountsEndpointsMap.get(className);
+                if(classPropertyItem != undefined) {
+                    classItem.propertyPartitions = [];
+                    classPropertyItem.forEach((propertyPartitionItem, propertyName, map1) => {
+                        propertyPartitionItem.endpoints = [...propertyPartitionItem.endpoints]
+                        classItem.propertyPartitions.push(propertyPartitionItem);
+                    });
+                }
+                classContentData.push(classItem)
+            })
+            try {
+                var content = JSON.stringify(classContentData);
+                fs.writeFileSync(classPropertyDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            console.log("classAndPropertiesDataFill END")
+        })
+        .catch(error => {
+            console.log(error)
+        })
 }
 
 whiteListFill()
@@ -649,6 +1016,11 @@ whiteListFill()
     .finally(classDataFill())
     .finally(propertyDataFill())
     .finally(categoryTestCountFill())
+    .finally(totalCategoryTestCountFill())
+    .finally(endpointTestsDataFill())
+    .finally(totalRuntimeDataFill())
+    .finally(averageRuntimeDataFill())
+    .finally(classAndPropertiesDataFill())
     .catch(error => {
         console.log(error)
     });
