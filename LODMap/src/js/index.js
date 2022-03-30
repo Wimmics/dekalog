@@ -24,6 +24,15 @@ const classCountDataFile = cachePromise('classCountData.json')
 const propertyCountDataFile = cachePromise('propertyCountData.json')
 const tripleCountDataFile = cachePromise('tripleCountData.json')
 const categoryTestCountDataFile = cachePromise("categoryTestCountData.json");
+const totalCategoryTestCountFilename = cachePromise("totalCategoryTestCountData.json");
+const endpointTestsDataFilename = cachePromise("endpointTestsData.json");
+const totalRuntimeDataFilename = cachePromise("totalRuntimeData.json");
+const averageRuntimeDataFilename = cachePromise("averageRuntimeData.json");
+const classPropertyDataFilename = cachePromise("classPropertyData.json");
+const datasetDescriptionDataFilename = cachePromise("datasetDescriptionData.json");
+const shortUriDataFilename = cachePromise("shortUriData.json");
+const rdfDataStructureDataFilename = cachePromise("rdfDataStructureData.json");
+const readableLabelDataFilename = cachePromise("readableLabelData.json");
 
 const numberOfVocabulariesLimit = 1000;
 
@@ -944,7 +953,10 @@ var vocabRelatedChart = new KartoChart({
         var rawVocabSet = new Set();
         var rawGatherVocab = new Map();
         vocabEndpointDataFile.then(vocabEndpointData => {
-            vocabEndpointData.filter(vocabEndpointItem => ((!(new Set(blackistedEndpointIndexList)).has(vocabEndpointItem.endpoint)) && (new Set(filteredEndpointWhiteList).has(vocabEndpointItem.endpoint)))).forEach((item, i) => {
+            vocabEndpointData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)
+            ).forEach((item, i) => {
                 var endpoint = item.endpoint;
                 var vocabularies = item.vocabularies;
                 if (vocabularies.length < numberOfVocabulariesLimit) {
@@ -1195,13 +1207,19 @@ var tripleChart = new KartoChart({
         // Scatter plot of the number of triples through time
         tripleCountDataFile.then(tripleCountData => {
             var endpointDataSerieMap = new Map();
-            tripleCountData.filter(tripleCountItem => ((!(new Set(blackistedEndpointIndexList)).has(tripleCountItem.endpoint)) && (new Set(filteredEndpointWhiteList).has(tripleCountItem.endpoint)))).forEach((itemResult, i) => {
+            tripleCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)
+            ).forEach((itemResult, i) => {
                 var endpointUrl = itemResult.endpoint;
                 endpointDataSerieMap.set(endpointUrl, []);
 
             });
             var graphSet = new Set();
-            tripleCountData.filter(tripleCountItem => ((!(new Set(blackistedEndpointIndexList)).has(tripleCountItem.endpoint)) && (new Set(filteredEndpointWhiteList).has(tripleCountItem.endpoint)))).forEach((itemResult, i) => {
+            tripleCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)
+            ).forEach((itemResult, i) => {
                 var graph = itemResult.graph;
                 var endpointUrl = itemResult.endpoint;
                 var triples = itemResult.triples;
@@ -1246,7 +1264,10 @@ var classNumberChart = new KartoChart({
         classCountDataFile.then(classCountData => {
             var endpointDataSerieMap = new Map();
             var graphSet = new Set();
-            classCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint)) && (new Set(filteredEndpointWhiteList).has(item.endpoint)))).forEach(item => {
+            classCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)
+            ).forEach(item => {
                 var graph = item.graph;
                 var endpointUrl = item.endpoint;
                 var triples = item.classes;
@@ -1292,23 +1313,25 @@ var propertyNumberChart = new KartoChart({
         // scatter plot of the number of properties through time
         propertyCountDataFile.then(propertyCountData => {
             var endpointDataSerieMap = new Map();
-            propertyCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint)) && (new Set(filteredEndpointWhiteList).has(item.endpoint)))).forEach((itemResult, i) => {
-                var endpointUrl = itemResult.endpoint;
+            propertyCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint)) && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)).forEach((itemResult, i) => {
+                    var endpointUrl = itemResult.endpoint;
 
-                if (!blacklistedEndpointList.includes(endpointUrl)) {
-                    endpointDataSerieMap.set(endpointUrl, []);
-                }
-            });
+                    if (!blacklistedEndpointList.includes(endpointUrl)) {
+                        endpointDataSerieMap.set(endpointUrl, []);
+                    }
+                });
             var endpointGraphPropertiesData = [];
             var graphSet = new Set();
-            propertyCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint)) && (new Set(filteredEndpointWhiteList).has(item.endpoint)))).forEach((itemResult, i) => {
-                var graph = itemResult.graph;
-                var endpointUrl = itemResult.endpoint;
-                var properties = itemResult.properties;
+            propertyCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint)) && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)).forEach((itemResult, i) => {
+                    var graph = itemResult.graph;
+                    var endpointUrl = itemResult.endpoint;
+                    var properties = itemResult.properties;
                     graphSet.add(graph);
                     endpointDataSerieMap.get(endpointUrl).push([graph, properties])
                     endpointGraphPropertiesData.push({ endpoint: endpointUrl, graph: graph, properties: properties })
-            });
+                });
 
             if (endpointDataSerieMap.size > 0) {
                 this.show();
@@ -1345,49 +1368,33 @@ var categoryTestNumberChart = new KartoChart({
     option: {},
     fillFunction: function () {
         // Number of tests passed by test categories
-        var testCategoryQuery = "SELECT DISTINCT ?g ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
-            "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-            "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
-            "?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl ." +
-            "?metadata <http://purl.org/dc/terms/modified> ?modifDate . " +
-            "?trace <http://www.w3.org/ns/earl#test> ?test . " +
-            "?trace <http://www.w3.org/ns/earl#result> ?result . " +
-            "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . " +
-            "FILTER(STRSTARTS(str(?test), ?category)) " +
-            "VALUES ?category { " +
-            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/' " +
-            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/' " +
-            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/' " +
-            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/' " +
-            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/' " +
-            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' " +
-            "}" +
-            "}  " +
-            generateGraphValueFilterClause() +
-            "} GROUP BY ?g ?category ?endpointUrl";
-        sparqlQueryJSON(testCategoryQuery, json => {
+        categoryTestCountDataFile.then(categoryTestCountData => {
             var endpointDataSerieMap = new Map();
-            json.results.bindings.forEach((itemResult, i) => {
-                var category = itemResult.category.value;
 
-                endpointDataSerieMap.set(category, new Map());
-            });
-            json.results.bindings.forEach((itemResult, i) => {
-                var category = itemResult.category.value;
-                var count = itemResult.count.value;
-                //        var rawDate = parseDate(itemResult.modifDate.value, 'dd-mm-yyyy');
-                //        var date = new Date(rawDate.getYear(), rawDate.getMonth(), rawDate.getDay());
-                var endpoint = itemResult.endpointUrl.value;
-                var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+            categoryTestCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)
+            )
+                .forEach(item => {
+                    var category = item.category;
+                    endpointDataSerieMap.set(category, new Map());
 
-                if (!blacklistedEndpointList.includes(endpoint)) {
-                    if (endpointDataSerieMap.get(category).get(graph) == undefined) {
-                        endpointDataSerieMap.get(category).set(graph, new Map());
-                    }
-                    endpointDataSerieMap.get(category).get(graph).set(endpoint, count);
+                })
+            categoryTestCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)
+            ).forEach(item => {
+                var category = item.category;
+                var count = item.count;
+                var endpoint = item.endpoint;
+                var graph = item.graph;
+
+                if (endpointDataSerieMap.get(category).get(graph) == undefined) {
+                    endpointDataSerieMap.get(category).set(graph, new Map());
                 }
-            });
+                endpointDataSerieMap.get(category).get(graph).set(endpoint, count);
 
+            })
             if (endpointDataSerieMap.size > 0) {
                 this.show();
 
@@ -1482,42 +1489,26 @@ var totalCategoryTestNumberChart = new KartoChart({
     option: {},
     fillFunction: function () {
         // Number of tests passed by test categories
-        var testCategoryQuery = "SELECT DISTINCT ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
-            "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-            "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
-            "?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl ." +
-            "?metadata <http://purl.org/dc/terms/modified> ?modifDate . " +
-            "?trace <http://www.w3.org/ns/earl#test> ?test . " +
-            "?trace <http://www.w3.org/ns/earl#result> ?result . " +
-            "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . " +
-            "FILTER(STRSTARTS(str(?test), ?category)) " +
-            "VALUES ?category { " +
-            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/' " +
-            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/' " +
-            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/' " +
-            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/' " +
-            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/' " +
-            "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' " +
-            "}" +
-            "}  " +
-            generateGraphValueFilterClause() +
-            "} GROUP BY ?category ?endpointUrl";
-        sparqlQueryJSON(testCategoryQuery, json => {
+        totalCategoryTestCountFilename.then(totalCategoryTestCountData => {
             var endpointDataSerieMap = new Map();
-            json.results.bindings.forEach((itemResult, i) => {
-                var category = itemResult.category.value;
+            totalCategoryTestCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)
+            ).forEach(item => {
+                var category = item.category;
 
                 endpointDataSerieMap.set(category, new Map());
-            });
-            json.results.bindings.forEach((itemResult, i) => {
-                var category = itemResult.category.value;
-                var count = itemResult.count.value;
-                var endpoint = itemResult.endpointUrl.value;
+            })
+            totalCategoryTestCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)
+            ).forEach(item => {
+                var category = item.category;
+                var count = item.count;
+                var endpoint = item.endpoint;
 
-                if (!blacklistedEndpointList.includes(endpoint)) {
-                    endpointDataSerieMap.get(category).set(endpoint, count);
-                }
-            });
+                endpointDataSerieMap.get(category).set(endpoint, count);
+            })
 
             if (endpointDataSerieMap.size > 0) {
                 this.show();
@@ -1563,7 +1554,6 @@ var totalCategoryTestNumberChart = new KartoChart({
                     triplesSeries.push(chartSerie);
                 });
 
-                var categoriesArray = categoryXAxisData.sort((a, b) => a.localeCompare(b));
                 triplesSeries.sort((a, b) => a.name.localeCompare(b.name))
 
                 this.option = {
@@ -1607,27 +1597,19 @@ var totalCategoryTestNumberChart = new KartoChart({
 
 var testTableContent = new KartoChart({
     fillFunction: function () {
-
-        var appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?rule { " +
-            "GRAPH ?g { " +
-            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?curated . " +
-            "?curated <http://www.w3.org/ns/prov#wasGeneratedBy> ?rule . " +
-            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-            "} " +
-            generateGraphValueFilterClause() +
-            "} GROUP BY ?endpointUrl ?rule ORDER BY DESC(?endpointUrl) ";
-        sparqlQueryJSON(appliedTestQuery, json => {
+        endpointTestsDataFilename.then(endpointTestsData => {
             var appliedTestMap = new Map();
-            json.results.bindings.forEach((item, i) => {
-                var endpointUrl = item.endpointUrl.value;
-                var rule = item.rule.value;
+            endpointTestsData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)
+            ).forEach((item, i) => {
+                var endpointUrl = item.endpoint;
+                var rule = item.activity;
 
-                if (!blacklistedEndpointList.includes(endpointUrl)) {
-                    if (appliedTestMap.get(endpointUrl) == undefined) {
-                        appliedTestMap.set(endpointUrl, []);
-                    }
-                    appliedTestMap.get(endpointUrl).push(rule);
+                if (appliedTestMap.get(endpointUrl) == undefined) {
+                    appliedTestMap.set(endpointUrl, []);
                 }
+                appliedTestMap.get(endpointUrl).push(rule);
             });
 
             var appliedTestData = [];
@@ -2671,7 +2653,8 @@ var rdfDataStructureChart = new KartoChart({
 setButtonAsToggleCollapse('rdfDataStructuresDetails', 'rdfDataStructuresTable');
 
 var readableLabelsChart = new KartoChart({
-    chartObject: echarts.init(document.getElementById('readableLabelsScatter')), option: {}, fillFunction: function () {
+    chartObject: echarts.init(document.getElementById('readableLabelsScatter')), option: {},
+    fillFunction: function () {
         this.query = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
             "GRAPH ?g {" +
             "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +

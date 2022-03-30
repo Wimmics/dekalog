@@ -13,6 +13,7 @@ const graphLists = require('./src/data/runSets.json');
 const timezoneMap = require('./src/data/timezoneMap.json');
 const endpointIpMap = require('./src/data/endpointIpGeoloc.json');
 const dataFilePrefix = "./src/data/cache/";
+const queryPaginationSize = 10000;
 
 const whiteListFilename = dataFilePrefix + "whiteLists.json";
 const geolocFilename = dataFilePrefix + "geolocData.json";
@@ -30,6 +31,10 @@ const endpointTestsDataFilename = dataFilePrefix + "endpointTestsData.json";
 const totalRuntimeDataFilename = dataFilePrefix + "totalRuntimeData.json";
 const averageRuntimeDataFilename = dataFilePrefix + "averageRuntimeData.json";
 const classPropertyDataFilename = dataFilePrefix + "classPropertyData.json";
+const datasetDescriptionDataFilename = dataFilePrefix + "datasetDescriptionData.json";
+const shortUriDataFilename = dataFilePrefix + "shortUriData.json";
+const rdfDataStructureDataFilename = dataFilePrefix + "rdfDataStructureData.json";
+const readableLabelDataFilename = dataFilePrefix + "readableLabelData.json";
 
 const LOVFilename = dataFilePrefix + "knownVocabulariesLOV.json"
 
@@ -96,6 +101,31 @@ function sparqlQueryPromise(query) {
     }
 }
 
+function paginatedSparqlQueryPromise(query, limit = queryPaginationSize, offset = 0, finalResult = []) {
+    var paginatedQuery = query + " LIMIT " + limit + " OFFSET " + offset;
+    return sparqlQueryPromise(paginatedQuery)
+    .then(queryResult => {
+        console.log(paginatedQuery)
+        queryResult.results.bindings.forEach(resultItem => {
+            var finaResultItem = {};
+            queryResult.head.vars.forEach(variable => {
+                finaResultItem[variable] = resultItem[variable];
+            })
+            finalResult.push(finaResultItem);
+        })
+        if(queryResult.results.bindings.length > 0) {
+            return paginatedSparqlQueryPromise(query, limit + queryPaginationSize, offset + queryPaginationSize, finalResult)
+        } 
+    })
+    .then(() => {
+        return finalResult;
+    })
+    .catch(error => {
+        console.log(error)
+        return finalResult;
+    })
+}
+
 function whiteListFill() {
     console.log("whiteListFill START")
     return Promise.all(
@@ -111,10 +141,10 @@ function whiteListFill() {
                 '} ' +
                 'GROUP BY ?endpointUrl';
             var graphListKey = md5(''.concat(graphList));
-            return sparqlQueryPromise(endpointListQuery)
+            return paginatedSparqlQueryPromise(endpointListQuery)
                 .then(json => {
                     var endpointList = [];
-                    json.results.bindings.forEach((item) => {
+                    json.forEach((item) => {
                         endpointList.push(item.endpointUrl.value);
                     });
                     return { graphKey: graphListKey, endpoints: endpointList };
@@ -149,10 +179,10 @@ function endpointMapfill() {
         var endpointItem = {};
 
         var timezoneSPARQLquery = "SELECT DISTINCT ?timezone { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <" + endpoint + "> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone } }";
-        return sparqlQueryPromise(timezoneSPARQLquery)
+        return paginatedSparqlQueryPromise(timezoneSPARQLquery)
             .then(jsonResponse => {
                 var endpointTimezoneSPARQL = new Map();
-                jsonResponse.results.bindings.forEach((itemResponse, i) => {
+                jsonResponse.forEach((itemResponse, i) => {
                     endpointTimezoneSPARQL.set(endpoint, itemResponse.timezone.value);
                 });
 
@@ -251,16 +281,15 @@ function SPARQLCoverageFill() {
         '} ' +
         '} ' +
         '} ' +
-        'GROUP BY ?endpoint ?sparqlNorm ' +
-        'ORDER BY DESC( ?sparqlNorm)';
+        'GROUP BY ?endpoint ?sparqlNorm ';
     var jsonBaseFeatureSparqles = [];
     var sparqlFeaturesDataArray = [];
-    return sparqlQueryPromise(sparqlesFeatureQuery)
+    return paginatedSparqlQueryPromise(sparqlesFeatureQuery)
         .then(json => {
             var endpointSet = new Set();
             var sparql10Map = new Map();
             var sparql11Map = new Map();
-            json.results.bindings.forEach((bindingItem, i) => {
+            json.forEach((bindingItem, i) => {
                 var endpointUrl = bindingItem.endpoint.value;
                 endpointSet.add(endpointUrl);
                 var feature = undefined;
@@ -303,15 +332,14 @@ function SPARQLCoverageFill() {
                 '} ' +
                 '} ' +
                 '} ' +
-                'GROUP BY ?endpoint ?activity ' +
-                'ORDER BY DESC( ?endpoint)';
+                'GROUP BY ?endpoint ?activity ';
             var endpointFeatureMap = new Map();
             var featuresShortName = new Map();
-            return sparqlQueryPromise(sparqlFeatureQuery)
+            return paginatedSparqlQueryPromise(sparqlFeatureQuery)
                 .then(json => {
                     endpointFeatureMap = new Map();
                     var featuresSet = new Set();
-                    json.results.bindings.forEach(bindingItem => {
+                    json.forEach(bindingItem => {
                         const endpointUrl = bindingItem.endpoint.value;
                         if (!endpointFeatureMap.has(endpointUrl)) {
                             endpointFeatureMap.set(endpointUrl, new Set());
@@ -377,11 +405,11 @@ function vocabFill() {
     var keywordSet = new Set();
     var vocabKeywordData = [];
 
-    return sparqlQueryPromise(sparqlesVocabulariesQuery)
+    return paginatedSparqlQueryPromise(sparqlesVocabulariesQuery)
         .then(json => {
 
             var endpointSet = new Set();
-            json.results.bindings.forEach((bindingItem, i) => {
+            json.forEach((bindingItem, i) => {
                 var vocabulariUri = bindingItem.vocabulary.value;
                 var endpointUri = bindingItem.endpointUrl.value;
                 endpointSet.add(endpointUri);
@@ -517,11 +545,11 @@ function tripleDataFill() {
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
         "?base <http://rdfs.org/ns/void#triples> ?rawO ." +
         "}" +
-        "} GROUP BY ?g ?endpointUrl ?o ORDER BY DESC(?g) DESC(?endpointUrl)";
+        "} GROUP BY ?g ?endpointUrl ?o";
     var endpointTripleData = [];
-    return sparqlQueryPromise(triplesSPARQLquery)
+    return paginatedSparqlQueryPromise(triplesSPARQLquery)
         .then(json => {
-            json.results.bindings.forEach((itemResult, i) => {
+            json.forEach((itemResult, i) => {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var triples = Number.parseInt(itemResult.o.value);
@@ -552,11 +580,11 @@ function classDataFill() {
         "?metadata <http://purl.org/dc/terms/modified> ?modifDate ." +
         "?base <http://rdfs.org/ns/void#classes> ?rawO ." +
         "}" +
-        "} GROUP BY ?g ?endpointUrl ?modifDate ?o ORDER BY DESC(?g) DESC(?endpointUrl) DESC(?modifDate)";
+        "} GROUP BY ?g ?endpointUrl ?modifDate ?o";
     var endpointClassCountData = [];
-    return sparqlQueryPromise(classesSPARQLquery)
+    return paginatedSparqlQueryPromise(classesSPARQLquery)
         .then(json => {
-            json.results.bindings.forEach((itemResult, i) => {
+            json.forEach((itemResult, i) => {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var triples = Number.parseInt(itemResult.o.value);
@@ -587,11 +615,11 @@ function propertyDataFill() {
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
         "?base <http://rdfs.org/ns/void#properties> ?rawO ." +
         "}" +
-        "} GROUP BY ?endpointUrl ?g ?o ORDER BY DESC(?g) DESC(?endpointUrl) ";
+        "} GROUP BY ?endpointUrl ?g ?o";
     var endpointPropertyCountData = [];
-    return sparqlQueryPromise(propertiesSPARQLquery)
+    return paginatedSparqlQueryPromise(propertiesSPARQLquery)
         .then(json => {
-            json.results.bindings.forEach((itemResult, i) => {
+            json.forEach((itemResult, i) => {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var properties = Number.parseInt(itemResult.o.value);
@@ -635,9 +663,9 @@ function categoryTestCountFill() {
         "}" +
         "}  " +
         "} GROUP BY ?g ?category ?endpointUrl";
-    return sparqlQueryPromise(testCategoryQuery)
+    return paginatedSparqlQueryPromise(testCategoryQuery)
         .then(json => {
-            json.results.bindings.forEach((itemResult, i) => {
+            json.forEach((itemResult, i) => {
                 var category = itemResult.category.value;
                 var count = itemResult.count.value;
                 var endpoint = itemResult.endpointUrl.value;
@@ -682,8 +710,8 @@ function totalCategoryTestCountFill() {
         "}  " +
         "} GROUP BY ?g ?category ?endpointUrl";
     var totalTestCategoryData = [];
-    return sparqlQueryPromise(testCategoryQuery).then(json => {
-        json.results.bindings.forEach((itemResult, i) => {
+    return paginatedSparqlQueryPromise(testCategoryQuery).then(json => {
+        json.forEach((itemResult, i) => {
             var category = itemResult.category.value;
             var count = itemResult.count.value;
             var endpoint = itemResult.endpointUrl.value;
@@ -715,11 +743,11 @@ function endpointTestsDataFill() {
         "?curated <http://www.w3.org/ns/prov#wasGeneratedBy> ?rule . " +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "} " +
-        "} GROUP BY ?endpointUrl ?rule ORDER BY DESC(?endpointUrl) ";
+        "}";
     var endpointTestsData = [];
-    return sparqlQueryPromise(appliedTestQuery)
+    return paginatedSparqlQueryPromise(appliedTestQuery)
         .then(json => {
-            json.results.bindings.forEach((item, i) => {
+            json.forEach((item, i) => {
                 var endpointUrl = item.endpointUrl.value;
                 var rule = item.rule.value;
                 var graph = item.g.value;
@@ -745,8 +773,8 @@ function totalRuntimeDataFill() {
     console.log("totalRuntimeDataFill START")
     var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?data . ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . }   }";
     var totalRuntimeData = []
-    return sparqlQueryPromise(maxMinTimeQuery).then(jsonResponse => {
-        jsonResponse.results.bindings.forEach((itemResult, i) => {
+    return paginatedSparqlQueryPromise(maxMinTimeQuery).then(jsonResponse => {
+        jsonResponse.forEach((itemResult, i) => {
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
             var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
             var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
@@ -769,6 +797,7 @@ function totalRuntimeDataFill() {
 }
 
 function averageRuntimeDataFill() {
+    console.log("averageRuntimeDataFill START")
     var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end)" +
         " { " +
         "GRAPH ?g {" +
@@ -778,31 +807,40 @@ function averageRuntimeDataFill() {
         " ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
         "} " +
         "}";
+    var numberOfEndpointQuery = "SELECT DISTINCT ?g (COUNT(?endpointUrl) AS ?count) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?dataset . { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } } }";
     var averageRuntimeData = [];
     var graphStartEndMap = new Map();
-    return sparqlQueryPromise(maxMinTimeQuery)
-        .then(jsonResponse => {
-            jsonResponse.results.bindings.forEach((itemResult, i) => {
-                var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
-                var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
-                var runtime = dayjs.duration(end.diff(start));
+    return Promise.all([
+        paginatedSparqlQueryPromise(maxMinTimeQuery)
+            .then(jsonResponse => {
+                jsonResponse.forEach((itemResult, i) => {
+                    var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                    var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
+                    var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
+                    var runtime = dayjs.duration(end.diff(start));
 
-                graphStartEndMap.set(graph, { start: start, end: end, runtime: runtime });
-            })
-        }).then(() => {
-            var numberOfEndpointQuery = "SELECT DISTINCT ?g (COUNT(?endpointUrl) AS ?count) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?dataset . { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } } }";
-            sparqlQueryPromise(numberOfEndpointQuery)
-                .then(numberOfEndpointJson => {
-                    numberOfEndpointJson.results.bindings.forEach((numberEndpointItem, i) => {
-                        var graph = numberEndpointItem.g.value;
-                        graph = graph.replace('http://ns.inria.fr/indegx#', '');
-                        var count = numberEndpointItem.count.value;
-                        graphStartEndMap.get(graph).count = count
-                        averageRuntimeData.push(graphStartEndMap.get(graph))
-                    });
+                    if(graphStartEndMap.get(graph) == undefined) {
+                        graphStartEndMap.set(graph, {  });
+                    }
+                    graphStartEndMap.get(graph).start = start;
+                    graphStartEndMap.get(graph).end = end; 
+                    graphStartEndMap.get(graph).runtime = runtime ;
+                })
+            }),
+            paginatedSparqlQueryPromise(numberOfEndpointQuery)
+            .then(numberOfEndpointJson => {
+                numberOfEndpointJson.forEach((numberEndpointItem, i) => {
+                    var graph = numberEndpointItem.g.value;
+                    graph = graph.replace('http://ns.inria.fr/indegx#', '');
+                    var count = numberEndpointItem.count.value;
+                    if(graphStartEndMap.get(graph) == undefined) {
+                        graphStartEndMap.set(graph, {  });
+                    }
+                    graphStartEndMap.get(graph).count = count
+                    averageRuntimeData.push(graphStartEndMap.get(graph))
                 });
-        })
+            })
+    ])
         .then(() => {
             try {
                 var content = JSON.stringify(averageRuntimeData);
@@ -844,75 +882,75 @@ function classAndPropertiesDataFill() {
         "FILTER(! isBlank(?c)) " +
         "}" +
         "} GROUP BY ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co ";
-        var classSet = new Set();
-        var classCountsEndpointsMap = new Map();
-        var classPropertyCountsEndpointsMap = new Map();
-        var classContentData = [];
-    return sparqlQueryPromise(classPartitionQuery)
+    var classSet = new Set();
+    var classCountsEndpointsMap = new Map();
+    var classPropertyCountsEndpointsMap = new Map();
+    var classContentData = [];
+    return paginatedSparqlQueryPromise(classPartitionQuery)
         .then(json => {
-            json.results.bindings.forEach((item, i) => {
+            json.forEach((item, i) => {
                 var c = item.c.value;
                 classSet.add(c);
                 var endpointUrl = item.endpointUrl.value;
-                    if (classCountsEndpointsMap.get(c) == undefined) {
-                        classCountsEndpointsMap.set(c, { class: c });
-                    }
-                    if (item.ct != undefined) {
-                        var ct = Number.parseInt(item.ct.value);
-                        var currentClassItem = classCountsEndpointsMap.get(c);
-                        if (classCountsEndpointsMap.get(c).triples == undefined) {
-                            currentClassItem.triples = 0;
-                            classCountsEndpointsMap.set(c, currentClassItem);
-                        }
-                        currentClassItem.triples = currentClassItem.triples + ct;
+                if (classCountsEndpointsMap.get(c) == undefined) {
+                    classCountsEndpointsMap.set(c, { class: c });
+                }
+                if (item.ct != undefined) {
+                    var ct = Number.parseInt(item.ct.value);
+                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    if (classCountsEndpointsMap.get(c).triples == undefined) {
+                        currentClassItem.triples = 0;
                         classCountsEndpointsMap.set(c, currentClassItem);
                     }
-                    if (item.cc != undefined) {
-                        var cc = Number.parseInt(item.cc.value);
-                        var currentClassItem = classCountsEndpointsMap.get(c);
-                        if (classCountsEndpointsMap.get(c).classes == undefined) {
-                            currentClassItem.classes = 0;
-                            classCountsEndpointsMap.set(c, currentClassItem);
-                        }
-                        currentClassItem.classes = currentClassItem.classes + cc;
+                    currentClassItem.triples = currentClassItem.triples + ct;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                if (item.cc != undefined) {
+                    var cc = Number.parseInt(item.cc.value);
+                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    if (classCountsEndpointsMap.get(c).classes == undefined) {
+                        currentClassItem.classes = 0;
                         classCountsEndpointsMap.set(c, currentClassItem);
                     }
-                    if (item.cp != undefined) {
-                        var cp = Number.parseInt(item.cp.value);
-                        var currentClassItem = classCountsEndpointsMap.get(c);
-                        if (classCountsEndpointsMap.get(c).properties == undefined) {
-                            currentClassItem.properties = 0;
-                            classCountsEndpointsMap.set(c, currentClassItem);
-                        }
-                        currentClassItem.properties = currentClassItem.properties + cp;
+                    currentClassItem.classes = currentClassItem.classes + cc;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                if (item.cp != undefined) {
+                    var cp = Number.parseInt(item.cp.value);
+                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    if (classCountsEndpointsMap.get(c).properties == undefined) {
+                        currentClassItem.properties = 0;
                         classCountsEndpointsMap.set(c, currentClassItem);
                     }
-                    if (item.cs != undefined) {
-                        var cs = Number.parseInt(item.cs.value);
-                        var currentClassItem = classCountsEndpointsMap.get(c);
-                        if (classCountsEndpointsMap.get(c).distinctSubjects == undefined) {
-                            currentClassItem.distinctSubjects = 0;
-                            classCountsEndpointsMap.set(c, currentClassItem);
-                        }
-                        currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + cs;
+                    currentClassItem.properties = currentClassItem.properties + cp;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                if (item.cs != undefined) {
+                    var cs = Number.parseInt(item.cs.value);
+                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    if (classCountsEndpointsMap.get(c).distinctSubjects == undefined) {
+                        currentClassItem.distinctSubjects = 0;
                         classCountsEndpointsMap.set(c, currentClassItem);
                     }
-                    if (item.co != undefined) {
-                        var co = Number.parseInt(item.co.value);
-                        var currentClassItem = classCountsEndpointsMap.get(c);
-                        if (classCountsEndpointsMap.get(c).distinctObjects == undefined) {
-                            currentClassItem.distinctObjects = 0;
-                            classCountsEndpointsMap.set(c, currentClassItem);
-                        }
-                        currentClassItem.distinctObjects = currentClassItem.distinctObjects + co;
+                    currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + cs;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                if (item.co != undefined) {
+                    var co = Number.parseInt(item.co.value);
+                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    if (classCountsEndpointsMap.get(c).distinctObjects == undefined) {
+                        currentClassItem.distinctObjects = 0;
                         classCountsEndpointsMap.set(c, currentClassItem);
                     }
-                    if (classCountsEndpointsMap.get(c).endpoints == undefined) {
-                        var currentClassItem = classCountsEndpointsMap.get(c);
-                        currentClassItem.endpoints = new Set();
-                        classCountsEndpointsMap.set(c, currentClassItem);
-                    }
-                    classCountsEndpointsMap.get(c).endpoints.add(endpointUrl);
+                    currentClassItem.distinctObjects = currentClassItem.distinctObjects + co;
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                if (classCountsEndpointsMap.get(c).endpoints == undefined) {
+                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    currentClassItem.endpoints = new Set();
+                    classCountsEndpointsMap.set(c, currentClassItem);
+                }
+                classCountsEndpointsMap.get(c).endpoints.add(endpointUrl);
             });
         })
         .then(() => {
@@ -935,58 +973,61 @@ function classAndPropertiesDataFill() {
                 "} " +
                 "}" +
                 "} GROUP BY ?endpointUrl ?c ?p ?pt ?po ?ps ";
-            return sparqlQueryPromise(classPropertyPartitionQuery).then(json => {
-                json.results.bindings.forEach((item, i) => {
+            return paginatedSparqlQueryPromise(classPropertyPartitionQuery).then(json => {
+                json.forEach((item, i) => {
                     var c = item.c.value;
                     var p = item.p.value;
                     var endpointUrl = item.endpointUrl.value;
 
                     classSet.add(c);
 
-                        if (classPropertyCountsEndpointsMap.get(c) == undefined) {
-                            classPropertyCountsEndpointsMap.set(c, new Map());
+                    if (classPropertyCountsEndpointsMap.get(c) == undefined) {
+                        classPropertyCountsEndpointsMap.set(c, new Map());
+                    }
+                    if (classPropertyCountsEndpointsMap.get(c).get(p) == undefined) {
+                        classPropertyCountsEndpointsMap.get(c).set(p, { property: p });
+                    }
+                    if (item.pt != undefined) {
+                        var pt = Number.parseInt(item.pt.value);
+                        if (classPropertyCountsEndpointsMap.get(c).get(p).triples == undefined) {
+                            classPropertyCountsEndpointsMap.get(c).get(p).triples = 0;
                         }
-                        if(classPropertyCountsEndpointsMap.get(c).get(p) == undefined) {
-                            classPropertyCountsEndpointsMap.get(c).set(p, { property:p });
+                        classPropertyCountsEndpointsMap.get(c).get(p).triples = classPropertyCountsEndpointsMap.get(c).get(p).triples + pt;
+                    }
+                    if (item.ps != undefined) {
+                        var ps = Number.parseInt(item.ps.value);
+                        if (classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects == undefined) {
+                            classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects = 0;
                         }
-                        if (item.pt != undefined) {
-                            var pt = Number.parseInt(item.pt.value);
-                            if (classPropertyCountsEndpointsMap.get(c).get(p).triples == undefined) {
-                                classPropertyCountsEndpointsMap.get(c).get(p).triples = 0;
-                            }
-                            classPropertyCountsEndpointsMap.get(c).get(p).triples = classPropertyCountsEndpointsMap.get(c).get(p).triples + pt;
+                        classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects = classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects + ps;
+                    }
+                    if (item.po != undefined) {
+                        var po = Number.parseInt(item.po.value);
+                        if (classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects == undefined) {
+                            classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects = 0;
                         }
-                        if (item.ps != undefined) {
-                            var ps = Number.parseInt(item.ps.value);
-                            if (classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects == undefined) {
-                                classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects = 0;
-                            }
-                            classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects = classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects + ps;
-                        }
-                        if (item.po != undefined) {
-                            var po = Number.parseInt(item.po.value);
-                            if (classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects == undefined) {
-                                classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects = 0;
-                            }
-                            classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects = classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects + po;
-                        }
-                        if (classPropertyCountsEndpointsMap.get(c).get(p).endpoints == undefined) {
-                            classPropertyCountsEndpointsMap.get(c).get(p).endpoints = new Set();
-                        }
-                        classPropertyCountsEndpointsMap.get(c).get(p).endpoints.add(endpointUrl);
+                        classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects = classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects + po;
+                    }
+                    if (classPropertyCountsEndpointsMap.get(c).get(p).endpoints == undefined) {
+                        classPropertyCountsEndpointsMap.get(c).get(p).endpoints = new Set();
+                    }
+                    classPropertyCountsEndpointsMap.get(c).get(p).endpoints.add(endpointUrl);
                 });
-                
+
             });
         })
         .then(() => {
             classSet.forEach(className => {
                 var classCountItem = classCountsEndpointsMap.get(className);
                 var classItem = classCountItem;
-                if(classCountItem == undefined) {
-                    classItem = { class:className };
+                if (classCountItem == undefined) {
+                    classItem = { class: className };
+                }
+                if(classItem.endpoints != undefined) {
+                    classItem.endpoints = [...classItem.endpoints]
                 }
                 var classPropertyItem = classPropertyCountsEndpointsMap.get(className);
-                if(classPropertyItem != undefined) {
+                if (classPropertyItem != undefined) {
                     classItem.propertyPartitions = [];
                     classPropertyItem.forEach((propertyPartitionItem, propertyName, map1) => {
                         propertyPartitionItem.endpoints = [...propertyPartitionItem.endpoints]
@@ -1008,19 +1049,295 @@ function classAndPropertiesDataFill() {
         })
 }
 
-whiteListFill()
-    .finally(endpointMapfill())
-    .finally(SPARQLCoverageFill())
-    .finally(vocabFill())
-    .finally(tripleDataFill())
-    .finally(classDataFill())
-    .finally(propertyDataFill())
-    .finally(categoryTestCountFill())
-    .finally(totalCategoryTestCountFill())
-    .finally(endpointTestsDataFill())
-    .finally(totalRuntimeDataFill())
-    .finally(averageRuntimeDataFill())
-    .finally(classAndPropertiesDataFill())
+function datasetDescriptionDataFill() {
+    console.log("datasetDescriptionDataDataFill START")
+    var provenanceWhoCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
+        "GRAPH ?g { " +
+        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
+        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
+        "OPTIONAL {" +
+        "{ ?dataset <http://purl.org/dc/terms/creator> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/contributor> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/publisher> ?o } " +
+        "} " +
+        "} " +
+        "} ";
+    var provenanceLicenseCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
+        "GRAPH ?g { " +
+        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
+        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
+        "OPTIONAL {" +
+        "{ ?dataset <http://purl.org/dc/terms/license> ?o } " +
+        "UNION {?dataset <http://purl.org/dc/terms/conformsTo> ?o } " +
+        "} " +
+        "} " +
+        "} ";
+    var provenanceDateCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
+        "GRAPH ?g { " +
+        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
+        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
+        "OPTIONAL {" +
+        " { ?dataset <http://purl.org/dc/terms/modified> ?o } " +
+        "UNION { ?dataset <http://www.w3.org/ns/prov#wasGeneratedAtTime> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/issued> ?o } " +
+        "} " +
+        "} " +
+        "} ";
+    var provenanceSourceCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
+        "GRAPH ?g { " +
+        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
+        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
+        "OPTIONAL {" +
+        "{ ?dataset <http://purl.org/dc/terms/source> ?o } " +
+        "UNION { ?dataset <http://www.w3.org/ns/prov#wasDerivedFrom> ?o } " +
+        "UNION { ?dataset <http://purl.org/dc/terms/format> ?o } " +
+        "} " +
+        "} " +
+        "} ";
+    var endpointDescriptionElementMap = new Map();
+
+    var datasetDescriptionData = [];
+    return Promise.all([
+        paginatedSparqlQueryPromise(provenanceWhoCheckQuery)
+            .then(json => {
+                json.forEach((item, i) => {
+                    var endpointUrl = item.endpointUrl.value;
+                    var who = (item.o != undefined);
+                    var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                    if (currentEndpointItem == undefined) {
+                        endpointDescriptionElementMap.set(endpointUrl, { endpoint: endpointUrl })
+                        currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl);
+                    }
+                    currentEndpointItem.who = who;
+                    if (who) {
+                        currentEndpointItem.whoValue = item.o.value;
+                    }
+                    endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+                })
+            }),
+        paginatedSparqlQueryPromise(provenanceLicenseCheckQuery)
+            .then(json => {
+                json.forEach((item, i) => {
+                    var endpointUrl = item.endpointUrl.value;
+                    var license = (item.o != undefined);
+                    var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                    if (currentEndpointItem == undefined) {
+                        endpointDescriptionElementMap.set(endpointUrl, { endpoint: endpointUrl })
+                        currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl);
+                    }
+                    currentEndpointItem.license = license;
+                    if (license) {
+                        currentEndpointItem.licenseValue = item.o.value;
+                    }
+                    endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        ,
+        paginatedSparqlQueryPromise(provenanceDateCheckQuery)
+            .then(json => {
+                json.forEach((item, i) => {
+                    var endpointUrl = item.endpointUrl.value;
+                    var time = (item.o != undefined);
+                    var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                    if (currentEndpointItem == undefined) {
+                        endpointDescriptionElementMap.set(endpointUrl, { endpoint: endpointUrl })
+                        currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl);
+                    }
+                    currentEndpointItem.time = time;
+                    if (time) {
+                        currentEndpointItem.timeValue = item.o.value;
+                    }
+                    endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        ,
+        paginatedSparqlQueryPromise(provenanceSourceCheckQuery)
+            .then(json => {
+                json.forEach((item, i) => {
+                    var endpointUrl = item.endpointUrl.value;
+                    var source = (item.o != undefined);
+                    var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                    if (currentEndpointItem == undefined) {
+                        endpointDescriptionElementMap.set(endpointUrl, { endpoint: endpointUrl })
+                        currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl);
+                    }
+                    currentEndpointItem.source = source;
+                    if (source) {
+                        currentEndpointItem.sourceValue = item.o.value;
+                    }
+                    endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+                });
+                endpointDescriptionElementMap.forEach((prov, endpoint, map) => {
+                    datasetDescriptionData.push(prov)
+                });
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    ])
+        .finally(() => {
+            try {
+                var content = JSON.stringify(datasetDescriptionData);
+                fs.writeFileSync(datasetDescriptionDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            console.log("datasetDescriptionDataDataFill END")
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
+
+function shortUrisDataFill() {
+    console.log("shortUrisDataFill START")
+    var shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+        "GRAPH ?g {" +
+        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+        "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+        "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> . " +
+        "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+        "}" +
+        " } GROUP BY ?g ?endpointUrl ?measure ";
+    var shortUriData = []
+    return paginatedSparqlQueryPromise(shortUrisMeasureQuery)
+        .then(json => {
+            var graphSet = new Set();
+            json.forEach((jsonItem, i) => {
+                var endpoint = jsonItem.endpointUrl.value;
+                var shortUriMeasure = Number.parseFloat(jsonItem.measure.value * 100);
+                var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+
+                graphSet.add(graph);
+                shortUriData.push({ graph: graph, endpoint: endpoint, measure: shortUriMeasure })
+            });
+        })
+        .then(() => {
+            try {
+                var content = JSON.stringify(shortUriData);
+                fs.writeFileSync(shortUriDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            console.log("shortUrisDataFill END")
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
+
+function readableLabelsDataFill() {
+    console.log("readableLabelsDataFill START")
+    var readableLabelsQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+        "GRAPH ?g {" +
+        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+        "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+        "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . " +
+        "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+        "} " +
+        " } GROUP BY ?g ?endpointUrl ?measure ";
+
+    var readableLabelData = [];
+    return paginatedSparqlQueryPromise(readableLabelsQuery)
+        .then(json => {
+            json.forEach((jsonItem, i) => {
+                var endpoint = jsonItem.endpointUrl.value;
+                var readableLabelMeasure = Number.parseFloat(jsonItem.measure.value * 100);
+                var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+
+                readableLabelData.push({ graph: graph, endpoint: endpoint, measure: readableLabelMeasure })
+            });
+
+        })
+        .then(() => {
+            try {
+                var content = JSON.stringify(readableLabelData);
+                fs.writeFileSync(readableLabelDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            console.log("readableLabelsDataFill END")
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
+
+function rdfDataStructureDataFill() {
+    console.log("rdfDataStructureDataFill START")
+    var rdfDataStructureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+        "GRAPH ?g {" +
+        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+        "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+        "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . " +
+        "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+        "}" +
+        " } GROUP BY ?g ?endpointUrl ?measure ";
+
+    var rdfDataStructureData = []
+    paginatedSparqlQueryPromise(rdfDataStructureQuery).then(json => {
+        json.forEach((jsonItem, i) => {
+            var endpoint = jsonItem.endpointUrl.value;
+            var rdfDataStructureMeasure = Number.parseFloat(jsonItem.measure.value * 100);
+            var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+
+            rdfDataStructureData.push({ graph: graph, endpoint: endpoint, measure: rdfDataStructureMeasure })
+        });
+    })
+        .then(() => {
+            try {
+                var content = JSON.stringify(rdfDataStructureData);
+                fs.writeFileSync(rdfDataStructureDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            console.log("rdfDataStructureDataFill END")
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
+
+Promise.all([
+    whiteListFill(),
+    endpointMapfill(),
+    SPARQLCoverageFill(),
+    vocabFill(),
+    tripleDataFill(),
+    classDataFill(),
+    propertyDataFill(),
+    categoryTestCountFill(),
+    totalCategoryTestCountFill(),
+    endpointTestsDataFill(),
+    totalRuntimeDataFill(),
+    averageRuntimeDataFill(),
+    classAndPropertiesDataFill(),
+    datasetDescriptionDataFill(),
+    shortUrisDataFill(),
+    rdfDataStructureDataFill(),
+    readableLabelsDataFill()
+])
     .catch(error => {
         console.log(error)
     });
