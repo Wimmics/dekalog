@@ -24,15 +24,16 @@ const classCountDataFile = cachePromise('classCountData.json')
 const propertyCountDataFile = cachePromise('propertyCountData.json')
 const tripleCountDataFile = cachePromise('tripleCountData.json')
 const categoryTestCountDataFile = cachePromise("categoryTestCountData.json");
-const totalCategoryTestCountFilename = cachePromise("totalCategoryTestCountData.json");
-const endpointTestsDataFilename = cachePromise("endpointTestsData.json");
-const totalRuntimeDataFilename = cachePromise("totalRuntimeData.json");
-const averageRuntimeDataFilename = cachePromise("averageRuntimeData.json");
-const classPropertyDataFilename = cachePromise("classPropertyData.json");
-const datasetDescriptionDataFilename = cachePromise("datasetDescriptionData.json");
-const shortUriDataFilename = cachePromise("shortUriData.json");
-const rdfDataStructureDataFilename = cachePromise("rdfDataStructureData.json");
-const readableLabelDataFilename = cachePromise("readableLabelData.json");
+const totalCategoryTestCountFile = cachePromise("totalCategoryTestCountData.json");
+const endpointTestsDataFile = cachePromise("endpointTestsData.json");
+const totalRuntimeDataFile = cachePromise("totalRuntimeData.json");
+const averageRuntimeDataFile = cachePromise("averageRuntimeData.json");
+const classPropertyDataFile = cachePromise("classPropertyData.json");
+const datasetDescriptionDataFile = cachePromise("datasetDescriptionData.json");
+const shortUriDataFile = cachePromise("shortUriData.json");
+const rdfDataStructureDataFile = cachePromise("rdfDataStructureData.json");
+const readableLabelDataFile = cachePromise("readableLabelData.json");
+const blankNodesDataFile = cachePromise("blankNodesData.json");
 
 const numberOfVocabulariesLimit = 1000;
 
@@ -1489,7 +1490,7 @@ var totalCategoryTestNumberChart = new KartoChart({
     option: {},
     fillFunction: function () {
         // Number of tests passed by test categories
-        totalCategoryTestCountFilename.then(totalCategoryTestCountData => {
+        totalCategoryTestCountFile.then(totalCategoryTestCountData => {
             var endpointDataSerieMap = new Map();
             totalCategoryTestCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
                 && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
@@ -1597,7 +1598,7 @@ var totalCategoryTestNumberChart = new KartoChart({
 
 var testTableContent = new KartoChart({
     fillFunction: function () {
-        endpointTestsDataFilename.then(endpointTestsData => {
+        endpointTestsDataFile.then(endpointTestsData => {
             var appliedTestMap = new Map();
             endpointTestsData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
                 && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
@@ -1680,16 +1681,14 @@ var totalRuntimeChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('totalRuntimeScatter')),
     option: {},
     fillFunction: function () {
-        var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?data . ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . }  " + generateGraphValueFilterClause() + " }";
         var runtimeDataSerie = []
-        var runtimeSerie = []
-        sparqlQueryJSON(maxMinTimeQuery, jsonResponse => {
+        totalRuntimeDataFile.then(jsonResponse => {
             var graphSet = new Set();
-            jsonResponse.results.bindings.forEach((itemResult, i) => {
-                var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
-                var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
-                var runtime = dayjs.duration(end.diff(start));
+            jsonResponse.filter(item => (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)).forEach((itemResult, i) => {
+                var graph = itemResult.graph;
+                var start = parseDate(itemResult.start, 'DD-MM-YYYYTHH:mm:ss');
+                var end = parseDate(itemResult.end, 'DD-MM-YYYYTHH:mm:ss');
+                var runtime = dayjs.duration(itemResult.runtime);
                 graphSet.add(graph);
                 runtimeDataSerie.push([graph, runtime])
             });
@@ -1740,76 +1739,56 @@ var averageRuntimeChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('averageRuntimeScatter')),
     option: {},
     fillFunction: function () {
-        var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end)" +
-            " { " +
-            "GRAPH ?g {" +
-            " ?metadata <http://ns.inria.fr/kg/index#curated> ?data ." +
-            " ?metadata <http://ns.inria.fr/kg/index#trace> ?trace ." +
-            " ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime ." +
-            " ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
-            "}" +
-            "  " + generateGraphValueFilterClause() +
-            " }";
         var runtimeDataSerie = []
-        var runtimeSerie = []
-        sparqlQueryJSON(maxMinTimeQuery, jsonResponse => {
+        averageRuntimeDataFile.then(jsonResponse => {
 
-            var numberOfEndpointQuery = "SELECT DISTINCT ?g (COUNT(?endpointUrl) AS ?count) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?dataset . { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } } " + generateGraphValueFilterClause() + " }";
-            sparqlQueryJSON(numberOfEndpointQuery, numberOfEndpointJson => {
-                var numberEndpointMap = new Map();
-                numberOfEndpointJson.results.bindings.forEach((numberEndpointItem, i) => {
-                    var graph = numberEndpointItem.g.value;
-                    graph = graph.replace('http://ns.inria.fr/indegx#', '');
-                    var count = numberEndpointItem.count.value;
+            var graphSet = new Set();
+            jsonResponse.filter(item => (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)).forEach((itemResult, i) => {
+                var graph = itemResult.graph;
+                var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
+                var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
+                var count = itemResult.count;
+                var runtime = dayjs.duration(itemResult.runtime);
+                var value = runtime.asSeconds() / count;
 
-                    numberEndpointMap.set(graph, count);
-                });
-
-                var graphSet = new Set();
-                jsonResponse.results.bindings.forEach((itemResult, i) => {
-                    var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                    var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
-                    var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
-                    var runtime = dayjs.duration(end.diff(start));
-
-                    graphSet.add(graph);
-                    runtimeDataSerie.push([graph, runtime])
-                });
-                var runtimeSerie = {
-                    name: "Average runtime in seconds",
-                    label: 'show',
-                    symbolSize: 5,
-                    data: runtimeDataSerie.map(a => [a[0], a[1].asSeconds() / numberEndpointMap.get(a[0])]),
-                    tooltip: {
-                        show: true,
-                        formatter: function (value) {
-                            var source = runtimeDataSerie.filter(a => value.value[0].localeCompare(a[0]) == 0)[0];
-                            var graph = source[0];
-                            var runtimeTotal = source[1];
-                            var runtime = dayjs.duration(runtimeTotal.asMilliseconds() / numberEndpointMap.get(graph));
-
-                            var tooltip = "";
-                            if (runtime.days() > 0) {
-                                tooltip += runtime.days() + " days ";
-                            }
-                            if (runtime.hours() > 0) {
-                                tooltip += runtime.hours() + " hours ";
-                            }
-                            if (runtime.minutes() > 0) {
-                                tooltip += runtime.minutes() + " minutes ";
-                            }
-                            if (runtime.seconds() > 0) {
-                                tooltip += runtime.seconds() + " seconds ";
-                            }
-                            return tooltip;
-                        }
-                    },
-                    type: 'scatter'
-                };
-                this.option = getCategoryScatterOption("Average runtime of the framework for each run (in seconds)", [...graphSet].sort((a, b) => a.localeCompare(b)), [runtimeSerie]);
-                this.chartObject.setOption(this.option, true);
-
+                graphSet.add(graph);
+                runtimeDataSerie.push([graph, value])
             });
+
+            var runtimeSerie = {
+                name: "Average runtime in seconds",
+                label: 'show',
+                symbolSize: 5,
+                data: runtimeDataSerie,
+                tooltip: {
+                    show: true,
+                    formatter: function (value) {
+                        var source = runtimeDataSerie.filter(a => value.value[0].localeCompare(a[0]) == 0)[0];
+                        var graph = source[0];
+                        var runtimeTotal = source[1];
+                        var runtime = dayjs.duration(runtimeTotal.asMilliseconds() / numberEndpointMap.get(graph));
+
+                        var tooltip = "";
+                        if (runtime.days() > 0) {
+                            tooltip += runtime.days() + " days ";
+                        }
+                        if (runtime.hours() > 0) {
+                            tooltip += runtime.hours() + " hours ";
+                        }
+                        if (runtime.minutes() > 0) {
+                            tooltip += runtime.minutes() + " minutes ";
+                        }
+                        if (runtime.seconds() > 0) {
+                            tooltip += runtime.seconds() + " seconds ";
+                        }
+                        return tooltip;
+                    }
+                },
+                type: 'scatter'
+            };
+            this.option = getCategoryScatterOption("Average runtime of the framework for each run (in seconds)", [...graphSet].sort((a, b) => a.localeCompare(b)), [runtimeSerie]);
+            this.chartObject.setOption(this.option, true);
+
         });
     },
     redrawFunction: function () {
@@ -1824,254 +1803,84 @@ var averageRuntimeChart = new KartoChart({
 
 var classAndPropertiesContent = new KartoChart({
     fillFunction: function () {
-        var classPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co { " +
-            "GRAPH ?g {" +
-            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
-            "?base <http://rdfs.org/ns/void#classPartition> ?classPartition . " +
-            "?classPartition <http://rdfs.org/ns/void#class> ?c . " +
-            "OPTIONAL { " +
-            "?classPartition <http://rdfs.org/ns/void#triples> ?ct . " +
-            "} " +
-            "OPTIONAL { " +
-            "?classPartition <http://rdfs.org/ns/void#classes> ?cc . " +
-            "} " +
-            "OPTIONAL { " +
-            "?classPartition <http://rdfs.org/ns/void#properties> ?cp . " +
-            "} " +
-            "OPTIONAL { " +
-            "?classPartition <http://rdfs.org/ns/void#distinctSubjects> ?cs . " +
-            "} " +
-            "OPTIONAL { " +
-            "?classPartition <http://rdfs.org/ns/void#distinctObjects> ?co . " +
-            "} " +
-            "FILTER(! isBlank(?c)) " +
-            "}" +
-            generateGraphValueFilterClause() +
-            "} GROUP BY ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co ";
-        sparqlQueryJSON(classPartitionQuery, json => {
-            var classCountsEndpointsMap = new Map();
-            json.results.bindings.forEach((item, i) => {
-                var c = item.c.value;
-                var endpointUrl = item.endpointUrl.value;
-                if (!blacklistedEndpointList.includes(endpointUrl)) {
+        classPropertyDataFile.then(classPropertyData => {
+            knownVocabDataFile.then(knowVocabsData => {
+                classPropertyData = classPropertyData.filter(classPropertyItem => (classPropertyItem.endpoints != undefined) && haveIntersection((new Set(classPropertyItem.endpoints)), (new Set(filteredEndpointWhiteList))) && !haveIntersection((new Set(classPropertyItem.endpoints)), (new Set(blackistedEndpointIndexList)))).filter(classPropertyItem => [...knowVocabsData].find(item => classPropertyItem.class.startsWith(item)))
 
-                    if (classCountsEndpointsMap.get(c) == undefined) {
-                        classCountsEndpointsMap.set(c, { class: c });
-                    }
-                    if (item.ct != undefined) {
-                        var ct = Number.parseInt(item.ct.value);
-                        var currentClassItem = classCountsEndpointsMap.get(c);
-                        if (classCountsEndpointsMap.get(c).triples == undefined) {
-                            currentClassItem.triples = 0;
-                            classCountsEndpointsMap.set(c, currentClassItem);
+                setTableHeaderSort("classDescriptionTableBody", ["classDescriptionTableClassHeader", "classDescriptionTableTriplesHeader", "classDescriptionTableClassesHeader", "classDescriptionTablePropertiesHeader", "classDescriptionTableDistinctSubjectsHeader", "classDescriptionTableDistinctObjectsHeader", "classDescriptionTableEndpointsHeader"], [(a, b) => a.class.localeCompare(b.class), (a, b) => b.triples - a.triples, (a, b) => b.classes - a.classes, (a, b) => b.properties - a.properties, (a, b) => b.distinctSubjects - a.distinctSubjects, (a, b) => b.distinctObjects - a.distinctObjects, (a, b) => b.endpoints.length - a.endpoints.length], fillclassDescriptionTable, classPropertyData);
+                classPropertyData.sort((a, b) => a.class.localeCompare(b.class));
+
+                function fillclassDescriptionTable() {
+                    var tableBody = $("#classDescriptionTableBody");
+                    tableBody.empty();
+                    classPropertyData.forEach((countsItem, i) => {
+                        var classRow = $(document.createElement("tr"))
+                        var classCell = $(document.createElement("td"))
+                        var classTriplesCell = $(document.createElement("td"))
+                        var classClassesCell = $(document.createElement("td"))
+                        var classPropertiesCell = $(document.createElement("td"))
+                        var classDistinctSubjectsCell = $(document.createElement("td"))
+                        var classDistinctObjectsCell = $(document.createElement("td"))
+                        var endpointsCell = $(document.createElement("td"))
+
+                        classCell.text(countsItem.class);
+                        classTriplesCell.text(countsItem.triples);
+                        classClassesCell.text(countsItem.classes);
+                        classPropertiesCell.text(countsItem.properties);
+                        classDistinctSubjectsCell.text(countsItem.distinctSubjects);
+                        classDistinctObjectsCell.text(countsItem.distinctObjects);
+                        if (countsItem.endpoints != undefined) {
+                            endpointsCell.text(countsItem.endpoints.length);
                         }
-                        currentClassItem.triples = currentClassItem.triples + ct;
-                        classCountsEndpointsMap.set(c, currentClassItem);
-                    }
-                    if (item.cc != undefined) {
-                        var cc = Number.parseInt(item.cc.value);
-                        var currentClassItem = classCountsEndpointsMap.get(c);
-                        if (classCountsEndpointsMap.get(c).classes == undefined) {
-                            currentClassItem.classes = 0;
-                            classCountsEndpointsMap.set(c, currentClassItem);
-                        }
-                        currentClassItem.classes = currentClassItem.classes + cc;
-                        classCountsEndpointsMap.set(c, currentClassItem);
-                    }
-                    if (item.cp != undefined) {
-                        var cp = Number.parseInt(item.cp.value);
-                        var currentClassItem = classCountsEndpointsMap.get(c);
-                        if (classCountsEndpointsMap.get(c).properties == undefined) {
-                            currentClassItem.properties = 0;
-                            classCountsEndpointsMap.set(c, currentClassItem);
-                        }
-                        currentClassItem.properties = currentClassItem.properties + cp;
-                        classCountsEndpointsMap.set(c, currentClassItem);
-                    }
-                    if (item.cs != undefined) {
-                        var cs = Number.parseInt(item.cs.value);
-                        var currentClassItem = classCountsEndpointsMap.get(c);
-                        if (classCountsEndpointsMap.get(c).distinctSubjects == undefined) {
-                            currentClassItem.distinctSubjects = 0;
-                            classCountsEndpointsMap.set(c, currentClassItem);
-                        }
-                        currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + cs;
-                        classCountsEndpointsMap.set(c, currentClassItem);
-                    }
-                    if (item.co != undefined) {
-                        var co = Number.parseInt(item.co.value);
-                        var currentClassItem = classCountsEndpointsMap.get(c);
-                        if (classCountsEndpointsMap.get(c).distinctObjects == undefined) {
-                            currentClassItem.distinctObjects = 0;
-                            classCountsEndpointsMap.set(c, currentClassItem);
-                        }
-                        currentClassItem.distinctObjects = currentClassItem.distinctObjects + co;
-                        classCountsEndpointsMap.set(c, currentClassItem);
-                    }
-                    if (classCountsEndpointsMap.get(c).endpoints == undefined) {
-                        var currentClassItem = classCountsEndpointsMap.get(c);
-                        currentClassItem.endpoints = new Set();
-                        classCountsEndpointsMap.set(c, currentClassItem);
-                    }
-                    classCountsEndpointsMap.get(c).endpoints.add(endpointUrl);
+
+                        classRow.append(classCell);
+                        classRow.append(classTriplesCell);
+                        classRow.append(classClassesCell);
+                        classRow.append(classPropertiesCell);
+                        classRow.append(classDistinctSubjectsCell);
+                        classRow.append(classDistinctObjectsCell);
+                        classRow.append(endpointsCell);
+                        tableBody.append(classRow);
+                    });
                 }
-            });
+                fillclassDescriptionTable()
 
-            var classDescriptionData = [];
-            classCountsEndpointsMap.forEach((countsItem, classKey, map) => {
-                classDescriptionData.push(countsItem);
-            });
+                setTableHeaderSort("classPropertiesDescriptionTableBody", ["classPropertiesDescriptionTableClassHeader", "classPropertiesDescriptionTablePropertyHeader", "classPropertiesDescriptionTableTriplesHeader", "classPropertiesDescriptionTableDistinctSubjectsHeader", "classPropertiesDescriptionTableDistinctObjectsHeader", "classPropertiesDescriptionTableEndpointsHeader"], [(a, b) => a.class.localeCompare(b.class), (a, b) => b.property.localeCompare(a.property), (a, b) => b.triples - a.triples, (a, b) => b.distinctSubjects - a.distinctSubjects, (a, b) => b.distinctObjects - a.distinctObjects, (a, b) => b.endpoints.length - a.endpoints.length], fillClassPropertiesDescriptionTable, classPropertyData);
 
-            setTableHeaderSort("classDescriptionTableBody", ["classDescriptionTableClassHeader", "classDescriptionTableTriplesHeader", "classDescriptionTableClassesHeader", "classDescriptionTablePropertiesHeader", "classDescriptionTableDistinctSubjectsHeader", "classDescriptionTableDistinctObjectsHeader", "classDescriptionTableEndpointsHeader"], [(a, b) => a.class.localeCompare(b.class), (a, b) => b.triples - a.triples, (a, b) => b.classes - a.classes, (a, b) => b.properties - a.properties, (a, b) => b.distinctSubjects - a.distinctSubjects, (a, b) => b.distinctObjects - a.distinctObjects, (a, b) => b.endpoints.size - a.endpoints.size], fillclassDescriptionTable, classDescriptionData);
-            classDescriptionData.sort((a, b) => a.class.localeCompare(b.class));
+                function fillClassPropertiesDescriptionTable() {
+                    var tableBody = $("#classPropertiesDescriptionTableBody");
+                    tableBody.empty();
+                    classPropertyData.forEach((countsItem, i) => {
+                        var classRow = $(document.createElement("tr"))
+                        var classCell = $(document.createElement("td"))
+                        var classTriplesCell = $(document.createElement("td"))
+                        var classPropertyCell = $(document.createElement("td"))
+                        var classDistinctSubjectsCell = $(document.createElement("td"))
+                        var classDistinctObjectsCell = $(document.createElement("td"))
+                        var endpointsCell = $(document.createElement("td"))
 
-            function fillclassDescriptionTable() {
-                var tableBody = $("#classDescriptionTableBody");
-                tableBody.empty();
-                classDescriptionData.forEach((countsItem, i) => {
-                    var classRow = $(document.createElement("tr"))
-                    var classCell = $(document.createElement("td"))
-                    var classTriplesCell = $(document.createElement("td"))
-                    var classClassesCell = $(document.createElement("td"))
-                    var classPropertiesCell = $(document.createElement("td"))
-                    var classDistinctSubjectsCell = $(document.createElement("td"))
-                    var classDistinctObjectsCell = $(document.createElement("td"))
-                    var endpointsCell = $(document.createElement("td"))
-
-                    classCell.text(countsItem.class);
-                    classTriplesCell.text(countsItem.triples);
-                    classClassesCell.text(countsItem.classes);
-                    classPropertiesCell.text(countsItem.properties);
-                    classDistinctSubjectsCell.text(countsItem.distinctSubjects);
-                    classDistinctObjectsCell.text(countsItem.distinctObjects);
-                    endpointsCell.text(countsItem.endpoints.size);
-
-                    classRow.append(classCell);
-                    classRow.append(classTriplesCell);
-                    classRow.append(classClassesCell);
-                    classRow.append(classPropertiesCell);
-                    classRow.append(classDistinctSubjectsCell);
-                    classRow.append(classDistinctObjectsCell);
-                    classRow.append(endpointsCell);
-                    tableBody.append(classRow);
-                });
-            }
-            fillclassDescriptionTable()
-
-
-        });
-
-        var classPropertyPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?p ?pt ?po ?ps { " +
-            "GRAPH ?g {" +
-            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
-            "?base <http://rdfs.org/ns/void#classPartition> ?classPartition . " +
-            "?classPartition <http://rdfs.org/ns/void#class> ?c . " +
-            "?classPartition <http://rdfs.org/ns/void#propertyPartition> ?classPropertyPartition . " +
-            "?classPropertyPartition <http://rdfs.org/ns/void#property> ?p . " +
-            "OPTIONAL { " +
-            "?classPropertyPartition <http://rdfs.org/ns/void#triples> ?pt . " +
-            "} " +
-            "OPTIONAL { " +
-            "?classPropertyPartition <http://rdfs.org/ns/void#distinctSubjects> ?ps . " +
-            "} " +
-            "OPTIONAL { " +
-            "?classPropertyPartition <http://rdfs.org/ns/void#distinctObjects> ?po . " +
-            "} " +
-            "}" +
-            generateGraphValueFilterClause() +
-            "} GROUP BY ?endpointUrl ?c ?p ?pt ?po ?ps ";
-        sparqlQueryJSON(classPropertyPartitionQuery, json => {
-
-            var classPropertyCountsEndpointsMap = new Map();
-            json.results.bindings.forEach((item, i) => {
-                var c = item.c.value;
-                var p = item.p.value;
-                var mapKey = c + p;
-                var endpointUrl = item.endpointUrl.value;
-
-                if (!blacklistedEndpointList.includes(endpointUrl)) {
-                    if (classPropertyCountsEndpointsMap.get(mapKey) == undefined) {
-                        classPropertyCountsEndpointsMap.set(mapKey, { class: c, property: p });
-                    }
-                    if (item.pt != undefined) {
-                        var pt = Number.parseInt(item.pt.value);
-                        var currentClassItem = classCountsEndpointsMap.get(mapKey);
-                        if (classPropertyCountsEndpointsMap.get(mapKey).triples == undefined) {
-                            currentClassItem.triples = 0;
-                            classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
+                        classCell.text(countsItem.class);
+                        classTriplesCell.text(countsItem.triples);
+                        classPropertyCell.text(countsItem.property);
+                        classDistinctSubjectsCell.text(countsItem.distinctSubjects);
+                        classDistinctObjectsCell.text(countsItem.distinctObjects);
+                        if (countsItem.endpoints != undefined) {
+                            endpointsCell.text(countsItem.endpoints.length);
                         }
-                        currentClassItem.triples = currentClassItem.triples + pt;
-                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-                    }
-                    if (item.ps != undefined) {
-                        var ps = Number.parseInt(item.ps.value);
-                        var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
-                        if (classPropertyCountsEndpointsMap.get(mapKey).distinctSubjects == undefined) {
-                            currentClassItem.distinctSubjects = 0;
-                            classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-                        }
-                        currentClassItem.distinctSubjects = currentClassItem.distinctSubjects + ps;
-                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-                    }
-                    if (item.po != undefined) {
-                        var po = Number.parseInt(item.po.value);
-                        var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
-                        if (classPropertyCountsEndpointsMap.get(mapKey).distinctObjects == undefined) {
-                            currentClassItem.distinctObjects = 0;
-                            classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-                        }
-                        currentClassItem.distinctObjects = currentClassItem.distinctObjects + po;
-                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-                    }
-                    if (classPropertyCountsEndpointsMap.get(mapKey).endpoints == undefined) {
-                        var currentClassItem = classPropertyCountsEndpointsMap.get(mapKey);
-                        currentClassItem.endpoints = new Set();
-                        classPropertyCountsEndpointsMap.set(mapKey, currentClassItem);
-                    }
-                    classPropertyCountsEndpointsMap.get(mapKey).endpoints.add(endpointUrl);
+
+                        classRow.append(classCell);
+                        classRow.append(classPropertyCell);
+                        classRow.append(classTriplesCell);
+                        classRow.append(classDistinctSubjectsCell);
+                        classRow.append(classDistinctObjectsCell);
+                        classRow.append(endpointsCell);
+                        tableBody.append(classRow);
+                    });
                 }
+                fillClassPropertiesDescriptionTable()
             });
 
-            var classDescriptionData = [];
-            classPropertyCountsEndpointsMap.forEach((countsItem, classKey, map) => {
-                classDescriptionData.push(countsItem);
-            });
-            classDescriptionData.sort((a, b) => a.class.localeCompare(b.class));
-
-            setTableHeaderSort("classPropertiesDescriptionTableBody", ["classPropertiesDescriptionTableClassHeader", "classPropertiesDescriptionTablePropertyHeader", "classPropertiesDescriptionTableTriplesHeader", "classPropertiesDescriptionTableDistinctSubjectsHeader", "classPropertiesDescriptionTableDistinctObjectsHeader", "classPropertiesDescriptionTableEndpointsHeader"], [(a, b) => a.class.localeCompare(b.class), (a, b) => b.property.localeCompare(a.property), (a, b) => b.triples - a.triples, (a, b) => b.distinctSubjects - a.distinctSubjects, (a, b) => b.distinctObjects - a.distinctObjects, (a, b) => b.endpoints.size - a.endpoints.size], fillClassPropertiesDescriptionTable, classDescriptionData);
-
-            function fillClassPropertiesDescriptionTable() {
-                var tableBody = $("#classPropertiesDescriptionTableBody");
-                tableBody.empty();
-                classDescriptionData.forEach((countsItem, i) => {
-                    var classRow = $(document.createElement("tr"))
-                    var classCell = $(document.createElement("td"))
-                    var classTriplesCell = $(document.createElement("td"))
-                    var classPropertyCell = $(document.createElement("td"))
-                    var classDistinctSubjectsCell = $(document.createElement("td"))
-                    var classDistinctObjectsCell = $(document.createElement("td"))
-                    var endpointsCell = $(document.createElement("td"))
-
-                    classCell.text(countsItem.class);
-                    classTriplesCell.text(countsItem.triples);
-                    classPropertyCell.text(countsItem.property);
-                    classDistinctSubjectsCell.text(countsItem.distinctSubjects);
-                    classDistinctObjectsCell.text(countsItem.distinctObjects);
-                    endpointsCell.text(countsItem.endpoints.size);
-
-                    classRow.append(classCell);
-                    classRow.append(classPropertyCell);
-                    classRow.append(classTriplesCell);
-                    classRow.append(classDistinctSubjectsCell);
-                    classRow.append(classDistinctObjectsCell);
-                    classRow.append(endpointsCell);
-                    tableBody.append(classRow);
-                });
-            }
-            fillClassPropertiesDescriptionTable()
-        });
+        })
     }
 });
 setButtonAsToggleCollapse('classDescriptionDetails', 'classDescriptionTable');
@@ -2081,341 +1890,219 @@ var descriptionElementChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('datasetdescriptionRadar')),
     option: {},
     fillFunction: function () {
-        var provenanceWhoCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
-            "GRAPH ?g { " +
-            "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
-            "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
-            "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-            "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
-            "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
-            "OPTIONAL {" +
-            "{ ?dataset <http://purl.org/dc/terms/creator> ?o } " +
-            "UNION { ?dataset <http://purl.org/dc/terms/contributor> ?o } " +
-            "UNION { ?dataset <http://purl.org/dc/terms/publisher> ?o } " +
-            "} " +
-            "} " +
-            generateGraphValueFilterClause() +
-            "} ";
-        var provenanceLicenseCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
-            "GRAPH ?g { " +
-            "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
-            "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
-            "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-            "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
-            "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
-            "OPTIONAL {" +
-            "{ ?dataset <http://purl.org/dc/terms/license> ?o } " +
-            "UNION {?dataset <http://purl.org/dc/terms/conformsTo> ?o } " +
-            "} " +
-            "} " +
-            generateGraphValueFilterClause() +
-            "} ";
-        var provenanceDateCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
-            "GRAPH ?g { " +
-            "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
-            "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
-            "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-            "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
-            "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
-            "OPTIONAL {" +
-            " { ?dataset <http://purl.org/dc/terms/modified> ?o } " +
-            "UNION { ?dataset <http://www.w3.org/ns/prov#wasGeneratedAtTime> ?o } " +
-            "UNION { ?dataset <http://purl.org/dc/terms/issued> ?o } " +
-            "} " +
-            "} " +
-            generateGraphValueFilterClause() +
-            "} ";
-        var provenanceSourceCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
-            "GRAPH ?g { " +
-            "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
-            "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
-            "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-            "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
-            "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
-            "OPTIONAL {" +
-            "{ ?dataset <http://purl.org/dc/terms/source> ?o } " +
-            "UNION { ?dataset <http://www.w3.org/ns/prov#wasDerivedFrom> ?o } " +
-            "UNION { ?dataset <http://purl.org/dc/terms/format> ?o } " +
-            "} " +
-            "} " +
-            generateGraphValueFilterClause() +
-            "} ";
-        var endpointDescriptionElementMap = new Map();
-        sparqlQueryJSON(provenanceWhoCheckQuery, json => {
-            json.results.bindings.forEach((item, i) => {
-                var endpointUrl = item.endpointUrl.value;
-                if (!blacklistedEndpointList.includes(endpointUrl)) {
-                    var who = (item.o != undefined);
-                    var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
-                    if (currentEndpointItem == undefined) {
-                        endpointDescriptionElementMap.set(endpointUrl, { endpoint: endpointUrl })
-                        currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl);
-                    }
-                    currentEndpointItem.who = who;
-                    if (who) {
-                        currentEndpointItem.whoValue = item.o.value;
-                    }
-                    endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+        datasetDescriptionDataFile.then(datasetDescriptionData => {
+            datasetDescriptionData = datasetDescriptionData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint))))
+            datasetDescriptionData.sort((a, b) => {
+                return a.endpoint.localeCompare(b.endpoint);
+            });
+
+            // Table
+            function fillTestTable() {
+                var tableBody = $('#datasetDescriptionTableBody');
+                tableBody.empty();
+                datasetDescriptionData.forEach((item, i) => {
+                    var endpoint = item.endpoint;
+                    var who = item.who;
+                    var license = item.license;
+                    var time = item.time;
+                    var source = item.source;
+                    var endpointRow = $(document.createElement("tr"));
+                    var endpointCell = $(document.createElement("td"));
+                    endpointCell.text(endpoint);
+                    var whoCell = $(document.createElement("td"));
+                    whoCell.text(who);
+                    var licenseCell = $(document.createElement("td"));
+                    licenseCell.text(license);
+                    var timeCell = $(document.createElement("td"));
+                    timeCell.text(time);
+                    var sourceCell = $(document.createElement("td"));
+                    sourceCell.text(source);
+                    endpointRow.append(endpointCell);
+                    endpointRow.append(whoCell);
+                    endpointRow.append(licenseCell);
+                    endpointRow.append(timeCell);
+                    endpointRow.append(sourceCell);
+                    tableBody.append(endpointRow);
+                });
+            }
+
+            setTableHeaderSort("datasetDescriptionTableBody", ["datasetDescriptionTableEndpointHeader", "datasetDescriptionTableWhoHeader", "datasetDescriptionTableLicenseHeader", "datasetDescriptionTableDateHeader", "datasetDescriptionTableSourceHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.who.toString().localeCompare(b.who.toString()), (a, b) => a.license.toString().localeCompare(b.license.toString()), (a, b) => a.time.toString().localeCompare(b.time.toString()), (a, b) => a.source.toString().localeCompare(b.source.toString())], fillTestTable, datasetDescriptionData);
+
+            fillTestTable();
+
+            // chart
+            var whoDataScore = 0;
+            var licenseDataScore = 0;
+            var timeDataScore = 0;
+            var sourceDataScore = 0;
+
+            var dataSeries = datasetDescriptionData.forEach(dataItem => {
+                var who = dataItem.who;
+                if (who) {
+                    whoDataScore++;
+                }
+                var license = dataItem.license;
+                if (license) {
+                    licenseDataScore++;
+                }
+                var time = dataItem.time;
+                if (time) {
+                    timeDataScore++;
+                }
+                var source = dataItem.source;
+                if (source) {
+                    sourceDataScore++;
                 }
             });
-            sparqlQueryJSON(provenanceLicenseCheckQuery, json => {
-                json.results.bindings.forEach((item, i) => {
-                    var endpointUrl = item.endpointUrl.value;
-                    if (!blacklistedEndpointList.includes(endpointUrl)) {
-                        var license = (item.o != undefined);
-                        var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
-                        currentEndpointItem.license = license;
-                        if (license) {
-                            currentEndpointItem.licenseValue = item.o.value;
-                        }
-                        endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
+
+
+            var whoTrueDataSerie = {
+                name: 'Description of author',
+                type: 'bar',
+                stack: 'who',
+                colorBy: 'data',
+                data: [
+                    { value: whoDataScore, name: 'Presence of the description of creator/owner/contributor' },
+                ]
+            };
+            if (whoDataScore > 0) {
+                whoTrueDataSerie.label = {
+                    show: true,
+                    formatter: '{c} endpoints with author description'
+                }
+            };
+            var whoFalseDataSerie = {
+                name: 'Description of author',
+                type: 'bar',
+                stack: 'who',
+                colorBy: 'data',
+                data: [
+                    { value: (datasetDescriptionData.length - whoDataScore), name: 'Absence of the description of creator/owner/contributor' },
+                ]
+            };
+            if ((datasetDescriptionData.length - whoDataScore) > 0) {
+                whoFalseDataSerie.label = {
+                    show: true,
+                    formatter: '{c} endpoints without author description'
+                }
+            };
+            var licenseTrueDataSerie = {
+                name: 'Licensing description',
+                type: 'bar',
+                stack: 'license',
+                colorBy: 'data',
+                data: [
+                    { value: licenseDataScore, name: 'Presence of licensing information' },
+                ]
+            };
+            if (licenseDataScore > 0) {
+                licenseTrueDataSerie.label = {
+                    show: true,
+                    formatter: '{c} endpoints with licensing description'
+                }
+            }
+            var licenseFalseDataSerie = {
+                name: 'Licensing description',
+                type: 'bar',
+                stack: 'license',
+                colorBy: 'data',
+                data: [
+                    { value: (datasetDescriptionData.length - licenseDataScore), name: 'Absence of licensing description' },
+                ]
+            };
+            if ((datasetDescriptionData.length - licenseDataScore) > 0) {
+                licenseFalseDataSerie.label = {
+                    show: true,
+                    formatter: '{c} endpoints without licensing description'
+                }
+            }
+            var timeTrueDataSerie = {
+                name: 'Time related description of the creation of the dataset',
+                type: 'bar',
+                stack: 'time',
+                colorBy: 'data',
+                data: [
+                    { value: timeDataScore, name: 'Presence of time-related information' },
+                ]
+            };
+            if (timeDataScore > 0) {
+                timeTrueDataSerie.label = {
+                    show: true,
+                    formatter: '{c} endpoints with time-related description'
+                }
+            }
+            var timeFalseDataSerie = {
+                name: 'Time related description of creation of the dataset',
+                type: 'bar',
+                stack: 'time',
+                colorBy: 'data',
+                data: [
+                    { value: (datasetDescriptionData.length - timeDataScore), name: 'Absence of time-related description' },
+                ]
+            };
+            if ((datasetDescriptionData.length - timeDataScore) > 0) {
+                timeFalseDataSerie.label = {
+                    show: true,
+                    formatter: '{c} endpoints without time-related description'
+                }
+            }
+            var sourceTrueDataSerie = {
+                name: 'Description of the source or the process at the origin of the dataset',
+                type: 'bar',
+                stack: 'source',
+                colorBy: 'data',
+                data: [
+                    { value: sourceDataScore, name: 'Presence of description of the origin of the dataset' },
+                ]
+            };
+            if (sourceDataScore > 0) {
+                sourceTrueDataSerie.label = {
+                    show: true,
+                    formatter: '{c} endpoints with source description'
+                }
+            }
+            var sourceFalseDataSerie = {
+                name: 'Description of the source or the process at the origin of the dataset',
+                type: 'bar',
+                stack: 'source',
+                colorBy: 'data',
+                data: [
+                    { value: (datasetDescriptionData.length - sourceDataScore), name: 'Absence of description of the origin of the dataset' },
+                ]
+            };
+            if ((datasetDescriptionData.length - sourceDataScore) > 0) {
+                sourceFalseDataSerie.label = {
+                    show: true,
+                    formatter: '{c} endpoints without source description'
+                }
+            }
+            this.option = {
+                title: {
+                    text: 'Dataset description features in all endpoints',
+                    left: 'center'
+                },
+                tooltip: {
+                    confine: true
+                },
+                xAxis: {
+                    type: 'value',
+                    max: 'dataMax',
+                },
+                yAxis: {
+                    type: 'category',
+                    axisLabel: {
+                        formatter: 'Dataset\n description\n elements',
+                        overflow: 'breakAll'
                     }
-                });
-                sparqlQueryJSON(provenanceDateCheckQuery, json => {
-                    json.results.bindings.forEach((item, i) => {
-                        var endpointUrl = item.endpointUrl.value;
-                        if (!blacklistedEndpointList.includes(endpointUrl)) {
-                            var time = (item.o != undefined);
-                            var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
-                            currentEndpointItem.time = time;
-                            if (time) {
-                                currentEndpointItem.timeValue = item.o.value;
-                            }
-                            endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
-                        }
-                    });
-                    sparqlQueryJSON(provenanceSourceCheckQuery, json => {
-                        json.results.bindings.forEach((item, i) => {
-                            var endpointUrl = item.endpointUrl.value;
-                            if (!blacklistedEndpointList.includes(endpointUrl)) {
-                                var source = (item.o != undefined);
-                                var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
-                                currentEndpointItem.source = source;
-                                if (source) {
-                                    currentEndpointItem.sourceValue = item.o.value;
-                                }
-                                endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
-                            }
-                        });
-
-                        var data = [];
-                        endpointDescriptionElementMap.forEach((prov, endpoint, map) => {
-                            data.push(prov)
-                        });
-
-                        data.sort((a, b) => {
-                            return a.endpoint.localeCompare(b.endpoint);
-                        });
-
-                        // Table
-                        function fillTestTable() {
-                            var tableBody = $('#datasetDescriptionTableBody');
-                            tableBody.empty();
-                            data.forEach((item, i) => {
-                                var endpoint = item.endpoint;
-                                var who = item.who;
-                                var license = item.license;
-                                var time = item.time;
-                                var source = item.source;
-                                var endpointRow = $(document.createElement("tr"));
-                                var endpointCell = $(document.createElement("td"));
-                                endpointCell.text(endpoint);
-                                var whoCell = $(document.createElement("td"));
-                                whoCell.text(who);
-                                var licenseCell = $(document.createElement("td"));
-                                licenseCell.text(license);
-                                var timeCell = $(document.createElement("td"));
-                                timeCell.text(time);
-                                var sourceCell = $(document.createElement("td"));
-                                sourceCell.text(source);
-                                endpointRow.append(endpointCell);
-                                endpointRow.append(whoCell);
-                                endpointRow.append(licenseCell);
-                                endpointRow.append(timeCell);
-                                endpointRow.append(sourceCell);
-                                tableBody.append(endpointRow);
-                            });
-                        }
-
-                        setTableHeaderSort("datasetDescriptionTableBody", ["datasetDescriptionTableEndpointHeader", "datasetDescriptionTableWhoHeader", "datasetDescriptionTableLicenseHeader", "datasetDescriptionTableDateHeader", "datasetDescriptionTableSourceHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.who.toString().localeCompare(b.who.toString()), (a, b) => a.license.toString().localeCompare(b.license.toString()), (a, b) => a.time.toString().localeCompare(b.time.toString()), (a, b) => a.source.toString().localeCompare(b.source.toString())], fillTestTable, data);
-
-                        fillTestTable();
-
-                        // chart
-                        var whoDataScore = 0;
-                        var licenseDataScore = 0;
-                        var timeDataScore = 0;
-                        var sourceDataScore = 0;
-
-                        var dataSeries = data.forEach(dataItem => {
-                            var who = dataItem.who;
-                            if (who) {
-                                whoDataScore++;
-                            }
-                            var license = dataItem.license;
-                            if (license) {
-                                licenseDataScore++;
-                            }
-                            var time = dataItem.time;
-                            if (time) {
-                                timeDataScore++;
-                            }
-                            var source = dataItem.source;
-                            if (source) {
-                                sourceDataScore++;
-                            }
-                        });
-
-
-                        var whoTrueDataSerie = {
-                            name: 'Description of author',
-                            type: 'bar',
-                            stack: 'who',
-                            colorBy: 'data',
-                            data: [
-                                { value: whoDataScore, name: 'Presence of the description of creator/owner/contributor' },
-                            ]
-                        };
-                        if (whoDataScore > 0) {
-                            whoTrueDataSerie.label = {
-                                show: true,
-                                formatter: '{c} endpoints with author description'
-                            }
-                        };
-                        var whoFalseDataSerie = {
-                            name: 'Description of author',
-                            type: 'bar',
-                            stack: 'who',
-                            colorBy: 'data',
-                            data: [
-                                { value: (data.length - whoDataScore), name: 'Absence of the description of creator/owner/contributor' },
-                            ]
-                        };
-                        if ((data.length - whoDataScore) > 0) {
-                            whoFalseDataSerie.label = {
-                                show: true,
-                                formatter: '{c} endpoints without author description'
-                            }
-                        };
-                        var licenseTrueDataSerie = {
-                            name: 'Licensing description',
-                            type: 'bar',
-                            stack: 'license',
-                            colorBy: 'data',
-                            data: [
-                                { value: licenseDataScore, name: 'Presence of licensing information' },
-                            ]
-                        };
-                        if (licenseDataScore > 0) {
-                            licenseTrueDataSerie.label = {
-                                show: true,
-                                formatter: '{c} endpoints with licensing description'
-                            }
-                        }
-                        var licenseFalseDataSerie = {
-                            name: 'Licensing description',
-                            type: 'bar',
-                            stack: 'license',
-                            colorBy: 'data',
-                            data: [
-                                { value: (data.length - licenseDataScore), name: 'Absence of licensing description' },
-                            ]
-                        };
-                        if ((data.length - licenseDataScore) > 0) {
-                            licenseFalseDataSerie.label = {
-                                show: true,
-                                formatter: '{c} endpoints without licensing description'
-                            }
-                        }
-                        var timeTrueDataSerie = {
-                            name: 'Time related description of the creation of the dataset',
-                            type: 'bar',
-                            stack: 'time',
-                            colorBy: 'data',
-                            data: [
-                                { value: timeDataScore, name: 'Presence of time-related information' },
-                            ]
-                        };
-                        if (timeDataScore > 0) {
-                            timeTrueDataSerie.label = {
-                                show: true,
-                                formatter: '{c} endpoints with time-related description'
-                            }
-                        }
-                        var timeFalseDataSerie = {
-                            name: 'Time related description of creation of the dataset',
-                            type: 'bar',
-                            stack: 'time',
-                            colorBy: 'data',
-                            data: [
-                                { value: (data.length - timeDataScore), name: 'Absence of time-related description' },
-                            ]
-                        };
-                        if ((data.length - timeDataScore) > 0) {
-                            timeFalseDataSerie.label = {
-                                show: true,
-                                formatter: '{c} endpoints without time-related description'
-                            }
-                        }
-                        var sourceTrueDataSerie = {
-                            name: 'Description of the source or the process at the origin of the dataset',
-                            type: 'bar',
-                            stack: 'source',
-                            colorBy: 'data',
-                            data: [
-                                { value: sourceDataScore, name: 'Presence of description of the origin of the dataset' },
-                            ]
-                        };
-                        if (sourceDataScore > 0) {
-                            sourceTrueDataSerie.label = {
-                                show: true,
-                                formatter: '{c} endpoints with source description'
-                            }
-                        }
-                        var sourceFalseDataSerie = {
-                            name: 'Description of the source or the process at the origin of the dataset',
-                            type: 'bar',
-                            stack: 'source',
-                            colorBy: 'data',
-                            data: [
-                                { value: (data.length - sourceDataScore), name: 'Absence of description of the origin of the dataset' },
-                            ]
-                        };
-                        if ((data.length - sourceDataScore) > 0) {
-                            sourceFalseDataSerie.label = {
-                                show: true,
-                                formatter: '{c} endpoints without source description'
-                            }
-                        }
-                        this.option = {
-                            title: {
-                                text: 'Dataset description features in all endpoints',
-                                left: 'center'
-                            },
-                            tooltip: {
-                                confine: true
-                            },
-                            xAxis: {
-                                type: 'value',
-                                max: 'dataMax',
-                            },
-                            yAxis: {
-                                type: 'category',
-                                axisLabel: {
-                                    formatter: 'Dataset\n description\n elements',
-                                    overflow: 'breakAll'
-                                }
-                            },
-                            legend: {
-                                left: 'left',
-                                show: false
-                            },
-                            series: [whoTrueDataSerie, whoFalseDataSerie, licenseTrueDataSerie, licenseFalseDataSerie, timeTrueDataSerie, timeFalseDataSerie, sourceTrueDataSerie, sourceFalseDataSerie]
-                        };
-                        this.chartObject.setOption(this.option, true);
-                    });
-                });
-            });
+                },
+                legend: {
+                    left: 'left',
+                    show: false
+                },
+                series: [whoTrueDataSerie, whoFalseDataSerie, licenseTrueDataSerie, licenseFalseDataSerie, timeTrueDataSerie, timeFalseDataSerie, sourceTrueDataSerie, sourceFalseDataSerie]
+            };
+            this.chartObject.setOption(this.option, true);
         });
     },
     redrawFunction: function () {
@@ -2448,20 +2135,12 @@ var shortUriChart = new KartoChart({
         this.shortUrisMeasureQuery = shortUrisMeasureQuery;
         $('#shortUrisQueryCell').empty();
         $('#shortUrisQueryCell').append($(document.createElement('code')).text(shortUrisMeasureQuery))
-        sparqlQueryJSON(shortUrisMeasureQuery, json => {
-            var shortUriData = []
-            var graphSet = new Set();
-            json.results.bindings.forEach((jsonItem, i) => {
-                var endpoint = jsonItem.endpointUrl.value;
-                if (!blacklistedEndpointList.includes(endpoint)) {
-                    var shortUriMeasure = Number.parseFloat(jsonItem.measure.value * 100);
-                    var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+        shortUriDataFile.then(shortUriData => {
+            shortUriData = shortUriData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined))
 
-                    graphSet.add(graph);
-                    shortUriData.push({ graph: graph, endpoint: endpoint, measure: shortUriMeasure })
-                }
-            });
-
+            var graphSet = new Set(shortUriData.map(a => a.graph))
             var endpointDataSerieMap = new Map();
             shortUriData.forEach((shortUriItem, i) => {
                 if (endpointDataSerieMap.get(shortUriItem.endpoint) == undefined) {
@@ -2562,19 +2241,12 @@ var rdfDataStructureChart = new KartoChart({
         $('#rdfDataStructuresQueryCell').empty();
         $('#rdfDataStructuresQueryCell').append($(document.createElement('code')).text(this.query));
 
-        sparqlQueryJSON(this.query, json => {
-            var rdfDataStructureData = []
-            var graphSet = new Set();
-            json.results.bindings.forEach((jsonItem, i) => {
-                var endpoint = jsonItem.endpointUrl.value;
-                if (!blacklistedEndpointList.includes(endpoint)) {
-                    var rdfDataStructureMeasure = Number.parseFloat(jsonItem.measure.value * 100);
-                    var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+        rdfDataStructureDataFile.then(rdfDataStructureData => {
+            rdfDataStructureData = rdfDataStructureData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+            && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+            && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined))
 
-                    graphSet.add(graph);
-                    rdfDataStructureData.push({ graph: graph, endpoint: endpoint, measure: rdfDataStructureMeasure })
-                }
-            });
+            var graphSet = new Set(rdfDataStructureData.map(a => a.graph))
 
             var endpointDataSerieMap = new Map();
             rdfDataStructureData.forEach((rdfDataStructureItem, i) => {
@@ -2668,19 +2340,12 @@ var readableLabelsChart = new KartoChart({
         $('#readableLabelsQueryCell').empty();
         $('#readableLabelsQueryCell').append($(document.createElement('code')).text(this.query))
 
-        sparqlQueryJSON(this.query, json => {
-            var readableLabelData = []
-            var graphSet = new Set();
-            json.results.bindings.forEach((jsonItem, i) => {
-                var endpoint = jsonItem.endpointUrl.value;
-                if (!blacklistedEndpointList.includes(endpoint)) {
-                    var readableLabelMeasure = Number.parseFloat(jsonItem.measure.value * 100);
-                    var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-
-                    graphSet.add(graph);
-                    readableLabelData.push({ graph: graph, endpoint: endpoint, measure: readableLabelMeasure })
-                }
-            });
+        readableLabelDataFile.then(readableLabelData => {
+            readableLabelData = readableLabelData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+            && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+            && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined))
+            
+            var graphSet = new Set(readableLabelData.map(a => a.graph))
 
             var endpointDataSerieMap = new Map();
             readableLabelData.forEach((readableLabelItem, i) => {
@@ -2775,19 +2440,12 @@ var blankNodesChart = new KartoChart({
         $('#blankNodesQueryCell').empty();
         $('#blankNodesQueryCell').append($(document.createElement('code')).text(this.query))
 
-        sparqlQueryJSON(this.query, json => {
-            var blankNodeData = []
-            var graphSet = new Set();
-            json.results.bindings.forEach((jsonItem, i) => {
-                var endpoint = jsonItem.endpointUrl.value;
-                if (!blacklistedEndpointList.includes(endpoint)) {
-                    var blankNodeMeasure = Number.parseFloat(jsonItem.measure.value * 100);
-                    var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-
-                    graphSet.add(graph);
-                    blankNodeData.push({ graph: graph, endpoint: endpoint, measure: blankNodeMeasure })
-                }
-            });
+        blankNodesDataFile.then(blankNodeData => {
+            blankNodeData = blankNodeData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+            && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+            && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined))
+            
+            var graphSet = new Set(blankNodeData.map(a => a.graph))
 
             var endpointDataSerieMap = new Map();
             blankNodeData.forEach((blankNodeItem, i) => {
@@ -2864,6 +2522,7 @@ var blankNodesChart = new KartoChart({
     }
 });
 setButtonAsToggleCollapse('blankNodesDetails', 'blankNodesTable');
+
 
 
 

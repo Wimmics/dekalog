@@ -35,6 +35,7 @@ const datasetDescriptionDataFilename = dataFilePrefix + "datasetDescriptionData.
 const shortUriDataFilename = dataFilePrefix + "shortUriData.json";
 const rdfDataStructureDataFilename = dataFilePrefix + "rdfDataStructureData.json";
 const readableLabelDataFilename = dataFilePrefix + "readableLabelData.json";
+const blankNodesDataFilename = dataFilePrefix + "blankNodesData.json";
 
 const LOVFilename = dataFilePrefix + "knownVocabulariesLOV.json"
 
@@ -105,7 +106,6 @@ function paginatedSparqlQueryPromise(query, limit = queryPaginationSize, offset 
     var paginatedQuery = query + " LIMIT " + limit + " OFFSET " + offset;
     return sparqlQueryPromise(paginatedQuery)
     .then(queryResult => {
-        console.log(paginatedQuery)
         queryResult.results.bindings.forEach(resultItem => {
             var finaResultItem = {};
             queryResult.head.vars.forEach(variable => {
@@ -825,6 +825,7 @@ function averageRuntimeDataFill() {
                     graphStartEndMap.get(graph).start = start;
                     graphStartEndMap.get(graph).end = end; 
                     graphStartEndMap.get(graph).runtime = runtime ;
+                    graphStartEndMap.get(graph).graph = graph ;
                 })
             }),
             paginatedSparqlQueryPromise(numberOfEndpointQuery)
@@ -971,6 +972,7 @@ function classAndPropertiesDataFill() {
                 "OPTIONAL { " +
                 "?classPropertyPartition <http://rdfs.org/ns/void#distinctObjects> ?po . " +
                 "} " +
+                "FILTER(! isBlank(?c)) " +
                 "}" +
                 "} GROUP BY ?endpointUrl ?c ?p ?pt ?po ?ps ";
             return paginatedSparqlQueryPromise(classPropertyPartitionQuery).then(json => {
@@ -1319,24 +1321,64 @@ function rdfDataStructureDataFill() {
         });
 }
 
+function blankNodeDataFill() {
+    console.log("blankNodeDataFill START")
+    var blankNodeQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+        "GRAPH ?g {" +
+        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+        "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+        "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . " +
+        "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+        "}" +
+        " } " +
+        "GROUP BY ?g ?endpointUrl ?measure ";
+
+        var blankNodeData = []
+    sparqlQueryPromise(blankNodeQuery).then(json => {
+        var graphSet = new Set();
+        json.results.bindings.forEach((jsonItem, i) => {
+            var endpoint = jsonItem.endpointUrl.value;
+                var blankNodeMeasure = Number.parseFloat(jsonItem.measure.value * 100);
+                var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+
+                graphSet.add(graph);
+                blankNodeData.push({ graph: graph, endpoint: endpoint, measure: blankNodeMeasure })
+        });
+    })
+    .then(() => {
+        try {
+            var content = JSON.stringify(blankNodeData);
+            fs.writeFileSync(blankNodesDataFilename, content)
+        } catch (err) {
+            console.error(err)
+        }
+        console.log("blankNodeDataFill END")
+    })
+    .catch(error => {
+        console.log(error)
+    });
+}
+
 Promise.all([
-    whiteListFill(),
-    endpointMapfill(),
-    SPARQLCoverageFill(),
-    vocabFill(),
-    tripleDataFill(),
-    classDataFill(),
-    propertyDataFill(),
-    categoryTestCountFill(),
-    totalCategoryTestCountFill(),
-    endpointTestsDataFill(),
-    totalRuntimeDataFill(),
-    averageRuntimeDataFill(),
-    classAndPropertiesDataFill(),
-    datasetDescriptionDataFill(),
-    shortUrisDataFill(),
-    rdfDataStructureDataFill(),
-    readableLabelsDataFill()
+    // whiteListFill(),
+    // endpointMapfill(),
+    // SPARQLCoverageFill(),
+    // vocabFill(),
+    // tripleDataFill(),
+    // classDataFill(),
+    // propertyDataFill(),
+    // categoryTestCountFill(),
+    // totalCategoryTestCountFill(),
+    // endpointTestsDataFill(),
+    // totalRuntimeDataFill(),
+    // averageRuntimeDataFill(),
+    // classAndPropertiesDataFill(),
+    // datasetDescriptionDataFill(),
+    // shortUrisDataFill(),
+    // rdfDataStructureDataFill(),
+    // readableLabelsDataFill()
+    blankNodeDataFill()
 ])
     .catch(error => {
         console.log(error)
