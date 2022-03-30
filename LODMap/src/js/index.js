@@ -489,7 +489,7 @@ function whiteListFill() {
 setButtonAsToggleCollapse('whiteListShowButton', 'whiteListTable');
 
 
-var endpointMap = new KartoChart({
+var geolocChart = new KartoChart({
     chartObject: L.map('map').setView([24.5271348225978, 62.22656250000001], 2),
     fillFunction: function () {
         var endpointGeolocTableBody = $('#endpointGeolocTableBody');
@@ -555,7 +555,7 @@ var endpointMap = new KartoChart({
         this.chartObject.setView([24.5271348225978, 62.22656250000001], 2);
     },
     clearFunction: function () {
-        endpointMap.layerGroup.clearLayers();
+        geolocChart.layerGroup.clearLayers();
     }
 });
 setButtonAsToggleCollapse('endpointGeolocDetails', 'endpointGeolocTable');
@@ -956,7 +956,6 @@ var vocabRelatedChart = new KartoChart({
         vocabEndpointDataFile.then(vocabEndpointData => {
             vocabEndpointData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
                 && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
-                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)
             ).forEach((item, i) => {
                 var endpoint = item.endpoint;
                 var vocabularies = item.vocabularies;
@@ -2541,7 +2540,7 @@ var url = new URL(window.location);
 var urlParams = new URLSearchParams(url.search);
 $(function () {
     mainContentColWidth = $('#mainContentCol').width();
-    geolocContent = [endpointMap];
+    geolocContent = [geolocChart];
     sparqlCoverContent = [sparqlCoverCharts, testTableContent, sparqlFeaturesContent]
     vocabRelatedContent = [vocabRelatedChart];
     datasetDescriptionContent = [descriptionElementChart];
@@ -2558,8 +2557,8 @@ $(function () {
         tileSize: 512,
         zoomOffset: -1,
         accessToken: 'pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q'
-    }).addTo(endpointMap.chartObject);
-    endpointMap.layerGroup = L.layerGroup().addTo(endpointMap.chartObject);
+    }).addTo(geolocChart.chartObject);
+    geolocChart.layerGroup = L.layerGroup().addTo(geolocChart.chartObject);
 
     $(window).on('resize', () => {
         redrawCharts();
@@ -2597,7 +2596,6 @@ $(function () {
         var blackistedEndpointIndexListRaw = urlParams.get(blackListedEndpointParameter);
         blackistedEndpointIndexList = JSON.parse(decodeURI(blackistedEndpointIndexListRaw));
     }
-
 
     geolocTabButton.trigger('click');
     geolocTabButton.trigger('click');
