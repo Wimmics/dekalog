@@ -1,6 +1,7 @@
 import * as echarts from "./echarts.js";
 import $, { get } from 'jquery';
 import 'leaflet';
+const dt = require( 'datatables.net-bs5' )();
 const ttl_read = require('@graphy/content.ttl.read');
 const dayjs = require('dayjs')
 const md5 = require('md5');
@@ -535,7 +536,7 @@ var geolocChart = new KartoChart({
                 });
             }
 
-            setTableHeaderSort('endpointGeolocTableBody', ['endpointGeolocTableEndpointHeader', 'endpointGeolocTableLatHeader', 'endpointGeolocTableLonHeader', 'endpointGeolocTableCountryHeader', 'endpointGeolocTableRegionHeader', 'endpointGeolocTableCityHeader', 'endpointGeolocTableOrgHeader'], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.lat - b.lat, (a, b) => a.lon - b.lon, (a, b) => a.country.localeCompare(b.country), (a, b) => a.region.localeCompare(b.region), (a, b) => a.city.localeCompare(b.city), (a, b) => a.org.localeCompare(b.org)], endpointGeolocTableFill, geolocData);
+            // setTableHeaderSort('endpointGeolocTableBody', ['endpointGeolocTableEndpointHeader', 'endpointGeolocTableLatHeader', 'endpointGeolocTableLonHeader', 'endpointGeolocTableCountryHeader', 'endpointGeolocTableRegionHeader', 'endpointGeolocTableCityHeader', 'endpointGeolocTableOrgHeader'], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.lat - b.lat, (a, b) => a.lon - b.lon, (a, b) => a.country.localeCompare(b.country), (a, b) => a.region.localeCompare(b.region), (a, b) => a.city.localeCompare(b.city), (a, b) => a.org.localeCompare(b.org)], endpointGeolocTableFill, geolocData);
 
             graphEndpointGeolocData.forEach(endpointGeoloc => {
                 var markerIcon = greenIcon;
@@ -547,6 +548,7 @@ var geolocChart = new KartoChart({
                 endpointMarker.addTo(this.layerGroup);
             });
             endpointGeolocTableFill();
+            $("#endpointGeolocTable").DataTable()
         })
     },
     redrawFunction: function () {
@@ -598,9 +600,11 @@ var sparqlFeaturesContent = new KartoChart({
                 });
             }
 
-            setTableHeaderSort("SPARQLFeaturesTableBody", ["SPARQLFeaturesTableEndpointHeader", "SPARQLFeaturesTableFeaturesHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.features.size - b.features.size], fillFeaturesTable, sparqlFeaturesDataArray);
+            // setTableHeaderSort("SPARQLFeaturesTableBody", ["SPARQLFeaturesTableEndpointHeader", "SPARQLFeaturesTableFeaturesHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.features.size - b.features.size], fillFeaturesTable, sparqlFeaturesDataArray);
 
             fillFeaturesTable();
+
+            $("#SPARQLFeaturesTable").DataTable()
         })
     }
 });
@@ -867,9 +871,11 @@ var sparqlCoverCharts = new KartoChart({
                 });
             }
 
-            setTableHeaderSort("SPARQLFeaturesCountTableBody", ["SPARQLFeaturesCountTableEndpointHeader", "SPARQL10FeaturesTableRuleHeader", "SPARQL11FeaturesTableRuleHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.sparql10 - b.sparql10, (a, b) => a.sparql11 - b.sparql11], fillTestTable, sparqlCoverageCountData);
+            // setTableHeaderSort("SPARQLFeaturesCountTableBody", ["SPARQLFeaturesCountTableEndpointHeader", "SPARQL10FeaturesTableRuleHeader", "SPARQL11FeaturesTableRuleHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.sparql10 - b.sparql10, (a, b) => a.sparql11 - b.sparql11], fillTestTable, sparqlCoverageCountData);
 
             fillTestTable();
+
+            $("#SPARQLFeaturesCountTable").DataTable()
         })
     },
     redrawFunction: function () {
@@ -1036,7 +1042,7 @@ var vocabRelatedChart = new KartoChart({
                     var sumknowVocabMeasure = 0;
                     var knowVocabsData = [];
                     gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                        var measure = (endpointVocabs.size / rawGatherVocab.get(endpointUrl).size);
+                        var measure = (endpointVocabs.size / rawGatherVocab.get(endpointUrl).length);
                         knowVocabsData.push({ 'endpoint': endpointUrl, 'measure': measure })
 
                         endpointVocabs.forEach((vocab, i) => {
@@ -1050,6 +1056,7 @@ var vocabRelatedChart = new KartoChart({
 
                     // Measure Table
                     function endpointKnowVocabsMeasureFill() {
+                        var tableContent = knowVocabsData.map(item => [item.endpoint, item.measure])
                         knowVocabsData.forEach((item, i) => {
                             var endpointUrl = item.endpoint;
                             var measure = item.measure;
@@ -1065,7 +1072,7 @@ var vocabRelatedChart = new KartoChart({
                         });
                     };
                     endpointKnowVocabsMeasureFill();
-                    setTableHeaderSort("endpointKnownVocabsTableBody", ["knownVocabEndpointHeader", "knownVocabMeasureHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.measure - b.measure], endpointKnowVocabsMeasureFill, knowVocabsData);
+                    $("#knowVocabEndpointDataTable").DataTable()
 
                     // computation of the know vocabularies measure
                     var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
@@ -1152,8 +1159,7 @@ var vocabRelatedChart = new KartoChart({
                             });
                         }
                         endpointKeywordsTableFill()
-
-                        setTableHeaderSort("endpointKeywordsTableBody", ["endpointKeywordsTableEndpointHeader", "endpointKeywordsTableKeywordHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.keywords.size - b.keywords.size], endpointKeywordsTableFill, endpointKeywordsData);
+                        $("#endpointKeywordsTable").DataTable()
                     } else {
                         this.hideEndpointKeywordContent();
                     }
@@ -1646,6 +1652,7 @@ var testTableContent = new KartoChart({
                         }
                     });
                 });
+                $("#ruleTable").DataTable()
             }
 
             var tableBody = $('#ruleTableBody');
@@ -1806,7 +1813,7 @@ var classAndPropertiesContent = new KartoChart({
             knownVocabDataFile.then(knowVocabsData => {
                 classPropertyData = classPropertyData.filter(classPropertyItem => (classPropertyItem.endpoints != undefined) && haveIntersection((new Set(classPropertyItem.endpoints)), (new Set(filteredEndpointWhiteList))) && !haveIntersection((new Set(classPropertyItem.endpoints)), (new Set(blackistedEndpointIndexList)))).filter(classPropertyItem => [...knowVocabsData].find(item => classPropertyItem.class.startsWith(item)))
 
-                setTableHeaderSort("classDescriptionTableBody", ["classDescriptionTableClassHeader", "classDescriptionTableTriplesHeader", "classDescriptionTableClassesHeader", "classDescriptionTablePropertiesHeader", "classDescriptionTableDistinctSubjectsHeader", "classDescriptionTableDistinctObjectsHeader", "classDescriptionTableEndpointsHeader"], [(a, b) => a.class.localeCompare(b.class), (a, b) => b.triples - a.triples, (a, b) => b.classes - a.classes, (a, b) => b.properties - a.properties, (a, b) => b.distinctSubjects - a.distinctSubjects, (a, b) => b.distinctObjects - a.distinctObjects, (a, b) => b.endpoints.length - a.endpoints.length], fillclassDescriptionTable, classPropertyData);
+                // setTableHeaderSort("classDescriptionTableBody", ["classDescriptionTableClassHeader", "classDescriptionTableTriplesHeader", "classDescriptionTableClassesHeader", "classDescriptionTablePropertiesHeader", "classDescriptionTableDistinctSubjectsHeader", "classDescriptionTableDistinctObjectsHeader", "classDescriptionTableEndpointsHeader"], [(a, b) => a.class.localeCompare(b.class), (a, b) => b.triples - a.triples, (a, b) => b.classes - a.classes, (a, b) => b.properties - a.properties, (a, b) => b.distinctSubjects - a.distinctSubjects, (a, b) => b.distinctObjects - a.distinctObjects, (a, b) => b.endpoints.length - a.endpoints.length], fillclassDescriptionTable, classPropertyData);
                 classPropertyData.sort((a, b) => a.class.localeCompare(b.class));
 
                 function fillclassDescriptionTable() {
@@ -1841,10 +1848,12 @@ var classAndPropertiesContent = new KartoChart({
                         classRow.append(endpointsCell);
                         tableBody.append(classRow);
                     });
+
+                    $("#classDescriptionTable").DataTable()
                 }
                 fillclassDescriptionTable()
 
-                setTableHeaderSort("classPropertiesDescriptionTableBody", ["classPropertiesDescriptionTableClassHeader", "classPropertiesDescriptionTablePropertyHeader", "classPropertiesDescriptionTableTriplesHeader", "classPropertiesDescriptionTableDistinctSubjectsHeader", "classPropertiesDescriptionTableDistinctObjectsHeader", "classPropertiesDescriptionTableEndpointsHeader"], [(a, b) => a.class.localeCompare(b.class), (a, b) => b.property.localeCompare(a.property), (a, b) => b.triples - a.triples, (a, b) => b.distinctSubjects - a.distinctSubjects, (a, b) => b.distinctObjects - a.distinctObjects, (a, b) => b.endpoints.length - a.endpoints.length], fillClassPropertiesDescriptionTable, classPropertyData);
+                // setTableHeaderSort("classPropertiesDescriptionTableBody", ["classPropertiesDescriptionTableClassHeader", "classPropertiesDescriptionTablePropertyHeader", "classPropertiesDescriptionTableTriplesHeader", "classPropertiesDescriptionTableDistinctSubjectsHeader", "classPropertiesDescriptionTableDistinctObjectsHeader", "classPropertiesDescriptionTableEndpointsHeader"], [(a, b) => a.class.localeCompare(b.class), (a, b) => b.property.localeCompare(a.property), (a, b) => b.triples - a.triples, (a, b) => b.distinctSubjects - a.distinctSubjects, (a, b) => b.distinctObjects - a.distinctObjects, (a, b) => b.endpoints.length - a.endpoints.length], fillClassPropertiesDescriptionTable, classPropertyData);
 
                 function fillClassPropertiesDescriptionTable() {
                     var tableBody = $("#classPropertiesDescriptionTableBody");
@@ -1875,6 +1884,7 @@ var classAndPropertiesContent = new KartoChart({
                         classRow.append(endpointsCell);
                         tableBody.append(classRow);
                     });
+                    $("#classPropertiesDescriptionTable").DataTable()
                 }
                 fillClassPropertiesDescriptionTable()
             });
@@ -1924,9 +1934,10 @@ var descriptionElementChart = new KartoChart({
                     endpointRow.append(sourceCell);
                     tableBody.append(endpointRow);
                 });
+                $("#datasetDescriptionTable").DataTable()
             }
 
-            setTableHeaderSort("datasetDescriptionTableBody", ["datasetDescriptionTableEndpointHeader", "datasetDescriptionTableWhoHeader", "datasetDescriptionTableLicenseHeader", "datasetDescriptionTableDateHeader", "datasetDescriptionTableSourceHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.who.toString().localeCompare(b.who.toString()), (a, b) => a.license.toString().localeCompare(b.license.toString()), (a, b) => a.time.toString().localeCompare(b.time.toString()), (a, b) => a.source.toString().localeCompare(b.source.toString())], fillTestTable, datasetDescriptionData);
+            // setTableHeaderSort("datasetDescriptionTableBody", ["datasetDescriptionTableEndpointHeader", "datasetDescriptionTableWhoHeader", "datasetDescriptionTableLicenseHeader", "datasetDescriptionTableDateHeader", "datasetDescriptionTableSourceHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.who.toString().localeCompare(b.who.toString()), (a, b) => a.license.toString().localeCompare(b.license.toString()), (a, b) => a.time.toString().localeCompare(b.time.toString()), (a, b) => a.source.toString().localeCompare(b.source.toString())], fillTestTable, datasetDescriptionData);
 
             fillTestTable();
 

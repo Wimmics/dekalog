@@ -16,6 +16,9 @@
    },
    "dependencies": {
       "buffer": "^6.0.3",
+      "datatables.net": "^1.11.5",
+      "datatables.net-bs5": "^1.11.5",
+      "datatables.net-dt": "^1.11.5",
       "events": "^3.3.0",
       "graphy": "^4.3.4",
       "md5": "^2.3.0",

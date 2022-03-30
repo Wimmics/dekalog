@@ -29,4 +29,5 @@ h1, h2, h3, h4, h5, h6 {
 #readableLabelsScatter { width: 100%; height: 300px; }
 #blankNodesScatter { width: 100%; height: 300px; }
 #datasetdescriptionRadar { width: 100%; height: 300px; }
+#knowVocabEndpointDataTable { width: 100%; }
 td { overflow-wrap: anywhere; }
