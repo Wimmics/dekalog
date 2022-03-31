@@ -107,12 +107,11 @@
                         <span> <img src="./img/marker-icon-orange.png">: Marker used for endpoints that are using a
                             timezone different to the one corresponding to their IP.</span>
                     </div>
-                    <div class="col-12 justify-content-center">
                         <div class="row justify-content-center">
                             <button id="endpointGeolocDetails" type="button" class="btn btn-link">Details</button>
                         </div>
-                        <div class="row justify-content-center">
-                            <table id="endpointGeolocTable" class="table table-responsive table-hover collapse">
+                        <div class="row justify-content-center collapse" id="endpointGeolocDatatable">
+                            <table id="endpointGeolocTable" class="table table-responsive table-hover">
                                 <thead>
                                     <tr>
                                         <th id="endpointGeolocTableEndpointHeader" scope="col">Endpoint</th>
@@ -128,7 +127,6 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
                 </div>
 
                 <div class="row border border-grey justify-content-center tab-pane fade" id="vocabRelatedContent"
@@ -138,12 +136,13 @@
                             <h3 class='mb-4 text-center'>Vocabularies used</h3>
                         </div>
                         <div class="row justify-content-center border-top border-bottom my-5 py-2" id="vocabs"></div>
-                        <!-- <div class="row justify-content-center border-top border-bottom my-5 py-2" id="rawVocabs"></div> -->
+                        <div class="row justify-content-center border-top border-bottom my-5 py-2" id="rawVocabs"></div>
                         <div class="row justify-content-center border-top border-bottom my-5 py-2"
                             id="endpointKeywords"></div>
                         <div class="row">
                             <button id="endpointKeywordsDetails" type="button" class="btn btn-link">Details</button>
                         </div>
+                        <div class="row collapse" id="endpointKeywordsDatatable">
                         <table id="endpointKeywordsTable" class="table table-responsive table-hover collapse">
                             <thead>
                                 <!-- <tr>
@@ -168,6 +167,7 @@
                             <tbody id="endpointKeywordsTableBody">
                             </tbody>
                         </table>
+                    </div>
                         <span> <small> *: Only the vocabularies listed in <a
                                     href="https://lov.linkeddata.es/dataset/lov">Linked Open Vocabularies</a> and <a
                                     href='http://prefix.cc'>prefix.cc</a> are shown.</small></span>
@@ -192,10 +192,13 @@
                             </div>
                         </div>
                         <div class="row">
-                            <button id="tableSPARQLFeaturesStatsDetails" type="button" class="btn btn-link">Details of the statistics</button>
-                            <button id="tableSPARQLFeaturesDetails" type="button" class="btn btn-link">Details of the supported features</button>
+                            <button id="tableSPARQLFeaturesStatsDetails" type="button" class="btn btn-link">Details of
+                                the statistics</button>
+                            <button id="tableSPARQLFeaturesDetails" type="button" class="btn btn-link">Details of the
+                                supported features</button>
                         </div>
-                        <table id="SPARQLFeaturesCountTable" class="table table-responsive table-hover collapse">
+                        <div class="row collapse" id="SPARQLFeaturesCountDatatable">
+                        <table id="SPARQLFeaturesCountTable" class="table table-responsive table-hover">
                             <thead>
                                 <tr>
                                     <th id="SPARQLFeaturesCountTableEndpointHeader" scope="col">Endpoint</th>
@@ -208,7 +211,9 @@
                             <tbody id="SPARQLFeaturesCountTableBody">
                             </tbody>
                         </table>
-                        <table id="SPARQLFeaturesTable" class="table table-responsive table-hover collapse">
+                    </div>
+                        <div class="row collapse" id="SPARQLFeaturesDatatable">
+                        <table id="SPARQLFeaturesTable" class="table table-responsive table-hover">
                             <thead>
                                 <tr>
                                     <th id="SPARQLFeaturesTableEndpointHeader" scope="col">Endpoint</th>
@@ -219,6 +224,7 @@
                             </tbody>
                         </table>
                     </div>
+                    </div>
                 </div>
 
                 <div class="row border border-grey justify-content-center tab-pane fade" id="population" role="tabpanel"
@@ -227,15 +233,15 @@
                         <div class="row mb-4">
                             <h3 class='text-center'>Datasets populations</h3>
                         </div>
-                            <div class="row" id="tripleScatter">
-                                <h5>Size of datasets through time</h5>
-                            </div>
-                            <div class="row" id="classScatter">
-                                <h5>Number of classes through time</h5>
-                            </div>
-                            <div class="row" id="propertyScatter">
-                                <h5>Number of properties through time</h5>
-                            </div>
+                        <div class="row" id="tripleScatter">
+                            <h5>Size of datasets through time</h5>
+                        </div>
+                        <div class="row" id="classScatter">
+                            <h5>Number of classes through time</h5>
+                        </div>
+                        <div class="row" id="propertyScatter">
+                            <h5>Number of properties through time</h5>
+                        </div>
                         <div class="row border border-gray">
                             <div class="col-12">
                                 <div class="row">
@@ -246,28 +252,35 @@
                                         Details about the properties appearing around the instances of each class
                                     </button>
                                 </div>
-                                <div class="row">
-                                    <table id="classDescriptionTable" class="table table-responsive table-hover collapse">
+                                <div class="row collapse" id="classDescriptionDatatable">
+                                    <table id="classDescriptionTable"
+                                        class="table table-responsive table-hover">
                                         <thead>
                                             <tr>
                                                 <th id="classDescriptionTableClassHeader" scope="col">Class</th>
-                                                <th id="classDescriptionTableTriplesHeader" scope="col">Number of instances</th>
-                                                <th id="classDescriptionTableClassesHeader" scope="col">Number of classes used
+                                                <th id="classDescriptionTableTriplesHeader" scope="col">Number of
+                                                    instances</th>
+                                                <th id="classDescriptionTableClassesHeader" scope="col">Number of
+                                                    classes used
                                                     conjointly
                                                 </th>
-                                                <th id="classDescriptionTablePropertiesHeader" scope="col">Number of properties
+                                                <th id="classDescriptionTablePropertiesHeader" scope="col">Number of
+                                                    properties
                                                     used
                                                     conjointly
                                                 </th>
-                                                <th id="classDescriptionTableDistinctSubjectsHeader" scope="col">Number of
+                                                <th id="classDescriptionTableDistinctSubjectsHeader" scope="col">Number
+                                                    of
                                                     distinct
                                                     subjects linked to instances
                                                 </th>
-                                                <th id="classDescriptionTableDistinctObjectsHeader" scope="col">Number of
+                                                <th id="classDescriptionTableDistinctObjectsHeader" scope="col">Number
+                                                    of
                                                     distinct
                                                     objects linked to instances
                                                 </th>
-                                                <th id="classDescriptionTableEndpointsHeader" scope="col">Number of endpoints
+                                                <th id="classDescriptionTableEndpointsHeader" scope="col">Number of
+                                                    endpoints
                                                     using this
                                                     class
                                                 </th>
@@ -277,25 +290,31 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="row">
+                                <div class="row collapse" id="classPropertiesDescriptionDatatable">
                                     <table id="classPropertiesDescriptionTable"
                                         class="table table-responsive table-hover collapse">
                                         <thead>
                                             <tr>
-                                                <th id="classPropertiesDescriptionTableClassHeader" scope="col">Class</th>
-                                                <th id="classPropertiesDescriptionTablePropertyHeader" scope="col">Property</th>
-                                                <th id="classPropertiesDescriptionTableTriplesHeader" scope="col">Number of
+                                                <th id="classPropertiesDescriptionTableClassHeader" scope="col">Class
+                                                </th>
+                                                <th id="classPropertiesDescriptionTablePropertyHeader" scope="col">
+                                                    Property</th>
+                                                <th id="classPropertiesDescriptionTableTriplesHeader" scope="col">Number
+                                                    of
                                                     instances
                                                 </th>
-                                                <th id="classPropertiesDescriptionTableDistinctSubjectsHeader" scope="col">
+                                                <th id="classPropertiesDescriptionTableDistinctSubjectsHeader"
+                                                    scope="col">
                                                     Number of
                                                     distinct subjects
                                                 </th>
-                                                <th id="classPropertiesDescriptionTableDistinctObjectsHeader" scope="col">Number
+                                                <th id="classPropertiesDescriptionTableDistinctObjectsHeader"
+                                                    scope="col">Number
                                                     of
                                                     distinct objects
                                                 </th>
-                                                <th id="classPropertiesDescriptionTableEndpointsHeader" scope="col">Number of
+                                                <th id="classPropertiesDescriptionTableEndpointsHeader" scope="col">
+                                                    Number of
                                                     endpoints
                                                     using this class and property
                                                 </th>
@@ -393,8 +412,8 @@
                             </div>
                             <div class="'col-4"></div>
                         </div>
-                        <div class="row">
-                            <table id="datasetDescriptionTable" class="table table-responsive table-hover collapse">
+                        <div class="row collapse" id="datasetDescriptionDatatable">
+                            <table id="datasetDescriptionTable" class="table table-responsive table-hover">
                                 <thead>
                                     <tr>
                                         <th id="datasetDescriptionTableEndpointHeader" scope="col">Endpoint</th>
@@ -432,27 +451,35 @@
                                             class="btn btn-link">Details</button>
                                     </td>
                                 </tr>
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div id="shortUrisScatter" class="col"></div>
+                        </div>
+                        <div class="row collapse" id="shortUrisDatatable">
+                            <table class="table table-responsive table-hover" id="shortUrisTable">
+                                <thead>
+                                    <tr>
+                                        <td colspan="2" id='shortUrisQueryCell'>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th id="shortUrisEndpointHeader" scope="col">Endpoint</th>
+                                        <th id="shortUrisMeasureHeader" scope="col">Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="shortUrisTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                        <table class="table table-responsive">
+                            <thead>
                                 <tr>
-                                    <td id="shortUrisScatter" colspan="3"></td>
+                                    <th scope="col">Measure</th>
+                                    <th scope="col">Value</th>
                                 </tr>
-                                <tr>
-                                    <td class="collapse" id="shortUrisTableRow" colspan="3">
-                                        <table class="table table-responsive table-hover" id="shortUrisTable">
-                                            <thead>
-                                                <tr>
-                                                    <td colspan="2" id='shortUrisQueryCell'>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th id="shortUrisEndpointHeader" scope="col">Endpoint</th>
-                                                    <th id="shortUrisMeasureHeader" scope="col">Score</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="shortUrisTableBody">
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
+                            </thead>
+                            <tbody>
                                 <tr id="rdfDataStructureMeasureRow">
                                     <th scope="row"
                                         title="Minimal usage of RDF data structures such as sets, bags, etc.">
@@ -461,82 +488,106 @@
                                     <td><button id="rdfDataStructuresDetails" type="button"
                                             class="btn btn-link">Details</button></td>
                                 </tr>
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div id="rdfDataStructuresScatter" colspan="3"></div>
+                        </div>
+                        <div class="row collapse" id="rdfDataStructuresDatatable">
+                            <table class="table table-responsive table-hover" id="rdfDataStructuresTable">
+                                <thead>
+                                    <tr>
+                                        <td colspan="2" id='rdfDataStructuresQueryCell'>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th id="rdfDataStructuresEndpointHeader" scope="col">Endpoint</th>
+                                        <th id="rdfDataStructuresMeasureHeader" scope="col">Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rdfDataStructuresTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                        <table class="table table-responsive">
+                            <thead>
                                 <tr>
-                                    <td id="rdfDataStructuresScatter" colspan="3"></td>
+                                    <th scope="col">Measure</th>
+                                    <th scope="col">Value</th>
                                 </tr>
-                                <tr>
-                                    <td class="collapse" id="rdfDataStructuresTableRow" colspan="3">
-                                        <table class="table table-responsive table-hover" id="rdfDataStructuresTable">
-                                            <thead>
-                                                <tr>
-                                                    <td colspan="2" id='rdfDataStructuresQueryCell'>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th id="rdfDataStructuresEndpointHeader" scope="col">Endpoint</th>
-                                                    <th id="rdfDataStructuresMeasureHeader" scope="col">Score</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="rdfDataStructuresTableBody">
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
+                            </thead>
+                            <tbody>
                                 <tr id="knowVocabEndpointMeasureRow">
-                                    <th scope="row"
+                                    <td scope="row"
                                         title="Use of vocabularies registered in the Linked Open Vocabularies repository.">
-                                        Use of known vocabularies*</th>
+                                        Use of known vocabularies*</td>
                                     <td id="KnownVocabulariesMeasure"></td>
                                     <td><button id="KnownVocabulariesDetails" type="button"
                                             class="btn btn-link">Details</button></td>
                                 </tr>
+                            </tbody>
+                        </table>
+                        <div class="row collapse" id="knowVocabEndpointDatatable">
+                            <table class="table table-responsive table-hover" id="knowVocabEndpointTable">
+                                <thead>
+                                    <tr>
+                                        <td colspan="2" id='knownVocabQueryCell'>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th id="knownVocabEndpointHeader" scope="col">Endpoint</th>
+                                        <th id="knownVocabMeasureHeader" scope="col">Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="endpointKnownVocabsTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                        <table class="table table-responsive">
+                            <thead>
                                 <tr>
-                                    <td class="collapse" id="knowVocabEndpointTableRow" colspan="3">
-                                        <table class="table table-responsive table-hover" id="knowVocabEndpointDataTable" >
-                                            <thead>
-                                                <!-- <tr>
-                                                    <td colspan="2" id='knownVocabQueryCell'>
-                                                    </td>
-                                                </tr> -->
-                                                <tr>
-                                                    <th id="knownVocabEndpointHeader" scope="col">Endpoint</th>
-                                                    <th id="knownVocabMeasureHeader" scope="col">Score</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="endpointKnownVocabsTableBody">
-                                            </tbody>
-                                        </table>
-                                    </td>
+                                    <th scope="col">Measure</th>
+                                    <th scope="col">Value</th>
                                 </tr>
+                            </thead>
+                            <tbody>
                                 <tr id="readableLabelsMeasureRow">
                                     <th scope="row" title="Presence of readable labels connected to each resources.">
                                         Readable labels</th>
                                     <td id="readableLabelsMeasure"></td>
                                     <td><button id="readableLabelsDetails" type="button"
-                                            class="btn btn-link">Details</button></td>
-                                </tr>
-                                <tr>
-                                    <td id="readableLabelsScatter" colspan="3"></td>
-                                </tr>
-                                <tr>
-                                    <td class="collapse" id="readableLabelsTable" colspan="3">
-                                        <table class="table table-responsive table-hover">
-                                            <thead>
-                                                <thead>
-                                                    <tr>
-                                                        <td colspan="2" id='readableLabelsQueryCell'>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th id="readableLabelsEndpointHeader" scope="col">Endpoint</th>
-                                                        <th id="readableLabelsMeasureHeader" scope="col">Score</th>
-                                                    </tr>
-                                                </thead>
-                                            <tbody id="readableLabelsTableBody">
-                                            </tbody>
-                                        </table>
+                                            class="btn btn-link">Details</button>
                                     </td>
                                 </tr>
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div id="readableLabelsScatter" class="col"></div>
+                        </div>
+                        <div class="row collapse" id="readableLabelsDatatable">
+                            <table class="table table-responsive table-hover" id="readableLabelsTable">
+                                <thead>
+                                    <!-- <tr>
+                                            <td colspan="2" id='readableLabelsQueryCell'>
+                                            </td>
+                                        </tr> -->
+                                    <tr>
+                                        <th id="readableLabelsEndpointHeader" scope="col">Endpoint</th>
+                                        <th id="readableLabelsMeasureHeader" scope="col">Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="readableLabelsTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                        <table class="table table-responsive">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Measure</th>
+                                    <th scope="col">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 <tr id="blankNodesMeasureRow">
                                     <th scope="row" title="usage of blank node.">Blank node usage</th>
                                     <td id="blankNodesMeasure"></td>
@@ -544,33 +595,29 @@
                                             class="btn btn-link">Details</button>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td id="blankNodesScatter" colspan="3"></td>
-                                </tr>
-                                <tr>
-                                    <td class="collapse" id="blankNodesTable" colspan="3">
-                                        <table class="table table-responsive table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <td colspan="2" id='blankNodesQueryCell'>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th id="blankNodesEndpointHeader" scope="col">Endpoint</th>
-                                                    <th id="blankNodesMeasureHeader" scope="col">Score</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="blankNodesTableBody">
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                                </tr>
                             </tbody>
                         </table>
+                        <div class="row">
+                            <div id="blankNodesScatter" colspan="3"></div>
+                        </div>
+                        <div class="collapse row" id="blankNodesDatatable" >
+                            <table class="table table-responsive table-hover" id="blankNodesTable">
+                                <thead>
+                                    <!-- <tr>
+                                        <td colspan="2" id='blankNodesQueryCell'>
+                                        </td>
+                                    </tr> -->
+                                    <tr>
+                                        <th id="blankNodesEndpointHeader" scope="col">Endpoint</th>
+                                        <th id="blankNodesMeasureHeader" scope="col">Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="blankNodesTableBody">
+                                </tbody>
+                            </table>
+                        </div>
                         <span>*: This measure can only be computed for the endpoints that have returned their list of
-                            used
-                            vocabularies.</span>
+                            used vocabularies.</span>
                     </div>
                 </div>
                 <div class="row border border-grey justify-content-center tab-pane fade" id="runtime" role="tabpanel"
@@ -598,16 +645,18 @@
                         <div class="row">
                             <button id="tableRuleDetails" type="button" class="btn btn-link">Details</button>
                         </div>
-                        <table id="rulesTable" class="table table-responsive table-hover collapse">
-                            <thead>
-                                <tr>
-                                    <th id="rulesTableEndpointHeader" scope="col">Endpoint</th>
-                                    <th id="rulesTableRuleHeader" scope="col">Test passed</th>
-                                </tr>
-                            </thead>
-                            <tbody id="rulesTableBody">
-                            </tbody>
-                        </table>
+                        <div class="row collapse" id="rulesDatatable">
+                            <table id="rulesTable" class="table table-responsive table-hover">
+                                <thead>
+                                    <tr>
+                                        <th id="rulesTableEndpointHeader" scope="col">Endpoint</th>
+                                        <th id="rulesTableRuleHeader" scope="col">Test passed</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rulesTableBody">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

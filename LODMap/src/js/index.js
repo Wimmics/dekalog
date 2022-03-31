@@ -1,7 +1,7 @@
 import * as echarts from "./echarts.js";
 import $, { get } from 'jquery';
 import 'leaflet';
-const dt = require( 'datatables.net-bs5' )();
+const dt = require('datatables.net-bs5')();
 const ttl_read = require('@graphy/content.ttl.read');
 const dayjs = require('dayjs')
 const md5 = require('md5');
@@ -534,9 +534,8 @@ var geolocChart = new KartoChart({
                 graphEndpointGeolocData.forEach((item, i) => {
                     addLineToEndpointGeolocTable(item);
                 });
+                $("#endpointGeolocTable").DataTable()
             }
-
-            // setTableHeaderSort('endpointGeolocTableBody', ['endpointGeolocTableEndpointHeader', 'endpointGeolocTableLatHeader', 'endpointGeolocTableLonHeader', 'endpointGeolocTableCountryHeader', 'endpointGeolocTableRegionHeader', 'endpointGeolocTableCityHeader', 'endpointGeolocTableOrgHeader'], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.lat - b.lat, (a, b) => a.lon - b.lon, (a, b) => a.country.localeCompare(b.country), (a, b) => a.region.localeCompare(b.region), (a, b) => a.city.localeCompare(b.city), (a, b) => a.org.localeCompare(b.org)], endpointGeolocTableFill, geolocData);
 
             graphEndpointGeolocData.forEach(endpointGeoloc => {
                 var markerIcon = greenIcon;
@@ -548,7 +547,6 @@ var geolocChart = new KartoChart({
                 endpointMarker.addTo(this.layerGroup);
             });
             endpointGeolocTableFill();
-            $("#endpointGeolocTable").DataTable()
         })
     },
     redrawFunction: function () {
@@ -560,7 +558,7 @@ var geolocChart = new KartoChart({
         geolocChart.layerGroup.clearLayers();
     }
 });
-setButtonAsToggleCollapse('endpointGeolocDetails', 'endpointGeolocTable');
+setButtonAsToggleCollapse('endpointGeolocDetails', 'endpointGeolocDatatable');
 
 var sparqlFeaturesContent = new KartoChart({
     fillFunction: function () {
@@ -598,17 +596,16 @@ var sparqlFeaturesContent = new KartoChart({
                     endpointRow.append(featuresCell);
                     tableBody.append(endpointRow);
                 });
+
+                $("#SPARQLFeaturesTable").DataTable()
             }
 
-            // setTableHeaderSort("SPARQLFeaturesTableBody", ["SPARQLFeaturesTableEndpointHeader", "SPARQLFeaturesTableFeaturesHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.features.size - b.features.size], fillFeaturesTable, sparqlFeaturesDataArray);
-
+            
             fillFeaturesTable();
-
-            $("#SPARQLFeaturesTable").DataTable()
         })
     }
 });
-setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesTable');
+setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesDatatable');
 
 var sparqlCoverCharts = new KartoChart({
     chartObject: { 'sparql10Chart': echarts.init(document.getElementById('SPARQL10histo')), 'sparql11Chart': echarts.init(document.getElementById('SPARQL11histo')), 'sparqlChart': echarts.init(document.getElementById('SPARQLCoverageHisto')) },
@@ -869,13 +866,11 @@ var sparqlCoverCharts = new KartoChart({
                     endpointRow.append(sparql11Cell);
                     tableBody.append(endpointRow);
                 });
+
+                $("#SPARQLFeaturesCountTable").DataTable()
             }
 
-            // setTableHeaderSort("SPARQLFeaturesCountTableBody", ["SPARQLFeaturesCountTableEndpointHeader", "SPARQL10FeaturesTableRuleHeader", "SPARQL11FeaturesTableRuleHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.sparql10 - b.sparql10, (a, b) => a.sparql11 - b.sparql11], fillTestTable, sparqlCoverageCountData);
-
-            fillTestTable();
-
-            $("#SPARQLFeaturesCountTable").DataTable()
+           fillTestTable();
         })
     },
     redrawFunction: function () {
@@ -904,18 +899,19 @@ var sparqlCoverCharts = new KartoChart({
         $(this.chartObject.sparqlChart.getDom()).addClass('placeholder');
     }
 });
-setButtonAsToggleCollapse('tableSPARQLFeaturesStatsDetails', 'SPARQLFeaturesCountTable');
+setButtonAsToggleCollapse('tableSPARQLFeaturesStatsDetails', 'SPARQLFeaturesCountDatatable');
 
 var vocabRelatedChart = new KartoChart({
-    chartObject: { 
-        vocabChart: echarts.init(document.getElementById('vocabs')), 
-        // rawVocabChart: echarts.init(document.getElementById('rawVocabs')), 
-        keywordChart: echarts.init(document.getElementById('endpointKeywords')) 
+    chartObject: {
+        vocabChart: echarts.init(document.getElementById('vocabs')),
+        rawVocabChart: echarts.init(document.getElementById('rawVocabs')),
+        keywordChart: echarts.init(document.getElementById('endpointKeywords'))
     },
-    option: { 
-        vocabOption: {}, 
-        // rawVocabOption: {}, 
-        keywordOption: {} },
+    option: {
+        vocabOption: {},
+        rawVocabOption: {},
+        keywordOption: {}
+    },
     sparqlesVocabulariesQuery: '',
     fillFunction: function () {
 
@@ -1079,7 +1075,7 @@ var vocabRelatedChart = new KartoChart({
                         });
                     };
                     endpointKnowVocabsMeasureFill();
-                    $("#knowVocabEndpointDataTable").DataTable()
+                    $("#knowVocabEndpointTable").DataTable()
 
                     // computation of the know vocabularies measure
                     var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
@@ -1187,12 +1183,12 @@ var vocabRelatedChart = new KartoChart({
     },
     redrawFunction: function () {
         $('#vocabs').width(mainContentColWidth);
-        // $('#rawVocabs').width(mainContentColWidth);
+        $('#rawVocabs').width(mainContentColWidth);
         $('#endpointKeywords').width(mainContentColWidth);
         this.chartObject.vocabChart.setOption(this.option.vocabOption, true);
         this.chartObject.vocabChart.resize();
-        // this.chartObject.rawVocabChart.setOption(this.option.rawVocabOption, true);
-        // this.chartObject.rawVocabChart.resize();
+        this.chartObject.rawVocabChart.setOption(this.option.rawVocabOption, true);
+        this.chartObject.rawVocabChart.resize();
         this.chartObject.keywordChart.setOption(this.option.keywordOption, true);
         this.chartObject.keywordChart.resize();
         var codeQuery1Div = $(document.createElement('code')).text(this.sparqlesVocabulariesQuery);
@@ -1204,14 +1200,14 @@ var vocabRelatedChart = new KartoChart({
     },
     clearFunction: function () {
         this.chartObject.vocabChart.setOption({ series: [] }, true);
-        // this.chartObject.rawVocabChart.setOption({ series: [] }, true);
+        this.chartObject.rawVocabChart.setOption({ series: [] }, true);
         this.chartObject.keywordChart.setOption({ series: [] }, true);
         $('#endpointVocabularyQueryCell').empty()
         $('#endpointKeywordQueryCell').empty();
     }
 });
-setButtonAsToggleCollapse('KnownVocabulariesDetails', 'knowVocabEndpointTable');
-setButtonAsToggleCollapse('endpointKeywordsDetails', 'endpointKeywordsTable');
+setButtonAsToggleCollapse('KnownVocabulariesDetails', 'knowVocabEndpointDatatable');
+setButtonAsToggleCollapse('endpointKeywordsDetails', 'endpointKeywordsDatatable');
 
 var tripleChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('tripleScatter')),
@@ -1643,43 +1639,25 @@ var testTableContent = new KartoChart({
                     var rules = item.rules;
                     var endpointRow = $(document.createElement("tr"));
                     var endpointCell = $(document.createElement("td"));
-                    endpointCell.attr('rowspan', rules.length);
                     endpointCell.text(endpoint);
-                    endpointRow.append(endpointCell);
-                    tableBody.append(endpointRow);
+                    var rulesCell = $(document.createElement("td"));
+                    var ruleCol = $(document.createElement("div"));
+                    ruleCol.addClass("col");
                     rules.forEach((item, i) => {
-                        var ruleCell = $(document.createElement("td"));
-                        ruleCell.text(item);
-                        if (i == 0) {
-                            endpointRow.append(ruleCell);
-                        } else {
-                            var ruleRow = $(document.createElement("tr"));
-                            ruleRow.append(ruleCell);
-                            tableBody.append(ruleRow);
-                        }
+                        var ruleLine = $(document.createElement("div"));
+                        ruleLine.addClass("row")
+                        ruleLine.addClass("border-top")
+                        ruleLine.addClass("border-bottom")
+                        ruleLine.text(item);
+                        ruleCol.append(ruleLine);
                     });
+                    rulesCell.append(ruleCol)
+                    endpointRow.append(endpointCell);
+                    endpointRow.append(rulesCell);
+                    tableBody.append(endpointRow);
                 });
-                $("#ruleTable").DataTable()
+                $("#rulesTable").DataTable()
             }
-
-            var tableBody = $('#ruleTableBody');
-            $('#rulesTableEndpointHeader').on('click', function () {
-                tableBody.empty();
-                if (tableBody.hasClass('sortEndpointDesc')) {
-                    tableBody.removeClass('sortEndpointDesc');
-                    tableBody.addClass('sortEndpointAsc');
-                    appliedTestData.sort((a, b) => {
-                        return a.endpoint.localeCompare(b.endpoint);
-                    });
-                } else {
-                    tableBody.addClass('sortEndpointDesc');
-                    tableBody.removeClass('sortEndpointAsc');
-                    appliedTestData.sort((a, b) => {
-                        return - a.endpoint.localeCompare(b.endpoint);
-                    });
-                }
-                fillTestTable();
-            });
 
             fillTestTable();
         });
@@ -1688,7 +1666,7 @@ var testTableContent = new KartoChart({
         $('#rulesTableBody').empty();
     }
 });
-setButtonAsToggleCollapse('tableRuleDetails', 'rulesTable');
+setButtonAsToggleCollapse('tableRuleDetails', 'rulesDatatable');
 
 var totalRuntimeChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('totalRuntimeScatter')),
@@ -1820,7 +1798,6 @@ var classAndPropertiesContent = new KartoChart({
             knownVocabDataFile.then(knowVocabsData => {
                 classPropertyData = classPropertyData.filter(classPropertyItem => (classPropertyItem.endpoints != undefined) && haveIntersection((new Set(classPropertyItem.endpoints)), (new Set(filteredEndpointWhiteList))) && !haveIntersection((new Set(classPropertyItem.endpoints)), (new Set(blackistedEndpointIndexList)))).filter(classPropertyItem => [...knowVocabsData].find(item => classPropertyItem.class.startsWith(item)))
 
-                // setTableHeaderSort("classDescriptionTableBody", ["classDescriptionTableClassHeader", "classDescriptionTableTriplesHeader", "classDescriptionTableClassesHeader", "classDescriptionTablePropertiesHeader", "classDescriptionTableDistinctSubjectsHeader", "classDescriptionTableDistinctObjectsHeader", "classDescriptionTableEndpointsHeader"], [(a, b) => a.class.localeCompare(b.class), (a, b) => b.triples - a.triples, (a, b) => b.classes - a.classes, (a, b) => b.properties - a.properties, (a, b) => b.distinctSubjects - a.distinctSubjects, (a, b) => b.distinctObjects - a.distinctObjects, (a, b) => b.endpoints.length - a.endpoints.length], fillclassDescriptionTable, classPropertyData);
                 classPropertyData.sort((a, b) => a.class.localeCompare(b.class));
 
                 function fillclassDescriptionTable() {
@@ -1899,8 +1876,8 @@ var classAndPropertiesContent = new KartoChart({
         })
     }
 });
-setButtonAsToggleCollapse('classDescriptionDetails', 'classDescriptionTable');
-setButtonAsToggleCollapse('classPropertiesDescriptionDetails', 'classPropertiesDescriptionTable');
+setButtonAsToggleCollapse('classDescriptionDetails', 'classDescriptionDatatable');
+setButtonAsToggleCollapse('classPropertiesDescriptionDetails', 'classPropertiesDescriptionDatatable');
 
 var descriptionElementChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('datasetdescriptionRadar')),
@@ -1944,8 +1921,7 @@ var descriptionElementChart = new KartoChart({
                 $("#datasetDescriptionTable").DataTable()
             }
 
-            // setTableHeaderSort("datasetDescriptionTableBody", ["datasetDescriptionTableEndpointHeader", "datasetDescriptionTableWhoHeader", "datasetDescriptionTableLicenseHeader", "datasetDescriptionTableDateHeader", "datasetDescriptionTableSourceHeader"], [(a, b) => a.endpoint.localeCompare(b.endpoint), (a, b) => a.who.toString().localeCompare(b.who.toString()), (a, b) => a.license.toString().localeCompare(b.license.toString()), (a, b) => a.time.toString().localeCompare(b.time.toString()), (a, b) => a.source.toString().localeCompare(b.source.toString())], fillTestTable, datasetDescriptionData);
-
+           
             fillTestTable();
 
             // chart
@@ -2132,8 +2108,7 @@ var descriptionElementChart = new KartoChart({
         $('#datasetDescriptionTableBody').empty();
     }
 });
-setButtonAsToggleCollapse('datasetDescriptionStatDetails', 'datasetDescriptionTable');
-//setButtonAsToggleCollapse('datasetDescriptionExplain', 'datasetDescriptionExplainText');
+setButtonAsToggleCollapse('datasetDescriptionStatDetails', 'datasetDescriptionDatatable');
 
 var shortUriChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('shortUrisScatter')),
@@ -2209,6 +2184,7 @@ var shortUriChart = new KartoChart({
 
                         shortUrisDetailTableBody.append(endpointRow);
                     });
+                    $('#shortUrisTable').DataTable()
                 }
                 fillShortUriTable();
             } else {
@@ -2239,7 +2215,7 @@ var shortUriChart = new KartoChart({
         unCollapseHtml('shortUriMeasureRow');
     }
 });
-setButtonAsToggleCollapse('shortUrisDetails', 'shortUrisTable');
+setButtonAsToggleCollapse('shortUrisDetails', 'shortUrisDatatable');
 
 var rdfDataStructureChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('rdfDataStructuresScatter')),
@@ -2260,8 +2236,8 @@ var rdfDataStructureChart = new KartoChart({
 
         rdfDataStructureDataFile.then(rdfDataStructureData => {
             rdfDataStructureData = rdfDataStructureData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
-            && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
-            && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined))
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined))
 
             var graphSet = new Set(rdfDataStructureData.map(a => a.graph))
 
@@ -2315,6 +2291,7 @@ var rdfDataStructureChart = new KartoChart({
 
                     rdfDataStructuresDetailTableBody.append(endpointRow);
                 });
+                $('#rdfDataStructuresTable').DataTable()
             } else {
                 this.hide();
             }
@@ -2339,7 +2316,7 @@ var rdfDataStructureChart = new KartoChart({
         this.chartObject.resize();
     }
 });
-setButtonAsToggleCollapse('rdfDataStructuresDetails', 'rdfDataStructuresTable');
+setButtonAsToggleCollapse('rdfDataStructuresDetails', 'rdfDataStructuresDatatable');
 
 var readableLabelsChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('readableLabelsScatter')), option: {},
@@ -2359,9 +2336,9 @@ var readableLabelsChart = new KartoChart({
 
         readableLabelDataFile.then(readableLabelData => {
             readableLabelData = readableLabelData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
-            && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
-            && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined))
-            
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined))
+
             var graphSet = new Set(readableLabelData.map(a => a.graph))
 
             var endpointDataSerieMap = new Map();
@@ -2418,6 +2395,7 @@ var readableLabelsChart = new KartoChart({
                 this.hide();
             }
 
+            $('#readableLabelsTable').DataTable()
         });
     }, hideFunction: function () {
         this.chartObject.setOption({ series: [] }, true);
@@ -2437,7 +2415,7 @@ var readableLabelsChart = new KartoChart({
         this.chartObject.resize();
     }
 });
-setButtonAsToggleCollapse('readableLabelsDetails', 'readableLabelsTable');
+setButtonAsToggleCollapse('readableLabelsDetails', 'readableLabelsDatatable');
 
 var blankNodesChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('blankNodesScatter')),
@@ -2459,9 +2437,9 @@ var blankNodesChart = new KartoChart({
 
         blankNodesDataFile.then(blankNodeData => {
             blankNodeData = blankNodeData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
-            && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
-            && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined))
-            
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined))
+
             var graphSet = new Set(blankNodeData.map(a => a.graph))
 
             var endpointDataSerieMap = new Map();
@@ -2517,7 +2495,7 @@ var blankNodesChart = new KartoChart({
             } else {
                 this.hide();
             }
-
+            $('#blankNodesTable').DataTable()
         });
     },
     hideFunction: function () {
@@ -2538,7 +2516,7 @@ var blankNodesChart = new KartoChart({
         this.chartObject.resize();
     }
 });
-setButtonAsToggleCollapse('blankNodesDetails', 'blankNodesTable');
+setButtonAsToggleCollapse('blankNodesDetails', 'blankNodesDatatable');
 
 
 
@@ -2593,6 +2571,7 @@ $(function () {
     }
     var select = $('#endpoint-list-select');
     graphLists.forEach((item, i) => {
+        console.log("CREATION " + item + " " + i)
         var option = document.createElement('option');
         $(option).text(item.name);
         $(option).val(i);
@@ -2606,6 +2585,7 @@ $(function () {
     select.on('change', function () {
         $("select option:selected").each(function () {
             var selectionIndex = $(this).val();
+            console.log("SELECT VALUE " + $(this).val())
             changeGraphSetIndex(selectionIndex);
         })
     });
