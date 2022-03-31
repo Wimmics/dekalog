@@ -2571,7 +2571,6 @@ $(function () {
     }
     var select = $('#endpoint-list-select');
     graphLists.forEach((item, i) => {
-        console.log("CREATION " + item + " " + i)
         var option = document.createElement('option');
         $(option).text(item.name);
         $(option).val(i);
@@ -2583,9 +2582,8 @@ $(function () {
     });
     changeGraphSetIndex(currentGraphSetIndex);
     select.on('change', function () {
-        $("select option:selected").each(function () {
+        $("#endpoint-list-select > option:selected").each(function () {
             var selectionIndex = $(this).val();
-            console.log("SELECT VALUE " + $(this).val())
             changeGraphSetIndex(selectionIndex);
         })
     });
