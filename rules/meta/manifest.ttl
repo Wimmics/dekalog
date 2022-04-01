@@ -6,6 +6,9 @@
             <equivalences.ttl>
             <modifiedUpdate.ttl>
             <exampleQueries.ttl>
+            <inclusionByVocabularies.ttl>
+            <inclusionByClasses.ttl>
+            <inclusionByClassesAndProperties.ttl>
         ) .
 
 <equivalences.ttl> a mf:ManifestEntry ;
@@ -302,4 +305,101 @@
                         dcterms:description "Count the number of dataset description containing the list of properties appearing around the instances of each class." .
                 }"""
         ]
-    )
+    ) .
+
+
+<inclusionByVocabularies.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonVocabularies ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonVocabularies ?datasetDescription .
+                }
+                WHERE {
+                    {
+                    SELECT ?otherDatasetDescription (COUNT(?vocab) AS ?count) {
+                        ?otherDatasetDescription void:vocabulary ?vocab .
+                        ?currentDatasetDescription void:vocabulary ?vocab .
+                        ?otherDatasetDescription void:sparqlEndpoint ?otherEndpointUrl .
+                        ?currentDatasetDescription void:sparqlEndpoint $rawEndpointUrl .
+                        FILTER(?otherEndpointUrl != $rawEndpointUrl)
+                    } GROUP BY ?otherDatasetDescription
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+        <inclusionByClasses.ttl>
+    ) ;
+    kgi:onFailure (
+        <inclusionByIndividuals.ttl>
+    ) .
+
+<inclusionByClasses.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            """
+        ]
+        <inclusionByClassesAndProperties.ttl>
+    ) ;
+    kgi:onFailure (
+        [
+            mf:action """
+            """
+        ]
+        <inclusionByIndividuals.ttl>
+    ) .
+
+<inclusionByClassesAndProperties.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            """
+        ]
+        <inclusionByIndividuals.ttl>
+    ) ;
+    kgi:onFailure (
+        [
+            mf:action """
+            """
+        ]
+        <inclusionByIndividuals.ttl>
+    ) .
+
+<inclusionByIndividuals.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            kgi:endpoint kgi:federation ;
+            mf:action """
+            """
+        ]
+        <inclusionByTriples.ttl>
+        <inclusionByStarPatterns.ttl>
+    ) ;
+    kgi:onFailure (
+        <inclusionByStarPatterns.ttl>
+    ) .
+
+<inclusionByTriples.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            kgi:endpoint kgi:federation ;
+            mf:action """
+            """
+        ]
+    ) ;
+    kgi:onFailure (
+        <inclusionByStarPatterns.ttl>
+    ) .
+
+<inclusionByStarPatterns.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            kgi:endpoint kgi:federation ;
+            mf:action """
+            """
+        ]
+    ) .

@@ -5,8 +5,74 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix kgi: <http://ns.inria.fr/kg/index#>
 @prefix void: <http://rdfs.org/ns/void#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <> a mf:Manifest ;
     mf:include (
-        <file:///user/pmaillot/home/git/dekalog/rules/extraction/asserted/manifest.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/manifest.ttl>
+    ) ;
+    mf:entries (
+        <file:///user/pmaillot/home/git/dekalog/rules/extraction/computed/vocabularyList.ttl>
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/extraction/computed/vocabularyList.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+            }
+            """
+        ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                ?metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasDerivedFrom $rawEndpointUrl ;
+                    kgi:curated ?datasetDescription .
+                ?datasetDescription void:vocabulary ?ns .
+            }
+            WHERE {
+                { SELECT DISTINCT ?elem { ?s ?elem ?o .
+                } }
+                BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+            }
+        """
+        ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                ?metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasDerivedFrom $rawEndpointUrl ;
+                    kgi:curated ?datasetDescription .
+                ?datasetDescription void:vocabulary IRI(?ns) .
+            }
+            WHERE {
+                { SELECT DISTINCT ?elem { ?s a ?elem .
+                } }
+                BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+            }
+            """
+        ]
     ) .

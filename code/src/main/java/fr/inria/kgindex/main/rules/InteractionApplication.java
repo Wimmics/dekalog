@@ -159,6 +159,7 @@ public class InteractionApplication {
                                 actionExecution.close();
                             } else if (queryString.contains("INSERT")
                                     || queryString.contains("DELETE")) {
+                                logger.debug(queryString);
                                 UpdateRequest insertUpdate = UpdateFactory.create(queryString);
                                 UpdateAction.execute(insertUpdate, this._datasetDescription);
                                 this._datasetDescription.commit();

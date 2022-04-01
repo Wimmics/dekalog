@@ -11,7 +11,10 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
 kgi:catalogTest a dcat:Catalog ;
-    dcat:dataset kgi:wasabi .
+    dcat:dataset kgi:wasabi , kgi:dekalog , kgi:mimo , kgi:econ_corp .
+
+kgi:dekalog void:sparqlEndpoint <http://prod-dekalog.inria.fr/sparql> ;
+    rdfs:label "IndeGx" .
 
 kgi:BNBDataset void:sparqlEndpoint <https://bnb.data.bl.uk/sparql> ;
     rdfs:label "BNB".
@@ -45,3 +48,7 @@ kgi:wasabi void:sparqlEndpoint <http://wasabi.inria.fr/sparql> ;
 
 kgi:local void:sparqlEndpoint <http://localhost:3030/experiment/query> ;
     rdfs:label "local" .
+
+kgi:mimo void:sparqlEndpoint <http://data.mimo-db.eu/sparql> .
+
+kgi:econ_corp void:sparqlEndpoint <https://zbw.eu/beta/sparql/econ_corp/query> .
