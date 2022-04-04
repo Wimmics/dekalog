@@ -107,26 +107,26 @@
                         <span> <img src="./img/marker-icon-orange.png">: Marker used for endpoints that are using a
                             timezone different to the one corresponding to their IP.</span>
                     </div>
-                        <div class="row justify-content-center">
-                            <button id="endpointGeolocDetails" type="button" class="btn btn-link">Details</button>
-                        </div>
-                        <div class="row justify-content-center collapse" id="endpointGeolocDatatable">
-                            <table id="endpointGeolocTable" class="table table-responsive table-hover">
-                                <thead>
-                                    <tr>
-                                        <th id="endpointGeolocTableEndpointHeader" scope="col">Endpoint</th>
-                                        <th id="endpointGeolocTableLatHeader" scope="col">Latitude</th>
-                                        <th id="endpointGeolocTableLonHeader" scope="col">Longitude</th>
-                                        <th id="endpointGeolocTableCountryHeader" scope="col">Country</th>
-                                        <th id="endpointGeolocTableRegionHeader" scope="col">Region</th>
-                                        <th id="endpointGeolocTableCityHeader" scope="col">City</th>
-                                        <th id="endpointGeolocTableOrgHeader" scope="col">Org</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="endpointGeolocTableBody">
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="row justify-content-center">
+                        <button id="endpointGeolocDetails" type="button" class="btn btn-link">Details</button>
+                    </div>
+                    <div class="row justify-content-center collapse" id="endpointGeolocDatatable">
+                        <table id="endpointGeolocTable" class="table table-responsive table-hover">
+                            <thead>
+                                <tr>
+                                    <th id="endpointGeolocTableEndpointHeader" scope="col">Endpoint</th>
+                                    <th id="endpointGeolocTableLatHeader" scope="col">Latitude</th>
+                                    <th id="endpointGeolocTableLonHeader" scope="col">Longitude</th>
+                                    <th id="endpointGeolocTableCountryHeader" scope="col">Country</th>
+                                    <th id="endpointGeolocTableRegionHeader" scope="col">Region</th>
+                                    <th id="endpointGeolocTableCityHeader" scope="col">City</th>
+                                    <th id="endpointGeolocTableOrgHeader" scope="col">Org</th>
+                                </tr>
+                            </thead>
+                            <tbody id="endpointGeolocTableBody">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="row border border-grey justify-content-center tab-pane fade" id="vocabRelatedContent"
@@ -143,31 +143,32 @@
                             <button id="endpointKeywordsDetails" type="button" class="btn btn-link">Details</button>
                         </div>
                         <div class="row collapse" id="endpointKeywordsDatatable">
-                        <table id="endpointKeywordsTable" class="table table-responsive table-hover collapse">
-                            <thead>
-                                <!-- <tr>
+                            <table id="endpointKeywordsTable" class="table table-responsive table-hover collapse">
+                                <thead>
+                                    <!-- <tr>
                                     <th>
                                         Query for the list of vocabularies
                                     </th>
                                     <th id="endpointVocabularyQueryCell">
                                     </th>
                                 </tr> -->
-                                <!-- <tr>
+                                    <!-- <tr>
                                     <th>
                                         Query for the list of keywords
                                     </th>
                                     <th id="endpointKeywordQueryCell">
                                     </th>
                                 </tr> -->
-                                <tr>
-                                    <th id="endpointKeywordsTableEndpointHeader" scope="col">Endpoint</th>
-                                    <th id="endpointKeywordsTableKeywordHeader" scope="col">Keywords</th>
-                                </tr>
-                            </thead>
-                            <tbody id="endpointKeywordsTableBody">
-                            </tbody>
-                        </table>
-                    </div>
+                                    <tr>
+                                        <th id="endpointKeywordsTableEndpointHeader" scope="col">Endpoint</th>
+                                        <th id="endpointKeywordsTableKeywordHeader" scope="col">Keywords</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="endpointKeywordsTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row justify-content-center border-top border-bottom my-5 py-2" id="standardVocabs"></div>
                         <span> <small> *: Only the vocabularies listed in <a
                                     href="https://lov.linkeddata.es/dataset/lov">Linked Open Vocabularies</a> and <a
                                     href='http://prefix.cc'>prefix.cc</a> are shown.</small></span>
@@ -198,32 +199,32 @@
                                 supported features</button>
                         </div>
                         <div class="row collapse" id="SPARQLFeaturesCountDatatable">
-                        <table id="SPARQLFeaturesCountTable" class="table table-responsive table-hover">
-                            <thead>
-                                <tr>
-                                    <th id="SPARQLFeaturesCountTableEndpointHeader" scope="col">Endpoint</th>
-                                    <th id="SPARQL10FeaturesTableRuleHeader" scope="col">Percentage of SPARQL 1.0
-                                        features</th>
-                                    <th id="SPARQL11FeaturesTableRuleHeader" scope="col">Percentage of SPARQL 1.1
-                                        features</th>
-                                </tr>
-                            </thead>
-                            <tbody id="SPARQLFeaturesCountTableBody">
-                            </tbody>
-                        </table>
-                    </div>
+                            <table id="SPARQLFeaturesCountTable" class="table table-responsive table-hover">
+                                <thead>
+                                    <tr>
+                                        <th id="SPARQLFeaturesCountTableEndpointHeader" scope="col">Endpoint</th>
+                                        <th id="SPARQL10FeaturesTableRuleHeader" scope="col">Percentage of SPARQL 1.0
+                                            features</th>
+                                        <th id="SPARQL11FeaturesTableRuleHeader" scope="col">Percentage of SPARQL 1.1
+                                            features</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="SPARQLFeaturesCountTableBody">
+                                </tbody>
+                            </table>
+                        </div>
                         <div class="row collapse" id="SPARQLFeaturesDatatable">
-                        <table id="SPARQLFeaturesTable" class="table table-responsive table-hover">
-                            <thead>
-                                <tr>
-                                    <th id="SPARQLFeaturesTableEndpointHeader" scope="col">Endpoint</th>
-                                    <th id="SPARQLFeaturesTableFeaturesHeader" scope="col">Feature</th>
-                                </tr>
-                            </thead>
-                            <tbody id="SPARQLFeaturesTableBody">
-                            </tbody>
-                        </table>
-                    </div>
+                            <table id="SPARQLFeaturesTable" class="table table-responsive table-hover">
+                                <thead>
+                                    <tr>
+                                        <th id="SPARQLFeaturesTableEndpointHeader" scope="col">Endpoint</th>
+                                        <th id="SPARQLFeaturesTableFeaturesHeader" scope="col">Feature</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="SPARQLFeaturesTableBody">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -253,8 +254,7 @@
                                     </button>
                                 </div>
                                 <div class="row collapse" id="classDescriptionDatatable">
-                                    <table id="classDescriptionTable"
-                                        class="table table-responsive table-hover">
+                                    <table id="classDescriptionTable" class="table table-responsive table-hover">
                                         <thead>
                                             <tr>
                                                 <th id="classDescriptionTableClassHeader" scope="col">Class</th>
@@ -600,7 +600,7 @@
                         <div class="row">
                             <div id="blankNodesScatter" colspan="3"></div>
                         </div>
-                        <div class="collapse row" id="blankNodesDatatable" >
+                        <div class="collapse row" id="blankNodesDatatable">
                             <table class="table table-responsive table-hover" id="blankNodesTable">
                                 <thead>
                                     <!-- <tr>

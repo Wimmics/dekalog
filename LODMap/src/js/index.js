@@ -246,6 +246,52 @@ function getForceGraphOption(title, legendData, dataNodes, dataLinks) {
     };
 }
 
+function getCircularGraphOption(title, legendData, dataNodes, dataLinks) {
+    var categories = [];
+    legendData.forEach((item, i) => {
+        categories.push({ name: item });
+    });
+    return {
+        title: {
+            text: title,
+            top: 'top',
+            left: 'center'
+        },
+        tooltip: {
+            show: true,
+            confine: true,
+        },
+        legend: [
+            {
+                data: legendData,
+                top: 'bottom',
+            }
+        ],
+        series: [
+            {
+                type: 'graph',
+                layout: 'circular',
+                circular: {
+                rotateLabel: true
+                },
+                data: dataNodes,
+                links: dataLinks,
+                categories: categories,
+                roam: true,
+                draggable: true,
+                label: {
+                    position: 'right',
+                    formatter: '{b}'
+                },
+                lineStyle: {
+                color: 'source',
+                curveness: 0.3
+                }
+            }
+        ]
+    };
+}
+
 function getCategoryScatterOption(title, categories, series) {
     return {
         title: {
@@ -600,7 +646,7 @@ var sparqlFeaturesContent = new KartoChart({
                 $("#SPARQLFeaturesTable").DataTable()
             }
 
-            
+
             fillFeaturesTable();
         })
     }
@@ -870,7 +916,7 @@ var sparqlCoverCharts = new KartoChart({
                 $("#SPARQLFeaturesCountTable").DataTable()
             }
 
-           fillTestTable();
+            fillTestTable();
         })
     },
     redrawFunction: function () {
@@ -1921,7 +1967,7 @@ var descriptionElementChart = new KartoChart({
                 $("#datasetDescriptionTable").DataTable()
             }
 
-           
+
             fillTestTable();
 
             // chart
@@ -2518,6 +2564,88 @@ var blankNodesChart = new KartoChart({
 });
 setButtonAsToggleCollapse('blankNodesDetails', 'blankNodesDatatable');
 
+var standardVocabCharts = new KartoChart({
+    chartObject: echarts.init(document.getElementById('standardVocabs')),
+    option: {},
+    fillFunction: function () {
+        var endpointSet = new Set();
+        var vocabStandardSet = new Set();
+        var vocabStandardNameMap = new Map([["http://www.w3.org/1999/02/22-rdf-syntax-ns#", "RDF"], ["http://www.w3.org/2000/01/rdf-schema#", "RDFS"], ["http://www.w3.org/ns/shacl#", "SHACL"], ["http://www.w3.org/2002/07/owl#", "OWL"], ["http://www.w3.org/2004/02/skos/core#", "SKOS"], ["http://spinrdf.org/spin#", "SPIN"], ["http://www.w3.org/2003/11/swrl#", "SWRL"]]);
+        vocabStandardNameMap.forEach((value, key, map) => {
+            vocabStandardSet.add(key);
+        });
+
+        var gatherStandardVocab = new Map();
+        var standardVocabSet = new Set();
+        vocabEndpointDataFile.then(vocabEndpointData => {
+            vocabEndpointData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+            ).forEach((item, i) => {
+                var endpoint = item.endpoint;
+                var vocabularies = item.vocabularies;
+                endpointSet.add(endpoint);
+                var filteredVocabularies = new Set(vocabularies.filter(vocab => vocabStandardSet.has(vocab)));
+                if (filteredVocabularies.size > 0) {
+                    filteredVocabularies.forEach(item => {standardVocabSet.add(item)})
+                    if (!gatherStandardVocab.has(endpoint)) {
+                        gatherStandardVocab.set(endpoint, new Set());
+                    }
+                    gatherStandardVocab.set(endpoint, filteredVocabularies);
+                }
+            });
+
+            var jsonStandardVocabNodes = new Set();
+            var jsonStandardVocabLinks = new Set();
+
+            endpointSet.forEach(item => {
+                jsonStandardVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
+            });
+            standardVocabSet.forEach(item => {
+                jsonStandardVocabNodes.add({ name: item, category: vocabStandardNameMap.get(item), symbolSize: 5 })
+            });
+            gatherStandardVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+                endpointVocabs.forEach((vocab, i) => {
+                    jsonStandardVocabLinks.add({ target: endpointUrl, source: vocab })
+                });
+            });
+
+            if (jsonStandardVocabNodes.size > 0 && jsonStandardVocabLinks.size > 0) {
+                this.show();
+
+                var categoryArray = [...standardVocabSet].map(vocab => vocabStandardNameMap.get(vocab));
+                categoryArray.push("Endpoint")
+                this.option = getCircularGraphOption('Endpoints and vocabularies',categoryArray , [...jsonStandardVocabNodes], [...jsonStandardVocabLinks]);
+                this.option.series[0].type = 'graph';
+                this.option.series[0].layout = 'circular';
+                this.option.series[0].circular = {
+                  rotateLabel: true
+                };
+                this.option.series[0].lineStyle = {
+                    color: 'source',
+                    curveness: 0.3
+                }
+                this.chartObject.setOption(this.option, true);
+            } else {
+                this.hide();
+            }
+        });
+    },
+    hideFunction: function () {
+        collapseHtml('standardVocabs');
+    },
+    showFunction: function () {
+        unCollapseHtml('standardVocabs')
+        this.redraw()
+    },
+    redrawFunction: function () {
+        $('#standardVocabs').width(mainContentColWidth);
+        this.chartObject.setOption(this.option, true);
+        this.chartObject.resize();
+    },
+    clearFunction: function () {
+        this.chartObject.setOption({ series: [] }, true);
+    }
+});
 
 
 
@@ -2538,7 +2666,7 @@ $(function () {
     mainContentColWidth = $('#mainContentCol').width();
     geolocContent = [geolocChart];
     sparqlCoverContent = [sparqlCoverCharts, testTableContent, sparqlFeaturesContent]
-    vocabRelatedContent = [vocabRelatedChart];
+    vocabRelatedContent = [vocabRelatedChart, standardVocabCharts];
     datasetDescriptionContent = [descriptionElementChart];
     dataQualityContent = [blankNodesChart, readableLabelsChart, rdfDataStructureChart, shortUriChart];
     datasetPopulationsContent = [tripleChart, classNumberChart, propertyNumberChart, classAndPropertiesContent];
