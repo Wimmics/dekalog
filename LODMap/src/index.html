@@ -51,53 +51,43 @@
             <div class="row border border-grey rounded">
                 <ul class="card-header nav nav-tabs nav-fill" id="tab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="geoloc-tab" data-bs-toggle="tab" data-bs-target="#geoloc"
-                            type="button" role="tab" aria-controls="geoloc" aria-selected="false">Map of the endpoints
+                        <button class="nav-link" id="geoloc-tab" type="button">Map of the endpoints
                             geolocations
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link " id="vocabRelatedContent-tab" data-bs-toggle="tab"
-                            data-bs-target="#vocabRelatedContent" type="button" role="tab"
-                            aria-controls="vocabRelatedContent" aria-selected="false">Graph of the vocabularies used
+                        <button class="nav-link " id="vocabRelatedContent-tab" type="button">Graph of the vocabularies used
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link " id="description-tab" data-bs-toggle="tab"
-                            data-bs-target="#description" type="button" role="tab" aria-controls="description"
-                            aria-selected="false">Datasets
+                        <button class="nav-link " id="description-tab" role="tab">Datasets
                             descriptions
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link " id="population-tab" data-bs-toggle="tab" data-bs-target="#population"
-                            type="button" role="tab" aria-controls="population" aria-selected="false">Datasets
+                        <button class="nav-link " id="population-tab" type="button">Datasets
                             populations
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link " id="sparql-tab" data-bs-toggle="tab" data-bs-target="#sparql"
-                            type="button" role="tab" aria-controls="sparql" aria-selected="false">SPARQL coverage of the
+                        <button class="nav-link " id="sparql-tab" type="button">SPARQL coverage of the
                             endpoints
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link " id="quality-tab" data-bs-toggle="tab" data-bs-target="#quality"
-                            type="button" role="tab" aria-controls="quality" aria-selected="false">Data quality
+                        <button class="nav-link " id="quality-tab" type="button">Data quality
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link " id="runtime-tab" data-bs-toggle="tab" data-bs-target="#runtime"
-                            type="button" role="tab" aria-controls="runtime" aria-selected="false">Framework information
+                        <button class="nav-link " id="runtime-tab" type="button">Framework information
                         </button>
                     </li>
                 </ul>
             </div>
 
+            <div class="d-flex justify-content-center"><div class="spinner-grow collapse" role="status" id="loadingSpinner"><span class="visually-hidden">Loading...</span></div></div>
             <div class="tab-content" id="tabContent">
-
-                <div class="row border border-grey justify-content-center tab-pane fade" id="geoloc" role="tabpanel"
-                    aria-labelledby="geoloc-tab">
+                <div class="row border border-grey justify-content-center tab-pane fade" id="geoloc">
                     <div class="col-12 gy-5 justify-content-center">
                         <div class="container justify-content-center">
                             <h3 class='mb-4  text-center'>Endpoints geolocation</h3>
