@@ -968,6 +968,15 @@ Promise.all([whiteListFile, geolocDataFile, sparqlCoverCountFile, sparqlFeatures
             },
             sparqlesVocabulariesQuery: '',
             fillFunction: function () {
+                this.sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
+                    "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+                    "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+                    "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
+                    "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
+                    "} " +
+                    generateGraphValueFilterClause() +
+                    " } " +
+                    "GROUP BY ?endpointUrl ?vocabulary ";
 
                 // Create an force graph with the graph linked by co-ocurrence of vocabularies
 
