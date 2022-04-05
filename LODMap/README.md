@@ -12,3 +12,5 @@ Deployment is done with:
 > npx parcel build src/index.html
 > 
 > scp dist/* /wherever you need>
+
+'dataCashing.js' is a node script to update from the index the static data files of the web site
