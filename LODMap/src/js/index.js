@@ -38,8 +38,8 @@ const blankNodesDataFile = cachePromise("blankNodesData.json");
 
 const numberOfVocabulariesLimit = 1000;
 
-const graphLists = require('../data/runSets.json');
-const sparqlFeatureDesc = require('../data/SPARQLFeatureDescriptions.json');
+const graphListsFile = cachePromise('runSets.json');
+const sparqlFeatureDescFile = cachePromise('SPARQLFeatureDescriptions.json');
 
 class KartoChart {
     constructor(config = { chartObject, option, fillFunction: () => { }, redrawFunction: () => { }, clearFunction: () => { }, hideFunction: () => { }, showFunction: () => { }, divId }) {
@@ -308,7 +308,8 @@ $(function () {
     }
 
     showLoadingSpinner()
-    Promise.all([whiteListFile, geolocDataFile, sparqlCoverCountFile, sparqlFeaturesDataFile, knownVocabDataFile, vocabEndpointDataFile, vocabKeywordDataFile, classCountDataFile, propertyCountDataFile, tripleCountDataFile, categoryTestCountDataFile, totalCategoryTestCountFile, endpointTestsDataFile, totalRuntimeDataFile, averageRuntimeDataFile, classPropertyDataFile, datasetDescriptionDataFile, shortUriDataFile, rdfDataStructureDataFile, readableLabelDataFile, blankNodesDataFile])
+    // Loading all the data files on document load
+    Promise.all([whiteListFile, geolocDataFile, sparqlCoverCountFile, sparqlFeaturesDataFile, knownVocabDataFile, vocabEndpointDataFile, vocabKeywordDataFile, classCountDataFile, propertyCountDataFile, tripleCountDataFile, categoryTestCountDataFile, totalCategoryTestCountFile, endpointTestsDataFile, totalRuntimeDataFile, averageRuntimeDataFile, classPropertyDataFile, datasetDescriptionDataFile, shortUriDataFile, rdfDataStructureDataFile, readableLabelDataFile, blankNodesDataFile, graphListsFile, sparqlFeatureDescFile])
         .then(datafiles => {
             const whiteListData = datafiles[0];
             const geolocData = datafiles[1];
@@ -331,6 +332,8 @@ $(function () {
             const rdfDataStructureData = datafiles[18];
             const readableLabelData = datafiles[19];
             const blankNodesData = datafiles[20];
+            const graphLists = datafiles[21];
+            const sparqlFeatureDesc = datafiles[22];
 
             var filteredEndpointWhiteList = [];
 
