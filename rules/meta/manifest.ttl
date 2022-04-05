@@ -58,13 +58,13 @@
             mf:action """
                 PREFIX dcterms: <http://purl.org/dc/terms/>
                 DELETE {
-                    $metadataDescription dcterms:modified ?mod .
+                    ?metadataDescription dcterms:modified ?mod .
                 }
                 INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
+                    ?metadataDescription dcterms:modified $dateLiteral .
                 }
                 WHERE {
-                    OPTIONAL { $metadataDescription dcterms:modified ?mod . }
+                    OPTIONAL { ?metadataDescription dcterms:modified ?mod . }
                 }
             """
         ]

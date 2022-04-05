@@ -34,7 +34,7 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/classPopulation.ttl#activity> ;
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/classPopulation.ttl#activity> ;
                         void:classPartition [
                             void:class ?class ;
                             void:entities ?count
@@ -50,6 +50,7 @@
                             ?instance a ?class
                         }
                     } GROUP BY ?class }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
         ]
@@ -63,13 +64,14 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctRDFNodes.ttl#activity> ;
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctRDFNodes.ttl#activity> ;
                         voidex:distinctRDFNodes ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctRDFNodes.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctRDFNodes.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))}
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
         ]
@@ -83,7 +85,7 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisObjects.ttl#activity> ;
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisObjects.ttl#activity> ;
                          voidex:distinctIRIReferenceObjects ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisObjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisObjects.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
@@ -92,6 +94,7 @@
                     SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE {
                     ?s ?p ?o
                     FILTER(isIri(?o))}
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
         ]
@@ -105,12 +108,15 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisSubjects.ttl#activity> ;
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisSubjects.ttl#activity> ;
                         voidex:distinctIRIReferenceSubjects ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisSubjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctUrisSubjects.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
-                WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isIRI(?s))} }
+                WHERE {
+                    SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isIRI(?s))}
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
             """
         ]
         <../meta/modifiedUpdate.ttl>
@@ -123,12 +129,15 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeSubjects.ttl#activity> ;
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeSubjects.ttl#activity> ;
                         voidex:distinctBlankNodeSubjects ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeSubjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeSubjects.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
-                WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))} }
+                WHERE {
+                    SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))}
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
             """
         ]
         <../meta/modifiedUpdate.ttl>
@@ -141,12 +150,15 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeObjects.ttl#activity> ;
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeObjects.ttl#activity> ;
                         voidex:distinctBlankNodeSubjects ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeObjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodeObjects.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
-                WHERE { SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))} }
+                WHERE {
+                    SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))}
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
             """
         ]
         <../meta/modifiedUpdate.ttl>
@@ -159,13 +171,16 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodes.ttl#activity> ;
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodes.ttl#activity> ;
                     voidex:distinctBlankNodes ?x .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodes.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctBlankNodes.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
-            WHERE { SELECT (COUNT(DISTINCT ?b ) AS ?x)
-            WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) } }
+            WHERE {
+                SELECT (COUNT(DISTINCT ?b ) AS ?x)
+                WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+            }
             """
         ]
         <../meta/modifiedUpdate.ttl>
@@ -178,13 +193,16 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctIRIReferences.ttl#activity> ;
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctIRIReferences.ttl#activity> ;
                     voidex:distinctIRIReferences ?x .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctIRIReferences.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctIRIReferences.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x)
-            WHERE { { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u)) } }
+            WHERE {
+                { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u)) }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+            }
             """
         ]
         <../meta/modifiedUpdate.ttl>
@@ -197,12 +215,15 @@
             mf:action """PREFIX voidex: <http://ldf.fi/void-ext#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctLiterals.ttl#activity> ;
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctLiterals.ttl#activity> ;
                     voidex:distinctLiterals ?x .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctLiterals.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctLiterals.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
-            WHERE { SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))} }
+            WHERE {
+                SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))}
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+            }
             """
         ]
         <../meta/modifiedUpdate.ttl>
@@ -221,16 +242,17 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl#activity> ;
-                          void:classPartition [
-                            void:class ?c ;
-                            void:triples ?x
-                        ] .
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c .
+                        void:triples ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl> ;
                             prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
                 }
             """
         ]
@@ -245,15 +267,16 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl#activity> ;
-                          void:classPartition [
-                            void:class ?c
-                        ] .
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     { ?s a ?c . }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
                 }
             """
         ]
@@ -269,16 +292,17 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl#activity> ;
-                        void:classPartition [
-                            void:class ?c ;
-                            void:classes ?x
-                        ] .
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c ;
+                            void:classes ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
                 }
             """
         ]
@@ -294,16 +318,17 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl#activity> ;
-                          void:classPartition [
-                            void:class ?c ;
-                            void:properties ?x
-                        ] .
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c ;
+                        void:properties ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionProperties.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     { SELECT (COUNT(DISTINCT ?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
                 }
             """
         ]
@@ -319,16 +344,17 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl#activity> ;
-                        void:classPartition [
-                            void:class ?c ;
-                            void:distinctSubjects ?x
-                        ] .
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c ;
+                        void:distinctSubjects ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctSubjects.ttl> ;
                                 prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c WHERE { ?s a ?c } GROUP BY ?c }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
                 }
             """
         ]
@@ -344,16 +370,18 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl#activity> ;
-                        void:classPartition [
-                            void:class ?c ;
-                            void:distinctObjects ?x
-                        ] .
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c ;
+                        void:distinctObjects ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionDistinctObjects.ttl> ;
                                 prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     { SELECT (COUNT(DISTINCT ?o) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)), MD5(str(?p)))) AS ?classPropertyPartition)
                 }
             """
         ]
@@ -375,19 +403,20 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl#activity> ;
-                         void:classPartition [
-                            void:class ?c ;
-                            void:propertyPartition [
-                                    void:property ?p ;
-                                    void:triples ?x
-                                ]
-                        ] .
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c ;
+                        void:propertyPartition ?classPropertyPartition .
+                    ?classPropertyPartition void:property ?p ;
+                        void:triples ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionTriples.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)), MD5(str(?p)))) AS ?classPropertyPartition)
                 }
             """
         ]
@@ -401,18 +430,19 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> ;
-                         void:classPartition [
-                            void:class ?c ;
-                            void:propertyPartition [
-                                    void:property ?p
-                                        ]
-                                ] .
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c ;
+                        void:propertyPartition ?classPropertyPartition .
+                    ?classPropertyPartition void:property ?p .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl> ;
                                 prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     { ?s a ?c ; ?p ?o }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)), MD5(str(?p)))) AS ?classPropertyPartition)
                 }
             """
         ]
@@ -428,19 +458,20 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl#activity> ;
-                         void:classPartition [
-                            void:class ?c ;
-                            void:propertyPartition [
-                                    void:property ?p ;
-                                    void:distinctSubjects ?x
-                                ]
-                        ] .
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c ;
+                        void:propertyPartition ?classPropertyPartition .
+                    ?classPropertyPartition void:property ?p ;
+                        void:distinctSubjects ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartitionDistinctSubjects.ttl> ;
                                 prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     { SELECT (COUNT(DISTINCT ?s) AS ?x) ?c ?p WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c ?p }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)), MD5(str(?p)))) AS ?classPropertyPartition)
                 }
             """
         ]
@@ -454,18 +485,19 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX void: <http://rdfs.org/ns/void#>
                 CONSTRUCT {
-                    $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> ;
-                        void:classPartition [
-                            void:class ?c ;
-                            void:propertyPartition [
-                                    void:property ?p
-                                ]
-                        ] .
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c ;
+                        void:propertyPartition ?classPropertyPartition .
+                    ?classPropertyPartition void:property ?p .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionPropertyPartition.ttl> ;
                                 prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
                     { ?s a ?c ; ?p ?o . }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)), MD5(str(?p)))) AS ?classPropertyPartition)
                 }
             """
         ]
@@ -485,16 +517,18 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl#activity> ;
-                    void:propertyPartition [
-                        void:property ?p ;
-                        void:triples ?x
-                    ] .
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl#activity> ;
+                    void:propertyPartition ?propertyPartition .
+                ?propertyPartition void:property ?p ;
+                    void:property ?p ;
+                    void:triples ?x .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
                 { SELECT (COUNT(?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?p)))) AS ?propertyPartition)
             }"""
         ]
         <../meta/modifiedUpdate.ttl>
@@ -506,15 +540,17 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> ;
-                    void:propertyPartition [
-                        void:property ?p
-                    ] .
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> ;
+                    void:propertyPartition ?propertyPartition .
+                ?propertyPartition void:property ?p ;
+                    void:property ?p .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
                 { SELECT DISTINCT ?p WHERE { ?s ?p ?o } }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?p)))) AS ?propertyPartition)
             }"""
         ]
             <../meta/modifiedUpdate.ttl>
@@ -528,15 +564,16 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctSubject.ttl#activity> ;
-                    void:propertyPartition [
-                            void:property ?p ;
-                            void:distinctSubjects ?x
-                        ] .
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctSubject.ttl#activity> ;
+                    void:propertyPartition ?propertyPartition .
+                ?propertyPartition void:property ?p ;
+                    void:distinctSubjects ?x .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctSubject.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctSubject.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             } WHERE {
                 { SELECT (COUNT(DISTINCT ?s) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?p)))) AS ?propertyPartition)
             }"""
         ]
         <../meta/modifiedUpdate.ttl>
@@ -550,15 +587,16 @@
                 PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             CONSTRUCT {
-                $datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctObject.ttl#activity> ;
-                    void:propertyPartition [
-                            void:property ?p ;
-                            void:distinctObjects ?x
-                        ] .
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctObject.ttl#activity> ;
+                    void:propertyPartition ?propertyPartition .
+                ?propertyPartition void:property ?p ;
+                            void:distinctObjects ?x .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctObject.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionDistinctObject.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             } WHERE {
                 { SELECT (COUNT(DISTINCT ?o) AS ?x) ?p WHERE { ?s ?p ?o } GROUP BY ?p }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?p)))) AS ?propertyPartition)
             }"""
         ]
         <../meta/modifiedUpdate.ttl>

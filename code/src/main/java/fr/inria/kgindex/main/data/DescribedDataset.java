@@ -1,11 +1,11 @@
 package fr.inria.kgindex.main.data;
 
-import fr.inria.kgindex.main.util.KGIndex;
 import org.apache.jena.rdf.model.AnonId;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.sparql.util.StringUtils;
+
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -27,32 +27,17 @@ public class DescribedDataset {
 
 	public DescribedDataset(String endpoint) {
 		this._endpointUrl = endpoint;
-		String endpointDescResourceString = KGIndex.kgindexNamespace + this._anonId.getLabelString() + "Endpoint";
-		String datasetDescResourceString = KGIndex.kgindexNamespace + this._anonId.getLabelString() + "Dataset";
-		String metadataDescResourceString = KGIndex.kgindexNamespace + this._anonId.getLabelString() + "Metadata";
-		String graphListDescResourceString = endpointDescResourceString + "GraphList";
-		this.setEndpointDescriptionResource(this._model.createResource(endpointDescResourceString));
-		this.setDatasetDescriptionResource(this._model.createResource(datasetDescResourceString));
-		this.setMetadataDescriptionResource(this._model.createResource(metadataDescResourceString));
-		this.setGraphListResource(this._model.createResource(graphListDescResourceString));
 		this._names = new LinkedList<>();
+		String endpointHash = DigestUtils.md5Hex(this._endpointUrl);
+		this._datasetDescriptionResource = this._model.createResource("http://ns.inria.fr/kg/index#" + endpointHash + "Dataset");
+		this._endpointDescriptionResource = this._model.createResource("http://ns.inria.fr/kg/index#" + endpointHash + "Endpoint");
+		this._metadataDescriptionResource = this._model.createResource("http://ns.inria.fr/kg/index#" + endpointHash + "Metadata");
+		this._graphListResource = this._model.createResource("http://ns.inria.fr/kg/index#" + endpointHash + "Graphs");
 	}
 	
 	public DescribedDataset(String endpoint, List<String> names) {
 		this(endpoint);
 		this._names = names;
-	}
-
-	public DescribedDataset(String endpoint, String endpointResourceUrl, String datasetResourceUrl, String metadataResourceUrl) {
-		this(endpoint);
-		Resource endpointDescResource = this._model.createResource(endpointResourceUrl);
-		this.setEndpointDescriptionResource(endpointDescResource);
-		Resource datasetDescResource = this._model.createResource(datasetResourceUrl);
-		this.setDatasetDescriptionResource(datasetDescResource);
-		Resource metadataDescResource = this._model.createResource(metadataResourceUrl);
-		this.setMetadataDescriptionResource(metadataDescResource);
-		Resource graphListResource = this._model.createResource(endpointResourceUrl + "GraphList");
-		this.setGraphListResource(graphListResource);
 	}
 	
 	public String getEndpointUrl() {

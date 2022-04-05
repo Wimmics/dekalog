@@ -39,8 +39,8 @@
     schema:editor           <Uri of creator(s)> , <editor(s)> , "Avoid string literals when possible" ;
     dct:contributor         <Uri of contributor(s)> , "Avoid string literals when possible" ;
 
-    dct:licence     <Uri/Url of licence> ;
-    schema:licence  <Uri/Url of licence> ;
+    dct:license     <Uri/Url of license> ;
+    schema:license  <Uri/Url of license> ;
     owl:versionInfo "Version number" ;
     schema:version  "Version number" ;
 

@@ -38,8 +38,8 @@ const blankNodesDataFile = cachePromise("blankNodesData.json");
 
 const numberOfVocabulariesLimit = 1000;
 
-const graphLists = require('../data/runSets.json');
-const sparqlFeatureDesc = require('../data/SPARQLFeatureDescriptions.json');
+const graphListsFile = cachePromise('runSets.json');
+const sparqlFeatureDescFile = cachePromise('SPARQLFeatureDescriptions.json');
 
 class KartoChart {
     constructor(config = { chartObject, option, fillFunction: () => { }, redrawFunction: () => { }, clearFunction: () => { }, hideFunction: () => { }, showFunction: () => { }, divId }) {
@@ -308,7 +308,8 @@ $(function () {
     }
 
     showLoadingSpinner()
-    Promise.all([whiteListFile, geolocDataFile, sparqlCoverCountFile, sparqlFeaturesDataFile, knownVocabDataFile, vocabEndpointDataFile, vocabKeywordDataFile, classCountDataFile, propertyCountDataFile, tripleCountDataFile, categoryTestCountDataFile, totalCategoryTestCountFile, endpointTestsDataFile, totalRuntimeDataFile, averageRuntimeDataFile, classPropertyDataFile, datasetDescriptionDataFile, shortUriDataFile, rdfDataStructureDataFile, readableLabelDataFile, blankNodesDataFile])
+    // Loading all the data files on document load
+    Promise.all([whiteListFile, geolocDataFile, sparqlCoverCountFile, sparqlFeaturesDataFile, knownVocabDataFile, vocabEndpointDataFile, vocabKeywordDataFile, classCountDataFile, propertyCountDataFile, tripleCountDataFile, categoryTestCountDataFile, totalCategoryTestCountFile, endpointTestsDataFile, totalRuntimeDataFile, averageRuntimeDataFile, classPropertyDataFile, datasetDescriptionDataFile, shortUriDataFile, rdfDataStructureDataFile, readableLabelDataFile, blankNodesDataFile, graphListsFile, sparqlFeatureDescFile])
         .then(datafiles => {
             const whiteListData = datafiles[0];
             const geolocData = datafiles[1];
@@ -331,6 +332,8 @@ $(function () {
             const rdfDataStructureData = datafiles[18];
             const readableLabelData = datafiles[19];
             const blankNodesData = datafiles[20];
+            const graphLists = datafiles[21];
+            const sparqlFeatureDesc = datafiles[22];
 
             var filteredEndpointWhiteList = [];
 
@@ -651,7 +654,7 @@ $(function () {
                             featuresQueryMap.set(featureDesc.feature, featureDesc.query);
                         });
 
-                        sparqlFeaturesDataArray = sparqlFeaturesData.filter(endpointItem => ((!(new Set(blackistedEndpointIndexList)).has(endpointItem.endpoint)) && (new Set(filteredEndpointWhiteList).has(endpointItem.endpoint))));
+                        var sparqlFeaturesDataArray = sparqlFeaturesData.filter(endpointItem => ((!(new Set(blackistedEndpointIndexList)).has(endpointItem.endpoint)) && (new Set(filteredEndpointWhiteList).has(endpointItem.endpoint))));
 
                         sparqlFeaturesDataArray.sort((a, b) => {
                             return a.endpoint.localeCompare(b.endpoint);
@@ -2652,14 +2655,14 @@ $(function () {
                         $('#blankNodesQueryCell').empty();
                         $('#blankNodesQueryCell').append($(document.createElement('code')).text(this.query))
 
-                        blankNodeData = blankNodesData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                        var blankNodeDataTmp = blankNodesData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
                             && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
                             && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined))
 
-                        var graphSet = new Set(blankNodeData.map(a => a.graph))
+                        var graphSet = new Set(blankNodeDataTmp.map(a => a.graph))
 
                         var endpointDataSerieMap = new Map();
-                        blankNodeData.forEach((blankNodeItem, i) => {
+                        blankNodeDataTmp.forEach((blankNodeItem, i) => {
                             if (endpointDataSerieMap.get(blankNodeItem.endpoint) == undefined) {
                                 endpointDataSerieMap.set(blankNodeItem.endpoint, []);
                             }
@@ -2687,8 +2690,8 @@ $(function () {
                             this.chartObject.setOption(this.option, true);
 
                             // Average measure
-                            var blankNodeMeasureSum = blankNodeData.map(a => a.measure).reduce((previous, current) => current + previous);
-                            var blankNodesAverageMeasure = blankNodeMeasureSum / blankNodeData.length;
+                            var blankNodeMeasureSum = blankNodeDataTmp.map(a => a.measure).reduce((previous, current) => current + previous);
+                            var blankNodesAverageMeasure = blankNodeMeasureSum / blankNodeDataTmp.length;
                             $('#blankNodesMeasure').text(precise(blankNodesAverageMeasure, 3) + "%");
 
                             // Measire Details

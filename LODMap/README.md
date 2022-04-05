@@ -8,7 +8,9 @@ Development server at localhost:1234 started with:
 
 Deployment is done with:
 > rm -f dist/*
+> 
 > npx parcel build src/index.html
+> 
 > scp dist/* /wherever you need>
 
 'dataCashing.js' is a node script to update from the index the static data files of the web site
