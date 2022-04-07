@@ -1028,137 +1028,144 @@ $(function () {
                 sparqlesVocabulariesQuery: '',
                 fillFunction: function () {
                     return new Promise((resolve, reject) => {
-                        this.sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
-                            "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
-                            "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-                            "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
-                            "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
-                            "} " +
-                            generateGraphValueFilterClause() +
-                            " } " +
-                            "GROUP BY ?endpointUrl ?vocabulary ";
+                        if (!this.filled) {
+                            this.sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
+                                "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+                                "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+                                "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
+                                "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
+                                "} " +
+                                generateGraphValueFilterClause() +
+                                " } " +
+                                "GROUP BY ?endpointUrl ?vocabulary ";
 
-                        // Create an force graph with the graph linked by co-ocurrence of vocabularies
+                            // Create an force graph with the graph linked by co-ocurrence of vocabularies
 
-                        var endpointSet = new Set();
-                        var vocabSet = new Set();
-                        var rawVocabSet = new Set();
-                        var rawGatherVocab = new Map();
-                        vocabEndpointData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
-                            && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
-                        ).forEach((item, i) => {
-                            var endpoint = item.endpoint;
-                            var vocabularies = item.vocabularies;
-                            if (vocabularies.length < numberOfVocabulariesLimit) {
-                                endpointSet.add(endpoint);
-                                vocabularies.forEach(vocab => {
-                                    rawVocabSet.add(vocab);
-                                })
-                                if (!rawGatherVocab.has(endpoint)) {
-                                    rawGatherVocab.set(endpoint, new Set());
-                                }
-                                rawGatherVocab.set(endpoint, vocabularies);
-                            }
-                        });
-
-                        var jsonRawVocabNodes = new Set();
-                        var jsonRawVocabLinks = new Set();
-
-                        endpointSet.forEach(item => {
-                            jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-                        });
-                        rawVocabSet.forEach(item => {
-                            jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
-                        });
-                        rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                            endpointVocabs.forEach((vocab, i) => {
-                                jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
-                            });
-                        });
-
-                        var gatherVocab = new Map();
-                        // Filtering according to ontology repositories
-                        rawVocabSet.forEach(vocabulariUri => {
-                            if (knownVocabData.includes(vocabulariUri)) {
-                                vocabSet.add(vocabulariUri);
-                            }
-                        });
-                        rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
-                            vocabulariUriSet.forEach(vocabulariUri => {
-                                if (knownVocabData.includes(vocabulariUri)) {
-                                    if (!gatherVocab.has(endpointUri)) {
-                                        gatherVocab.set(endpointUri, new Set());
+                            var endpointSet = new Set();
+                            var vocabSet = new Set();
+                            var rawVocabSet = new Set();
+                            var rawGatherVocab = new Map();
+                            vocabEndpointData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                            ).forEach((item, i) => {
+                                var endpoint = item.endpoint;
+                                var vocabularies = item.vocabularies;
+                                if (vocabularies.length < numberOfVocabulariesLimit) {
+                                    endpointSet.add(endpoint);
+                                    vocabularies.forEach(vocab => {
+                                        rawVocabSet.add(vocab);
+                                    })
+                                    if (!rawGatherVocab.has(endpoint)) {
+                                        rawGatherVocab.set(endpoint, new Set());
                                     }
-                                    gatherVocab.get(endpointUri).add(vocabulariUri);
+                                    rawGatherVocab.set(endpoint, vocabularies);
                                 }
                             });
-                        });
 
-                        // Endpoint and vocabularies graph
-                        var jsonVocabLinks = new Set();
-                        var jsonVocabNodes = new Set();
+                            var jsonRawVocabNodes = new Set();
+                            var jsonRawVocabLinks = new Set();
 
-                        endpointSet.forEach(item => {
-                            jsonVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-                        });
-                        vocabSet.forEach(item => {
-                            jsonVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
-                        });
-
-                        gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                            endpointVocabs.forEach((vocab, i) => {
-                                jsonVocabLinks.add({ source: endpointUrl, target: vocab })
+                            endpointSet.forEach(item => {
+                                jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
                             });
-                        });
-                        if (jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
-                            this.show();
-
-                            var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
-                            var sumknowVocabMeasure = 0;
-                            var knowVocabsData = [];
-                            gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                                var measure = (endpointVocabs.size / rawGatherVocab.get(endpointUrl).length);
-                                knowVocabsData.push({ 'endpoint': endpointUrl, 'measure': measure })
-
+                            rawVocabSet.forEach(item => {
+                                jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
+                            });
+                            rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
                                 endpointVocabs.forEach((vocab, i) => {
-                                    jsonVocabLinks.add({ source: endpointUrl, target: vocab });
+                                    jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
                                 });
                             });
 
-
-                            this.option = getForceGraphOption('Endpoints and vocabularies with filtering*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
-                            this.chartObject.setOption(this.option, true);
-
-                            // Measure Table
-                            function endpointKnowVocabsMeasureFill() {
-                                var tableContent = knowVocabsData.map(item => [item.endpoint, item.measure])
-                                knowVocabsData.forEach((item, i) => {
-                                    var endpointUrl = item.endpoint;
-                                    var measure = item.measure;
-                                    sumknowVocabMeasure += measure;
-                                    var endpointRow = $(document.createElement("tr"));
-                                    var endpointCell = $(document.createElement('td'));
-                                    endpointCell.text(endpointUrl);
-                                    endpointRow.append(endpointCell);
-                                    var knownVocabMeasureCell = $(document.createElement('td'));
-                                    knownVocabMeasureCell.text(precise(measure * 100, 3) + "%");
-                                    endpointRow.append(knownVocabMeasureCell);
-                                    endpointKnownVocabulariestableBody.append(endpointRow);
+                            var gatherVocab = new Map();
+                            // Filtering according to ontology repositories
+                            rawVocabSet.forEach(vocabulariUri => {
+                                if (knownVocabData.includes(vocabulariUri)) {
+                                    vocabSet.add(vocabulariUri);
+                                }
+                            });
+                            rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
+                                vocabulariUriSet.forEach(vocabulariUri => {
+                                    if (knownVocabData.includes(vocabulariUri)) {
+                                        if (!gatherVocab.has(endpointUri)) {
+                                            gatherVocab.set(endpointUri, new Set());
+                                        }
+                                        gatherVocab.get(endpointUri).add(vocabulariUri);
+                                    }
                                 });
-                            };
-                            endpointKnowVocabsMeasureFill();
-                            $("#knowVocabEndpointTable").DataTable()
+                            });
 
-                            // computation of the know vocabularies measure
-                            var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
-                            knownVocabulariesMeasureHtml.text(precise((sumknowVocabMeasure / endpointSet.size) * 100, 3) + "%");
-                        } else {
-                            this.hide();
+                            // Endpoint and vocabularies graph
+                            var jsonVocabLinks = new Set();
+                            var jsonVocabNodes = new Set();
+
+                            endpointSet.forEach(item => {
+                                jsonVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
+                            });
+                            vocabSet.forEach(item => {
+                                jsonVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
+                            });
+
+                            gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+                                endpointVocabs.forEach((vocab, i) => {
+                                    jsonVocabLinks.add({ source: endpointUrl, target: vocab })
+                                });
+                            });
+                            if (jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
+                                this.show();
+
+                                var endpointKnownVocabulariestableBody = $('#endpointKnownVocabsTableBody');
+                                var sumknowVocabMeasure = 0;
+                                var knowVocabsData = [];
+                                gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+                                    var measure = (endpointVocabs.size / rawGatherVocab.get(endpointUrl).length);
+                                    knowVocabsData.push({ 'endpoint': endpointUrl, 'measure': measure })
+
+                                    endpointVocabs.forEach((vocab, i) => {
+                                        jsonVocabLinks.add({ source: endpointUrl, target: vocab });
+                                    });
+                                });
+
+
+                                this.option = getForceGraphOption('Endpoints and vocabularies with filtering*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
+                                this.chartObject.setOption(this.option, true);
+
+                                // Measure Table
+                                function endpointKnowVocabsMeasureFill() {
+                                    var tableContent = knowVocabsData.map(item => [item.endpoint, item.measure])
+                                    knowVocabsData.forEach((item, i) => {
+                                        var endpointUrl = item.endpoint;
+                                        var measure = item.measure;
+                                        sumknowVocabMeasure += measure;
+                                        var endpointRow = $(document.createElement("tr"));
+                                        var endpointCell = $(document.createElement('td'));
+                                        endpointCell.text(endpointUrl);
+                                        endpointRow.append(endpointCell);
+                                        var knownVocabMeasureCell = $(document.createElement('td'));
+                                        knownVocabMeasureCell.text(precise(measure * 100, 3) + "%");
+                                        endpointRow.append(knownVocabMeasureCell);
+                                        endpointKnownVocabulariestableBody.append(endpointRow);
+                                    });
+                                };
+                                endpointKnowVocabsMeasureFill();
+                                $("#knowVocabEndpointTable").DataTable()
+
+                                // computation of the know vocabularies measure
+                                var knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
+                                knownVocabulariesMeasureHtml.text(precise((sumknowVocabMeasure / endpointSet.size) * 100, 3) + "%");
+                            } else {
+                                this.hide();
+                            }
+                            this.chartObject.on('click', 'series', event => {
+                                if(event.dataType.localeCompare("node") ==0) {
+                                    var uriLink = event.data.name;
+                                    window.open(uriLink, '_blank').focus();
+                                }
+                            })
                         }
-
                         resolve();
 
-                    });
+                    }).then(() => { this.filled = true; });
                 },
                 hideFunction: function () {
                     this.chartObject.setOption({ series: [] }, true);
@@ -1194,60 +1201,68 @@ $(function () {
                 fillFunction: function () {
 
                     return new Promise((resolve, reject) => {
-                        this.sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
-                            "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
-                            "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-                            "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
-                            "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
-                            "} " +
-                            generateGraphValueFilterClause() +
-                            " } " +
-                            "GROUP BY ?endpointUrl ?vocabulary ";
+                        if (!this.filled) {
+                            this.sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
+                                "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+                                "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+                                "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
+                                "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
+                                "} " +
+                                generateGraphValueFilterClause() +
+                                " } " +
+                                "GROUP BY ?endpointUrl ?vocabulary ";
 
-                        var endpointSet = new Set();
-                        var rawVocabSet = new Set();
-                        var rawGatherVocab = new Map();
-                        vocabEndpointData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
-                            && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
-                        ).forEach((item, i) => {
-                            var endpoint = item.endpoint;
-                            var vocabularies = item.vocabularies;
-                            if (vocabularies.length < numberOfVocabulariesLimit) {
-                                endpointSet.add(endpoint);
-                                vocabularies.forEach(vocab => {
-                                    rawVocabSet.add(vocab);
-                                })
-                                if (!rawGatherVocab.has(endpoint)) {
-                                    rawGatherVocab.set(endpoint, new Set());
+                            var endpointSet = new Set();
+                            var rawVocabSet = new Set();
+                            var rawGatherVocab = new Map();
+                            vocabEndpointData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                            ).forEach((item, i) => {
+                                var endpoint = item.endpoint;
+                                var vocabularies = item.vocabularies;
+                                if (vocabularies.length < numberOfVocabulariesLimit) {
+                                    endpointSet.add(endpoint);
+                                    vocabularies.forEach(vocab => {
+                                        rawVocabSet.add(vocab);
+                                    })
+                                    if (!rawGatherVocab.has(endpoint)) {
+                                        rawGatherVocab.set(endpoint, new Set());
+                                    }
+                                    rawGatherVocab.set(endpoint, vocabularies);
                                 }
-                                rawGatherVocab.set(endpoint, vocabularies);
-                            }
-                        });
-
-                        var jsonRawVocabNodes = new Set();
-                        var jsonRawVocabLinks = new Set();
-
-                        endpointSet.forEach(item => {
-                            jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-                        });
-                        rawVocabSet.forEach(item => {
-                            jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
-                        });
-                        rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                            endpointVocabs.forEach((vocab, i) => {
-                                jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
                             });
-                        });
-                        if (jsonRawVocabNodes.size > 0 && jsonRawVocabLinks.size > 0) {
-                            this.show();
 
-                            this.option = getForceGraphOption('Endpoints and vocabularies without filtering', ["Vocabulary", "Endpoint"], [...jsonRawVocabNodes], [...jsonRawVocabLinks]);
-                            this.chartObject.setOption(this.option, true);
-                        } else {
-                            this.hide();
+                            var jsonRawVocabNodes = new Set();
+                            var jsonRawVocabLinks = new Set();
+
+                            endpointSet.forEach(item => {
+                                jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
+                            });
+                            rawVocabSet.forEach(item => {
+                                jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
+                            });
+                            rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+                                endpointVocabs.forEach((vocab, i) => {
+                                    jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
+                                });
+                            });
+                            if (jsonRawVocabNodes.size > 0 && jsonRawVocabLinks.size > 0) {
+                                this.show();
+
+                                this.option = getForceGraphOption('Endpoints and vocabularies without filtering', ["Vocabulary", "Endpoint"], [...jsonRawVocabNodes], [...jsonRawVocabLinks]);
+                                this.chartObject.setOption(this.option, true);
+                            } else {
+                                this.hide();
+                            }
+                            this.chartObject.on('click', 'series', event => {
+                                if(event.dataType.localeCompare("node") ==0) {
+                                    var uriLink = event.data.name;
+                                    window.open(uriLink, '_blank').focus();
+                                }
+                            })
                         }
                         resolve();
-                    })
+                    }).then(() => { this.filled = true; });
                 },
                 hideFunction: function () {
                     this.chartObject.setOption({ series: [] }, true);
@@ -1283,147 +1298,153 @@ $(function () {
                 },
                 fillFunction: function () {
                     return new Promise((resolve, reject) => {
-                        // Create an force graph with the graph linked by co-ocurrence of vocabularies
+                        if (!this.filled) {
+                            // Create an force graph with the graph linked by co-ocurrence of vocabularies
 
-                        var endpointSet = new Set();
-                        var vocabSet = new Set();
-                        var rawVocabSet = new Set();
-                        var rawGatherVocab = new Map();
-                        vocabEndpointData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
-                            && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
-                        ).forEach((item, i) => {
-                            var endpoint = item.endpoint;
-                            var vocabularies = item.vocabularies;
-                            if (vocabularies.length < numberOfVocabulariesLimit) {
-                                endpointSet.add(endpoint);
-                                vocabularies.forEach(vocab => {
-                                    rawVocabSet.add(vocab);
-                                })
-                                if (!rawGatherVocab.has(endpoint)) {
-                                    rawGatherVocab.set(endpoint, new Set());
-                                }
-                                rawGatherVocab.set(endpoint, vocabularies);
-                            }
-                        });
-
-                        var jsonRawVocabNodes = new Set();
-                        var jsonRawVocabLinks = new Set();
-
-                        endpointSet.forEach(item => {
-                            jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-                        });
-                        rawVocabSet.forEach(item => {
-                            jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
-                        });
-                        rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                            endpointVocabs.forEach((vocab, i) => {
-                                jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
-                            });
-                        });
-
-                        var gatherVocab = new Map();
-                        // Filtering according to ontology repositories
-                        rawVocabSet.forEach(vocabulariUri => {
-                            if (knownVocabData.includes(vocabulariUri)) {
-                                vocabSet.add(vocabulariUri);
-                            }
-                        });
-                        rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
-                            vocabulariUriSet.forEach(vocabulariUri => {
-                                if (knownVocabData.includes(vocabulariUri)) {
-                                    if (!gatherVocab.has(endpointUri)) {
-                                        gatherVocab.set(endpointUri, new Set());
+                            var endpointSet = new Set();
+                            var vocabSet = new Set();
+                            var rawVocabSet = new Set();
+                            var rawGatherVocab = new Map();
+                            vocabEndpointData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                            ).forEach((item, i) => {
+                                var endpoint = item.endpoint;
+                                var vocabularies = item.vocabularies;
+                                if (vocabularies.length < numberOfVocabulariesLimit) {
+                                    endpointSet.add(endpoint);
+                                    vocabularies.forEach(vocab => {
+                                        rawVocabSet.add(vocab);
+                                    })
+                                    if (!rawGatherVocab.has(endpoint)) {
+                                        rawGatherVocab.set(endpoint, new Set());
                                     }
-                                    gatherVocab.get(endpointUri).add(vocabulariUri);
+                                    rawGatherVocab.set(endpoint, vocabularies);
                                 }
                             });
-                        });
 
-                        var jsonKeywordLinks = new Set();
-                        var jsonKeywordNodes = new Set();
+                            var jsonRawVocabNodes = new Set();
+                            var jsonRawVocabLinks = new Set();
 
-                        var keywordSet = new Set();
-                        var vocabKeywordMap = new Map();
-                        var endpointKeywordsMap = new Map();
-
-                        vocabKeywordData.forEach(item => {
-                            vocabKeywordMap.set(item.vocabulary, item.keywords);
-
-                            item.keywords.forEach(keyword => {
-                                keywordSet.add(keyword);
-                            })
-                        });
-
-                        gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                            endpointVocabs.forEach((endpointVocab, i) => {
-                                var vocabKeywords = vocabKeywordMap.get(endpointVocab);
-                                if (vocabKeywords != undefined) {
-                                    vocabKeywords.forEach((endpointKeyword, i) => {
-                                        jsonKeywordLinks.add({ source: endpointUrl, target: endpointKeyword })
-
-                                        if (endpointKeywordsMap.get(endpointUrl) == undefined) {
-                                            endpointKeywordsMap.set(endpointUrl, new Set());
-                                        }
-                                        endpointKeywordsMap.get(endpointUrl).add(endpointKeyword);
-                                    });
-                                }
+                            endpointSet.forEach(item => {
+                                jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
                             });
-                        });
-
-                        keywordSet.forEach(item => {
-                            jsonKeywordNodes.add({ name: item, category: 'Keyword', symbolSize: 5 })
-                        });
-                        endpointSet.forEach(item => {
-                            jsonKeywordNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 })
-                        });
-
-                        if (jsonKeywordNodes.size > 0 && jsonKeywordLinks.size > 0) {
-                            this.show();
-
-                            this.option = getForceGraphOption('Endpoints and keywords', ["Keyword", "Endpoint"], [...jsonKeywordNodes], [...jsonKeywordLinks]);
-                            this.chartObject.setOption(this.option, true);
-
-                            var endpointKeywordsData = [];
-                            endpointKeywordsMap.forEach((keywords, endpoint, map) => {
-                                endpointKeywordsData.push({ endpoint: endpoint, keywords: keywords })
+                            rawVocabSet.forEach(item => {
+                                jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
                             });
-
-                            // Endpoint and vocabulary keywords table
-                            var endpointKeywordsTableBody = $('#endpointKeywordsTableBody');
-                            function endpointKeywordsTableFill() {
-                                endpointKeywordsTableBody.empty();
-                                endpointKeywordsData.forEach(endpointKeywordsItem => {
-                                    var endpoint = endpointKeywordsItem.endpoint;
-                                    var keywords = endpointKeywordsItem.keywords;
-                                    var endpointRow = $(document.createElement("tr"));
-                                    var endpointCell = $(document.createElement("td"));
-                                    endpointCell.text(endpoint);
-                                    var keywordsCell = $(document.createElement("td"));
-                                    var keywordsText = "";
-                                    var keywordCount = 0;
-                                    var keywordsArray = [...keywords].sort((a, b) => a.localeCompare(b))
-                                    keywordsArray.forEach((keyword) => {
-                                        if (keywordCount > 0) {
-                                            keywordsText += ", ";
-                                        }
-                                        keywordsText += keyword;
-                                        keywordCount++;
-                                    });
-                                    keywordsCell.text(keywordsText);
-
-                                    endpointRow.append(endpointCell);
-                                    endpointRow.append(keywordsCell);
-                                    endpointKeywordsTableBody.append(endpointRow);
+                            rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+                                endpointVocabs.forEach((vocab, i) => {
+                                    jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
                                 });
-                            }
-                            endpointKeywordsTableFill()
-                            $("#endpointKeywordsTable").DataTable()
-                        } else {
-                            this.option.hideEndpointKeywordContent();
-                        }
+                            });
 
+                            var gatherVocab = new Map();
+                            // Filtering according to ontology repositories
+                            rawVocabSet.forEach(vocabulariUri => {
+                                if (knownVocabData.includes(vocabulariUri)) {
+                                    vocabSet.add(vocabulariUri);
+                                }
+                            });
+                            rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
+                                vocabulariUriSet.forEach(vocabulariUri => {
+                                    if (knownVocabData.includes(vocabulariUri)) {
+                                        if (!gatherVocab.has(endpointUri)) {
+                                            gatherVocab.set(endpointUri, new Set());
+                                        }
+                                        gatherVocab.get(endpointUri).add(vocabulariUri);
+                                    }
+                                });
+                            });
+
+                            var jsonKeywordLinks = new Set();
+                            var jsonKeywordNodes = new Set();
+
+                            var keywordSet = new Set();
+                            var vocabKeywordMap = new Map();
+                            var endpointKeywordsMap = new Map();
+
+                            vocabKeywordData.forEach(item => {
+                                vocabKeywordMap.set(item.vocabulary, item.keywords);
+
+                                item.keywords.forEach(keyword => {
+                                    keywordSet.add(keyword);
+                                })
+                            });
+
+                            gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+                                endpointVocabs.forEach((endpointVocab, i) => {
+                                    var vocabKeywords = vocabKeywordMap.get(endpointVocab);
+                                    if (vocabKeywords != undefined) {
+                                        vocabKeywords.forEach((endpointKeyword, i) => {
+                                            jsonKeywordLinks.add({ source: endpointUrl, target: endpointKeyword })
+
+                                            if (endpointKeywordsMap.get(endpointUrl) == undefined) {
+                                                endpointKeywordsMap.set(endpointUrl, new Set());
+                                            }
+                                            endpointKeywordsMap.get(endpointUrl).add(endpointKeyword);
+                                        });
+                                    }
+                                });
+                            });
+
+                            keywordSet.forEach(item => {
+                                jsonKeywordNodes.add({ name: item, category: 'Keyword', symbolSize: 5 })
+                            });
+                            endpointSet.forEach(item => {
+                                jsonKeywordNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 })
+                            });
+
+                            if (jsonKeywordNodes.size > 0 && jsonKeywordLinks.size > 0) {
+                                this.show();
+
+                                this.option = getForceGraphOption('Endpoints and keywords', ["Keyword", "Endpoint"], [...jsonKeywordNodes], [...jsonKeywordLinks]);
+                                this.chartObject.setOption(this.option, true);
+
+                                var endpointKeywordsData = [];
+                                endpointKeywordsMap.forEach((keywords, endpoint, map) => {
+                                    endpointKeywordsData.push({ endpoint: endpoint, keywords: keywords })
+                                });
+
+                                // Endpoint and vocabulary keywords table
+                                var endpointKeywordsTableBody = $('#endpointKeywordsTableBody');
+                                function endpointKeywordsTableFill() {
+                                    endpointKeywordsTableBody.empty();
+                                    endpointKeywordsData.forEach(endpointKeywordsItem => {
+                                        var endpoint = endpointKeywordsItem.endpoint;
+                                        var keywords = endpointKeywordsItem.keywords;
+                                        var endpointRow = $(document.createElement("tr"));
+                                        var endpointCell = $(document.createElement("td"));
+                                        endpointCell.text(endpoint);
+                                        var keywordsCell = $(document.createElement("td"));
+                                        var keywordsText = "";
+                                        var keywordCount = 0;
+                                        var keywordsArray = [...keywords].sort((a, b) => a.localeCompare(b))
+                                        keywordsArray.forEach((keyword) => {
+                                            if (keywordCount > 0) {
+                                                keywordsText += ", ";
+                                            }
+                                            keywordsText += keyword;
+                                            keywordCount++;
+                                        });
+                                        keywordsCell.text(keywordsText);
+
+                                        endpointRow.append(endpointCell);
+                                        endpointRow.append(keywordsCell);
+                                        endpointKeywordsTableBody.append(endpointRow);
+                                    });
+                                }
+                                endpointKeywordsTableFill()
+                                $("#endpointKeywordsTable").DataTable()
+                            } else {
+                                this.option.hide();
+                            }this.chartObject.on('click', 'series', event => {
+                                if((event.dataType.localeCompare("node") == 0) && (event.data.category.localeCompare("Endpoint") == 0)) {
+                                    var uriLink = event.data.name;
+                                    window.open(uriLink, '_blank').focus();
+                                }
+                            })
+                        }
                         resolve();
-                    });
+                    }).then(() => { this.filled = true; });
                 },
                 redrawFunction: function () {
                     $('#endpointKeywords').width(mainContentColWidth);
