@@ -37,6 +37,7 @@ const readableLabelDataFile = cachePromise("readableLabelData.json");
 const blankNodesDataFile = cachePromise("blankNodesData.json");
 
 const numberOfVocabulariesLimit = 1000;
+const queryPaginationSize = 10000;
 
 const graphListsFile = cachePromise('runSets.json');
 const sparqlFeatureDescFile = cachePromise('SPARQLFeatureDescriptions.json');
@@ -77,7 +78,8 @@ function xhrGetPromise(url) {
                 resolve(xhr.responseText);
             } else {
                 reject({
-                    url: url,
+                    url: decodeURIComponent(url),
+                    encodedUrl: url,
                     response: xhr.responseText,
                     status: xhr.status,
                     statusText: xhr.statusText
@@ -86,7 +88,8 @@ function xhrGetPromise(url) {
         };
         xhr.onerror = function () {
             reject({
-                url: url,
+                url: decodeURIComponent(url),
+                encodedUrl: url,
                 response: xhr.responseText,
                 status: xhr.status,
                 statusText: xhr.statusText
@@ -99,10 +102,40 @@ function xhrGetPromise(url) {
 function xhrJSONPromise(url) {
     return xhrGetPromise(url).then(response => {
         return JSON.parse(response);
-    })
+    });
+}
+
+function sparqlQueryPromise(query) {
+    if (query.includes("SELECT") || query.includes("ASK")) {
+        return xhrJSONPromise('http://prod-dekalog.inria.fr/sparql?query=' + encodeURIComponent(query) + '&format=json');
+    }
+    else {
+        throw "ERROR " + query;
+    }
+}
+
+function paginatedSparqlQueryPromise(query, limit = queryPaginationSize, offset = 0, finalResult = []) {
+    var paginatedQuery = query + " LIMIT " + limit + " OFFSET " + offset;
+    return sparqlQueryPromise(paginatedQuery)
+        .then(queryResult => {
+            queryResult.results.bindings.forEach(resultItem => {
+                var finaResultItem = {};
+                queryResult.head.vars.forEach(variable => {
+                    finaResultItem[variable] = resultItem[variable];
+                })
+                finalResult.push(finaResultItem);
+            })
+            if (queryResult.results.bindings.length > 0) {
+                return paginatedSparqlQueryPromise(query, limit + queryPaginationSize, offset + queryPaginationSize, finalResult)
+            }
+        })
+        .then(() => {
+            return finalResult;
+        })
         .catch(error => {
             console.log(error)
-        });
+            return finalResult;
+        })
 }
 
 function cachePromise(cacheFile) {
