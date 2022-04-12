@@ -11,7 +11,7 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
 kgi:catalogTest a dcat:Catalog ;
-    dcat:dataset kgi:wasabi .
+    dcat:dataset kgi:BNBDataset , kgi:AgroLDDataset , kgi:AgroPortalDataset , kgi:FCUDataset, kgi:ScholarlyData , kgi:orkg , kgi:dbpedia , kgi:dbpedia .
 
 kgi:BNBDataset void:sparqlEndpoint <https://bnb.data.bl.uk/sparql> ;
     rdfs:label "BNB".
