@@ -248,7 +248,8 @@ function getCategoryScatterOption(title, categories, series) {
             data: categories,
             axisLabel: {
                 show: true,
-                interval: 0
+                interval: 0,
+                rotate: 27
             }
         },
         yAxis: {
