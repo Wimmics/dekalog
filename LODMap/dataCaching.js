@@ -229,10 +229,12 @@ function endpointMapfill() {
                         popupString += "<tr><td>Organization: </td><td>" + endpointItem.org + "</td></tr>";
                     }
                     if (endpointItem.timezone != undefined) {
-                        var badTimezone = endpointItem.timezone.localeCompare(endpointItem.sparqlTimezone) != 0;
-                        if (badTimezone) {
-                            popupString += "<tr><td>Timezone of endpoint URL: </td><td>" + endpointItem.timezone + "</td></tr>";
-                            popupString += "<tr><td>Timezone declared by endpoint: </td><td>" + endpointItem.sparqlTimezone + "</td></tr>";
+                        popupString += "<tr><td>Timezone of endpoint URL: </td><td>" + endpointItem.timezone + "</td></tr>";
+                        if(endpointItem.sparqlTimezone != undefined) {
+                            var badTimezone = endpointItem.timezone.localeCompare(endpointItem.sparqlTimezone) != 0;
+                            if (badTimezone) {
+                                popupString += "<tr><td>Timezone declared by endpoint: </td><td>" + endpointItem.sparqlTimezone + "</td></tr>";
+                            }
                         }
                     }
                     if (responseLabels.results.bindings.size > 0) {
