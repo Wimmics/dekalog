@@ -36,6 +36,8 @@ const rdfDataStructureDataFile = cachePromise("rdfDataStructureData.json");
 const readableLabelDataFile = cachePromise("readableLabelData.json");
 const blankNodesDataFile = cachePromise("blankNodesData.json");
 
+const textElementsFile = xhrJSONPromise("https://raw.githubusercontent.com/Wimmics/dekalog/master/LODMap/src/data/cache/textElements.json");
+
 const numberOfVocabulariesLimit = 1000;
 
 const graphListsFile = cachePromise('runSets.json');
@@ -309,7 +311,7 @@ $(function () {
 
     showLoadingSpinner()
     // Loading all the data files on document load
-    Promise.all([whiteListFile, geolocDataFile, sparqlCoverCountFile, sparqlFeaturesDataFile, knownVocabDataFile, vocabEndpointDataFile, vocabKeywordDataFile, classCountDataFile, propertyCountDataFile, tripleCountDataFile, categoryTestCountDataFile, totalCategoryTestCountFile, endpointTestsDataFile, totalRuntimeDataFile, averageRuntimeDataFile, classPropertyDataFile, datasetDescriptionDataFile, shortUriDataFile, rdfDataStructureDataFile, readableLabelDataFile, blankNodesDataFile, graphListsFile, sparqlFeatureDescFile])
+    Promise.all([whiteListFile, geolocDataFile, sparqlCoverCountFile, sparqlFeaturesDataFile, knownVocabDataFile, vocabEndpointDataFile, vocabKeywordDataFile, classCountDataFile, propertyCountDataFile, tripleCountDataFile, categoryTestCountDataFile, totalCategoryTestCountFile, endpointTestsDataFile, totalRuntimeDataFile, averageRuntimeDataFile, classPropertyDataFile, datasetDescriptionDataFile, shortUriDataFile, rdfDataStructureDataFile, readableLabelDataFile, blankNodesDataFile, graphListsFile, sparqlFeatureDescFile, textElementsFile])
         .then(datafiles => {
             const whiteListData = datafiles[0];
             const geolocData = datafiles[1];
@@ -334,8 +336,16 @@ $(function () {
             const blankNodesData = datafiles[20];
             const graphLists = datafiles[21];
             const sparqlFeatureDesc = datafiles[22];
+            const textElements = datafiles[23];
 
             var filteredEndpointWhiteList = [];
+
+            // adding the HTML text where it belong
+            // console.log(encodeURIComponent($('#datasetDescriptionExplainText').html()))
+            console.log(textElements)
+            textElements.forEach(item => {
+                $('#'+item.key).html(item.value.replace('\"', '"'));
+            });
 
             // Setup tab menu
             var geolocTabButton = $('#geoloc-tab')
