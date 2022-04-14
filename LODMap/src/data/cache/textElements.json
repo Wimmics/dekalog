@@ -5,6 +5,18 @@
     },
     {
         "key": "vocabsExplainText",
-        "value": "In this graph, only the vocabularies listed in <a href=\"https://lov.linkeddata.es/dataset/lov\">Linked Open Vocabularies</a> and <a href='http://prefix.cc'>prefix.cc</a> are shown."
+        "value": "<p>In this graph, only the vocabularies listed in <a href=\"https://lov.linkeddata.es/dataset/lov\">Linked Open Vocabularies</a> and <a href='http://prefix.cc'>prefix.cc</a> are shown.</p>"
+    },
+    {
+        "key": "rawVocabsExplainText",
+        "value": "<p>In this graph, all the vocabularies extracted by IndeGx are shown. IndeGx identify vocabularies as the namespaces of the classes and properties appearing in a dataset.</p>"
+    },
+    {
+        "key": "endpointKeywordsExplainText",
+        "value": "<p>This graph shows the endpoints connected to the keyword used in <a href=\"https://lov.linkeddata.es/dataset/lov\">Linked Open Vocabularies</a> to describe their vocabularies</p>"
+    },
+    {
+        "key": "standardVocabsExplainText",
+        "value": "<p>This graph shows the endpoints connected to the different vocabularies most often used to define other vocabularies, hence \"meta-vocabularies\". As all endpoint did return their list of vocabularies when interrogated by IndeGx, all endpoints are not represented. </p>"
     }
 ]

@@ -56,7 +56,8 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link " id="vocabRelatedContent-tab" type="button">Graph of the vocabularies used
+                        <button class="nav-link " id="vocabRelatedContent-tab" type="button">Graph of the vocabularies
+                            used
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -85,7 +86,10 @@
                 </ul>
             </div>
 
-            <div class="d-flex justify-content-center"><div class="spinner-grow collapse" role="status" id="loadingSpinner"><span class="visually-hidden">Loading...</span></div></div>
+            <div class="d-flex justify-content-center">
+                <div class="spinner-grow collapse" role="status" id="loadingSpinner"><span
+                        class="visually-hidden">Loading...</span></div>
+            </div>
             <div class="tab-content" id="tabContent">
                 <div class="row border border-grey justify-content-center tab-pane fade" id="geoloc">
                     <div class="col-12 gy-5 justify-content-center">
@@ -129,49 +133,53 @@
                             <div id="vocabs"></div>
                             <div id="vocabsExplainText"></div>
                         </div>
-                        <div class="row justify-content-center border-top border-bottom my-5 py-2" id="rawVocabs"></div>
-                        <div class="row justify-content-center border-top border-bottom my-5 py-2"
-                            id="endpointKeywords"></div>
-                        <div class="row">
-                            <button id="endpointKeywordsDetails" type="button" class="btn btn-link">Details</button>
+                        <div class="row justify-content-center border-top border-bottom my-5 py-2">
+                            <div id="rawVocabs"></div>
+                            <div id="rawVocabsExplainText"></div>
                         </div>
-                        <div class="row collapse" id="endpointKeywordsDatatable">
-                            <table id="endpointKeywordsQueries" class="table table-responsive table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            Query for the list of vocabularies
-                                        </th>
-                                        <th id="endpointVocabularyQueryCell">
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            Query for the list of keywords
-                                        </th>
-                                        <th id="endpointKeywordQueryCell">
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody id="endpointKeywordsQueriesBody">
-                                </tbody>
-                            </table>
-                            <table id="endpointKeywordsTable" class="table table-responsive table-hover">
-                                <thead>
-                                    <tr>
-                                        <th id="endpointKeywordsTableEndpointHeader" scope="col">Endpoint</th>
-                                        <th id="endpointKeywordsTableKeywordHeader" scope="col">Keywords</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="endpointKeywordsTableBody">
-                                </tbody>
-                            </table>
+                        <div class="row justify-content-center border-top border-bottom my-5 py-2">
+                            <div id="endpointKeywords"></div>
+                            <div id="endpointKeywordsExplainText"></div>
+                            <div class="row">
+                                <button id="endpointKeywordsDetails" type="button" class="btn btn-link">Details</button>
+                            </div>
+                            <div class="row collapse" id="endpointKeywordsDatatable">
+                                <table id="endpointKeywordsQueries" class="table table-responsive table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Query for the list of vocabularies
+                                            </th>
+                                            <th id="endpointVocabularyQueryCell">
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                Query for the list of keywords
+                                            </th>
+                                            <th id="endpointKeywordQueryCell">
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="endpointKeywordsQueriesBody">
+                                    </tbody>
+                                </table>
+                                <table id="endpointKeywordsTable" class="table table-responsive table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th id="endpointKeywordsTableEndpointHeader" scope="col">Endpoint</th>
+                                            <th id="endpointKeywordsTableKeywordHeader" scope="col">Keywords</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="endpointKeywordsTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="row justify-content-center border-top border-bottom my-5 py-2" id="standardVocabs">
+                        <div class="row justify-content-center border-top border-bottom my-5 py-2">
+                            <div id="standardVocabs"></div>
+                            <div id="standardVocabsExplainText"></div>
                         </div>
-                        <span> <small> *: Only the vocabularies listed in <a
-                                    href="https://lov.linkeddata.es/dataset/lov">Linked Open Vocabularies</a> and <a
-                                    href='http://prefix.cc'>prefix.cc</a> are shown.</small></span>
                     </div>
                 </div>
 
