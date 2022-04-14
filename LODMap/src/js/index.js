@@ -341,8 +341,6 @@ $(function () {
             var filteredEndpointWhiteList = [];
 
             // adding the HTML text where it belong
-            // console.log(encodeURIComponent($('#datasetDescriptionExplainText').html()))
-            console.log(textElements)
             textElements.forEach(item => {
                 $('#'+item.key).html(item.value.replace('\"', '"'));
             });
