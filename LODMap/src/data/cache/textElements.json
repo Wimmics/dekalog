@@ -17,6 +17,6 @@
     },
     {
         "key": "standardVocabsExplainText",
-        "value": "<p>This graph shows the endpoints connected to the different vocabularies most often used to define other vocabularies, hence \"meta-vocabularies\". As all endpoint did return their list of vocabularies when interrogated by IndeGx, all endpoints are not represented. </p>"
+        "value": "<p>This graph shows the endpoints connected to the different vocabularies most often used to define other vocabularies, hence \"meta-vocabularies\". As all endpoints did return their list of vocabularies when interrogated by IndeGx, some of them are not represented. </p>"
     }
 ]
