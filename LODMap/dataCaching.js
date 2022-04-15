@@ -554,7 +554,7 @@ function tripleDataFill() {
         .then(json => {
             json.forEach((itemResult, i) => {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                var date = itemResult.date.value;
+                var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var triples = Number.parseInt(itemResult.o.value);
                 endpointTripleData.push({ endpoint: endpointUrl, graph: graph, date:date, triples: triples })
@@ -590,7 +590,7 @@ function classDataFill() {
         .then(json => {
             json.forEach((itemResult, i) => {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                var date = itemResult.date.value;
+                var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var triples = Number.parseInt(itemResult.o.value);
                 endpointClassCountData.push({ endpoint: endpointUrl, graph: graph, date:date, classes: triples })
@@ -677,7 +677,7 @@ function categoryTestCountFill() {
                 var count = itemResult.count.value;
                 var endpoint = itemResult.endpointUrl.value;
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                var date = itemResult.date.value;
+                var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
                 testCategoryData.push({ category: category, graph: graph, date:date, endpoint: endpoint, count: count });
             });
         })
@@ -724,7 +724,7 @@ function totalCategoryTestCountFill() {
             var count = itemResult.count.value;
             var endpoint = itemResult.endpointUrl.value;
             var graph = itemResult.g.value;
-            var date = itemResult.date.value;
+            var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
 
             totalTestCategoryData.push({ category: category, endpoint: endpoint, graph: graph, count: count })
         });
@@ -761,7 +761,7 @@ function endpointTestsDataFill() {
                 var endpointUrl = item.endpointUrl.value;
                 var rule = item.rule.value;
                 var graph = item.g.value;
-                var date = item.date.value;
+                var date = parseDate(item.date.value, 'DD-MM-YYYYTHH:mm:ss');
 
                 endpointTestsData.push({ endpoint: endpointUrl, activity: rule, graph: graph, date:date })
             });
@@ -795,7 +795,7 @@ function totalRuntimeDataFill() {
     return paginatedSparqlQueryPromise(maxMinTimeQuery).then(jsonResponse => {
         jsonResponse.forEach((itemResult, i) => {
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-            var date = itemResult.date.value;
+            var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
             var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
             var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
             var runtimeData = dayjs.duration(end.diff(start));
@@ -836,7 +836,7 @@ function averageRuntimeDataFill() {
             .then(jsonResponse => {
                 jsonResponse.forEach((itemResult, i) => {
                     var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                    var date = itemResult.date.value;
+                    var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
                     var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
                     var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
                     var runtime = dayjs.duration(end.diff(start));
@@ -1252,7 +1252,7 @@ function shortUrisDataFill() {
                 var endpoint = jsonItem.endpointUrl.value;
                 var shortUriMeasure = Number.parseFloat(jsonItem.measure.value * 100);
                 var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-                var date = jsonItem.date.value;
+                var date = parseDate(jsonItem.date.value, 'DD-MM-YYYYTHH:mm:ss');
 
                 graphSet.add(graph);
                 shortUriData.push({ graph: graph, date:date, endpoint: endpoint, measure: shortUriMeasure })
@@ -1292,7 +1292,7 @@ function readableLabelsDataFill() {
                 var endpoint = jsonItem.endpointUrl.value;
                 var readableLabelMeasure = Number.parseFloat(jsonItem.measure.value * 100);
                 var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-                var date = jsonItem.date.value;
+                var date = parseDate(jsonItem.date.value, 'DD-MM-YYYYTHH:mm:ss');
 
                 readableLabelData.push({ graph: graph, date:date, endpoint: endpoint, measure: readableLabelMeasure })
             });
@@ -1331,7 +1331,7 @@ function rdfDataStructureDataFill() {
             var endpoint = jsonItem.endpointUrl.value;
             var rdfDataStructureMeasure = Number.parseFloat(jsonItem.measure.value * 100);
             var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-            var date = jsonItem.date.value;
+            var date = parseDate(jsonItem.date.value, 'DD-MM-YYYYTHH:mm:ss');
 
             rdfDataStructureData.push({ graph: graph, date:date, endpoint: endpoint, measure: rdfDataStructureMeasure })
         });
@@ -1371,7 +1371,7 @@ function blankNodeDataFill() {
             var endpoint = jsonItem.endpointUrl.value;
                 var blankNodeMeasure = Number.parseFloat(jsonItem.measure.value * 100);
                 var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-                var date = jsonItem.date.value;
+                var date = parseDate(jsonItem.date.value, 'DD-MM-YYYYTHH:mm:ss');
 
                 graphSet.add(graph);
                 blankNodeData.push({ graph: graph, date: date, endpoint: endpoint, measure: blankNodeMeasure })
