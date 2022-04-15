@@ -629,7 +629,7 @@ function propertyDataFill() {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var properties = Number.parseInt(itemResult.o.value);
-                var date = itemResult.date.value;
+                var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
                 endpointPropertyCountData.push({ endpoint: endpointUrl, graph: graph, date:date, properties: properties })
             });
         })
@@ -726,7 +726,7 @@ function totalCategoryTestCountFill() {
             var graph = itemResult.g.value;
             var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
 
-            totalTestCategoryData.push({ category: category, endpoint: endpoint, graph: graph, count: count })
+            totalTestCategoryData.push({ category: category, endpoint: endpoint, graph: graph, date:date, count: count })
         });
     })
         .then(() => {
