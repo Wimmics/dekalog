@@ -292,7 +292,30 @@ function getCategoryScatterOption(title, categories, series) {
     };
 }
 
-function getCategoryScatterDataSeriesFromMap(dataMap) {
+function getTimeScatterOption(title, series) {
+    return {
+        title: {
+            left: 'center',
+            text: title,
+        },
+        xAxis: {
+            type: 'time',
+            axisLabel: {
+                show: true,
+                interval: 0,
+                rotate: 27
+            }
+        },
+        yAxis: {
+        },
+        series: series,
+        tooltip: {
+            show: 'true'
+        }
+    };
+}
+
+function getScatterDataSeriesFromMap(dataMap) {
     var series = [];
     dataMap.forEach((value, key, map) => {
         var chartSerie = {
@@ -770,8 +793,6 @@ $(function () {
             //                     // color: ["#060705ff", "#10200Eff", "#1A3917ff", "#245121ff", "#2E6A2Aff", "#388333ff", "#419C3Cff", "#4BB545ff", "#55CD4Fff", "#5FE658ff", "#69FF61ff"],
             //                     series: tagSerie,
             //                 };
-            //                 console.log(tagSerie)
-            //                 console.log([...tagSet])
             //                 this.chartObject.setOption(this.option, true);
             //             })
             //             .then(() => {
@@ -1594,25 +1615,22 @@ $(function () {
                                 endpointDataSerieMap.set(endpointUrl, []);
 
                             });
-                            var graphSet = new Set();
                             tripleCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
                                 && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
                                 && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)
                             ).forEach((itemResult, i) => {
-                                var graph = itemResult.graph;
+                                var date = itemResult.date;
                                 var endpointUrl = itemResult.endpoint;
                                 var triples = itemResult.triples;
-                                graphSet.add(graph);
-                                endpointDataSerieMap.get(endpointUrl).push([graph, triples])
+                                endpointDataSerieMap.get(endpointUrl).push([date, triples])
                             });
 
                             if (endpointDataSerieMap.size > 0) {
                                 this.show();
 
-                                var triplesSeries = getCategoryScatterDataSeriesFromMap(endpointDataSerieMap);
-                                this.option = getCategoryScatterOption("Size of the datasets", [...graphSet].sort((a, b) => a.localeCompare(b)), triplesSeries);
+                                var triplesSeries = getScatterDataSeriesFromMap(endpointDataSerieMap);
+                                this.option = getTimeScatterOption("Size of the datasets", triplesSeries);
                                 this.chartObject.setOption(this.option, true);
-                                this.chartObject.setOption({ xAxis: { axisLabel: { rotate: 27 } } });
                                 this.option = this.chartObject.getOption();
                             } else {
                                 this.hide();
@@ -1646,27 +1664,24 @@ $(function () {
                         if (!this.filled) {
                             // Scatter plot of the number of classes through time
                             var endpointDataSerieMap = new Map();
-                            var graphSet = new Set();
                             classCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
                                 && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
                                 && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)
                             ).forEach(item => {
-                                var graph = item.graph;
                                 var endpointUrl = item.endpoint;
                                 var triples = item.classes;
-                                graphSet.add(graph);
+                                var date = item.date;
                                 if (endpointDataSerieMap.get(endpointUrl) == undefined) {
                                     endpointDataSerieMap.set(endpointUrl, [])
                                 }
-                                endpointDataSerieMap.get(endpointUrl).push([graph, triples])
+                                endpointDataSerieMap.get(endpointUrl).push([date, triples])
                             });
                             if (endpointDataSerieMap.size > 0) {
                                 this.show();
 
-                                var classesSeries = getCategoryScatterDataSeriesFromMap(endpointDataSerieMap);
-                                this.option = getCategoryScatterOption("Number of classes in the datasets", [...graphSet].sort((a, b) => a.localeCompare(b)), classesSeries);
+                                var classesSeries = getScatterDataSeriesFromMap(endpointDataSerieMap);
+                                this.option = getTimeScatterOption("Number of classes in the datasets", classesSeries);
                                 this.chartObject.setOption(this.option, true);
-                                this.chartObject.setOption({ xAxis: { axisLabel: { rotate: 27 } } });
                                 this.option = this.chartObject.getOption();
                             } else {
                                 this.hide();
@@ -1678,11 +1693,9 @@ $(function () {
                 hideFunction: function () {
                     this.chartObject.setOption({ series: [] }, true);
                     collapseHtml('classScatter');
-                    //collapseHtml('tableClassesDetails');
                 },
                 showFunction: function () {
                     unCollapseHtml('classScatter');
-                    //unCollapseHtml('tableClassesDetails');
                 },
                 redrawFunction: function () {
                     $('#classScatter').width(mainContentColWidth);
@@ -1697,52 +1710,40 @@ $(function () {
                 fillFunction: function () {
                     return new Promise((resolve, reject) => {
                         if (!this.filled) {
-                            // scatter plot of the number of properties through time
+                            // Scatter plot of the number of properties through time
                             var endpointDataSerieMap = new Map();
-                            propertyCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint)) && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
-                                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)).forEach((itemResult, i) => {
-                                    var endpointUrl = itemResult.endpoint;
-
-                                    if (!blacklistedEndpointList.includes(endpointUrl)) {
-                                        endpointDataSerieMap.set(endpointUrl, []);
-                                    }
-                                });
-                            var endpointGraphPropertiesData = [];
-                            var graphSet = new Set();
-                            propertyCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint)) && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
-                                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)).forEach((itemResult, i) => {
-                                    var graph = itemResult.graph;
-                                    var endpointUrl = itemResult.endpoint;
-                                    var properties = itemResult.properties;
-                                    graphSet.add(graph);
-                                    endpointDataSerieMap.get(endpointUrl).push([graph, properties])
-                                    endpointGraphPropertiesData.push({ endpoint: endpointUrl, graph: graph, properties: properties })
-                                });
-
+                            propertyCountData.filter(item => ((!(new Set(blackistedEndpointIndexList)).has(item.endpoint))
+                                && (new Set(filteredEndpointWhiteList).has(item.endpoint)))
+                                && (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)
+                            ).forEach(item => {
+                                var endpointUrl = item.endpoint;
+                                var triples = item.properties;
+                                var date = item.date;
+                                if (endpointDataSerieMap.get(endpointUrl) == undefined) {
+                                    endpointDataSerieMap.set(endpointUrl, [])
+                                }
+                                endpointDataSerieMap.get(endpointUrl).push([date, triples])
+                            });
                             if (endpointDataSerieMap.size > 0) {
                                 this.show();
-                                var propertiesSeries = getCategoryScatterDataSeriesFromMap(endpointDataSerieMap);
 
-                                this.option = getCategoryScatterOption("Number of properties in the datasets", [...graphSet].sort((a, b) => a.localeCompare(b)), propertiesSeries);
+                                var propertiesSeries = getScatterDataSeriesFromMap(endpointDataSerieMap);
+                                this.option = getTimeScatterOption("Number of properties in the datasets", propertiesSeries);
                                 this.chartObject.setOption(this.option, true);
-                                this.chartObject.setOption({ xAxis: { axisLabel: { rotate: 27 } } });
                                 this.option = this.chartObject.getOption();
                             } else {
                                 this.hide();
                             }
                         }
                         resolve();
-
                     }).then(() => { this.filled = true; });
                 },
                 hideFunction: function () {
                     this.chartObject.setOption({ series: [] }, true);
                     collapseHtml('propertyScatter');
-                    //collapseHtml('tablePropertiesDetails');
                 },
                 showFunction: function () {
                     unCollapseHtml('propertyScatter');
-                    //unCollapseHtml('tablePropertiesDetails');
                 },
                 redrawFunction: function () {
                     $('#propertyScatter').width(mainContentColWidth);
@@ -2063,46 +2064,36 @@ $(function () {
                     return new Promise((resolve, reject) => {
                         if (!this.filled) {
                             var runtimeDataSerie = [];
-                            var graphSet = new Set();
                             totalRuntimeData.filter(item => (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)).forEach((itemResult, i) => {
                                 var graph = itemResult.graph;
-                                var start = parseDate(itemResult.start, 'DD-MM-YYYYTHH:mm:ss');
-                                var end = parseDate(itemResult.end, 'DD-MM-YYYYTHH:mm:ss');
+                                var start = parseDate(itemResult.start);
+                                var end = parseDate(itemResult.end);
+                                var endpoint = itemResult.endpoint;
+                                var date = parseDate(itemResult.date);
                                 var runtime = dayjs.duration(itemResult.runtime);
-                                graphSet.add(graph);
-                                runtimeDataSerie.push([graph, runtime])
+                                runtimeDataSerie.push([date, runtime, endpoint])
                             });
                             var runtimeSerie = {
                                 name: "Runtime in seconds",
                                 label: 'show',
                                 symbolSize: 5,
-                                data: runtimeDataSerie.map(a => [a[0], a[1].asSeconds()]),
+                                data: runtimeDataSerie.map(a => [a[0].toDate(), a[1].asSeconds()]),
                                 tooltip: {
                                     show: true,
                                     formatter: function (value) {
-                                        var source = runtimeDataSerie.filter(a => value.value[0].localeCompare(a[0]) == 0)[0];
+                                        var source = runtimeDataSerie.filter(a => a[0].isSame(dayjs(value.value[0])))[0];
                                         var runtime = source[1];
+                                        var endpoint = source[2];
 
-                                        var tooltip = "";
-                                        if (runtime.days() > 0) {
-                                            tooltip += runtime.days() + " days ";
-                                        }
-                                        if (runtime.hours() > 0) {
-                                            tooltip += runtime.hours() + " hours ";
-                                        }
-                                        if (runtime.minutes() > 0) {
-                                            tooltip += runtime.minutes() + " minutes ";
-                                        }
-                                        if (runtime.seconds() > 0) {
-                                            tooltip += runtime.seconds() + " seconds ";
-                                        }
+                                        var tooltip = endpoint + " <br/>" + runtime.humanize();
                                         return tooltip;
                                     }
                                 },
                                 type: 'scatter'
                             };
-                            this.option = getCategoryScatterOption("Runtime of the framework for each run (in seconds)", [...graphSet].sort((a, b) => a.localeCompare(b)), [runtimeSerie]);
+                            this.option = getTimeScatterOption("Runtime of the framework for each run (in seconds)", [runtimeSerie]);
                             this.chartObject.setOption(this.option, true);
+                            $('#totalRuntimeScatter').width(mainContentColWidth);
                         }
                         resolve();
                     }).then(() => { this.filled = true; });
@@ -2124,51 +2115,38 @@ $(function () {
                     return new Promise((resolve, reject) => {
                         if (!this.filled) {
                             var runtimeDataSerie = []
-                            var graphSet = new Set();
                             averageRuntimeData.filter(item => (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)).forEach((itemResult, i) => {
                                 var graph = itemResult.graph;
-                                var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
-                                var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
+                                var start = parseDate(itemResult.start);
+                                var end = parseDate(itemResult.end);
+                                var date = parseDate(itemResult.date);
                                 var count = itemResult.count;
                                 var runtime = dayjs.duration(itemResult.runtime);
                                 var value = runtime.asSeconds() / count;
 
-                                graphSet.add(graph);
-                                runtimeDataSerie.push([graph, value])
+                                runtimeDataSerie.push([date, runtime, count])
                             });
 
                             var runtimeSerie = {
                                 name: "Average runtime in seconds",
                                 label: 'show',
                                 symbolSize: 5,
-                                data: runtimeDataSerie,
+                                data: runtimeDataSerie.map(item => [item[0].toDate(), item[1].asSeconds()/item[2]]),
                                 tooltip: {
                                     show: true,
                                     formatter: function (value) {
-                                        var source = runtimeDataSerie.filter(a => value.value[0].localeCompare(a[0]) == 0)[0];
-                                        var graph = source[0];
-                                        var runtimeTotal = source[1];
-                                        var runtime = dayjs.duration(runtimeTotal.asMilliseconds() / numberEndpointMap.get(graph));
+                                        var source = runtimeDataSerie.filter(a => a[0].isSame(dayjs(value.value[0])))[0];
+                                        var date = source[0];
+                                        var runtime = source[1];
+                                        var count = source[2];
 
-                                        var tooltip = "";
-                                        if (runtime.days() > 0) {
-                                            tooltip += runtime.days() + " days ";
-                                        }
-                                        if (runtime.hours() > 0) {
-                                            tooltip += runtime.hours() + " hours ";
-                                        }
-                                        if (runtime.minutes() > 0) {
-                                            tooltip += runtime.minutes() + " minutes ";
-                                        }
-                                        if (runtime.seconds() > 0) {
-                                            tooltip += runtime.seconds() + " seconds ";
-                                        }
+                                        var tooltip = date.toString() + "<br/> " + dayjs.duration(runtime.asSeconds()/count, "seconds").humanize() ;
                                         return tooltip;
                                     }
                                 },
                                 type: 'scatter'
                             };
-                            this.option = getCategoryScatterOption("Average runtime of the framework for each run (in seconds)", [...graphSet].sort((a, b) => a.localeCompare(b)), [runtimeSerie]);
+                            this.option = getTimeScatterOption("Average runtime of the framework for each run (in seconds)", [runtimeSerie]);
                             this.chartObject.setOption(this.option, true);
                         }
                         resolve();
@@ -2533,7 +2511,7 @@ $(function () {
                                 if (endpointDataSerieMap.get(shortUriItem.endpoint) == undefined) {
                                     endpointDataSerieMap.set(shortUriItem.endpoint, []);
                                 }
-                                endpointDataSerieMap.get(shortUriItem.endpoint).push([shortUriItem.graph, precise(shortUriItem.measure)]);
+                                endpointDataSerieMap.get(shortUriItem.endpoint).push([shortUriItem.date, precise(shortUriItem.measure)]);
                             });
 
                             if (endpointDataSerieMap.size > 0) {
@@ -2553,7 +2531,7 @@ $(function () {
                                     shortUrisSeries.push(chartSerie);
                                 });
 
-                                this.option = getCategoryScatterOption("Short URIs (< 80 characters) quality measure through time", [...graphSet].sort((a, b) => a.localeCompare(b)), shortUrisSeries);
+                                this.option = getTimeScatterOption("Short URIs (< 80 characters) quality measure through time", shortUrisSeries);
                                 this.chartObject.setOption(this.option, true);
 
                                 // Average measure
@@ -2592,7 +2570,7 @@ $(function () {
                 redrawFunction: function () {
                     $('#shortUrisQueryCell').empty();
                     $('#shortUrisQueryCell').append($(document.createElement('code')).text(this.shortUrisMeasureQuery));
-                    $('#shortUrisScatter').width(mainContentColWidth * .8);
+                    $('#shortUrisScatter').width(mainContentColWidth);
                     this.chartObject.setOption(this.option, true);
                     this.chartObject.resize();
                 }
@@ -2643,7 +2621,7 @@ $(function () {
                                 if (endpointDataSerieMap.get(rdfDataStructureItem.endpoint) == undefined) {
                                     endpointDataSerieMap.set(rdfDataStructureItem.endpoint, []);
                                 }
-                                endpointDataSerieMap.get(rdfDataStructureItem.endpoint).push([rdfDataStructureItem.graph, precise(rdfDataStructureItem.measure)]);
+                                endpointDataSerieMap.get(rdfDataStructureItem.endpoint).push([rdfDataStructureItem.date, precise(rdfDataStructureItem.measure)]);
                             });
 
                             if (endpointDataSerieMap.size > 0) {
@@ -2663,7 +2641,7 @@ $(function () {
                                     rdfDataStructuresSeries.push(chartSerie);
                                 });
 
-                                this.option = getCategoryScatterOption("Minimal usage of RDF data structures measure through time", [...graphSet].sort((a, b) => a.localeCompare(b)), rdfDataStructuresSeries);
+                                this.option = getTimeScatterOption("Minimal usage of RDF data structures measure through time", rdfDataStructuresSeries);
                                 this.chartObject.setOption(this.option, true);
 
                                 // Average measure
@@ -2709,7 +2687,7 @@ $(function () {
                 redrawFunction: function () {
                     $('#rdfDataStructuresQueryCell').empty();
                     $('#rdfDataStructuresQueryCell').append($(document.createElement('code')).text(this.query));
-                    $('#rdfDataStructuresScatter').width(mainContentColWidth * .8);
+                    $('#rdfDataStructuresScatter').width(mainContentColWidth);
                     this.chartObject.setOption(this.option, true);
                     this.chartObject.resize();
                 }
@@ -2745,7 +2723,7 @@ $(function () {
                                 if (endpointDataSerieMap.get(readableLabelItem.endpoint) == undefined) {
                                     endpointDataSerieMap.set(readableLabelItem.endpoint, []);
                                 }
-                                endpointDataSerieMap.get(readableLabelItem.endpoint).push([readableLabelItem.graph, precise(readableLabelItem.measure)]);
+                                endpointDataSerieMap.get(readableLabelItem.endpoint).push([readableLabelItem.date, precise(readableLabelItem.measure)]);
                             });
 
                             if (endpointDataSerieMap.size > 0) {
@@ -2765,7 +2743,7 @@ $(function () {
                                     readableLabelsSeries.push(chartSerie);
                                 });
 
-                                this.option = getCategoryScatterOption("Usage of readable label for every resource", [...graphSet].sort((a, b) => a.localeCompare(b)), readableLabelsSeries);
+                                this.option = getTimeScatterOption("Usage of readable label for every resource", readableLabelsSeries);
                                 this.chartObject.setOption(this.option, true);
 
                                 // Average measure
@@ -2811,7 +2789,7 @@ $(function () {
                 redrawFunction: function () {
                     $('#readableLabelsQueryCell').empty();
                     $('#readableLabelsQueryCell').append($(document.createElement('code')).text(this.query))
-                    $('#readableLabelsScatter').width(mainContentColWidth * .8);
+                    $('#readableLabelsScatter').width(mainContentColWidth);
                     this.chartObject.setOption(this.option, true);
                     this.chartObject.resize();
                 }
@@ -2849,7 +2827,7 @@ $(function () {
                                 if (endpointDataSerieMap.get(blankNodeItem.endpoint) == undefined) {
                                     endpointDataSerieMap.set(blankNodeItem.endpoint, []);
                                 }
-                                endpointDataSerieMap.get(blankNodeItem.endpoint).push([blankNodeItem.graph, precise(blankNodeItem.measure, 3)]);
+                                endpointDataSerieMap.get(blankNodeItem.endpoint).push([blankNodeItem.date, precise(blankNodeItem.measure, 3)]);
                             });
 
                             if (endpointDataSerieMap.size > 0) {
@@ -2869,7 +2847,7 @@ $(function () {
                                     blankNodesSeries.push(chartSerie);
                                 });
 
-                                this.option = getCategoryScatterOption("Usage of blank nodes", [...graphSet].sort((a, b) => a.localeCompare(b)), blankNodesSeries);
+                                this.option = getTimeScatterOption("Usage of blank nodes", blankNodesSeries);
                                 this.chartObject.setOption(this.option, true);
 
                                 // Average measure
@@ -2915,7 +2893,7 @@ $(function () {
                 redrawFunction: function () {
                     $('#blankNodesQueryCell').empty();
                     $('#blankNodesQueryCell').append($(document.createElement('code')).text(this.query))
-                    $('#blankNodesScatter').width(mainContentColWidth * .8);
+                    $('#blankNodesScatter').width(mainContentColWidth);
                     this.chartObject.setOption(this.option, true);
                     this.chartObject.resize();
                 }

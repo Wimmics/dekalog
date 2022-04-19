@@ -541,21 +541,23 @@ function vocabFill() {
 function tripleDataFill() {
     console.log("tripleDataFill START")
     // Scatter plot of the number of triples through time
-    var triplesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) { " +
+    var triplesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) { " +
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?base <http://rdfs.org/ns/void#triples> ?rawO ." +
         "}" +
-        "} GROUP BY ?g ?endpointUrl ?o";
+        "} GROUP BY ?g ?date ?endpointUrl ?o";
     var endpointTripleData = [];
     return paginatedSparqlQueryPromise(triplesSPARQLquery)
         .then(json => {
             json.forEach((itemResult, i) => {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var triples = Number.parseInt(itemResult.o.value);
-                endpointTripleData.push({ endpoint: endpointUrl, graph: graph, triples: triples })
+                endpointTripleData.push({ endpoint: endpointUrl, graph: graph, date:date, triples: triples })
             });
         })
         .then(() => {
@@ -575,22 +577,23 @@ function tripleDataFill() {
 function classDataFill() {
     console.log("classDataFill START")
     // Scatter plot of the number of classes through time
-    var classesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) ?modifDate { " +
+    var classesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) ?modifDate { " +
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
-        "?metadata <http://purl.org/dc/terms/modified> ?modifDate ." +
+        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?base <http://rdfs.org/ns/void#classes> ?rawO ." +
         "}" +
-        "} GROUP BY ?g ?endpointUrl ?modifDate ?o";
+        "} GROUP BY ?g ?date ?endpointUrl ?modifDate ?o";
     var endpointClassCountData = [];
     return paginatedSparqlQueryPromise(classesSPARQLquery)
         .then(json => {
             json.forEach((itemResult, i) => {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var triples = Number.parseInt(itemResult.o.value);
-                endpointClassCountData.push({ endpoint: endpointUrl, graph: graph, classes: triples })
+                endpointClassCountData.push({ endpoint: endpointUrl, graph: graph, date:date, classes: triples })
             });
 
         })
@@ -611,13 +614,14 @@ function classDataFill() {
 function propertyDataFill() {
     console.log("propertyDataFill START")
     // scatter plot of the number of properties through time
-    var propertiesSPARQLquery = "SELECT DISTINCT ?g ?endpointUrl (MAX(?rawO) AS ?o) { " +
+    var propertiesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) { " +
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?base <http://rdfs.org/ns/void#properties> ?rawO ." +
         "}" +
-        "} GROUP BY ?endpointUrl ?g ?o";
+        "} GROUP BY ?endpointUrl ?g ?date ?o";
     var endpointPropertyCountData = [];
     return paginatedSparqlQueryPromise(propertiesSPARQLquery)
         .then(json => {
@@ -625,7 +629,8 @@ function propertyDataFill() {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var properties = Number.parseInt(itemResult.o.value);
-                endpointPropertyCountData.push({ endpoint: endpointUrl, graph: graph, properties: properties })
+                var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
+                endpointPropertyCountData.push({ endpoint: endpointUrl, graph: graph, date:date, properties: properties })
             });
         })
         .then(() => {
@@ -646,11 +651,11 @@ function categoryTestCountFill() {
     console.log("categoryTestCountFill START")
     var testCategoryData = [];
     // Number of tests passed by test categories
-    var testCategoryQuery = "SELECT DISTINCT ?g ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
+    var testCategoryQuery = "SELECT DISTINCT ?g ?date ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
         "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
         "?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl ." +
-        "?metadata <http://purl.org/dc/terms/modified> ?modifDate . " +
+        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?trace <http://www.w3.org/ns/earl#test> ?test . " +
         "?trace <http://www.w3.org/ns/earl#result> ?result . " +
         "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . " +
@@ -664,7 +669,7 @@ function categoryTestCountFill() {
         "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' " +
         "}" +
         "}  " +
-        "} GROUP BY ?g ?category ?endpointUrl";
+        "} GROUP BY ?g ?date ?category ?endpointUrl";
     return paginatedSparqlQueryPromise(testCategoryQuery)
         .then(json => {
             json.forEach((itemResult, i) => {
@@ -672,7 +677,8 @@ function categoryTestCountFill() {
                 var count = itemResult.count.value;
                 var endpoint = itemResult.endpointUrl.value;
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                testCategoryData.push({ category: category, graph: graph, endpoint: endpoint, count: count });
+                var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
+                testCategoryData.push({ category: category, graph: graph, date:date, endpoint: endpoint, count: count });
             });
         })
         .then(() => {
@@ -692,11 +698,11 @@ function categoryTestCountFill() {
 function totalCategoryTestCountFill() {
     console.log("totalCategoryTestCountFill START")
     // Number of tests passed by test categories
-    var testCategoryQuery = "SELECT DISTINCT ?category ?g (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
+    var testCategoryQuery = "SELECT DISTINCT ?category ?g ?date (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
         "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
         "?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl ." +
-        "?metadata <http://purl.org/dc/terms/modified> ?modifDate . " +
+        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?trace <http://www.w3.org/ns/earl#test> ?test . " +
         "?trace <http://www.w3.org/ns/earl#result> ?result . " +
         "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . " +
@@ -710,7 +716,7 @@ function totalCategoryTestCountFill() {
         "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' " +
         "}" +
         "}  " +
-        "} GROUP BY ?g ?category ?endpointUrl";
+        "} GROUP BY ?g ?date ?category ?endpointUrl";
     var totalTestCategoryData = [];
     return paginatedSparqlQueryPromise(testCategoryQuery).then(json => {
         json.forEach((itemResult, i) => {
@@ -718,8 +724,9 @@ function totalCategoryTestCountFill() {
             var count = itemResult.count.value;
             var endpoint = itemResult.endpointUrl.value;
             var graph = itemResult.g.value;
+            var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
 
-            totalTestCategoryData.push({ category: category, endpoint: endpoint, graph: graph, count: count })
+            totalTestCategoryData.push({ category: category, endpoint: endpoint, graph: graph, date:date, count: count })
         });
     })
         .then(() => {
@@ -739,9 +746,10 @@ function totalCategoryTestCountFill() {
 function endpointTestsDataFill() {
     console.log("endpointTestsDataFill START")
 
-    var appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?g ?rule { " +
+    var appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?g ?date ?rule { " +
         "GRAPH ?g { " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?curated . " +
+        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?curated <http://www.w3.org/ns/prov#wasGeneratedBy> ?rule . " +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "} " +
@@ -753,8 +761,9 @@ function endpointTestsDataFill() {
                 var endpointUrl = item.endpointUrl.value;
                 var rule = item.rule.value;
                 var graph = item.g.value;
+                var date = parseDate(item.date.value, 'DD-MM-YYYYTHH:mm:ss');
 
-                endpointTestsData.push({ endpoint: endpointUrl, activity: rule, graph: graph })
+                endpointTestsData.push({ endpoint: endpointUrl, activity: rule, graph: graph, date:date })
             });
         })
         .then(() => {
@@ -773,15 +782,26 @@ function endpointTestsDataFill() {
 
 function totalRuntimeDataFill() {
     console.log("totalRuntimeDataFill START")
-    var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?data . ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . }   }";
+    var maxMinTimeQuery = "SELECT DISTINCT ?g ?endpointUrl ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { " +
+    " GRAPH ?g { " +
+    "?metadata <http://ns.inria.fr/kg/index#curated> ?data , ?endpoint . " + 
+    "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
+    "?metadata <http://purl.org/dc/terms/modified> ?date . " +
+    "?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . " +
+    "?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
+    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+    "} "+
+    "} ";
     var totalRuntimeData = []
     return paginatedSparqlQueryPromise(maxMinTimeQuery).then(jsonResponse => {
         jsonResponse.forEach((itemResult, i) => {
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+            var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
             var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
             var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
+            var endpointUrl = itemResult.endpointUrl.value;
             var runtimeData = dayjs.duration(end.diff(start));
-            totalRuntimeData.push({ graph: graph, start: start, end: end, runtime: runtimeData })
+            totalRuntimeData.push({ graph: graph, endpoint: endpointUrl, date:date, start: start, end: end, runtime: runtimeData })
         });
     })
         .then(() => {
@@ -800,13 +820,14 @@ function totalRuntimeDataFill() {
 
 function averageRuntimeDataFill() {
     console.log("averageRuntimeDataFill START")
-    var maxMinTimeQuery = "SELECT DISTINCT ?g (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end)" +
+    var maxMinTimeQuery = "SELECT DISTINCT ?g ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end)" +
         " { " +
         "GRAPH ?g {" +
-        " ?metadata <http://ns.inria.fr/kg/index#curated> ?data ." +
-        " ?metadata <http://ns.inria.fr/kg/index#trace> ?trace ." +
-        " ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime ." +
-        " ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?data , ?endpoint . " +
+        "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
+        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
+        "?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . " +
+        "?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
         "} " +
         "}";
     var numberOfEndpointQuery = "SELECT DISTINCT ?g (COUNT(?endpointUrl) AS ?count) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?dataset . { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } } }";
@@ -817,6 +838,7 @@ function averageRuntimeDataFill() {
             .then(jsonResponse => {
                 jsonResponse.forEach((itemResult, i) => {
                     var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                    var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
                     var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
                     var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
                     var runtime = dayjs.duration(end.diff(start));
@@ -828,6 +850,7 @@ function averageRuntimeDataFill() {
                     graphStartEndMap.get(graph).end = end; 
                     graphStartEndMap.get(graph).runtime = runtime ;
                     graphStartEndMap.get(graph).graph = graph ;
+                    graphStartEndMap.get(graph).date = date ;
                 })
             }),
             paginatedSparqlQueryPromise(numberOfEndpointQuery)
@@ -1213,15 +1236,16 @@ function datasetDescriptionDataFill() {
 
 function shortUrisDataFill() {
     console.log("shortUrisDataFill START")
-    var shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+    var shortUrisMeasureQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
         "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
         "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> . " +
         "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
         "}" +
-        " } GROUP BY ?g ?endpointUrl ?measure ";
+        " } GROUP BY ?g ?date ?endpointUrl ?measure ";
     var shortUriData = []
     return paginatedSparqlQueryPromise(shortUrisMeasureQuery)
         .then(json => {
@@ -1230,9 +1254,10 @@ function shortUrisDataFill() {
                 var endpoint = jsonItem.endpointUrl.value;
                 var shortUriMeasure = Number.parseFloat(jsonItem.measure.value * 100);
                 var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+                var date = parseDate(jsonItem.date.value, 'DD-MM-YYYYTHH:mm:ss');
 
                 graphSet.add(graph);
-                shortUriData.push({ graph: graph, endpoint: endpoint, measure: shortUriMeasure })
+                shortUriData.push({ graph: graph, date:date, endpoint: endpoint, measure: shortUriMeasure })
             });
         })
         .then(() => {
@@ -1251,15 +1276,16 @@ function shortUrisDataFill() {
 
 function readableLabelsDataFill() {
     console.log("readableLabelsDataFill START")
-    var readableLabelsQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+    var readableLabelsQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
         "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
         "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . " +
         "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
         "} " +
-        " } GROUP BY ?g ?endpointUrl ?measure ";
+        " } GROUP BY ?g ?date ?endpointUrl ?measure ";
 
     var readableLabelData = [];
     return paginatedSparqlQueryPromise(readableLabelsQuery)
@@ -1268,8 +1294,9 @@ function readableLabelsDataFill() {
                 var endpoint = jsonItem.endpointUrl.value;
                 var readableLabelMeasure = Number.parseFloat(jsonItem.measure.value * 100);
                 var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+                var date = parseDate(jsonItem.date.value, 'DD-MM-YYYYTHH:mm:ss');
 
-                readableLabelData.push({ graph: graph, endpoint: endpoint, measure: readableLabelMeasure })
+                readableLabelData.push({ graph: graph, date:date, endpoint: endpoint, measure: readableLabelMeasure })
             });
 
         })
@@ -1289,15 +1316,16 @@ function readableLabelsDataFill() {
 
 function rdfDataStructureDataFill() {
     console.log("rdfDataStructureDataFill START")
-    var rdfDataStructureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+    var rdfDataStructureQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
         "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
         "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . " +
         "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
         "}" +
-        " } GROUP BY ?g ?endpointUrl ?measure ";
+        " } GROUP BY ?g ?date ?endpointUrl ?measure ";
 
     var rdfDataStructureData = []
     paginatedSparqlQueryPromise(rdfDataStructureQuery).then(json => {
@@ -1305,8 +1333,9 @@ function rdfDataStructureDataFill() {
             var endpoint = jsonItem.endpointUrl.value;
             var rdfDataStructureMeasure = Number.parseFloat(jsonItem.measure.value * 100);
             var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+            var date = parseDate(jsonItem.date.value, 'DD-MM-YYYYTHH:mm:ss');
 
-            rdfDataStructureData.push({ graph: graph, endpoint: endpoint, measure: rdfDataStructureMeasure })
+            rdfDataStructureData.push({ graph: graph, date:date, endpoint: endpoint, measure: rdfDataStructureMeasure })
         });
     })
         .then(() => {
@@ -1325,8 +1354,9 @@ function rdfDataStructureDataFill() {
 
 function blankNodeDataFill() {
     console.log("blankNodeDataFill START")
-    var blankNodeQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+    var blankNodeQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
+        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
         "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
@@ -1334,7 +1364,7 @@ function blankNodeDataFill() {
         "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
         "}" +
         " } " +
-        "GROUP BY ?g ?endpointUrl ?measure ";
+        "GROUP BY ?g ?date ?endpointUrl ?measure ";
 
         var blankNodeData = []
     sparqlQueryPromise(blankNodeQuery).then(json => {
@@ -1343,9 +1373,10 @@ function blankNodeDataFill() {
             var endpoint = jsonItem.endpointUrl.value;
                 var blankNodeMeasure = Number.parseFloat(jsonItem.measure.value * 100);
                 var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+                var date = parseDate(jsonItem.date.value, 'DD-MM-YYYYTHH:mm:ss');
 
                 graphSet.add(graph);
-                blankNodeData.push({ graph: graph, endpoint: endpoint, measure: blankNodeMeasure })
+                blankNodeData.push({ graph: graph, date: date, endpoint: endpoint, measure: blankNodeMeasure })
         });
     })
     .then(() => {
@@ -1377,9 +1408,9 @@ Promise.all([
     // averageRuntimeDataFill(),
     // classAndPropertiesDataFill(),
     // datasetDescriptionDataFill(),
-    // shortUrisDataFill(),
-    // rdfDataStructureDataFill(),
-    // readableLabelsDataFill()
+    shortUrisDataFill(),
+    rdfDataStructureDataFill(),
+    readableLabelsDataFill(),
     blankNodeDataFill()
 ])
     .catch(error => {
