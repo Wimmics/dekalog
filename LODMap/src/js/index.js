@@ -612,8 +612,8 @@ $(function () {
                             var endpointGeolocTableBody = $('#endpointGeolocTableBody');
                             endpointGeolocTableBody.empty();
 
-                            $('#map').width(mainContentColWidth);
                             this.chartObject.invalidateSize();
+                            $('#map').width(mainContentColWidth);
 
                             var graphEndpointGeolocData = geolocData.filter(endpointGeoloc => ((!(new Set(blackistedEndpointIndexList)).has(endpointGeoloc.endpoint)) && (new Set(filteredEndpointWhiteList).has(endpointGeoloc.endpoint))))
 
@@ -668,8 +668,8 @@ $(function () {
                     }).then(() => { this.filled = true; });
                 },
                 redrawFunction: function () {
-                    $('#map').width(mainContentColWidth);
                     this.chartObject.invalidateSize();
+                    $('#map').width(mainContentColWidth);
                     this.chartObject.setView([24.5271348225978, 62.22656250000001], 2);
                 },
                 clearFunction: function () {
