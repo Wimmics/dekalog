@@ -1404,14 +1404,14 @@ Promise.all([
     // categoryTestCountFill(),
     // totalCategoryTestCountFill(),
     // endpointTestsDataFill(),
-    totalRuntimeDataFill(),
-    averageRuntimeDataFill()//,
+    // totalRuntimeDataFill(),
+    // averageRuntimeDataFill(),
     // classAndPropertiesDataFill(),
     // datasetDescriptionDataFill(),
-    // shortUrisDataFill(),
-    // rdfDataStructureDataFill(),
-    // readableLabelsDataFill(),
-    // blankNodeDataFill()
+    shortUrisDataFill(),
+    rdfDataStructureDataFill(),
+    readableLabelsDataFill(),
+    blankNodeDataFill()
 ])
     .catch(error => {
         console.log(error)

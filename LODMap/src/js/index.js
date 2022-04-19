@@ -2065,7 +2065,6 @@ $(function () {
                         if (!this.filled) {
                             var runtimeDataSerie = [];
                             totalRuntimeData.filter(item => (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)).forEach((itemResult, i) => {
-                                console.log(itemResult)
                                 var graph = itemResult.graph;
                                 var start = parseDate(itemResult.start);
                                 var end = parseDate(itemResult.end);
@@ -2094,6 +2093,7 @@ $(function () {
                             };
                             this.option = getTimeScatterOption("Runtime of the framework for each run (in seconds)", [runtimeSerie]);
                             this.chartObject.setOption(this.option, true);
+                            $('#totalRuntimeScatter').width(mainContentColWidth);
                         }
                         resolve();
                     }).then(() => { this.filled = true; });
@@ -2511,7 +2511,7 @@ $(function () {
                                 if (endpointDataSerieMap.get(shortUriItem.endpoint) == undefined) {
                                     endpointDataSerieMap.set(shortUriItem.endpoint, []);
                                 }
-                                endpointDataSerieMap.get(shortUriItem.endpoint).push([shortUriItem.graph, precise(shortUriItem.measure)]);
+                                endpointDataSerieMap.get(shortUriItem.endpoint).push([shortUriItem.date, precise(shortUriItem.measure)]);
                             });
 
                             if (endpointDataSerieMap.size > 0) {
@@ -2531,7 +2531,7 @@ $(function () {
                                     shortUrisSeries.push(chartSerie);
                                 });
 
-                                this.option = getCategoryScatterOption("Short URIs (< 80 characters) quality measure through time", [...graphSet].sort((a, b) => a.localeCompare(b)), shortUrisSeries);
+                                this.option = getTimeScatterOption("Short URIs (< 80 characters) quality measure through time", shortUrisSeries);
                                 this.chartObject.setOption(this.option, true);
 
                                 // Average measure
@@ -2570,7 +2570,7 @@ $(function () {
                 redrawFunction: function () {
                     $('#shortUrisQueryCell').empty();
                     $('#shortUrisQueryCell').append($(document.createElement('code')).text(this.shortUrisMeasureQuery));
-                    $('#shortUrisScatter').width(mainContentColWidth * .8);
+                    $('#shortUrisScatter').width(mainContentColWidth);
                     this.chartObject.setOption(this.option, true);
                     this.chartObject.resize();
                 }
@@ -2621,7 +2621,7 @@ $(function () {
                                 if (endpointDataSerieMap.get(rdfDataStructureItem.endpoint) == undefined) {
                                     endpointDataSerieMap.set(rdfDataStructureItem.endpoint, []);
                                 }
-                                endpointDataSerieMap.get(rdfDataStructureItem.endpoint).push([rdfDataStructureItem.graph, precise(rdfDataStructureItem.measure)]);
+                                endpointDataSerieMap.get(rdfDataStructureItem.endpoint).push([rdfDataStructureItem.date, precise(rdfDataStructureItem.measure)]);
                             });
 
                             if (endpointDataSerieMap.size > 0) {
@@ -2641,7 +2641,7 @@ $(function () {
                                     rdfDataStructuresSeries.push(chartSerie);
                                 });
 
-                                this.option = getCategoryScatterOption("Minimal usage of RDF data structures measure through time", [...graphSet].sort((a, b) => a.localeCompare(b)), rdfDataStructuresSeries);
+                                this.option = getTimeScatterOption("Minimal usage of RDF data structures measure through time", rdfDataStructuresSeries);
                                 this.chartObject.setOption(this.option, true);
 
                                 // Average measure
@@ -2687,7 +2687,7 @@ $(function () {
                 redrawFunction: function () {
                     $('#rdfDataStructuresQueryCell').empty();
                     $('#rdfDataStructuresQueryCell').append($(document.createElement('code')).text(this.query));
-                    $('#rdfDataStructuresScatter').width(mainContentColWidth * .8);
+                    $('#rdfDataStructuresScatter').width(mainContentColWidth);
                     this.chartObject.setOption(this.option, true);
                     this.chartObject.resize();
                 }
@@ -2723,7 +2723,7 @@ $(function () {
                                 if (endpointDataSerieMap.get(readableLabelItem.endpoint) == undefined) {
                                     endpointDataSerieMap.set(readableLabelItem.endpoint, []);
                                 }
-                                endpointDataSerieMap.get(readableLabelItem.endpoint).push([readableLabelItem.graph, precise(readableLabelItem.measure)]);
+                                endpointDataSerieMap.get(readableLabelItem.endpoint).push([readableLabelItem.date, precise(readableLabelItem.measure)]);
                             });
 
                             if (endpointDataSerieMap.size > 0) {
@@ -2743,7 +2743,7 @@ $(function () {
                                     readableLabelsSeries.push(chartSerie);
                                 });
 
-                                this.option = getCategoryScatterOption("Usage of readable label for every resource", [...graphSet].sort((a, b) => a.localeCompare(b)), readableLabelsSeries);
+                                this.option = getTimeScatterOption("Usage of readable label for every resource", readableLabelsSeries);
                                 this.chartObject.setOption(this.option, true);
 
                                 // Average measure
@@ -2789,7 +2789,7 @@ $(function () {
                 redrawFunction: function () {
                     $('#readableLabelsQueryCell').empty();
                     $('#readableLabelsQueryCell').append($(document.createElement('code')).text(this.query))
-                    $('#readableLabelsScatter').width(mainContentColWidth * .8);
+                    $('#readableLabelsScatter').width(mainContentColWidth);
                     this.chartObject.setOption(this.option, true);
                     this.chartObject.resize();
                 }
@@ -2827,7 +2827,7 @@ $(function () {
                                 if (endpointDataSerieMap.get(blankNodeItem.endpoint) == undefined) {
                                     endpointDataSerieMap.set(blankNodeItem.endpoint, []);
                                 }
-                                endpointDataSerieMap.get(blankNodeItem.endpoint).push([blankNodeItem.graph, precise(blankNodeItem.measure, 3)]);
+                                endpointDataSerieMap.get(blankNodeItem.endpoint).push([blankNodeItem.date, precise(blankNodeItem.measure, 3)]);
                             });
 
                             if (endpointDataSerieMap.size > 0) {
@@ -2847,7 +2847,7 @@ $(function () {
                                     blankNodesSeries.push(chartSerie);
                                 });
 
-                                this.option = getCategoryScatterOption("Usage of blank nodes", [...graphSet].sort((a, b) => a.localeCompare(b)), blankNodesSeries);
+                                this.option = getTimeScatterOption("Usage of blank nodes", blankNodesSeries);
                                 this.chartObject.setOption(this.option, true);
 
                                 // Average measure
@@ -2893,7 +2893,7 @@ $(function () {
                 redrawFunction: function () {
                     $('#blankNodesQueryCell').empty();
                     $('#blankNodesQueryCell').append($(document.createElement('code')).text(this.query))
-                    $('#blankNodesScatter').width(mainContentColWidth * .8);
+                    $('#blankNodesScatter').width(mainContentColWidth);
                     this.chartObject.setOption(this.option, true);
                     this.chartObject.resize();
                 }
