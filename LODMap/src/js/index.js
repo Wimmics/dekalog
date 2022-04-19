@@ -335,14 +335,13 @@ function getScatterDataSeriesFromMap(dataMap) {
 $(function () {
 
     // Setup tab menu
-    var geolocTabButton = $('#geoloc-tab')
     var vocabRelatedContentTabButton = $('#vocabRelatedContent-tab')
     var sparqlTabButton = $('#sparql-tab')
     var populationTabButton = $('#population-tab')
     var descriptionTabButton = $('#description-tab')
     var runtimeTabButton = $('#runtime-tab')
     var qualityTabButton = $('#quality-tab')
-    var tabButtonArray = [geolocTabButton, vocabRelatedContentTabButton, sparqlTabButton, populationTabButton, descriptionTabButton, runtimeTabButton, qualityTabButton];
+    var tabButtonArray = [vocabRelatedContentTabButton, sparqlTabButton, populationTabButton, descriptionTabButton, runtimeTabButton, qualityTabButton];
 
     function hideLoadingSpinner() {
 
@@ -424,11 +423,13 @@ $(function () {
             }
 
             function refresh() {
+                showLoadingSpinner();
                 mainContentColWidth = $('#mainContentCol').width();
                 clear();
                 whiteListFill();
                 allContent.forEach(contentChart => { contentChart.filled = false; })
-                return new Promise((resolve, reject) => { resolve() }) // Promise.all(allContent.map(content => content.fill()));
+                // return new Promise((resolve, reject) => { resolve() });
+                return Promise.all(allContent.map(content => content.fill())).then(() => { hideLoadingSpinner() });
             }
 
             function clear() {
@@ -521,6 +522,7 @@ $(function () {
             function changeGraphSetIndex(index) {
                 showLoadingSpinner();
                 return Promise.all(allContent.map(content => content.hide()))
+                    .then(() => { allContent.forEach(contentChart => contentChart.clear()) })
                     .then(() => { allContent.forEach(contentChart => contentChart.filled = false) })
                     .then(() => {
                         urlParams = new URLSearchParams(window.location.search);
@@ -539,7 +541,7 @@ $(function () {
                     })
                     .then(() => {
                         hideLoadingSpinner();
-                        changeActiveTab("geoloc");
+                        changeActiveTab("vocabRelatedContent");
                     });
             }
 
@@ -605,15 +607,15 @@ $(function () {
 
 
             var geolocChart = new KartoChart({
-                chartObject: L.map('map').setView([24.5271348225978, 62.22656250000001], 2),
+                chartObject: L.map('map').setView([39.36827914916014, 12.117919921875002], 2),
                 fillFunction: function () {
                     return new Promise((resolve, reject) => {
                         if (!this.filled) {
                             var endpointGeolocTableBody = $('#endpointGeolocTableBody');
                             endpointGeolocTableBody.empty();
 
-                            $('#map').width(mainContentColWidth);
                             this.chartObject.invalidateSize();
+                            $('#map').width(mainContentColWidth);
 
                             var graphEndpointGeolocData = geolocData.filter(endpointGeoloc => ((!(new Set(blackistedEndpointIndexList)).has(endpointGeoloc.endpoint)) && (new Set(filteredEndpointWhiteList).has(endpointGeoloc.endpoint))))
 
@@ -654,6 +656,11 @@ $(function () {
 
                             graphEndpointGeolocData.forEach(endpointGeoloc => {
                                 var markerIcon = greenIcon;
+                                if(endpointGeoloc.timezone != undefined 
+                                        && endpointGeoloc.sparqlTimezone != undefined 
+                                        && endpointGeoloc.timezone.localeCompare(endpointGeoloc.sparqlTimezone) != 0) {
+                                    markerIcon = orangeIcon;
+                                }
 
                                 var endpointMarker = L.marker([endpointGeoloc.lat, endpointGeoloc.lon], { icon: markerIcon });
                                 endpointMarker.on('click', clickEvent => {
@@ -668,9 +675,9 @@ $(function () {
                     }).then(() => { this.filled = true; });
                 },
                 redrawFunction: function () {
-                    $('#map').width(mainContentColWidth);
                     this.chartObject.invalidateSize();
-                    this.chartObject.setView([24.5271348225978, 62.22656250000001], 2);
+                    $('#map').width(mainContentColWidth);
+                    this.chartObject.setView([39.36827914916014, 12.117919921875002], 2);
                 },
                 clearFunction: function () {
                     geolocChart.layerGroup.clearLayers();
@@ -1636,6 +1643,7 @@ $(function () {
                                 this.hide();
                             }
                         }
+                        this.redraw()
                         resolve();
 
                     }).then(() => { this.filled = true; });
@@ -2990,6 +2998,7 @@ $(function () {
             var mainContentColWidth = 0; // Used to initialize graph width;
 
             var graphList = [];
+            var allContent = [];
             var currentGraphSetIndex = 0;
             const graphSetIndexParameter = "graphSetIndex";
             var endpointList = [];
@@ -3011,7 +3020,6 @@ $(function () {
             frameworkInformationContent = [categoryTestNumberChart, totalRuntimeChart, averageRuntimeChart, totalCategoryTestNumberChart];
             allContent = geolocContent.concat(sparqlCoverContent).concat(vocabRelatedContent).concat(datasetDescriptionContent).concat(dataQualityContent).concat(datasetPopulationsContent).concat(frameworkInformationContent);
             var tabContentMap = new Map();
-            tabContentMap.set('geoloc', geolocContent);
             tabContentMap.set('vocabRelatedContent', vocabRelatedContent);
             tabContentMap.set('sparql', sparqlCoverContent);
             tabContentMap.set('population', datasetPopulationsContent);
@@ -3019,10 +3027,6 @@ $(function () {
             tabContentMap.set('runtime', frameworkInformationContent);
             tabContentMap.set('quality', dataQualityContent);
 
-
-            geolocTabButton.on('click', function (event) {
-                changeActiveTab("geoloc");
-            })
             vocabRelatedContentTabButton.on('click', function (event) {
                 changeActiveTab("vocabRelatedContent");
             })
@@ -3049,7 +3053,6 @@ $(function () {
             var dataQualityContent = [];
             var datasetPopulationsContent = [];
             var frameworkInformationContent = [];
-            var allContent = [];
 
             // Initialization of the map
             L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
@@ -3087,7 +3090,7 @@ $(function () {
                 select.append(option);
             });
             changeGraphSetIndex(currentGraphSetIndex).then(() => {
-                changeActiveTab("geoloc")
+                changeActiveTab("vocabRelatedContent")
             });
             select.on('change', function () {
                 $("#endpoint-list-select > option:selected").each(function () {
