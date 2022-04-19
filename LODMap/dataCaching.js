@@ -782,13 +782,14 @@ function endpointTestsDataFill() {
 
 function totalRuntimeDataFill() {
     console.log("totalRuntimeDataFill START")
-    var maxMinTimeQuery = "SELECT DISTINCT ?g ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { " +
+    var maxMinTimeQuery = "SELECT DISTINCT ?g ?endpointUrl ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { " +
     " GRAPH ?g { " +
-    "?metadata <http://ns.inria.fr/kg/index#curated> ?data . " + 
+    "?metadata <http://ns.inria.fr/kg/index#curated> ?data , ?endpoint . " + 
     "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
     "?metadata <http://purl.org/dc/terms/modified> ?date . " +
     "?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . " +
     "?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
+    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
     "} "+
     "} ";
     var totalRuntimeData = []
@@ -798,8 +799,9 @@ function totalRuntimeDataFill() {
             var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
             var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
             var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
+            var endpointUrl = itemResult.endpointUrl.value;
             var runtimeData = dayjs.duration(end.diff(start));
-            totalRuntimeData.push({ graph: graph, date:date, start: start, end: end, runtime: runtimeData })
+            totalRuntimeData.push({ graph: graph, endpoint: endpointUrl, date:date, start: start, end: end, runtime: runtimeData })
         });
     })
         .then(() => {
@@ -821,11 +823,11 @@ function averageRuntimeDataFill() {
     var maxMinTimeQuery = "SELECT DISTINCT ?g ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end)" +
         " { " +
         "GRAPH ?g {" +
-        " ?metadata <http://ns.inria.fr/kg/index#curated> ?data ." +
-        " ?metadata <http://ns.inria.fr/kg/index#trace> ?trace ." +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?data , ?endpoint . " +
+        "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
         "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        " ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime ." +
-        " ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
+        "?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . " +
+        "?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
         "} " +
         "}";
     var numberOfEndpointQuery = "SELECT DISTINCT ?g (COUNT(?endpointUrl) AS ?count) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?dataset . { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } } }";
@@ -1392,24 +1394,24 @@ function blankNodeDataFill() {
 }
 
 Promise.all([
-    whiteListFill(),
-    endpointMapfill(),
-    SPARQLCoverageFill(),
-    vocabFill(),
-    tripleDataFill(),
-    classDataFill(),
-    propertyDataFill(),
-    categoryTestCountFill(),
-    totalCategoryTestCountFill(),
-    endpointTestsDataFill(),
+    // whiteListFill(),
+    // endpointMapfill(),
+    // SPARQLCoverageFill(),
+    // vocabFill(),
+    // tripleDataFill(),
+    // classDataFill(),
+    // propertyDataFill(),
+    // categoryTestCountFill(),
+    // totalCategoryTestCountFill(),
+    // endpointTestsDataFill(),
     totalRuntimeDataFill(),
-    averageRuntimeDataFill(),
-    classAndPropertiesDataFill(),
-    datasetDescriptionDataFill(),
-    shortUrisDataFill(),
-    rdfDataStructureDataFill(),
-    readableLabelsDataFill(),
-    blankNodeDataFill()
+    averageRuntimeDataFill()//,
+    // classAndPropertiesDataFill(),
+    // datasetDescriptionDataFill(),
+    // shortUrisDataFill(),
+    // rdfDataStructureDataFill(),
+    // readableLabelsDataFill(),
+    // blankNodeDataFill()
 ])
     .catch(error => {
         console.log(error)

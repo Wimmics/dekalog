@@ -793,8 +793,6 @@ $(function () {
             //                     // color: ["#060705ff", "#10200Eff", "#1A3917ff", "#245121ff", "#2E6A2Aff", "#388333ff", "#419C3Cff", "#4BB545ff", "#55CD4Fff", "#5FE658ff", "#69FF61ff"],
             //                     series: tagSerie,
             //                 };
-            //                 console.log(tagSerie)
-            //                 console.log([...tagSet])
             //                 this.chartObject.setOption(this.option, true);
             //             })
             //             .then(() => {
@@ -1685,8 +1683,6 @@ $(function () {
                                 this.option = getTimeScatterOption("Number of classes in the datasets", classesSeries);
                                 this.chartObject.setOption(this.option, true);
                                 this.option = this.chartObject.getOption();
-                                console.log(classesSeries)
-                                console.log(this.option)
                             } else {
                                 this.hide();
                             }
@@ -2068,45 +2064,35 @@ $(function () {
                     return new Promise((resolve, reject) => {
                         if (!this.filled) {
                             var runtimeDataSerie = [];
-                            var graphSet = new Set();
                             totalRuntimeData.filter(item => (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)).forEach((itemResult, i) => {
+                                console.log(itemResult)
                                 var graph = itemResult.graph;
-                                var start = parseDate(itemResult.start, 'DD-MM-YYYYTHH:mm:ss');
-                                var end = parseDate(itemResult.end, 'DD-MM-YYYYTHH:mm:ss');
+                                var start = parseDate(itemResult.start);
+                                var end = parseDate(itemResult.end);
+                                var endpoint = itemResult.endpoint;
+                                var date = parseDate(itemResult.date);
                                 var runtime = dayjs.duration(itemResult.runtime);
-                                graphSet.add(graph);
-                                runtimeDataSerie.push([graph, runtime])
+                                runtimeDataSerie.push([date, runtime, endpoint])
                             });
                             var runtimeSerie = {
                                 name: "Runtime in seconds",
                                 label: 'show',
                                 symbolSize: 5,
-                                data: runtimeDataSerie.map(a => [a[0], a[1].asSeconds()]),
+                                data: runtimeDataSerie.map(a => [a[0].toDate(), a[1].asSeconds()]),
                                 tooltip: {
                                     show: true,
                                     formatter: function (value) {
-                                        var source = runtimeDataSerie.filter(a => value.value[0].localeCompare(a[0]) == 0)[0];
+                                        var source = runtimeDataSerie.filter(a => a[0].isSame(dayjs(value.value[0])))[0];
                                         var runtime = source[1];
+                                        var endpoint = source[2];
 
-                                        var tooltip = "";
-                                        if (runtime.days() > 0) {
-                                            tooltip += runtime.days() + " days ";
-                                        }
-                                        if (runtime.hours() > 0) {
-                                            tooltip += runtime.hours() + " hours ";
-                                        }
-                                        if (runtime.minutes() > 0) {
-                                            tooltip += runtime.minutes() + " minutes ";
-                                        }
-                                        if (runtime.seconds() > 0) {
-                                            tooltip += runtime.seconds() + " seconds ";
-                                        }
+                                        var tooltip = endpoint + " <br/>" + runtime.humanize();
                                         return tooltip;
                                     }
                                 },
                                 type: 'scatter'
                             };
-                            this.option = getCategoryScatterOption("Runtime of the framework for each run (in seconds)", [...graphSet].sort((a, b) => a.localeCompare(b)), [runtimeSerie]);
+                            this.option = getTimeScatterOption("Runtime of the framework for each run (in seconds)", [runtimeSerie]);
                             this.chartObject.setOption(this.option, true);
                         }
                         resolve();
@@ -2129,51 +2115,38 @@ $(function () {
                     return new Promise((resolve, reject) => {
                         if (!this.filled) {
                             var runtimeDataSerie = []
-                            var graphSet = new Set();
                             averageRuntimeData.filter(item => (graphList.find(graphName => (new RegExp(graphName.replace('http://ns.inria.fr/indegx#', ''))).test(item.graph)) != undefined)).forEach((itemResult, i) => {
                                 var graph = itemResult.graph;
-                                var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
-                                var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
+                                var start = parseDate(itemResult.start);
+                                var end = parseDate(itemResult.end);
+                                var date = parseDate(itemResult.date);
                                 var count = itemResult.count;
                                 var runtime = dayjs.duration(itemResult.runtime);
                                 var value = runtime.asSeconds() / count;
 
-                                graphSet.add(graph);
-                                runtimeDataSerie.push([graph, value])
+                                runtimeDataSerie.push([date, runtime, count])
                             });
 
                             var runtimeSerie = {
                                 name: "Average runtime in seconds",
                                 label: 'show',
                                 symbolSize: 5,
-                                data: runtimeDataSerie,
+                                data: runtimeDataSerie.map(item => [item[0].toDate(), item[1].asSeconds()/item[2]]),
                                 tooltip: {
                                     show: true,
                                     formatter: function (value) {
-                                        var source = runtimeDataSerie.filter(a => value.value[0].localeCompare(a[0]) == 0)[0];
-                                        var graph = source[0];
-                                        var runtimeTotal = source[1];
-                                        var runtime = dayjs.duration(runtimeTotal.asMilliseconds() / numberEndpointMap.get(graph));
+                                        var source = runtimeDataSerie.filter(a => a[0].isSame(dayjs(value.value[0])))[0];
+                                        var date = source[0];
+                                        var runtime = source[1];
+                                        var count = source[2];
 
-                                        var tooltip = "";
-                                        if (runtime.days() > 0) {
-                                            tooltip += runtime.days() + " days ";
-                                        }
-                                        if (runtime.hours() > 0) {
-                                            tooltip += runtime.hours() + " hours ";
-                                        }
-                                        if (runtime.minutes() > 0) {
-                                            tooltip += runtime.minutes() + " minutes ";
-                                        }
-                                        if (runtime.seconds() > 0) {
-                                            tooltip += runtime.seconds() + " seconds ";
-                                        }
+                                        var tooltip = date.toString() + "<br/> " + dayjs.duration(runtime.asSeconds()/count, "seconds").humanize() ;
                                         return tooltip;
                                     }
                                 },
                                 type: 'scatter'
                             };
-                            this.option = getCategoryScatterOption("Average runtime of the framework for each run (in seconds)", [...graphSet].sort((a, b) => a.localeCompare(b)), [runtimeSerie]);
+                            this.option = getTimeScatterOption("Average runtime of the framework for each run (in seconds)", [runtimeSerie]);
                             this.chartObject.setOption(this.option, true);
                         }
                         resolve();
