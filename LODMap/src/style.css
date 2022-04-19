@@ -7,7 +7,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #ignoredEndpoints { width:100% }
-#map { width: 100%; height: 900px; }
+#map { width: 100%; height: 300px; }
+#languageTagChart { width: 100%; height: 500px; }
 #endpointKeywords { width: 100%; height: 500px; }
 #vocabs { width: 100%; height: 500px; }
 #rawVocabs { width: 100%; height: 500px; }
