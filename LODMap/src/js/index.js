@@ -1311,7 +1311,7 @@ $(function () {
                             this.chartObject.on('click', 'series', event => {
                                 if(event.dataType.localeCompare("node") ==0) {
                                     var uriLink = event.data.name;
-                                    window.open(uriLink, '_blank').focus();
+                                    window.open(uriLink, '_blank');
                                 }
                             })
                         }
