@@ -549,7 +549,6 @@ $(function () {
                     })
                     .then(() => {
                         hideLoadingSpinner();
-                        changeActiveTab("vocabRelatedContent");
                     });
             }
 
@@ -3097,9 +3096,7 @@ $(function () {
                 }
                 select.append(option);
             });
-            changeGraphSetIndex(currentGraphSetIndex).then(() => {
-                changeActiveTab("vocabRelatedContent")
-            });
+            changeGraphSetIndex(currentGraphSetIndex)
             select.on('change', function () {
                 $("#endpoint-list-select > option:selected").each(function () {
                     var selectionIndex = $(this).val();
