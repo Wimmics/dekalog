@@ -12,7 +12,7 @@ public class DummyTestExecution extends TestExecution {
     }
 
     @Override
-    public Dataset execute(DescribedDataset describedDataset, Dataset datasetDescription) {
+    public Dataset execute(DescribedDataset describedDataset) {
         Dataset result  = DatasetFactory.create();
         result.setDefaultModel(EarlReport.createBasicEarlReport(true, describedDataset, this.getTests().getManifestEntry()).getReport());
         return result;

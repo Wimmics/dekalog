@@ -8,11 +8,94 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <> a mf:Manifest ;
-    mf:include (
-        <file:///user/pmaillot/home/git/dekalog/rules/meta/manifest.ttl>
-    ) ;
     mf:entries (
         <file:///user/pmaillot/home/git/dekalog/rules/extraction/computed/vocabularyList.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/extraction/computed/datatypes.ttl>
+#        <file:///user/pmaillot/home/git/dekalog/rules/extraction/computed/resourceNamespaces.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalClassPartitionClasses.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalClassPartitionTriples.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalPropertyPartition.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalPropertyPartitionTriples.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByVocabularies.ttl>
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalPropertyPartition.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        <file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalPropertyPartitionTriples.ttl>
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalPropertyPartitionTriples.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl#activity> ;
+                    void:propertyPartition ?propertyPartition .
+                ?propertyPartition void:property ?p ;
+                    void:triples ?x .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            WHERE {
+                {
+                    SELECT (COUNT(?o) AS ?x) ?p
+                    { ?s ?p ?o } GROUP BY ?p
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?p)))) AS ?propertyPartition)
+            }"""
+        ]
+    ) ;
+    kgi:onFailure (
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+            CONSTRUCT {
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> ;
+                    void:propertyPartition ?propertyPartition .
+                ?propertyPartition void:property ?p .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            WHERE {
+                { SELECT DISTINCT ?p WHERE { ?s ?p ?o } }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?p)))) AS ?propertyPartition)
+            }"""
+        ]
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/extraction/computed/resourceNamespaces.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceNamespaces.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceNamespaces.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                    ?datasetDescription kgi:resourceVocabulary ?ns .
+            }
+            WHERE {
+                {
+                    SELECT DISTINCT ?elem
+                    {
+                        ?elem ?p ?o .
+                    }
+                }
+                BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+            }
+        """
+        ]
     ) .
 
 <file:///user/pmaillot/home/git/dekalog/rules/extraction/computed/vocabularyList.ttl> a mf:ManifestEntry ;
@@ -64,7 +147,7 @@
                 ?metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated ?datasetDescription .
-                ?datasetDescription void:vocabulary IRI(?ns) .
+                ?datasetDescription void:vocabulary ?ns .
             }
             WHERE {
                 { SELECT DISTINCT ?elem { ?s a ?elem .
@@ -73,6 +156,258 @@
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
+            """
+        ]
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByVocabularies.ttl>
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/extraction/computed/datatypes.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX schema: <http://schema.org/>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/datatypes.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/datatypes.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                    ?datasetDescription kgi:availableLiteralDatatypes ?datatype .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT (datatype(?o) as ?datatype) {
+                            SELECT DISTINCT ?o {
+                                ?s ?p ?o
+                                FILTER( isLiteral(?o) )
+                            }
+                        }
+                    }
+                    FILTER( ?datatype != "" )
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalClassPartitionTriples.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c ;
+                        void:triples ?x .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl> ;
+                            prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
+                }
+            """
+        ]
+    ) ;
+    kgi:onFailure (
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+                CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    { ?s a ?c . }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
+                }
+            """
+        ]
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalClassPartitionClasses.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+                CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c ;
+                            void:classes ?x .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionClasses.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    { SELECT (COUNT(DISTINCT ?d) AS ?x) ?c WHERE { ?s a ?c , ?d } GROUP BY ?c }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
+                }
+            """
+        ]
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByVocabularies.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonVocabularies ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonVocabularies ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?otherDatasetDescription void:vocabulary ?vocab .
+                            ?datasetDescription void:vocabulary ?vocab .
+                            FILTER(?otherDatasetDescription < ?datasetDescription)
+                            FILTER(?vocab != <http://www.w3.org/2001/XMLSchema#>)
+                            FILTER(?vocab != <http://www.w3.org/2000/01/rdf-schema#>)
+                            FILTER(?vocab != <http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+                            FILTER(?vocab != <http://www.w3.org/2002/07/owl#>)
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByDatatypes.ttl>
+    ) ;
+    kgi:onFailure (
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByDatatypes.ttl>
+    ) .
+
+
+
+<file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByDatatypes.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonDatatypes ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonDatatypes ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?otherDatasetDescription kgi:availableLiteralDatatypes ?datatype .
+                            ?datasetDescription kgi:availableLiteralDatatypes ?datatype .
+                            FILTER(?otherDatasetDescription < ?datasetDescription)
+                            FILTER(?datatype != <http://www.w3.org/1999/02/22-rdf-syntax-ns#langString>)
+                            FILTER(?datatype != <http://www.w3.org/2001/XMLSchema#string> )
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByClasses.ttl>
+    ) ;
+    kgi:onFailure (
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByClasses.ttl>
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByClasses.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonClasses ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonClasses ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?datasetDescription void:classPartition ?classPartition .
+                            ?classPartition void:class ?class .
+                            ?otherDatasetDescription void:classPartition ?otherClassPartition .
+                            ?otherClassPartition void:class ?class .
+                            FILTER(?otherDatasetDescription < ?datasetDescription)
+                            FILTER(! strstarts(str(?class), "http://www.w3.org/2001/XMLSchema#"))
+                            FILTER(! strstarts(str(?class), "http://www.w3.org/2000/01/rdf-schema#"))
+                            FILTER(! strstarts(str(?class), "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
+                            FILTER(! strstarts(str(?class), "http://www.w3.org/2002/07/owl#"))
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByProperties.ttl>
+    ) ;
+    kgi:onFailure (
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByProperties.ttl>
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByProperties.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonProperties ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonProperties ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?datasetDescription void:propertyPartition ?propertyPartition .
+                            ?propertyPartition void:property ?property .
+                            ?otherDatasetDescription void:propertyPartition ?otherPropertyPartition .
+                            ?otherPropertyPartition void:property ?property .
+                            FILTER(?otherDatasetDescription != ?datasetDescription)
+                            FILTER(! strstarts(str(?property), "http://www.w3.org/2001/XMLSchema#"))
+                            FILTER(! strstarts(str(?property), "http://www.w3.org/2000/01/rdf-schema#"))
+                            FILTER(! strstarts(str(?property), "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
+                            FILTER(! strstarts(str(?property), "http://www.w3.org/2002/07/owl#"))
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByResourceNamespaces.ttl>
+    ) ;
+    kgi:onFailure (
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByResourceNamespaces.ttl>
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByResourceNamespaces.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonResourceNamespaces ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonResourceNamespaces ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?datasetDescription kgi:resourceNamespaces ?resourceNamespaces .
+                            ?otherDatasetDescription void:resourceNamespaces ?resourceNamespaces .
+                            FILTER(?otherDatasetDescription != ?datasetDescription)
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
             """
         ]
     ) .

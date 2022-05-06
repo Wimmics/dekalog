@@ -32,6 +32,8 @@ LODMap/.parcel-cache/
 
 LODMap/dist/
 
+LODMap/src/data/cache/
+
 *.out
 
 VoiDMatic/.parcel-cache/
@@ -49,3 +51,13 @@ VoiDMatic/
 LODMap/src/data/retrieveEndpointGeolocList/node_modules/
 
 LODMap/src/data/retrieveEndpointGeolocList/package-lock.json
+
+code/out/artifacts/kgindex_jar/kgindex.log
+
+code/out/artifacts/kgindex_jar/output.ttl
+
+code/data/
+
+code/dependency-reduced-pom.xml
+
+code/kgindex.log

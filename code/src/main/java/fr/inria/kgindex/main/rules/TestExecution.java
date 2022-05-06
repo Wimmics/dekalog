@@ -33,5 +33,5 @@ public abstract class TestExecution {
         this._endpointUrl = url;
     }
 
-    public abstract Dataset execute(DescribedDataset describedDataset, Dataset datasetDescription);
+    public abstract Dataset execute(DescribedDataset describedDataset);
 }

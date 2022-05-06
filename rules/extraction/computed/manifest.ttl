@@ -54,7 +54,8 @@ kgi:onSuccess (
                 ?datasetDescription kgi:availableLiteralDatatypes ?datatype .
             }
             WHERE {
-                    { SELECT DISTINCT (datatype(?o) as ?datatype)  WHERE {
+                {
+                    SELECT DISTINCT (datatype(?o) as ?datatype) {
                         ?s ?p ?o
                         FILTER( isLiteral(?o) )
                     }
@@ -181,7 +182,7 @@ kgi:onSuccess (
                     ?metadataDescription a prov:Entity , earl:TestSubject ;
                         prov:wasDerivedFrom $rawEndpointUrl ;
                         kgi:curated ?datasetDescription .
-                    ?datasetDescription void:vocabulary IRI(?ns) .
+                    ?datasetDescription void:vocabulary ?ns .
             }
             WHERE {
                 {
@@ -494,6 +495,34 @@ kgi:onSuccess (
                 }"""
         ]
         <../../meta/modifiedUpdate.ttl>
+    ) .
+
+<resourceNamespaces.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceNamespaces.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceNamespaces.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                    ?datasetDescription kgi:resourceVocabulary ?ns .
+            }
+            WHERE {
+                {
+                    SELECT DISTINCT ?elem
+                    {
+                        ?elem ?p ?o .
+                    }
+                }
+                BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+            }
+        """
+        ]
     ) .
 
 # Miscanellous statistics from SPORTAL using a vocabulary created for SPORTAL only

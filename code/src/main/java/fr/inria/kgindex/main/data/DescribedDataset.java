@@ -1,11 +1,10 @@
 package fr.inria.kgindex.main.data;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.jena.rdf.model.AnonId;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

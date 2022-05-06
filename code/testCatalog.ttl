@@ -11,7 +11,7 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
 kgi:catalogTest a dcat:Catalog ;
-    dcat:dataset kgi:BNBDataset , kgi:AgroLDDataset , kgi:AgroPortalDataset , kgi:FCUDataset, kgi:ScholarlyData , kgi:orkg , kgi:dbpedia , kgi:dbpedia .
+    dcat:dataset kgi:testD1 , kgi:testD1Alt , kgi:testD2 , kgi:testD3 , kgi:testD4 .
 
 kgi:dekalog void:sparqlEndpoint <http://prod-dekalog.inria.fr/sparql> ;
     rdfs:label "IndeGx" .
@@ -48,3 +48,18 @@ kgi:wasabi void:sparqlEndpoint <http://wasabi.inria.fr/sparql> ;
 
 kgi:local void:sparqlEndpoint <http://localhost:3030/experiment/query> ;
     rdfs:label "local" .
+
+kgi:testD1 void:sparqlEndpoint <http://localhost:3030/Inclusion-D-ref> ;
+    rdfs:label "D1" .
+
+kgi:testD1Alt void:sparqlEndpoint <http://localhost:3030/Inclusion-D-ref-alt> ;
+    rdfs:label "D1 alt" .
+
+kgi:testD2 void:sparqlEndpoint <http://localhost:3030/Inclusion-D-2> ;
+    rdfs:label "D2" .
+
+kgi:testD3 void:sparqlEndpoint <http://localhost:3030/Inclusion-D-3> ;
+    rdfs:label "D3" .
+
+kgi:testD4 void:sparqlEndpoint <http://localhost:3030/Inclusion-D-4> ;
+    rdfs:label "D4" .

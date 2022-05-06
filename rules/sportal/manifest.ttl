@@ -244,7 +244,7 @@
                 CONSTRUCT {
                     ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl#activity> ;
                         void:classPartition ?classPartition .
-                    ?classPartition void:class ?c .
+                    ?classPartition void:class ?c ;
                         void:triples ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl> ;
                             prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
@@ -520,7 +520,6 @@
                 ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl#activity> ;
                     void:propertyPartition ?propertyPartition .
                 ?propertyPartition void:property ?p ;
-                    void:property ?p ;
                     void:triples ?x .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
@@ -542,8 +541,7 @@
             CONSTRUCT {
                 ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> ;
                     void:propertyPartition ?propertyPartition .
-                ?propertyPartition void:property ?p ;
-                    void:property ?p .
+                ?propertyPartition void:property ?p .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }

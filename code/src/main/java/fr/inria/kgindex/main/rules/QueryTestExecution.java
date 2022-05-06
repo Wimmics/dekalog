@@ -12,15 +12,19 @@ import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static fr.inria.kgindex.main.util.Utils.dateFormatter;
 
@@ -32,7 +36,7 @@ public class QueryTestExecution extends TestExecution {
         super(tests, url);
     }
 
-    public Dataset execute(DescribedDataset describedDataset, Dataset datasetDescription) {
+    public Dataset execute(DescribedDataset describedDataset) {
         return executeTestQueryTest(describedDataset);
     }
 
@@ -70,22 +74,18 @@ public class QueryTestExecution extends TestExecution {
             for(String queryString : queryStringVariant) {
                 boolean passed = true;
                 String errorMessage = "";
+                String encodedQueryString = URLEncoder.encode(queryString, StandardCharsets.UTF_8);
                 // Execution de la requête
                 try {
-                    org.apache.http.client.config.RequestConfig requestConfig = org.apache.http.client.config.RequestConfig.copy(org.apache.http.client.config.RequestConfig.DEFAULT)
-                            .setSocketTimeout(Math.toIntExact(testTimeout))
-                            .setConnectTimeout(Math.toIntExact(testTimeout))
-                            .setConnectionRequestTimeout(Math.toIntExact(testTimeout))
+                    QueryExecutionHTTP testQueryExecution = QueryExecutionHTTP.service(this.getEndpointUrl())
+                            .useGet()
+                            .param("timeout", String.valueOf(testTimeout))
+                            //.param("format", Lang.RDFXML.getContentType().getContentTypeStr())
+                            .timeout(testTimeout, TimeUnit.MILLISECONDS)
+                            .queryString(queryString)
                             .build();
-                    org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
-                            .useSystemProperties()
-                            .setDefaultRequestConfig(requestConfig)
-                            .setUserAgent(InteractionsUtils.USER_AGENT)
-                            .build();
-                    QueryEngineHTTP testQueryExecution = new QueryEngineHTTP(this.getEndpointUrl(), queryString, client);
-                    testQueryExecution.addParam("timeout", String.valueOf(testTimeout));
-                    testQueryExecution.setTimeout(testTimeout, testTimeout);
                     if(QueryFactory.create(queryString).isAskType()) {
+                        logger.debug(this.getEndpointUrl() + "?query=" + encodedQueryString + "&timeout="+testTimeout);
                         passed = testQueryExecution.execAsk();
                     } else if (QueryFactory.create(queryString).isSelectType()) {
                         ResultSet testResults = testQueryExecution.execSelect();
@@ -120,7 +120,7 @@ public class QueryTestExecution extends TestExecution {
                         earlReport = DatasetFactory.create(EarlReport.createEarlFailedQueryReport(describedDataset, null, this.getTests().getManifestEntry(), errorMessage, startDateLiteral, endDateLiteral).getReport());
                     }
                 }
-                result = DatasetUtils.addDataset(result, earlReport);
+                DatasetUtils.addToDataset(result, earlReport);
             };
         };
 

@@ -236,7 +236,7 @@ public class CatalogInputMain {
             });
 
             logger.trace("END of catalog processing");
-            RDFDataMgr.write(System.err, result, Lang.TRIG);
+            //RDFDataMgr.write(System.err, result, Lang.TRIG);
             try {
                 OutputStream outputStream = new FileOutputStream(outputFilename);
                 RDFDataMgr.write(outputStream, result, Lang.TRIG);

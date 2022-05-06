@@ -89,15 +89,13 @@ public class InteractionFactory {
         TestExecution testExec = null;
         if(interactionType.equals(TestExecution.TYPE.SPARQL)) {
             testExec = new QueryTestExecution(tests, testEndpointUrl);
-        } else if(interactionType.equals(TestExecution.TYPE.SHACL)) {
-            testExec = new SHACLTestExecution(tests, testEndpointUrl);
         } else if(interactionType.equals(TestExecution.TYPE.DUMMY)) {
             testExec = new DummyTestExecution(tests, testEndpointUrl);
         } else {
             throw new Error("Unexpected interaction type");
         }
 
-        InteractionApplication result =  new InteractionApplication(entry, testExec, testActionListSuccess, testActionListFailure, describedDataset, datasetDescription);
+        InteractionApplication result =  new InteractionApplication(entry, testExec, testActionListSuccess, testActionListFailure, describedDataset);
         result.setType(interactionType);
 
         return result;
