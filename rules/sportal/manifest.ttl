@@ -506,7 +506,27 @@
 
 <sportalPropertyPartition.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+            CONSTRUCT {
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> ;
+                    void:propertyPartition ?propertyPartition .
+                ?propertyPartition void:property ?p .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            WHERE {
+                { SELECT DISTINCT ?p WHERE { ?s ?p ?o } }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?p)))) AS ?propertyPartition)
+            }"""
+        ]
         <sportalPropertyPartitionTriples.ttl>
+        <sportalPropertyPartitionDistinctSubject.ttl>
+        <sportalPropertyPartitionDistinctObject.ttl>
     ) .
 
 <sportalPropertyPartitionTriples.ttl> a mf:ManifestEntry ;
@@ -531,27 +551,6 @@
             }"""
         ]
         <../meta/modifiedUpdate.ttl>
-    ) ;
-    kgi:onFailure (
-        [
-            kgi:timeout "PT120S"^^xsd:duration ;
-            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-            PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-            CONSTRUCT {
-                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> ;
-                    void:propertyPartition ?propertyPartition .
-                ?propertyPartition void:property ?p .
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl> ;
-                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-            }
-            WHERE {
-                { SELECT DISTINCT ?p WHERE { ?s ?p ?o } }
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?p)))) AS ?propertyPartition)
-            }"""
-        ]
-            <../meta/modifiedUpdate.ttl>
     ) .
 
 <sportalPropertyPartitionDistinctSubject.ttl> a mf:ManifestEntry ;
