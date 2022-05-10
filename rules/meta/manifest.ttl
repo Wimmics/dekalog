@@ -323,7 +323,7 @@
                         SELECT DISTINCT ?otherDatasetDescription {
                             ?otherDatasetDescription void:vocabulary ?vocab .
                             ?datasetDescription void:vocabulary ?vocab .
-                            FILTER(?otherDatasetDescription != ?datasetDescription)
+                            FILTER(?otherDatasetDescription < ?datasetDescription)
                             FILTER(?vocab NOT IN ( <http://www.w3.org/2001/XMLSchema#>, <http://www.w3.org/2000/01/rdf-schema#>, <http://rdfs.org/ns/void#>, <http://www.w3.org/ns/dcat#>, <http://www.w3.org/ns/prov#>, <http://purl.org/dc/terms/>, <http://schema.org/>, <http://www.w3.org/ns/earl#>, <http://www.w3.org/1999/02/22-rdf-syntax-ns#>, <http://www.w3.org/2002/07/owl#>, <http://xmlns.com/foaf/0.1/>, <http://purl.org/dc/elements/1.1/> ) )
                         }
                     }
@@ -332,9 +332,6 @@
             """
         ]
         <inclusionByClasses.ttl>
-    ) ;
-    kgi:onFailure (
-        <inclusionByIndividuals.ttl>
     ) .
 
 <inclusionByDatatypes.ttl> a mf:ManifestEntry ;
@@ -351,7 +348,7 @@
                         SELECT DISTINCT ?otherDatasetDescription {
                             ?otherDatasetDescription kgi:availableLiteralDatatypes ?datatype .
                             ?datasetDescription kgi:availableLiteralDatatypes ?datatype .
-                            FILTER(?otherDatasetDescription != ?datasetDescription)
+                            FILTER(?otherDatasetDescription < ?datasetDescription)
                         }
                     }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
@@ -359,9 +356,6 @@
             """
         ]
         <inclusionByClasses.ttl>
-    ) ;
-    kgi:onFailure (
-        <inclusionByIndividuals.ttl>
     ) .
 
 <inclusionByClasses.ttl> a mf:ManifestEntry ;
@@ -381,7 +375,7 @@
                             ?classPartition void:class ?class .
                             ?otherDatasetDescription void:classPartition ?otherClassPartition .
                             ?otherClassPartition void:class ?class .
-                            FILTER(?otherDatasetDescription != ?datasetDescription)
+                            FILTER(?otherDatasetDescription < ?datasetDescription)
                         }
                     }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
@@ -394,23 +388,80 @@
 <inclusionByClassesAndProperties.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
-            mf:action """
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonClasses ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonClasses ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?otherDatasetDescription kgi:availableLiteralDatatypes ?datatype .
+                            ?datasetDescription void:classPartition ?classPartition .
+                            ?datasetDescription void:propertyPartition ?propertyPartition .
+                            ?propertyPartition void:property ?property .
+                            ?classPartition void:class ?class .
+                            ?otherDatasetDescription void:classPartition ?otherClassPartition .
+                            ?otherDatasetDescription void:propertyPartition ?otherPropertyPartition .
+                            ?otherPropertyPartition void:property ?property .
+                            ?otherClassPartition void:class ?class .
+                            FILTER(?otherDatasetDescription < ?datasetDescription)
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
             """
         ]
-        <inclusionByIndividuals.ttl>
+        <inclusionOf1000Individuals.ttl>
+        <inclusionByResourceNamespaces.ttl>
     ) .
 
-<inclusionByIndividuals.ttl> a mf:ManifestEntry ;
+<inclusionByResourceNamespaces.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
-            kgi:endpoint kgi:federation ;
-            mf:action """
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonResourceNamespaces ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonResourceNamespaces ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?datasetDescription kgi:resourceNamespaces ?resourceNamespaces .
+                            ?otherDatasetDescription void:resourceNamespaces ?resourceNamespaces .
+                            FILTER(?otherDatasetDescription < ?datasetDescription)
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+    ) .
+
+<inclusionOf1000Individuals.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonIndividuals ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonIndividuals ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?datasetDescription kgi:resourceNamespaces ?resourceNamespaces .
+                            ?otherDatasetDescription void:resourceNamespaces ?resourceNamespaces .
+                            FILTER(?otherDatasetDescription < ?datasetDescription)
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
             """
         ]
         <inclusionByTriples.ttl>
-        <inclusionByStarPatterns.ttl>
-    ) ;
-    kgi:onFailure (
         <inclusionByStarPatterns.ttl>
     ) .
 

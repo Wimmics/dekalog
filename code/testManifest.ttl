@@ -11,12 +11,17 @@
     mf:entries (
         <file:///user/pmaillot/home/git/dekalog/rules/extraction/computed/vocabularyList.ttl>
         <file:///user/pmaillot/home/git/dekalog/rules/extraction/computed/datatypes.ttl>
-#        <file:///user/pmaillot/home/git/dekalog/rules/extraction/computed/resourceNamespaces.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/extraction/computed/resourceNamespaces.ttl>
         <file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalClassPartitionClasses.ttl>
         <file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalClassPartitionTriples.ttl>
         <file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalPropertyPartition.ttl>
         <file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalPropertyPartitionTriples.ttl>
         <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByVocabularies.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByDatatypes.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByClasses.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByProperties.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByResourceNamespaces.ttl>
+        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionOf1000Individuals.ttl>
     ) .
 
 <file:///user/pmaillot/home/git/dekalog/rules/sportal/sportalPropertyPartition.ttl> a mf:ManifestEntry ;
@@ -82,16 +87,41 @@
                     ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceNamespaces.ttl#activity> .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceNamespaces.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-                    ?datasetDescription kgi:resourceVocabulary ?ns .
+                    ?datasetDescription kgi:resourceHostname ?ns .
             }
             WHERE {
                 {
-                    SELECT DISTINCT ?elem
-                    {
+                    SELECT DISTINCT (IRI(REPLACE(str(?elem), ?urlEnd, "", "q" ) ) AS ?ns)  {
                         ?elem ?p ?o .
+                        FILTER(isIri(?elem)).
+                        BIND( REPLACE(str(?elem), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEnd)
                     }
                 }
-                BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+            }
+        """
+        ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceNamespaces.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/vocabularyList.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceNamespaces.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                    ?datasetDescription kgi:resourceHostname ?ns .
+            }
+            WHERE {
+                {
+                    SELECT DISTINCT (IRI(REPLACE(str(?elem), ?urlEnd, "", "q" ) ) AS ?ns)  {
+                        ?s ?p ?elem .
+                        FILTER(! STRSTARTS(?p, "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
+                        FILTER(isIri(?elem)).
+                        BIND( REPLACE(str(?elem), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEnd)
+                    }
+                }
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
         """
@@ -275,7 +305,7 @@
                         SELECT DISTINCT ?otherDatasetDescription {
                             ?otherDatasetDescription void:vocabulary ?vocab .
                             ?datasetDescription void:vocabulary ?vocab .
-                            FILTER(?otherDatasetDescription < ?datasetDescription)
+                            FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
                             FILTER(?vocab != <http://www.w3.org/2001/XMLSchema#>)
                             FILTER(?vocab != <http://www.w3.org/2000/01/rdf-schema#>)
                             FILTER(?vocab != <http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
@@ -286,10 +316,6 @@
                 }
             """
         ]
-        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByDatatypes.ttl>
-    ) ;
-    kgi:onFailure (
-        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByDatatypes.ttl>
     ) .
 
 
@@ -308,7 +334,7 @@
                         SELECT DISTINCT ?otherDatasetDescription {
                             ?otherDatasetDescription kgi:availableLiteralDatatypes ?datatype .
                             ?datasetDescription kgi:availableLiteralDatatypes ?datatype .
-                            FILTER(?otherDatasetDescription < ?datasetDescription)
+                            FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
                             FILTER(?datatype != <http://www.w3.org/1999/02/22-rdf-syntax-ns#langString>)
                             FILTER(?datatype != <http://www.w3.org/2001/XMLSchema#string> )
                         }
@@ -317,10 +343,6 @@
                 }
             """
         ]
-        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByClasses.ttl>
-    ) ;
-    kgi:onFailure (
-        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByClasses.ttl>
     ) .
 
 <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByClasses.ttl> a mf:ManifestEntry ;
@@ -339,7 +361,7 @@
                             ?classPartition void:class ?class .
                             ?otherDatasetDescription void:classPartition ?otherClassPartition .
                             ?otherClassPartition void:class ?class .
-                            FILTER(?otherDatasetDescription < ?datasetDescription)
+                            FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
                             FILTER(! strstarts(str(?class), "http://www.w3.org/2001/XMLSchema#"))
                             FILTER(! strstarts(str(?class), "http://www.w3.org/2000/01/rdf-schema#"))
                             FILTER(! strstarts(str(?class), "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
@@ -350,10 +372,6 @@
                 }
             """
         ]
-        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByProperties.ttl>
-    ) ;
-    kgi:onFailure (
-        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByProperties.ttl>
     ) .
 
 <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByProperties.ttl> a mf:ManifestEntry ;
@@ -372,7 +390,7 @@
                             ?propertyPartition void:property ?property .
                             ?otherDatasetDescription void:propertyPartition ?otherPropertyPartition .
                             ?otherPropertyPartition void:property ?property .
-                            FILTER(?otherDatasetDescription != ?datasetDescription)
+                            FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
                             FILTER(! strstarts(str(?property), "http://www.w3.org/2001/XMLSchema#"))
                             FILTER(! strstarts(str(?property), "http://www.w3.org/2000/01/rdf-schema#"))
                             FILTER(! strstarts(str(?property), "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
@@ -383,10 +401,6 @@
                 }
             """
         ]
-        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByResourceNamespaces.ttl>
-    ) ;
-    kgi:onFailure (
-        <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByResourceNamespaces.ttl>
     ) .
 
 <file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionByResourceNamespaces.ttl> a mf:ManifestEntry ;
@@ -395,15 +409,52 @@
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT {
-                    ?datasetDescription kgi:commonResourceNamespaces ?otherDatasetDescription .
-                    ?otherDatasetDescription kgi:commonResourceNamespaces ?datasetDescription .
+                    ?datasetDescription kgi:commonResourceHostname ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonResourceHostname ?datasetDescription .
                 }
                 WHERE {
                     {
                         SELECT DISTINCT ?otherDatasetDescription {
-                            ?datasetDescription kgi:resourceNamespaces ?resourceNamespaces .
-                            ?otherDatasetDescription void:resourceNamespaces ?resourceNamespaces .
-                            FILTER(?otherDatasetDescription != ?datasetDescription)
+                            ?datasetDescription kgi:resourceHostname ?resourceNamespaces .
+                            ?otherDatasetDescription void:resourceHostname ?resourceNamespaces .
+                            FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+    ) .
+
+<file:///user/pmaillot/home/git/dekalog/rules/meta/inclusionOf1000Individuals.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonIndividuals ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonIndividuals ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?datasetDescription void:sparqlEndpoint ?endpoint .
+                            ?otherDatasetDescription void:sparqlEndpoint ?otherEndpoint .
+                            SERVICE ?endpoint {
+                                {
+                                    SELECT ?indiv {
+                                        ?indiv ?p ?o .
+                                    } LIMIT 1000
+                                }
+                            }
+                            SERVICE ?otherEndpoint {
+                                {
+                                    SELECT ?indiv  {
+                                        ?indiv ?op ?oo .
+                                    }
+                                }
+                            }
+                            FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
                         }
                     }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)

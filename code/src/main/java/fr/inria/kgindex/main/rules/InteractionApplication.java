@@ -53,7 +53,7 @@ public class InteractionApplication {
     private Actions _actionsSuccess = null;
     private Actions _actionsFailure = null;
     private TestExecution _tests = null;
-    private TestExecution.TYPE _type = TestExecution.TYPE.SHACL;
+    private TestExecution.TYPE _type = TestExecution.TYPE.UNKNOWN;
 
     public InteractionApplication(ManifestEntry entry, TestExecution tests, Actions actionsSuccess, Actions actionsFailure, DescribedDataset describedDataset) {
         this._entry = entry;
@@ -125,7 +125,6 @@ public class InteractionApplication {
                                         || queryString.contains("DELETE")) {
                                     UpdateRequest insertUpdate = UpdateFactory.create(queryString);
                                     UpdateAction.execute(insertUpdate, KGIndex.getResultDataset());
-                                    KGIndex.getResultDataset().commit();
                                 } else if (QueryFactory.create(queryString).isConstructType()) {
                                     Query constructQuery = QueryFactory.create(queryString);
                                     QueryExecutionHTTP actionExecution = QueryExecutionHTTP.service(action.getEndpointUrl()).useGet().param("timeout", String.valueOf(action.getTimeout())).param("format", Lang.TTL.getContentType().getContentTypeStr()).timeout(action.getTimeout(), TimeUnit.MILLISECONDS).query(constructQuery).build();
@@ -163,7 +162,6 @@ public class InteractionApplication {
                                         try {
                                             UpdateRequest insertUpdate = UpdateFactory.create(queryString);
                                             UpdateAction.execute(insertUpdate, KGIndex.getResultDataset());
-                                            KGIndex.getResultDataset().commit();
                                         } catch (QueryParseException er) {
                                             logger.error(queryString);
                                             throw er;
@@ -218,7 +216,7 @@ public class InteractionApplication {
                     Set<ManifestEntry> entrySet = RuleLibrary.getLibrary().get(action.getActionNode());
                     for (ManifestEntry entry : entrySet) {
                         try {
-                            InteractionApplication application = InteractionFactory.create(entry, this._describedDataset, KGIndex.getResultDataset());
+                            InteractionApplication application = InteractionFactory.create(entry, this._describedDataset);
                             application.apply();
                         } catch (Exception e) {
                             logger.error(entry.getTestResource().getURI());

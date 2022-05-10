@@ -8,7 +8,6 @@ public abstract class TestExecution {
 
     public enum TYPE {
         SPARQL,
-        SHACL,
         DUMMY,
         UNKNOWN
     }
