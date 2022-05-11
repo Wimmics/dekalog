@@ -2,7 +2,6 @@ package fr.inria.kgindex.main.util;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 
 public class DatasetUtils {
 
@@ -12,10 +11,9 @@ public class DatasetUtils {
      * @param d2
      * @return d1 after addition
      */
-    public static Dataset addDataset(Dataset d1, final Dataset d2) {
-        RDFConnection connect = RDFConnectionFactory.connect(d1);
+    public static void addToDataset(Dataset d1, final Dataset d2) {
+        RDFConnection connect = RDFConnection.connect(d1);
         connect.loadDataset(d2);
         connect.close();
-        return d1;
     }
 }
