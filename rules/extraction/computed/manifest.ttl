@@ -30,10 +30,12 @@
                     ?datasetDescription schema:availableLanguage ?lang .
                 }
                 WHERE {
-                    SELECT DISTINCT (lang(?o) as ?lang)  WHERE {
-                        ?s ?p ?o
-                        FILTER( isLiteral(?o) )
-                        FILTER( ?lang != "" )
+                    {
+                        SELECT DISTINCT (lang(?o) as ?lang)  WHERE {
+                            ?s ?p ?o
+                            FILTER( isLiteral(?o) )
+                            FILTER( ?lang != "" )
+                        }
                     }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
@@ -93,8 +95,10 @@ kgi:onSuccess (
                     ] .
             }
             WHERE {
-                SELECT DISTINCT ?graph WHERE {
-                    GRAPH ?graph { ?s ?p ?o }
+                {
+                    SELECT DISTINCT ?graph WHERE {
+                        GRAPH ?graph { ?s ?p ?o }
+                    }
                 }
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
@@ -129,11 +133,13 @@ kgi:onSuccess (
                     ] .
             }
             WHERE {
-                SELECT DISTINCT ?graph WHERE {
-                    SERVICE $endpointUrl {
-                        GRAPH ?graph { ?s ?p ?o . }
+                {
+                    SELECT DISTINCT ?graph WHERE {
+                        SERVICE $endpointUrl {
+                            GRAPH ?graph { ?s ?p ?o . }
+                        }
+                        FILTER(STRSTARTS(str(?graph), $namespace))
                     }
-                    FILTER(STRSTARTS(str(?graph), $namespace))
                 }
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
@@ -161,8 +167,11 @@ kgi:onSuccess (
                     ?datasetDescription void:vocabulary ?ns .
             }
             WHERE {
-                { SELECT DISTINCT ?elem { ?s ?elem ?o .
-                } }
+                {
+                    SELECT DISTINCT ?elem {
+                    ?s ?elem ?o .
+                    }
+                }
                 BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
@@ -187,7 +196,8 @@ kgi:onSuccess (
             }
             WHERE {
                 {
-                    SELECT DISTINCT ?elem { ?s a ?elem .
+                    SELECT DISTINCT ?elem {
+                        ?s a ?elem .
                     }
                 }
                 BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns) .
@@ -380,14 +390,15 @@ kgi:onSuccess (
                     ?datasetDescription void:classes ?count .
                 }
                 WHERE {
-                    SELECT (count(?class) AS ?count)
-                    WHERE {
-                        SELECT DISTINCT ?class
-                        $FROM
-                        WHERE {
-                            { ?class a owl:Class }
-                            UNION { ?class a rdfs:Class }
-                            UNION { ?whatever a ?class }
+                    {
+                        SELECT (count(?class) AS ?count) {
+                            SELECT DISTINCT ?class
+                            $FROM
+                            WHERE {
+                                { ?class a owl:Class }
+                                UNION { ?class a rdfs:Class }
+                                UNION { ?whatever a ?class }
+                            }
                         }
                     }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
@@ -425,12 +436,13 @@ kgi:onSuccess (
                     ?datasetDescription void:properties ?count .
                 }
                 WHERE {
-                    SELECT (count(?p) AS ?count)
-                    WHERE {
-                        SELECT DISTINCT ?p
-                        $FROM
-                        WHERE {
-                            ?s ?p ?o
+                    {
+                        SELECT (count(?p) AS ?count) {
+                            SELECT DISTINCT ?p
+                            $FROM
+                            WHERE {
+                                ?s ?p ?o
+                            }
                         }
                     }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
@@ -466,11 +478,13 @@ kgi:onSuccess (
                     ?datasetDescription void:triples ?count .
                 }
                 WHERE {
-                    SELECT (count(*) AS ?count) WHERE {
-                        SELECT DISTINCT ?s ?p ?o
-                        $FROM
-                        WHERE {
-                           ?s ?p ?o .
+                    {
+                        SELECT (count(*) AS ?count) {
+                            SELECT DISTINCT ?s ?p ?o
+                            $FROM
+                            WHERE {
+                               ?s ?p ?o .
+                            }
                         }
                     }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
@@ -484,6 +498,7 @@ kgi:onSuccess (
     kgi:onSuccess (
         [
             mf:action """PREFIX schema: <https://schema.org/>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
                 CONSTRUCT {
                     ?endpointDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/timezone.ttl#activity> .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/timezone.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/timezone.ttl> ;
@@ -549,6 +564,7 @@ kgi:onSuccess (
             }
         """
         ]
+        <../../meta/modifiedUpdate.ttl>
     ) .
 
 # Miscanellous statistics from SPORTAL using a vocabulary created for SPORTAL only
