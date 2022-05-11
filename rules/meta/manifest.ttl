@@ -11,7 +11,7 @@
             <inclusionByClasses.ttl>
             <inclusionByProperties.ttl>
             <inclusionByClassesAndProperties.ttl>
-            <inclusionByResourceNamespaces.ttl>
+            <inclusionByResourceHostname.ttl>
         ) .
 
 <equivalences.ttl> a mf:ManifestEntry ;
@@ -451,7 +451,7 @@
         ]
     ) .
 
-<inclusionByResourceNamespaces.ttl> a mf:ManifestEntry ;
+<inclusionByresourceHostname.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
@@ -463,8 +463,8 @@
                 WHERE {
                     {
                         SELECT DISTINCT ?otherDatasetDescription {
-                            ?datasetDescription kgi:resourceHostname ?resourceNamespaces .
-                            ?otherDatasetDescription kgi:resourceHostname ?resourceNamespaces .
+                            ?datasetDescription kgi:resourceHostname ?resourceHostname .
+                            ?otherDatasetDescription kgi:resourceHostname ?resourceHostname .
                             FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
                         }
                     }
@@ -486,8 +486,8 @@
                 WHERE {
                     {
                         SELECT DISTINCT ?otherDatasetDescription {
-                            ?datasetDescription kgi:resourceNamespaces ?resourceNamespaces .
-                            ?otherDatasetDescription void:resourceNamespaces ?resourceNamespaces .
+                            ?datasetDescription kgi:resourceHostname ?resourceHostname .
+                            ?otherDatasetDescription void:resourceHostname ?resourceHostname .
                             FILTER(?otherDatasetDescription < ?datasetDescription)
                         }
                     }
