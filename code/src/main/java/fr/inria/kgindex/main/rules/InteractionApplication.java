@@ -21,6 +21,7 @@ import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.web.HttpSC;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -183,7 +184,7 @@ public class InteractionApplication {
                                         }
                                         Dataset bodyData = DatasetFactory.create();
                                         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                                        if (response.statusCode() == 200) {
+                                        if (HttpSC.isSuccess( response.statusCode())) {
                                             String bodyString = response.body();
                                             bodyString = bodyString.replace("= {", " {");
                                             StringReader bodyReader = new StringReader(bodyString);
