@@ -1,5 +1,7 @@
 package fr.inria.kgindex.main.util;
 
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
@@ -22,4 +24,12 @@ public class KGIndex {
 	public static final Property onFailure = model.createProperty(kgindexNamespace + "onFailure");
 	public static final Property timeout = model.createProperty(kgindexNamespace + "timeout");
 	public static final Resource catalogRoot = model.createResource(kgindexNamespace + "catalogRoot");
+
+	private static Dataset _resultDataset = null;
+	public static Dataset getResultDataset() {
+		if(_resultDataset == null) {
+			_resultDataset = DatasetFactory.create();
+		}
+		return _resultDataset;
+	}
 }

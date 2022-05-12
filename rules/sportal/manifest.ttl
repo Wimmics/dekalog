@@ -23,6 +23,8 @@
             <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl>
             <sportalPropertyPartitionDistinctObject.ttl>
             <sportalPropertyPartitionDistinctSubject.ttl>
+            <vocabularyPartition.ttl>
+            <resourceHostnamePartition.ttl>
         ) .
 
 <classPopulation.ttl> a mf:ManifestEntry ;
@@ -70,7 +72,12 @@
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
-                    SELECT (COUNT(DISTINCT ?s ) AS ?x) WHERE { ?s ?p ?o FILTER(isIri(?s))}
+                    {
+                        SELECT (COUNT(DISTINCT ?s ) AS ?x) {
+                            ?s ?p ?o
+                            FILTER(isIri(?s))
+                        }
+                    }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
@@ -91,9 +98,12 @@
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
-                    SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE {
-                    ?s ?p ?o
-                    FILTER(isIri(?o))}
+                    {
+                        SELECT (COUNT(DISTINCT ?o ) AS ?x) {
+                            ?s ?p ?o
+                            FILTER(isIri(?o))
+                        }
+                    }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
@@ -114,7 +124,12 @@
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
-                    SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isIRI(?s))}
+                    {
+                        SELECT (COUNT(DISTINCT ?s) AS ?x) {
+                            ?s ?p ?o
+                            FILTER(isIRI(?s))
+                        }
+                    }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
@@ -135,7 +150,12 @@
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
-                    SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?s))}
+                    {
+                        SELECT (COUNT(DISTINCT ?s) AS ?x) {
+                            ?s ?p ?o
+                            FILTER(isBlank(?s))
+                        }
+                    }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
@@ -156,7 +176,12 @@
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
                 WHERE {
-                    SELECT (COUNT(DISTINCT ?s) AS ?x) WHERE { ?s ?p ?o FILTER(isBlank(?o))}
+                    {
+                        SELECT (COUNT(DISTINCT ?s) AS ?x) {
+                            ?s ?p ?o
+                            FILTER(isBlank(?o))
+                        }
+                    }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 }
             """
@@ -177,8 +202,13 @@
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
-                SELECT (COUNT(DISTINCT ?b ) AS ?x)
-                WHERE { { ?s ?p ?b } UNION { ?b ?p ?o } FILTER(isBlank(?b)) }
+                {
+                    SELECT (COUNT(DISTINCT ?b ) AS ?x) {
+                        { ?s ?p ?b }
+                        UNION { ?b ?p ?o }
+                        FILTER(isBlank(?b))
+                    }
+                }
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
             """
@@ -198,9 +228,12 @@
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctIRIReferences.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalDistinctIRIReferences.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
-            WHERE { SELECT (COUNT(DISTINCT ?u ) AS ?x)
             WHERE {
-                { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u)) }
+                {
+                    SELECT (COUNT(DISTINCT ?u ) AS ?x) {
+                        { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u))
+                    }
+                }
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
             """
@@ -221,7 +254,12 @@
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             }
             WHERE {
-                SELECT (COUNT(DISTINCT ?o ) AS ?x) WHERE { ?s ?p ?o FILTER(isLiteral(?o))}
+                {
+                    SELECT (COUNT(DISTINCT ?o ) AS ?x) {
+                        ?s ?p ?o
+                        FILTER(isLiteral(?o))
+                    }
+                }
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
             }
             """
@@ -244,7 +282,7 @@
                 CONSTRUCT {
                     ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl#activity> ;
                         void:classPartition ?classPartition .
-                    ?classPartition void:class ?c .
+                    ?classPartition void:class ?c ;
                         void:triples ?x .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartitionTriples.ttl> ;
                             prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
@@ -506,7 +544,27 @@
 
 <sportalPropertyPartition.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+            CONSTRUCT {
+                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> ;
+                    void:propertyPartition ?propertyPartition .
+                ?propertyPartition void:property ?p .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl> ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            }
+            WHERE {
+                { SELECT DISTINCT ?p WHERE { ?s ?p ?o } }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?p)))) AS ?propertyPartition)
+            }"""
+        ]
         <sportalPropertyPartitionTriples.ttl>
+        <sportalPropertyPartitionDistinctSubject.ttl>
+        <sportalPropertyPartitionDistinctObject.ttl>
     ) .
 
 <sportalPropertyPartitionTriples.ttl> a mf:ManifestEntry ;
@@ -520,7 +578,6 @@
                 ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl#activity> ;
                     void:propertyPartition ?propertyPartition .
                 ?propertyPartition void:property ?p ;
-                    void:property ?p ;
                     void:triples ?x .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartitionTriples.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
@@ -532,28 +589,6 @@
             }"""
         ]
         <../meta/modifiedUpdate.ttl>
-    ) ;
-    kgi:onFailure (
-        [
-            kgi:timeout "PT120S"^^xsd:duration ;
-            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-            PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-            CONSTRUCT {
-                ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> ;
-                    void:propertyPartition ?propertyPartition .
-                ?propertyPartition void:property ?p ;
-                    void:property ?p .
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalPropertyPartition.ttl> ;
-                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-            }
-            WHERE {
-                { SELECT DISTINCT ?p WHERE { ?s ?p ?o } }
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?p)))) AS ?propertyPartition)
-            }"""
-        ]
-            <../meta/modifiedUpdate.ttl>
     ) .
 
 <sportalPropertyPartitionDistinctSubject.ttl> a mf:ManifestEntry ;
@@ -598,6 +633,191 @@
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?p)))) AS ?propertyPartition)
             }"""
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+<vocabularyPartition.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                ?metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasDerivedFrom $rawEndpointUrl ;
+                    kgi:curated ?datasetDescription .
+                ?datasetDescription kgi:vocabularyPartition ?vocabularyPartition .
+                ?vocabularyPartition void:vocabulary ?ns .
+                ?vocabularyPartition void:classes ?count .
+            }
+            WHERE {
+                {
+                    SELECT ?ns (COUNT(?elem) AS ?count) {
+                        {
+                            SELECT DISTINCT ?elem {
+                                ?s a ?elem .
+                            }
+                        }
+                        BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns)
+                    }
+                    GROUP BY ?ns
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?ns)))) AS ?vocabularyPartition)
+            }
+            """
+        ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/vocabularyPartition.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/vocabularyPartition#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/vocabularyPartition.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                ?metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasDerivedFrom $rawEndpointUrl ;
+                    kgi:curated ?datasetDescription .
+                ?datasetDescription kgi:vocabularyPartition ?vocabularyPartition .
+                ?vocabularyPartition void:vocabulary ?ns .
+                ?vocabularyPartition void:properties ?count .
+            }
+            WHERE {
+                {
+                    SELECT ?ns (COUNT(?elem) AS ?count) {
+                        {
+                            SELECT DISTINCT ?elem {
+                                ?s ?elem ?o .
+                            }
+                        }
+                        BIND(IRI(REPLACE( str(?elem), "(#|/)[^#/]*$", "$1")) AS ?ns)
+                    }
+                    GROUP BY ?ns
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?ns)))) AS ?vocabularyPartition)
+            }
+            """
+        ]
+        <../meta/modifiedUpdate.ttl>
+    ) .
+
+<resourceHostnamePartition.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/resourceHostnamePartition.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/resourceHostnamePartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/resourceHostnamePartition.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                    ?datasetDescription kgi:hostnamePartition ?hostnamePartition .
+                    ?hostnamePartition kgi:resourceHostname ?ns .
+                    ?hostnamePartition void:distinctSubjects ?count .
+            }
+            WHERE {
+                {
+                    SELECT DISTINCT ?ns (COUNT(DISTINCT ?elem) AS ?count) {
+                        {
+                            SELECT DISTINCT (IRI(REPLACE(str(?elem), ?urlEnd, "", "q" ) ) AS ?ns) ?elem {
+                                ?elem ?p ?o .
+                                FILTER(! STRSTARTS(str(?p), "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
+                                FILTER(isIri(?elem)).
+                                BIND( REPLACE(str(?elem), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEnd)
+                            }
+                        }
+                    }
+                    GROUP BY ?ns
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?ns)))) AS ?hostnamePartition)
+            }
+        """
+        ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceHostnamePartition.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceHostnamePartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceHostnamePartition.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                    ?datasetDescription kgi:hostnamePartition ?hostnamePartition .
+                    ?hostnamePartition kgi:resourceHostname ?ns .
+                    ?hostnamePartition void:distinctObjects ?count .
+
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?ns (COUNT(DISTINCT ?elem) AS ?count) {
+                            {
+                                SELECT DISTINCT (IRI(REPLACE(str(?elem), ?urlEnd, "", "q" ) ) AS ?ns) ?elem {
+                                    ?s ?p ?elem .
+                                    FILTER(! STRSTARTS(str(?p), "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
+                                    FILTER(isIri(?elem)).
+                                    BIND( REPLACE(str(?elem), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEnd)
+                                }
+                            }
+                        }
+                        GROUP BY ?ns
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?ns)))) AS ?hostnamePartition)
+                }
+        """
+        ]
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceHostnamePartition.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceHostnamePartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/resourceHostnamePartition.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                    ?datasetDescription kgi:hostnamePartition ?hostnamePartition .
+                    ?hostnamePartition kgi:resourceHostname ?ns .
+                    ?hostnamePartition void:entities ?count .
+
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?ns (COUNT(DISTINCT ?elem) AS ?count) {
+                            {
+                                SELECT DISTINCT (IRI(REPLACE(str(?elem), ?urlEnd, "", "q" ) ) AS ?ns) ?elem {
+                                    {
+                                        ?s ?p ?elem .
+                                    }
+                                    UNION {
+                                        ?elem ?p ?o .
+                                    }
+                                    FILTER(! STRSTARTS(str(?p), "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
+                                    FILTER(isIri(?elem)).
+                                    BIND( REPLACE(str(?elem), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEnd)
+                                }
+                            }
+                        }
+                        GROUP BY ?ns
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?ns)))) AS ?hostnamePartition)
+                }
+        """
         ]
         <../meta/modifiedUpdate.ttl>
     ) .

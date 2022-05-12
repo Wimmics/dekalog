@@ -19,6 +19,7 @@ import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.VOID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -185,6 +186,7 @@ public class CatalogInputMain {
                     result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), RDF.type, DCAT.Dataset);
                     result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), RDF.type, PROV.Entity);
                     result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), RDF.type, EARL.TestSubject);
+                    result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), VOID.sparqlEndpoint, result.getDefaultModel().createResource(endpointUrl));
                     result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), DCAT.service, describedDataset.getEndpointDescriptionResource());
                     Resource distributionResource = result.getDefaultModel().createResource();
                     result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), DCAT.distribution, distributionResource);
@@ -234,7 +236,7 @@ public class CatalogInputMain {
             });
 
             logger.trace("END of catalog processing");
-            RDFDataMgr.write(System.err, result, Lang.TRIG);
+            //RDFDataMgr.write(System.err, result, Lang.TRIG);
             try {
                 OutputStream outputStream = new FileOutputStream(outputFilename);
                 RDFDataMgr.write(outputStream, result, Lang.TRIG);

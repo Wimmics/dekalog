@@ -24,7 +24,7 @@ public class InteractionFactory {
 
     private static final Logger logger = LogManager.getLogger(InteractionFactory.class);
 
-    public static InteractionApplication create(ManifestEntry entry, DescribedDataset describedDataset, Dataset datasetDescription) {
+    public static InteractionApplication create(ManifestEntry entry, DescribedDataset describedDataset) {
 
         Actions testActionListSuccess = new Actions();
         Actions testActionListFailure = new Actions();
@@ -41,16 +41,13 @@ public class InteractionFactory {
             logger.error(testFileResource.getURI() + " could not be reached");
         }
         List<Resource> resTestQueryList = testModel.listSubjectsWithProperty(RDF.type, KGIndex.TestQuery).toList();
-        List<Resource> resShapeList = testModel.listSubjectsWithProperty(RDF.type, testModel.createProperty(SHACL.NodeShape.getURI())).toList();
         List<Resource> resDummyTestList = testModel.listSubjectsWithProperty(RDF.type, KGIndex.DummyTest).toList();
         testModel.close();
 
         // Fonction d'application adaptée
-        if (resTestQueryList.isEmpty() && !resShapeList.isEmpty() && resDummyTestList.isEmpty()) {
-            interactionType = TestExecution.TYPE.SHACL;
-        } else if (!resTestQueryList.isEmpty() && resShapeList.isEmpty() && resDummyTestList.isEmpty()) {
+        if (!resTestQueryList.isEmpty() && resDummyTestList.isEmpty()) {
             interactionType = TestExecution.TYPE.SPARQL;
-        } else if (resTestQueryList.isEmpty() && resShapeList.isEmpty() && ! resDummyTestList.isEmpty()) {
+        } else if (resTestQueryList.isEmpty() && ! resDummyTestList.isEmpty()) {
             interactionType = TestExecution.TYPE.DUMMY;
         } else {
             interactionType = TestExecution.TYPE.UNKNOWN;
@@ -89,15 +86,13 @@ public class InteractionFactory {
         TestExecution testExec = null;
         if(interactionType.equals(TestExecution.TYPE.SPARQL)) {
             testExec = new QueryTestExecution(tests, testEndpointUrl);
-        } else if(interactionType.equals(TestExecution.TYPE.SHACL)) {
-            testExec = new SHACLTestExecution(tests, testEndpointUrl);
         } else if(interactionType.equals(TestExecution.TYPE.DUMMY)) {
             testExec = new DummyTestExecution(tests, testEndpointUrl);
         } else {
             throw new Error("Unexpected interaction type");
         }
 
-        InteractionApplication result =  new InteractionApplication(entry, testExec, testActionListSuccess, testActionListFailure, describedDataset, datasetDescription);
+        InteractionApplication result =  new InteractionApplication(entry, testExec, testActionListSuccess, testActionListFailure, describedDataset);
         result.setType(interactionType);
 
         return result;

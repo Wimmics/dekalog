@@ -49,11 +49,10 @@
             INSERT {
                 ?datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject ;
                     dcat:service ?endpointDescription ;
-                    dcat:distribution [
-                        a dcat:Distribution ;
-                        dcat:accessUrl $rawEndpointUrl ;
-                        dcat:mediaType "application/sparql-query"
-                    ] .
+                    dcat:distribution ?datasetDistribution .
+                ?datasetDistribution a dcat:Distribution ;
+                    dcat:accessUrl $rawEndpointUrl ;
+                    dcat:mediaType "application/sparql-query" .
                 ?endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset ?datasetDescription ;
                     dcat:endpointUrl $rawEndpointUrl ;
@@ -75,6 +74,7 @@
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Distribution")) AS ?datasetDistribution)
             }
             """
         ]
@@ -94,11 +94,10 @@
             INSERT {
                 ?datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject ;
                     dcat:service ?endpointDescription ;
-                    dcat:distribution [
-                        a dcat:Distribution ;
-                        dcat:accessUrl $rawEndpointUrl ;
-                        dcat:mediaType "application/sparql-query"
-                    ] .
+                    dcat:distribution ?datasetDistribution .
+                ?datasetDistribution a dcat:Distribution ;
+                    dcat:accessUrl $rawEndpointUrl ;
+                    dcat:mediaType "application/sparql-query" .
                 ?endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset ?datasetDescription ;
                     dcat:endpointUrl $rawEndpointUrl ;
@@ -121,6 +120,7 @@
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Distribution")) AS ?datasetDistribution)
             }
             """
         ]
