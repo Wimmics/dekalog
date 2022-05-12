@@ -83,7 +83,7 @@
 <Resource used to describe the default graph> a sd:Graph ;
     dct:modified            "Date time of the last modification"^^xsd:date .
 
-<Resource used to describe a named graph> a Graph, NamedGraph ;
+<Resource used to describe a named graph> a sd:Graph, sd:NamedGraph ;
     sd:name                 <URI of the named graph> .
 
 <endpoint-uri>

@@ -85,7 +85,6 @@ public class QueryTestExecution extends TestExecution {
                             .queryString(queryString)
                             .build();
                     if(QueryFactory.create(queryString).isAskType()) {
-                        logger.debug(this.getEndpointUrl() + "?query=" + encodedQueryString + "&timeout="+testTimeout);
                         passed = testQueryExecution.execAsk();
                     } else if (QueryFactory.create(queryString).isSelectType()) {
                         ResultSet testResults = testQueryExecution.execSelect();
