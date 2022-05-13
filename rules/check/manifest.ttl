@@ -55,7 +55,7 @@
                     dcat:mediaType "application/sparql-query" .
                 ?endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset ?datasetDescription ;
-                    dcat:endpointUrl $rawEndpointUrl ;
+                    dcat:endpointURL $rawEndpointUrl ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
                     prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
@@ -100,7 +100,7 @@
                     dcat:mediaType "application/sparql-query" .
                 ?endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset ?datasetDescription ;
-                    dcat:endpointUrl $rawEndpointUrl ;
+                    dcat:endpointURL $rawEndpointUrl ;
                     prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
