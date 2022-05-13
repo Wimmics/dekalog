@@ -404,10 +404,12 @@
                 WHERE {
                     {
                         SELECT DISTINCT ?otherDatasetDescription {
+                            ?datasetDescription void:sparqlEndpoint ?endpoint .
                             ?datasetDescription void:propertyPartition ?propertyPartition .
                             ?propertyPartition void:property ?property .
                             ?otherDatasetDescription void:propertyPartition ?otherPropertyPartition .
                             ?otherPropertyPartition void:property ?property .
+                            ?otherPropertyPartition void:sparqlEndpoint ?otherEndpoint .
                             FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
                             FILTER(! strstarts(str(?property), "http://www.w3.org/2001/XMLSchema#"))
                             FILTER(! strstarts(str(?property), "http://www.w3.org/2000/01/rdf-schema#"))
