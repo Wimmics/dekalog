@@ -4,6 +4,7 @@ import fr.inria.kgindex.main.data.DescribedDataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.XSD;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -47,7 +48,7 @@ public class Utils {
             queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_RAWENDPOINTURL), "<" + describedDataset.getEndpointUrl() + ">");
             Date date = new Date();
             Model tmpModel = ModelFactory.createDefaultModel();
-            queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_DATETIME), "\"" + dateFormatter.format(date) + "\"^^<http://www.w3.org/2001/XMLSchema#datetime>");
+            queryString = queryString.replaceAll(Pattern.quote(PLACEHOLDER_DATETIME), "\"" + dateFormatter.format(date) + "\"^^<"+ XSD.dateTime.getURI() +">");
             tmpModel.close();
 
             if (queryString.contains(PLACEHOLDER_FROM) && describedDataset.areGraphsRequired()) {

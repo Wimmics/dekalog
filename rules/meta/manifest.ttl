@@ -476,29 +476,6 @@
         ]
     ) .
 
-<inclusionOf1000Individuals.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-                PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                INSERT {
-                    ?datasetDescription kgi:commonIndividuals ?otherDatasetDescription .
-                    ?otherDatasetDescription kgi:commonIndividuals ?datasetDescription .
-                }
-                WHERE {
-                    {
-                        SELECT DISTINCT ?otherDatasetDescription {
-                            ?datasetDescription kgi:resourceHostname ?resourceHostname .
-                            ?otherDatasetDescription void:resourceHostname ?resourceHostname .
-                            FILTER(?otherDatasetDescription < ?datasetDescription)
-                        }
-                    }
-                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
-                }
-            """
-        ]
-    ) .
-
 <inclusionByTriples.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
