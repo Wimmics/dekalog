@@ -9,10 +9,10 @@ dayjs.extend(customParseFormat)
 dayjs.extend(duration)
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
-const graphLists = require('./src/data/runSets.json');
-const timezoneMap = require('./src/data/timezoneMap.json');
-const endpointIpMap = require('./src/data/endpointIpGeoloc.json');
 const dataFilePrefix = "./src/data/cache/";
+const graphLists = require(dataFilePrefix + 'runSets.json');
+const timezoneMap = require(dataFilePrefix + 'timezoneMap.json');
+const endpointIpMap = require(dataFilePrefix + 'endpointIpGeoloc.json');
 const queryPaginationSize = 10000;
 
 const whiteListFilename = dataFilePrefix + "whiteLists.json";
@@ -554,7 +554,7 @@ function tripleDataFill() {
         .then(json => {
             json.forEach((itemResult, i) => {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
+                var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var triples = Number.parseInt(itemResult.o.value);
                 endpointTripleData.push({ endpoint: endpointUrl, graph: graph, date:date, triples: triples })
@@ -590,7 +590,7 @@ function classDataFill() {
         .then(json => {
             json.forEach((itemResult, i) => {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
+                var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var triples = Number.parseInt(itemResult.o.value);
                 endpointClassCountData.push({ endpoint: endpointUrl, graph: graph, date:date, classes: triples })
@@ -629,7 +629,7 @@ function propertyDataFill() {
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var properties = Number.parseInt(itemResult.o.value);
-                var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
+                var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
                 endpointPropertyCountData.push({ endpoint: endpointUrl, graph: graph, date:date, properties: properties })
             });
         })
@@ -677,7 +677,7 @@ function categoryTestCountFill() {
                 var count = itemResult.count.value;
                 var endpoint = itemResult.endpointUrl.value;
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
+                var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
                 testCategoryData.push({ category: category, graph: graph, date:date, endpoint: endpoint, count: count });
             });
         })
@@ -724,7 +724,7 @@ function totalCategoryTestCountFill() {
             var count = itemResult.count.value;
             var endpoint = itemResult.endpointUrl.value;
             var graph = itemResult.g.value;
-            var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
+            var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
             totalTestCategoryData.push({ category: category, endpoint: endpoint, graph: graph, date:date, count: count })
         });
@@ -761,7 +761,7 @@ function endpointTestsDataFill() {
                 var endpointUrl = item.endpointUrl.value;
                 var rule = item.rule.value;
                 var graph = item.g.value;
-                var date = parseDate(item.date.value, 'DD-MM-YYYYTHH:mm:ss');
+                var date = parseDate(item.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
                 endpointTestsData.push({ endpoint: endpointUrl, activity: rule, graph: graph, date:date })
             });
@@ -796,9 +796,9 @@ function totalRuntimeDataFill() {
     return paginatedSparqlQueryPromise(maxMinTimeQuery).then(jsonResponse => {
         jsonResponse.forEach((itemResult, i) => {
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-            var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
-            var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
-            var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
+            var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
+            var start = parseDate(itemResult.start.value, 'YYYY-MM-DDTHH:mm:ss');
+            var end = parseDate(itemResult.end.value, 'YYYY-MM-DDTHH:mm:ss');
             var endpointUrl = itemResult.endpointUrl.value;
             var runtimeData = dayjs.duration(end.diff(start));
             totalRuntimeData.push({ graph: graph, endpoint: endpointUrl, date:date, start: start, end: end, runtime: runtimeData })
@@ -838,9 +838,9 @@ function averageRuntimeDataFill() {
             .then(jsonResponse => {
                 jsonResponse.forEach((itemResult, i) => {
                     var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                    var date = parseDate(itemResult.date.value, 'DD-MM-YYYYTHH:mm:ss');
-                    var start = parseDate(itemResult.start.value, 'DD-MM-YYYYTHH:mm:ss');
-                    var end = parseDate(itemResult.end.value, 'DD-MM-YYYYTHH:mm:ss');
+                    var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
+                    var start = parseDate(itemResult.start.value, 'YYYY-MM-DDTHH:mm:ss');
+                    var end = parseDate(itemResult.end.value, 'YYYY-MM-DDTHH:mm:ss');
                     var runtime = dayjs.duration(end.diff(start));
 
                     if(graphStartEndMap.get(graph) == undefined) {
@@ -1254,7 +1254,7 @@ function shortUrisDataFill() {
                 var endpoint = jsonItem.endpointUrl.value;
                 var shortUriMeasure = Number.parseFloat(jsonItem.measure.value * 100);
                 var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-                var date = parseDate(jsonItem.date.value, 'DD-MM-YYYYTHH:mm:ss');
+                var date = parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
                 graphSet.add(graph);
                 shortUriData.push({ graph: graph, date:date, endpoint: endpoint, measure: shortUriMeasure })
@@ -1294,7 +1294,7 @@ function readableLabelsDataFill() {
                 var endpoint = jsonItem.endpointUrl.value;
                 var readableLabelMeasure = Number.parseFloat(jsonItem.measure.value * 100);
                 var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-                var date = parseDate(jsonItem.date.value, 'DD-MM-YYYYTHH:mm:ss');
+                var date = parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
                 readableLabelData.push({ graph: graph, date:date, endpoint: endpoint, measure: readableLabelMeasure })
             });
@@ -1333,7 +1333,7 @@ function rdfDataStructureDataFill() {
             var endpoint = jsonItem.endpointUrl.value;
             var rdfDataStructureMeasure = Number.parseFloat(jsonItem.measure.value * 100);
             var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-            var date = parseDate(jsonItem.date.value, 'DD-MM-YYYYTHH:mm:ss');
+            var date = parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
             rdfDataStructureData.push({ graph: graph, date:date, endpoint: endpoint, measure: rdfDataStructureMeasure })
         });
@@ -1373,7 +1373,7 @@ function blankNodeDataFill() {
             var endpoint = jsonItem.endpointUrl.value;
                 var blankNodeMeasure = Number.parseFloat(jsonItem.measure.value * 100);
                 var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-                var date = parseDate(jsonItem.date.value, 'DD-MM-YYYYTHH:mm:ss');
+                var date = parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
                 graphSet.add(graph);
                 blankNodeData.push({ graph: graph, date: date, endpoint: endpoint, measure: blankNodeMeasure })
