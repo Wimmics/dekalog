@@ -133,9 +133,10 @@ function whiteListFill() {
             var graphList = graphListItem.graphs
             var endpointListQuery = 'SELECT DISTINCT ?endpointUrl WHERE {' +
                 ' GRAPH ?g { ' +
-                "{ ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
-                "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-                '?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . ' +
+                "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+                "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+                "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
+                '?metadata <http://ns.inria.fr/kg/index#curated> ?curated . ' +
                 '} ' +
                 generateGraphValueFilterClause(graphList) +
                 '} ' +
@@ -392,9 +393,10 @@ function vocabFill() {
     console.log("vocabFill START")
     // Create an force graph with the graph linked by co-ocurrence of vocabularies
     sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
-        "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
-        "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
+        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+        "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
         "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
         "} " +
         " } " +
@@ -543,10 +545,12 @@ function tripleDataFill() {
     // Scatter plot of the number of triples through time
     var triplesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) { " +
         "GRAPH ?g {" +
-        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?base <http://rdfs.org/ns/void#triples> ?rawO ." +
+        "?curated <http://rdfs.org/ns/void#triples> ?rawO ." +
         "}" +
         "} GROUP BY ?g ?date ?endpointUrl ?o";
     var endpointTripleData = [];
@@ -579,8 +583,10 @@ function classDataFill() {
     // Scatter plot of the number of classes through time
     var classesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) ?modifDate { " +
         "GRAPH ?g {" +
-        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?base <http://rdfs.org/ns/void#classes> ?rawO ." +
         "}" +
@@ -616,8 +622,10 @@ function propertyDataFill() {
     // scatter plot of the number of properties through time
     var propertiesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) { " +
         "GRAPH ?g {" +
-        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?base <http://rdfs.org/ns/void#properties> ?rawO ." +
         "}" +
@@ -654,7 +662,9 @@ function categoryTestCountFill() {
     var testCategoryQuery = "SELECT DISTINCT ?g ?date ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
         "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
-        "?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl ." +
+        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
         "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?trace <http://www.w3.org/ns/earl#test> ?test . " +
         "?trace <http://www.w3.org/ns/earl#result> ?result . " +
@@ -701,7 +711,9 @@ function totalCategoryTestCountFill() {
     var testCategoryQuery = "SELECT DISTINCT ?category ?g ?date (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
         "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
-        "?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl ." +
+        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
         "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?trace <http://www.w3.org/ns/earl#test> ?test . " +
         "?trace <http://www.w3.org/ns/earl#result> ?result . " +
@@ -748,10 +760,12 @@ function endpointTestsDataFill() {
 
     var appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?g ?date ?rule { " +
         "GRAPH ?g { " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?curated . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "?curated <http://www.w3.org/ns/prov#wasGeneratedBy> ?rule . " +
-        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
         "} " +
         "}";
     var endpointTestsData = [];
@@ -784,21 +798,23 @@ function totalRuntimeDataFill() {
     console.log("totalRuntimeDataFill START")
     var maxMinTimeQuery = "SELECT DISTINCT ?g ?endpointUrl ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { " +
     " GRAPH ?g { " +
-    "?metadata <http://ns.inria.fr/kg/index#curated> ?data , ?endpoint . " + 
+    "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " + 
     "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
     "?metadata <http://purl.org/dc/terms/modified> ?date . " +
     "?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . " +
     "?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
-    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+    "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+    "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
+    "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
     "} "+
     "} ";
     var totalRuntimeData = []
     return paginatedSparqlQueryPromise(maxMinTimeQuery).then(jsonResponse => {
         jsonResponse.forEach((itemResult, i) => {
             var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-            var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
-            var start = parseDate(itemResult.start.value, 'YYYY-MM-DDTHH:mm:ss');
-            var end = parseDate(itemResult.end.value, 'YYYY-MM-DDTHH:mm:ss');
+            var date = parseDate(itemResult.date.value);
+            var start = parseDate(itemResult.start.value);
+            var end = parseDate(itemResult.end.value);
             var endpointUrl = itemResult.endpointUrl.value;
             var runtimeData = dayjs.duration(end.diff(start));
             totalRuntimeData.push({ graph: graph, endpoint: endpointUrl, date:date, start: start, end: end, runtime: runtimeData })
@@ -886,8 +902,10 @@ function classAndPropertiesDataFill() {
     console.log("classAndPropertiesDataFill START")
     var classPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co { " +
         "GRAPH ?g {" +
-        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
+        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?base <http://rdfs.org/ns/void#classPartition> ?classPartition . " +
         "?classPartition <http://rdfs.org/ns/void#class> ?c . " +
         "OPTIONAL { " +
@@ -1080,10 +1098,9 @@ function datasetDescriptionDataFill() {
     console.log("datasetDescriptionDataDataFill START")
     var provenanceWhoCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
         "GRAPH ?g { " +
-        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
-        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
         "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl } " +
         "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
         "OPTIONAL {" +
         "{ ?dataset <http://purl.org/dc/terms/creator> ?o } " +
@@ -1094,10 +1111,9 @@ function datasetDescriptionDataFill() {
         "} ";
     var provenanceLicenseCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
         "GRAPH ?g { " +
-        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
-        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
         "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl } " +
         "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
         "OPTIONAL {" +
         "{ ?dataset <http://purl.org/dc/terms/license> ?o } " +
@@ -1107,10 +1123,9 @@ function datasetDescriptionDataFill() {
         "} ";
     var provenanceDateCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
         "GRAPH ?g { " +
-        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
-        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
         "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl } " +
         "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
         "OPTIONAL {" +
         " { ?dataset <http://purl.org/dc/terms/modified> ?o } " +
@@ -1121,10 +1136,9 @@ function datasetDescriptionDataFill() {
         "} ";
     var provenanceSourceCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
         "GRAPH ?g { " +
-        "{ ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . } " +
-        "UNION { ?dataset <http://ns.inria.fr/kg/index#curated> ?other . } " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
         "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointUrl> ?endpointUrl } " +
+        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl } " +
         "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
         "OPTIONAL {" +
         "{ ?dataset <http://purl.org/dc/terms/source> ?o } " +
@@ -1238,9 +1252,10 @@ function shortUrisDataFill() {
     console.log("shortUrisDataFill START")
     var shortUrisMeasureQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
-        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
         "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
         "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> . " +
         "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
@@ -1278,9 +1293,10 @@ function readableLabelsDataFill() {
     console.log("readableLabelsDataFill START")
     var readableLabelsQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
-        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
         "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
         "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . " +
         "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
@@ -1318,9 +1334,10 @@ function rdfDataStructureDataFill() {
     console.log("rdfDataStructureDataFill START")
     var rdfDataStructureQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
-        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
         "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
         "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . " +
         "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
@@ -1357,8 +1374,9 @@ function blankNodeDataFill() {
     var blankNodeQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
         "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
         "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . " +
         "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +

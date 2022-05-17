@@ -185,20 +185,6 @@
 
 <datasetDescResource.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [
-            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX earl: <http://www.w3.org/ns/earl#>
-                PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                INSERT {
-                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl#activity> .
-                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl> ;
-                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-            } WHERE {
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
-            }
-            """
-        ]
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -206,6 +192,9 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResource.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                     ?datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
                         prov:wasDerivedFrom ?res ;
                         ?pp ?o .
@@ -275,21 +264,6 @@
 
 <datasetDescResourceLocalhost.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
-        [
-            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX earl: <http://www.w3.org/ns/earl#>
-                PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                INSERT {
-                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl#activity> .
-                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl> ;
-                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-                }
-                WHERE {
-                        BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
-                }
-            """
-        ]
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>
                 PREFIX dcat: <http://www.w3.org/ns/dcat#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -297,6 +271,9 @@
                 PREFIX earl: <http://www.w3.org/ns/earl#>
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/datasetDescResourceLocalhost.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                     ?datasetDescription a dcat:Dataset , void:Dataset , prov:Entity ;
                         prov:wasDerivedFrom ?res ;
                         ?pp ?o .

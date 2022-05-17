@@ -76,11 +76,11 @@
         [ mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX void: <http://rdfs.org/ns/void#>
             INSERT { ?datasetDescription void:sparqlEndpoint ?o . }
             WHERE {
-                ?endpointDescription dcat:endpointURL ?o .
+                ?datasetDescription dcat:endpointURL ?o .
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription) } """ ]
         [ mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX void: <http://rdfs.org/ns/void#>
-            INSERT { ?endpointDescription dcat:endpointURL ?o . }
+            INSERT { ?datasetDescription dcat:endpointURL ?o . }
             WHERE {
                 ?datasetDescription void:sparqlEndpoint ?o .
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
