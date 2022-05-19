@@ -3,6 +3,7 @@
 
 <> a mf:Manifest ;
     mf:entries (
+            <seedDescription.ttl>
             <equivalences.ttl>
             <modifiedUpdate.ttl>
             <exampleQueries.ttl>
@@ -13,6 +14,45 @@
             <inclusionByClassesAndProperties.ttl>
             <inclusionByResourceHostname.ttl>
         ) .
+
+<seedDescription.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """
+            PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX dqv: <http://www.w3.org/ns/dqv#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            INSERT {
+                kgi:catalogRoot dcat:dataset ?datasetDescription .
+                ?datasetDescription a dcat:Dataset , prov:Entity , earl:TestSubject ;
+                    void:sparqlEndpoint $rawEndpointUrl ;
+                    dcat:service ?endpointDescription .
+                ?datasetDescription dcat:distribution ?datasetDistribution .
+                ?datasetDistribution a dcat:Distribution ;
+                    dcat:accessURL $rawEndpointUrl ;
+                    dcat:mediaType "application/sparql-query" .
+                ?endpointDescription a sd:Service , dcat:DataService , prov:Entity , earl:TestSubject ;
+                    sd:endpoint $rawEndpointUrl ;
+                    dcat:servesDataset ?datasetDescription ;
+                    dcat:endpointURL $rawEndpointUrl .
+                ?metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasDerivedFrom $rawEndpointUrl ;
+                    kgi:curated ?endpointDescription , ?datasetDescription .
+            }
+            WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Distribution")) AS ?datasetDistribution)
+            }
+            """
+        ]
+    ) .
 
 <equivalences.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
