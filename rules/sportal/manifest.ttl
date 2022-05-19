@@ -37,9 +37,10 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 CONSTRUCT {
                     ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/classPopulation.ttl#activity> ;
-                        void:classPartition ?classPartition ;
+                        void:classPartition [
                             void:class ?class ;
-                            void:entities ?count .
+                            void:entities ?count
+                        ] .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/classPopulation.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/classPopulation.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 }
@@ -52,7 +53,6 @@
                         }
                     } GROUP BY ?class }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
-                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
                 }
             """
         ]

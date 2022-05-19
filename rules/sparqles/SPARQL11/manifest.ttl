@@ -486,7 +486,6 @@
                 PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
                 PREFIX lsq: <http://lsq.aksw.org/vocab#>
                 PREFIX dcterms: <http://purl.org/dc/terms/>
-                PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
                 INSERT {
@@ -495,7 +494,6 @@
                             prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                     ?endpointDescription sd:feature sd:SPARQL11Query .
                 } WHERE {
-                    ?metadataDescription kgi:curated ?endpointDescription .
                     ?endpointDescription sd:feature
                         sparqles:ASKFILNOTIN ,
                         sparqles:CON- ,
@@ -516,6 +514,8 @@
                         sparqles:SELSUBQ ,
                         sparqles:SELSUM ,
                         sparqles:SELVALUES .
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
                 }
                 """
             ]
