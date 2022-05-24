@@ -88,11 +88,10 @@ kgi:onSuccess (
                 ?metadataDescription a prov:Entity , earl:TestSubject ;
                     prov:wasDerivedFrom ?endpointUrl ;
                     kgi:curated ?endpointDescription .
-                ?endpointDescription sd:availableGraphs ?graphList .
-                ?graphList sd:namedGraph [
-                        a sd:NamedGraph ;
-                        sd:name ?graph
-                    ] .
+                ?endpointDescription sd:availableGraphs ?datasetDescription .
+                ?datasetDescription sd:namedGraph ?graphResource .
+                ?graphResource a sd:NamedGraph ;
+                    sd:name ?graph .
             }
             WHERE {
                 {
@@ -103,7 +102,7 @@ kgi:onSuccess (
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Graphs")) AS ?graphList)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(?graph))), "Graph")) AS ?graphResource)
             }
             """
         ]
@@ -127,10 +126,9 @@ kgi:onSuccess (
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphListCorese.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/graphListCorese.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 ?endpointDescription sd:availableGraphs ?graphList .
-                ?graphList sd:namedGraph [
-                        a sd:NamedGraph ;
-                        sd:name ?graph
-                    ] .
+                ?datasetDescription sd:namedGraph ?graphResource .
+                ?graphResource a sd:NamedGraph ;
+                    sd:name ?graph .
             }
             WHERE {
                 {
@@ -143,7 +141,7 @@ kgi:onSuccess (
                 }
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Graphs")) AS ?graphList)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(?graph))), "Graph")) AS ?graphResource)
             }"""
         ]
         <../../meta/modifiedUpdate.ttl>

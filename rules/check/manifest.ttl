@@ -56,25 +56,26 @@
                 ?endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset ?datasetDescription ;
                     dcat:endpointURL $rawEndpointUrl ;
-                    a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> .
+                    a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>  .
                 ?metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated ?datasetDescription , ?endpointDescription ;
-                    dqv:hasQualityMeasurement [
-                        a dqv:QualityMeasurement ;
-                        dqv:computedOn ?endpointDescription ;
-                        dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
-                        dqv:value "true"^^xsd:boolean
-                    ] .
-
+                    dqv:hasQualityMeasurement ?endpointReachabilityMeasurement .
+                ?endpointReachabilityMeasurement a dqv:QualityMeasurement ;
+                    prov:wasGeneratedAtTime ?time ;
+                    dqv:computedOn ?endpointDescription ;
+                    dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
+                    dqv:value "true"^^xsd:boolean .
             } WHERE {
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Distribution")) AS ?datasetDistribution)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl")), "Measure")) AS ?endpointReachabilityMeasurement)
+                BIND(NOW() AS ?time)
             }
             """
         ]
@@ -88,7 +89,6 @@
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
-            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX dqv: <http://www.w3.org/ns/dqv#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             INSERT {
@@ -101,26 +101,26 @@
                 ?endpointDescription sd:endpoint $rawEndpointUrl ;
                     dcat:servesDataset ?datasetDescription ;
                     dcat:endpointURL $rawEndpointUrl ;
-                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
-                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>  .
                 ?metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
                     kgi:curated ?datasetDescription , ?endpointDescription ;
-                    dqv:hasQualityMeasurement [
-                        a dqv:QualityMeasurement ;
-                        rdfs:label "Could not reach the endpoint"@en ;
+                    dqv:hasQualityMeasurement ?endpointReachabilityMeasurement .
+                    ?endpointReachabilityMeasurement a dqv:QualityMeasurement ;
+                        prov:wasGeneratedAtTime ?time ;
                         dqv:computedOn ?endpointDescription ;
                         dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
-                        dqv:value "false"^^xsd:boolean
-                    ] .
-
+                        dqv:value "false"^^xsd:boolean .
             } WHERE {
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Distribution")) AS ?datasetDistribution)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl")), "Measure")) AS ?endpointReachabilityMeasurement)
+                BIND(NOW() AS ?time)
             }
             """
         ]
