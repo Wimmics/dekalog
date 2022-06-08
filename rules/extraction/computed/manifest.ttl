@@ -670,12 +670,226 @@ kgi:onSuccess (
                         ?s owl:sameAs ?o .
                         FILTER(isIri(?s)).
                         FILTER(! isBlank(?s)).
+                        FILTER(isIri(?o)).
+                        FILTER(! isBlank(?o)).
                         BIND( REPLACE(str(?s), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEndS)
                         BIND( REPLACE(str(?o), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEndO)
                     }
                 }
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(owl:sameAs), str(?nsS), str(?nsO))), "Linkset")) AS ?linkset)
+            }
+            """
+        ]
+    ) .
+
+
+
+<linksets.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                ?linkset a void:Linkset .
+                ?linkset void:linkPredicate ?p .
+                ?linkset void:target ?uriSpace .
+                ?linkset void:target ?nsO .
+                ?linkset void:subjectsTarget ?uriSpace .
+                ?linkset void:objectsTarget ?nsO .
+                ?datasetDescription kgi:linkset ?linkset .
+            } WHERE {
+                { ?dataset a dcat:Dataset }
+                UNION { ?dataset a void:Dataset }
+                ?dataset ?endpointLink $rawEndpointUrl .
+                ?dataset void:uriSpace ?uriSpace .
+                {
+                    SELECT (IRI(REPLACE(str(?o), ?urlEndO, "", "q" ) ) AS ?nsO) ?p {
+                        ?s ?p ?o .
+                        FILTER(STRSTARTS( str(?s) , str(?uriSpace) ))
+                        FILTER(isIri(?o)).
+                        FILTER(! isBlank(?o)).
+                        BIND( REPLACE(str(?o), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEndO)
+                    }
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(?p), str(?uriSpace), str(?nsO))), "Linkset")) AS ?linkset)
+            }
+            """
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            CONSTRUCT {
+                ?linkset a void:Linkset .
+                ?linkset void:linkPredicate ?p .
+                ?linkset void:target ?uriSpace .
+                ?linkset void:target ?nsS .
+                ?linkset void:subjectsTarget ?nsS .
+                ?linkset void:objectsTarget ?uriSpace .
+                ?datasetDescription kgi:linkset ?linkset .
+            } WHERE {
+                { ?dataset a dcat:Dataset }
+                UNION { ?dataset a void:Dataset }
+                ?dataset ?endpointLink $rawEndpointUrl .
+                ?dataset void:uriRegexPattern ?uriSpace .
+                {
+                    SELECT (IRI(REPLACE(str(?s), ?urlEndS, "", "q" ) ) AS ?nsS) ?p {
+                        ?s ?p ?o .
+                        FILTER(STRSTARTS( str(?o) , str(?uriSpace) ))
+                        FILTER(isIri(?s)).
+                        FILTER(! isBlank(?s)).
+                        BIND( REPLACE(str(?s), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEndS)
+                    }
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(?p), str(?nsS), str(?uriSpace))), "Linkset")) AS ?linkset)
+            }
+            """
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                ?linkset a void:Linkset .
+                ?linkset void:linkPredicate ?p .
+                ?linkset void:target ?uriSpace .
+                ?linkset void:target ?nsS .
+                ?linkset void:subjectsTarget ?nsS .
+                ?linkset void:objectsTarget ?uriSpace .
+                ?datasetDescription kgi:linkset ?linkset .
+            } WHERE {
+                { ?dataset a dcat:Dataset }
+                UNION { ?dataset a void:Dataset }
+                ?dataset ?endpointLink $rawEndpointUrl .
+                ?dataset void:uriRegexPattern ?uriRegex .
+                {
+                    SELECT (IRI(REPLACE(str(?s), ?urlEndS, "", "q" ) ) AS ?nsS) ?p {
+                        ?s ?p ?o .
+                        FILTER(REGEX( str(?o) , str(?uriRegex) ))
+                        FILTER(isIri(?s)).
+                        FILTER(! isBlank(?s)).
+                        BIND( REPLACE(str(?s), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEndS)
+                    }
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(?p), str(?nsS), str(?uriRegex))), "Linkset")) AS ?linkset)
+            }
+            """
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                ?linkset a void:Linkset .
+                ?linkset void:linkPredicate ?p .
+                ?linkset void:target ?uriSpace .
+                ?linkset void:target ?nsO .
+                ?linkset void:objectsTarget ?nsO .
+                ?linkset void:subjectsTarget ?uriSpace .
+                ?datasetDescription kgi:linkset ?linkset .
+            } WHERE {
+                { ?dataset a dcat:Dataset }
+                UNION { ?dataset a void:Dataset }
+                ?dataset ?endpointLink $rawEndpointUrl .
+                ?dataset void:uriRegexPattern ?uriRegex .
+                {
+                    SELECT (IRI(REPLACE(str(?s), ?urlEndO, "", "q" ) ) AS ?nsO) ?p {
+                        ?s ?p ?o .
+                        FILTER(REGEX( str(?s) , str(?uriRegex) ))
+                        FILTER(isIri(?o)).
+                        FILTER(! isBlank(?o)).
+                        BIND( REPLACE(str(?o), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEndO)
+                    }
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(?p), str(?nsO), str(?uriRegex))), "Linkset")) AS ?linkset)
+            }
+            """
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                ?linkset a void:Linkset .
+                ?linkset void:linkPredicate ?p .
+                ?linkset void:target ?nsExample .
+                ?linkset void:target ?nsO .
+                ?linkset void:objectsTarget ?nsO .
+                ?linkset void:subjectsTarget ?nsExample .
+                ?datasetDescription kgi:linkset ?linkset .
+            } WHERE {
+                { ?dataset a dcat:Dataset }
+                UNION { ?dataset a void:Dataset }
+                ?dataset ?endpointLink $rawEndpointUrl .
+                {
+                    SELECT (IRI(REPLACE(str(?s), ?urlEndO, "", "q" ) ) AS ?nsO) ?p ?nsExample {
+                        ?s ?p ?o .
+                        {
+                            SELECT (IRI(REPLACE(str(?example), ?exampleEnd, "", "q" ) ) AS ?nsExample) {
+                                ?dataset void:exampleResource ?example .
+                                FILTER(isIri(?example)).
+                                FILTER(! isBlank(?example)).
+                                BIND( REPLACE(str(?example), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?exampleEnd)
+                            }
+                        }
+                        FILTER(REGEX( str(?s) , str(?nsExample) ))
+                        FILTER(isIri(?o)).
+                        FILTER(! isBlank(?o)).
+                        BIND( REPLACE(str(?o), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEndO)
+                    }
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(?p), str(?nsO), str(?nsExample))), "Linkset")) AS ?linkset)
+            }
+            """
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                ?linkset a void:Linkset .
+                ?linkset void:linkPredicate ?p .
+                ?linkset void:target ?nsExample .
+                ?linkset void:target ?nsO .
+                ?linkset void:objectsTarget ?nsO .
+                ?linkset void:subjectsTarget ?nsExample .
+                ?datasetDescription kgi:linkset ?linkset .
+            } WHERE {
+                { ?dataset a dcat:Dataset }
+                UNION { ?dataset a void:Dataset }
+                ?dataset ?endpointLink $rawEndpointUrl .
+                {
+                    SELECT (IRI(REPLACE(str(?s), ?urlEndO, "", "q" ) ) AS ?nsO) ?p ?nsExample {
+                        ?s ?p ?o .
+                        {
+                            SELECT (IRI(REPLACE(str(?example), ?exampleEnd, "", "q" ) ) AS ?nsExample) {
+                                ?dataset void:exampleResource ?example .
+                                FILTER(isIri(?example)).
+                                FILTER(! isBlank(?example)).
+                                BIND( REPLACE(str(?example), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?exampleEnd)
+                            }
+                        }
+                        FILTER(REGEX( str(?s) , str(?nsExample) ))
+                        FILTER(isIri(?o)).
+                        FILTER(! isBlank(?o)).
+                        BIND( REPLACE(str(?o), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEndO)
+                    }
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(?p), str(?nsO), str(?nsExample))), "Linkset")) AS ?linkset)
             }
             """
         ]
