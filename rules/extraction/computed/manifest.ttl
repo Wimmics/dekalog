@@ -16,6 +16,7 @@
             <timezone.ttl>
             <datatypes.ttl>
             <resourceHostname.ttl>
+            <sameAs.ttl>
         ) .
 
 <languages.ttl> a mf:ManifestEntry ;
@@ -563,6 +564,89 @@ kgi:onSuccess (
         """
         ]
         <../../meta/modifiedUpdate.ttl>
+    ) .
+
+<sameAs.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX owl: <http://www.w3.org/2002/07/owl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                ?linkset a void:Linkset .
+                ?linkset void:linkPredicate owl:sameAs .
+                ?datasetDescription kgi:linkset ?linkset .
+            } WHERE {
+                {
+                    SELECT * {
+                        ?s owl:sameAs ?o .
+                    } LIMIT 1
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(owl:sameAs))), "Linkset")) AS ?linkset)
+            }
+            """
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX owl: <http://www.w3.org/2002/07/owl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                ?linkset a void:Linkset .
+                ?linkset void:linkPredicate owl:sameAs .
+                ?linkset void:triples ?countSameAs .
+                ?datasetDescription kgi:linkset ?linkset .
+            } WHERE {
+                {
+                    SELECT (COUNT(DISTINCT *) AS ?countSameAs) {
+                        ?s owl:sameAs ?o .
+                    }
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(owl:sameAs))), "Linkset")) AS ?linkset)
+            }
+            """
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX owl: <http://www.w3.org/2002/07/owl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                ?linkset a void:Linkset .
+                ?linkset void:linkPredicate owl:sameAs .
+                ?linkset void:distinctSubjects ?countSubjectSameAs .
+                ?datasetDescription kgi:linkset ?linkset .
+            } WHERE {
+                {
+                    SELECT (COUNT(DISTINCT ?s) AS ?countSubjectSameAs) {
+                        ?s owl:sameAs ?o .
+                    }
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(owl:sameAs))), "Linkset")) AS ?linkset)
+            }
+            """
+        ]
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX owl: <http://www.w3.org/2002/07/owl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                ?linkset a void:Linkset .
+                ?linkset void:linkPredicate owl:sameAs .
+                ?linkset void:distinctObjects ?countObjectSameAs .
+                ?datasetDescription kgi:linkset ?linkset .
+            } WHERE {
+                {
+                    SELECT (COUNT(DISTINCT ?o) AS ?countObjectSameAs) {
+                        ?s owl:sameAs ?o .
+                    }
+                }
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(owl:sameAs))), "Linkset")) AS ?linkset)
+            }
+            """
+        ]
     ) .
 
 # Miscanellous statistics from SPORTAL using a vocabulary created for SPORTAL only

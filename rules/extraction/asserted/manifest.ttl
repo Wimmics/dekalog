@@ -8,6 +8,7 @@
     mf:entries  (
             <endpointDescResource.ttl>
             <datasetDescResource.ttl>
+            <linksets.ttl>
         ) .
 
 <endpointDescResource.ttl> a mf:ManifestEntry ;
@@ -339,23 +340,42 @@
         <../../meta/modifiedUpdate.ttl>
         <../../meta/equivalences.ttl>
     ) ;
-        kgi:onFailure (
-            [
-                mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-                    PREFIX dcat: <http://www.w3.org/ns/dcat#>
-                    PREFIX prov: <http://www.w3.org/ns/prov#>
-                    PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
-                    PREFIX earl: <http://www.w3.org/ns/earl#>
-                    PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                    INSERT {
-                        ?datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
-                        ?metadataDescription a prov:Entity , earl:TestSubject ;
-                            kgi:curated ?datasetDescription .
-                    }
-                    WHERE {
-                        BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
-                        BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
-                    }"""
-            ]
-            <../../meta/modifiedUpdate.ttl>
-        ) .
+    kgi:onFailure (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX dcat: <http://www.w3.org/ns/dcat#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+                PREFIX earl: <http://www.w3.org/ns/earl#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription a dcat:Dataset , void:Dataset , prov:Entity .
+                    ?metadataDescription a prov:Entity , earl:TestSubject ;
+                        kgi:curated ?datasetDescription .
+                }
+                WHERE {
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                }"""
+        ]
+        <../../meta/modifiedUpdate.ttl>
+    ) .
+
+<linksets.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            CONSTRUCT {
+                ?linkset a void:Linkset .
+                ?linkset ?p ?o .
+                ?datasetDescription kgi:linkset ?linkset .
+            } WHERE {
+                ?linkset a void:Linkset .
+                ?linkset ?p ?o .
+                FILTER( ! isBlank(?o) )
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+            }
+            """
+        ]
+    ) .

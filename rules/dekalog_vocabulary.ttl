@@ -90,3 +90,9 @@ kgi:timeout rdf:type rdf:Property ;
     rdfs:isDefinedBy kgi: ;
     rdfs:comment "Queries sent during test and actions may need a specific timeout, generally longer than normal. This property specify the timeout for a test or an action." ;
     rdfs:range xsd:duration .
+
+kgi:linkset rdf:type rdf:Property ;
+    rdfs:label "Link a dataset description to the linkset that were retrieved during its indexation" ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain void:Dataset ;
+    rdfs:range void:Linkset .
