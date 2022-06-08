@@ -65,7 +65,7 @@ public class CatalogInputMain {
         options.addOption(Option.builder(OPT_FEDERATION)
                 .required(false)
                 .hasArg()
-                .desc("SPARQL endpoint URL to a federation server used in rules for the generation. If none is given, rules using the kgi:federated endpoint will not be executed.")
+                .desc("SPARQL endpoint URL to a federation server used in rules for the generation. If none is given, rules using the kgi:federation endpoint will not be executed.")
                 .build());
         options.addOption(Option.builder(OPT_OUTPUT)
                 .required(false)
