@@ -214,6 +214,10 @@ public class ManifestEntry {
 			} catch(HttpException e) {
 				logger.error(e);
 				logger.error(Utils.vocabularyFile + " could not be reached");
+			} catch(Exception e) {
+				logger.error(e);
+				logger.error("Error reading vocabulary file");
+				throw e;
 			}
 			InfModel testModelWithInference = ModelFactory.createRDFSModel(kgiVocabulary);
 			Model testModel = ModelFactory.createDefaultModel();
