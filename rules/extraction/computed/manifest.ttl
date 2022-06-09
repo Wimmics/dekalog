@@ -653,9 +653,11 @@ kgi:onSuccess (
 <sameAsNamespace.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
+            kgi:timeout "PT120S"^^xsd:duration ;
             mf:action """PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX owl: <http://www.w3.org/2002/07/owl#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
+
             CONSTRUCT {
                 ?linkset a void:Linkset .
                 ?linkset void:linkPredicate owl:sameAs .
@@ -665,17 +667,14 @@ kgi:onSuccess (
                 ?linkset void:objectsTarget ?nsO .
                 ?datasetDescription kgi:linkset ?linkset .
             } WHERE {
-                {
-                    SELECT (IRI(REPLACE(str(?s), ?urlEndS, "", "q" ) ) AS ?nsS) (IRI(REPLACE(str(?o), ?urlEndO, "", "q" ) ) AS ?nsO) {
-                        ?s owl:sameAs ?o .
-                        FILTER(isIri(?s)).
-                        FILTER(! isBlank(?s)).
-                        FILTER(isIri(?o)).
-                        FILTER(! isBlank(?o)).
-                        BIND( REPLACE(str(?s), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEndS)
-                        BIND( REPLACE(str(?o), "^[a-z][a-z0-9+.]*://([a-z0-9._~%!$&'()*+,;=]+@)?([a-z0-9-._~%]+|[a-f0-9:.]+|[[a-f0-9][a-z0-9-._~%!$&'()*+,;=:]+])(:[0-9]+)?", "") AS ?urlEndO)
-                    }
-                }
+                ?s owl:sameAs ?o .
+                FILTER(isIri(?s)).
+                FILTER(! isBlank(?s)).
+                FILTER(isIri(?o)).
+                FILTER(! isBlank(?o)).
+                FILTER(?nsS != ?nsO)
+                BIND(IRI(REPLACE( str(?s), "(#|/)[^#/]*$", "$1")) AS ?nsS) .
+                BIND(IRI(REPLACE( str(?o), "(#|/)[^#/]*$", "$1")) AS ?nsO) .
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(owl:sameAs), str(?nsS), str(?nsO))), "Linkset")) AS ?linkset)
             }
