@@ -10,6 +10,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix sp: <http://spinrdf.org/sp> .
 @prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix void: <http://rdfs.org/ns/void#> .
 
 kgi: dcterms:creator "Pierre Maillot" ;
     dcterms:creator <https://orcid.org/0000-0002-9814-439X> ;
