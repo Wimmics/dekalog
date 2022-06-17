@@ -24,11 +24,13 @@
         [
             mf:action """PREFIX schema: <http://schema.org/>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX dcterms: <http://purl.org/dc/terms/>
                 CONSTRUCT {
                     ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl#activity> .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                     ?datasetDescription schema:availableLanguage ?lang .
+                    ?datasetDescription dcterms:language ?lang .
                 }
                 WHERE {
                     {
@@ -47,11 +49,13 @@
             kgi:endpoint kgi:federation ;
             mf:action """PREFIX schema: <http://schema.org/>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX dcterms: <http://purl.org/dc/terms/>
                 CONSTRUCT {
                     ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl#activity> .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                     ?datasetDescription schema:availableLanguage ?lang .
+                    ?datasetDescription dcterms:language ?lang .
                 }
                 WHERE {
                     {
