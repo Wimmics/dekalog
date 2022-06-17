@@ -269,6 +269,27 @@
 
 <sportalClassPartition.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
+        [
+            kgi:timeout "PT120S"^^xsd:duration ;
+            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX earl: <http://www.w3.org/ns/earl#>
+            PREFIX kgi: <http://ns.inria.fr/kg/index#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+                CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl#activity> ;
+                        void:classPartition ?classPartition .
+                    ?classPartition void:class ?c .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                }
+                WHERE {
+                    { ?s a ?c . }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(?c))), "Partition")) AS ?classPartition)
+                }
+            """
+        ]
         <sportalClassPartitionTriples.ttl>
     ) .
 
@@ -291,30 +312,6 @@
                     { SELECT (COUNT(?p) AS ?x) ?c WHERE { ?s a ?c ; ?p ?o } GROUP BY ?c }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), MD5(str(?c)))) AS ?classPartition)
-                }
-            """
-        ]
-        <../meta/modifiedUpdate.ttl>
-    ) ;
-    kgi:onFailure (
-        [
-            kgi:timeout "PT120S"^^xsd:duration ;
-            mf:action """PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-            PREFIX earl: <http://www.w3.org/ns/earl#>
-            PREFIX kgi: <http://ns.inria.fr/kg/index#>
-            PREFIX void: <http://rdfs.org/ns/void#>
-                CONSTRUCT {
-                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl#activity> ;
-                        void:classPartition ?classPartition .
-                    ?classPartition void:class ?c .
-                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/sportalClassPartition.ttl> ;
-                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-                }
-                WHERE {
-                    { ?s a ?c . }
-                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
-                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT(str($rawEndpointUrl), str(?c))), "Partition")) AS ?classPartition)
                 }
             """
         ]

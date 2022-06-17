@@ -42,6 +42,32 @@
                 }
             """
         ]
+        # Corese rule with pagination
+        [
+            kgi:endpoint kgi:federation ;
+            mf:action """PREFIX schema: <http://schema.org/>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                CONSTRUCT {
+                    ?datasetDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl#activity> .
+                    <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/languages.ttl> ;
+                        prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+                    ?datasetDescription schema:availableLanguage ?lang .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT (lang(?o) as ?lang)  WHERE {
+                            BIND(IRI(CONCAT(str($rawEndpointUrl), "?loop=true&limit=1000")) AS ?parametrizedService)
+                            SERVICE ?parametrizedService {
+                                ?s ?p ?o
+                                FILTER( isLiteral(?o) )
+                                FILTER( lang(?o) != "" )
+                            }
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
         <../../meta/modifiedUpdate.ttl>
     ) .
 

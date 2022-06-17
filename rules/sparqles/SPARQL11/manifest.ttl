@@ -515,7 +515,6 @@
                         sparqles:SELSUM ,
                         sparqles:SELVALUES .
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
-                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
                 }
                 """
             ]

@@ -52,39 +52,38 @@
             INSERT { ?endpointDescription sd:endpoint ?o . }
             WHERE {
                 ?datasetDescription dcat:endpointURL ?o .
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str(?o)), "Endpoint")) AS ?endpointDescription)
             } """ ]
         [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX dcat: <http://www.w3.org/ns/dcat#>
             INSERT { ?endpointDescription dcat:endpointURL ?o . }
             WHERE {
                 ?datasetDescription sd:endpoint ?o .
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription) } """ ]
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str(?o)), "Endpoint")) AS ?endpointDescription)
+            }""" ]
         [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX void: <http://rdfs.org/ns/void#>
             INSERT { ?endpointDescription sd:endpoint ?o . }
             WHERE {
                 ?datasetDescription void:sparqlEndpoint ?o .
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription) } """ ]
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str(?o)), "Endpoint")) AS ?endpointDescription)
+            } """ ]
         [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX void: <http://rdfs.org/ns/void#>
             INSERT { ?datasetDescription void:sparqlEndpoint ?o . }
             WHERE {
                 ?endpointDescription sd:endpoint ?o .
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription) } """ ]
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str(?o)), "Dataset")) AS ?datasetDescription)
+            } """ ]
         [ mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX void: <http://rdfs.org/ns/void#>
             INSERT { ?datasetDescription void:sparqlEndpoint ?o . }
             WHERE {
                 ?datasetDescription dcat:endpointURL ?o .
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription) } """ ]
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str(?o)), "Endpoint")) AS ?endpointDescription)
+            } """ ]
         [ mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX void: <http://rdfs.org/ns/void#>
             INSERT { ?datasetDescription dcat:endpointURL ?o . }
             WHERE {
                 ?datasetDescription void:sparqlEndpoint ?o .
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
-                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription) } """ ]
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str(?o)), "Endpoint")) AS ?endpointDescription)
+            } """ ]
         [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s rdfs:comment ?o . } WHERE { ?s skos:definition ?o . } """ ]
         [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s skos:definition ?o . } WHERE { ?s rdfs:comment ?o . } """ ]
     ) .

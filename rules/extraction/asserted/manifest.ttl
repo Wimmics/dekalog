@@ -45,12 +45,12 @@
                          kgi:original ?res .
                 } WHERE {
                     {
-                        ?res sd:endpoint $endpointUrl .
+                        ?res sd:endpoint $rawEndpointUrl .
                         ?res ?p ?o .
                     }
                     UNION {
                         GRAPH ?g {
-                            ?res sd:endpoint $endpointUrl .
+                            ?res sd:endpoint $rawEndpointUrl .
                             ?res ?p ?o .
                         }
                     }
@@ -67,12 +67,12 @@
                    ?metadataDescription kgi:original ?res .
                 } WHERE {
                     {
-                       ?res sd:endpoint $endpointUrl .
+                       ?res sd:endpoint $rawEndpointUrl .
                        ?s ?p ?res .
                     }
                     UNION {
                         GRAPH ?g {
-                           ?res sd:endpoint $endpointUrl .
+                           ?res sd:endpoint $rawEndpointUrl .
                            ?s ?p ?res .
                         }
                     }
@@ -207,14 +207,14 @@
                     {
                         { ?res a dcat:Dataset }
                         UNION { ?res a void:Dataset }
-                        ?res ?p $endpointUrl .
+                        ?res ?p $rawEndpointUrl .
                         ?res ?pp ?o .
                     }
                     UNION {
                         GRAPH ?g {
                             { ?res a dcat:Dataset }
                             UNION { ?res a void:Dataset }
-                            ?res ?p $endpointUrl .
+                            ?res ?p $rawEndpointUrl .
                             ?res ?pp ?o .
                         }
                     }
@@ -241,14 +241,14 @@
                     {
                         { ?res a dcat:Dataset }
                         UNION { ?res a void:Dataset }
-                        ?res ?p $endpointUrl .
+                        ?res ?p $rawEndpointUrl .
                         ?s ?pp ?res .
                     }
                     UNION {
                         GRAPH ?g {
                             { ?res a dcat:Dataset }
                             UNION { ?res a void:Dataset }
-                            ?res ?p $endpointUrl .
+                            ?res ?p $rawEndpointUrl .
                             ?s ?pp ?res .
                         }
                     }
