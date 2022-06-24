@@ -22,12 +22,14 @@
         [
             mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
-                INSERT DATA {
-                    $endpointDescription sd:endpoint $rawEndpointUrl ;
+                INSERT {
+                    ?endpointDescription sd:endpoint $rawEndpointUrl ;
                         sd:feature sd:basicFederatedQuery ;
                         prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicFederatedQuery.ttl#activity> .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicFederatedQuery.ttl#activity> a prov:Activity ;
                     prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicFederatedQuery.ttl> .
+                } WHERE {
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
                 }
             """
         ]
@@ -44,31 +46,38 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX dqv: <http://www.w3.org/ns/dqv#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-            INSERT DATA {
-                $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject ;
-                    dcat:service $endpointDescription ;
-                    dcat:distribution [
-                        a dcat:Distribution ;
-                        dcat:accessUrl $rawEndpointUrl ;
-                        dcat:mediaType "application/sparql-query"
-                    ] .
-                $endpointDescription sd:endpoint $rawEndpointUrl ;
-                    dcat:servesDataset $datasetDescription ;
-                    dcat:endpointUrl $rawEndpointUrl ;
-                    a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject ;
-                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> .
+            INSERT {
+                ?datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject ;
+                    dcat:service ?endpointDescription ;
+                    dcat:distribution ?datasetDistribution ;
+                    dcat:endpointURL $rawEndpointUrl ;
+                    void:sparqlEndpoint $rawEndpointUrl .
+                ?datasetDistribution a dcat:Distribution ;
+                    dcat:accessUrl $rawEndpointUrl ;
+                    dcat:mediaType "application/sparql-query" .
+                ?endpointDescription sd:endpoint $rawEndpointUrl ;
+                    dcat:servesDataset ?datasetDescription ;
+                    dcat:endpointURL $rawEndpointUrl ;
+                    a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>  .
-                $metadataDescription a prov:Entity , earl:TestSubject ;
+                ?metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
-                    kgi:curated $datasetDescription , $endpointDescription ;
-                    dqv:hasQualityMeasurement [
-                        a dqv:QualityMeasurement ;
-                        dqv:computedOn $endpointDescription ;
-                        dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
-                        dqv:value "true"^^xsd:boolean
-                    ] .
-
+                    kgi:curated ?datasetDescription , ?endpointDescription ;
+                    dqv:hasQualityMeasurement ?endpointReachabilityMeasurement .
+                ?endpointReachabilityMeasurement a dqv:QualityMeasurement ;
+                    prov:wasGeneratedAtTime ?time ;
+                    dqv:computedOn ?endpointDescription ;
+                    dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
+                    dqv:value "true"^^xsd:boolean .
+            } WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Distribution")) AS ?datasetDistribution)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl")), "Measure")) AS ?endpointReachabilityMeasurement)
+                BIND(NOW() AS ?time)
             }
             """
         ]
@@ -82,35 +91,38 @@
             PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
             PREFIX earl: <http://www.w3.org/ns/earl#>
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
-            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX dqv: <http://www.w3.org/ns/dqv#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-            INSERT DATA {
-                $datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject ;
-                    dcat:service $endpointDescription ;
-                    dcat:distribution [
-                        a dcat:Distribution ;
-                        dcat:accessUrl $rawEndpointUrl ;
-                        dcat:mediaType "application/sparql-query"
-                    ] .
-                $endpointDescription sd:endpoint $rawEndpointUrl ;
-                    dcat:servesDataset $datasetDescription ;
-                    dcat:endpointUrl $rawEndpointUrl ;
-                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> ;
+            INSERT {
+                ?datasetDescription a void:Dataset , dcat:Dataset , prov:Entity , earl:TestSubject ;
+                    dcat:service ?endpointDescription ;
+                    dcat:distribution ?datasetDistribution .
+                ?datasetDistribution a dcat:Distribution ;
+                    dcat:accessUrl $rawEndpointUrl ;
+                    dcat:mediaType "application/sparql-query" .
+                ?endpointDescription sd:endpoint $rawEndpointUrl ;
+                    dcat:servesDataset ?datasetDescription ;
+                    dcat:endpointURL $rawEndpointUrl ;
                     a sd:Service, dcat:DataService , prov:Entity , earl:TestSubject .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
-                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
-                $metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X>  .
+                ?metadataDescription a prov:Entity , earl:TestSubject ;
+                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl#activity> ;
                     prov:wasDerivedFrom $rawEndpointUrl ;
-                    kgi:curated $datasetDescription , $endpointDescription ;
-                    dqv:hasQualityMeasurement [
-                        a dqv:QualityMeasurement ;
-                        rdfs:label "Could not reach the endpoint"@en ;
-                        dqv:computedOn $endpointDescription ;
+                    kgi:curated ?datasetDescription , ?endpointDescription ;
+                    dqv:hasQualityMeasurement ?endpointReachabilityMeasurement .
+                    ?endpointReachabilityMeasurement a dqv:QualityMeasurement ;
+                        prov:wasGeneratedAtTime ?time ;
+                        dqv:computedOn ?endpointDescription ;
                         dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
-                        dqv:value "false"^^xsd:boolean
-                    ] .
-
+                        dqv:value "false"^^xsd:boolean .
+            } WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Distribution")) AS ?datasetDistribution)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl")), "Measure")) AS ?endpointReachabilityMeasurement)
+                BIND(NOW() AS ?time)
             }
             """
         ]
@@ -124,17 +136,20 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-            INSERT DATA {
-                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> ;
-                    dqv:hasQualityMeasurement [
-                            a dqv:QualityMeasurement ;
-                            rdfs:label "Provenance information are present in the metadata"@en ;
-                            dqv:computedOn $endpointDescription ;
-                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
-                            dqv:value "true"^^xsd:boolean
-                        ] .
+            INSERT {
+                ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> ;
+                    dqv:hasQualityMeasurement ?endpointProvenanceMeasurement .
+                ?endpointProvenanceMeasurement a dqv:QualityMeasurement ;
+                    rdfs:label "Provenance information are present in the metadata"@en ;
+                    dqv:computedOn ?endpointDescription ;
+                    dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
+                    dqv:value "true"^^xsd:boolean .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            } WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl")), "Measure")) AS ?endpointProvenanceMeasurement)
             }
             """
         ]
@@ -146,17 +161,20 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-            INSERT DATA {
-                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> ;
-                    dqv:hasQualityMeasurement [
-                            a dqv:QualityMeasurement ;
-                            rdfs:label "Provenance information are absent from the metadata"@en ;
-                            dqv:computedOn $endpointDescription ;
-                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
-                            dqv:value "false"^^xsd:boolean
-                        ] .
+            INSERT {
+                ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> ;
+                    dqv:hasQualityMeasurement ?endpointProvenanceMeasurement .
+                ?endpointProvenanceMeasurement a dqv:QualityMeasurement ;
+                    rdfs:label "Provenance information are absent from the metadata"@en ;
+                    dqv:computedOn ?endpointDescription ;
+                    dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
+                    dqv:value "false"^^xsd:boolean .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            } WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl")), "Measure")) AS ?endpointProvenanceMeasurement)
             }
             """
         ]
@@ -174,14 +192,13 @@
             PREFIX void: <http://rdfs.org/ns/void#>
             PREFIX dcat: <http://www.w3.org/ns/dcat#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicProvenance.ttl#activity> ;
-                    dqv:hasQualityMeasurement [
-                            a dqv:QualityMeasurement ;
-                            rdfs:label "Proportion of the number of datasets described with basic provenance information"@en ;
-                            dqv:computedOn $endpointDescription ;
-                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicProvenance.ttl> ;
-                            dqv:value ?measure
-                        ] .
+                ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicProvenance.ttl#activity> ;
+                    dqv:hasQualityMeasurement ?endpointBasicProvenanceMeasurement .
+                ?endpointBasicProvenanceMeasurement a dqv:QualityMeasurement ;
+                    rdfs:label "Proportion of the number of datasets described with basic provenance information"@en ;
+                    dqv:computedOn ?endpointDescription ;
+                    dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicProvenance.ttl> ;
+                    dqv:value ?measure .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicProvenance.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             } WHERE {
@@ -214,6 +231,9 @@
                     }
                 }
                 BIND((?countDatasetWithProvenance / ?countDataset) AS ?measure)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/basicProvenance.ttl")), "Measure")) AS ?endpointBasicProvenanceMeasurement)
             }
             """
         ]
@@ -230,14 +250,13 @@
                 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                 CONSTRUCT {
-                    $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl#activity> ;
-                        dqv:hasQualityMeasurement [
-                                a dqv:QualityMeasurement ;
-                                rdfs:label "Majority of URIs are not parametrized and below 80 characters"@en ;
-                                dqv:computedOn $endpointDescription ;
-                                dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> ;
-                                dqv:value ?measure
-                            ] .
+                    ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl#activity> ;
+                        dqv:hasQualityMeasurement ?endpointShortUrisMeasurement .
+                    ?endpointShortUrisMeasurement a dqv:QualityMeasurement ;
+                        rdfs:label "Majority of URIs are not parametrized and below 80 characters"@en ;
+                        dqv:computedOn ?endpointDescription ;
+                        dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> ;
+                        dqv:value ?measure .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 } WHERE {
@@ -259,6 +278,9 @@
                         }
                     }
                     BIND( (?countShort/?countNormal) AS ?measure)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl")), "Measure")) AS ?endpointShortUrisMeasurement)
                 }
                 """
         ]
@@ -275,14 +297,13 @@
                 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                 CONSTRUCT {
-                    $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl#activity> ;
-                        dqv:hasQualityMeasurement [
-                                a dqv:QualityMeasurement ;
-                                rdfs:label "RDF data structures are not widely used in the dataset."@en ;
-                                dqv:computedOn $endpointDescription ;
-                                dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> ;
-                                dqv:value ?measure
-                            ] .
+                    ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl#activity> ;
+                        dqv:hasQualityMeasurement ?endpointRDFDataStructuresMeasurement .
+                    ?endpointRDFDataStructuresMeasurement a dqv:QualityMeasurement ;
+                        rdfs:label "RDF data structures are not widely used in the dataset."@en ;
+                        dqv:computedOn ?endpointDescription ;
+                        dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> ;
+                        dqv:value ?measure .
                     <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> ;
                         prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                 } WHERE {
@@ -304,6 +325,9 @@
                         }
                     }
                     BIND( (1 - ?countStruct/?count) AS ?measure)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl")), "Measure")) AS ?endpointRDFDataStructuresMeasurement)
                 }
                 """
         ]
@@ -352,6 +376,8 @@
 #                    }
 #                }
 #                BIND( (1 - ?countStruct/(?countProp + ?countClass)) AS ?measure)
+#                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+#                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
 #            }
 #            """
 #        ]
@@ -368,14 +394,13 @@
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl#activity> ;
-                    dqv:hasQualityMeasurement [
-                            a dqv:QualityMeasurement ;
-                            rdfs:label "Usage of URIs instead of blank nodes."@en ;
-                            dqv:computedOn $endpointDescription ;
-                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> ;
-                            dqv:value ?measure
-                        ] .
+                ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl#activity> ;
+                    dqv:hasQualityMeasurement ?endpointBlankNodeUsageMeasurement .
+                ?endpointBlankNodeUsageMeasurement a dqv:QualityMeasurement ;
+                    rdfs:label "Usage of URIs instead of blank nodes."@en ;
+                    dqv:computedOn ?endpointDescription ;
+                    dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> ;
+                    dqv:value ?measure .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             } WHERE {
@@ -392,6 +417,9 @@
                     }
                 }
                 BIND( (?countIri/(?countIri + ?countBlank)) AS ?measure)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl")), "Measure")) AS ?endpointBlankNodeUsageMeasurement)
             }
             """
         ]
@@ -414,14 +442,13 @@
             PREFIX schema: <https://schema.org/>
             PREFIX foaf: <http://xmlns.com/foaf/0.1/>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl#activity> ;
-                    dqv:hasQualityMeasurement [
-                            a dqv:QualityMeasurement ;
-                            rdfs:label "Proportion of labelled resources."@en ;
-                            dqv:computedOn $endpointDescription ;
-                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> ;
-                            dqv:value ?measure
-                        ] .
+                ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl#activity> ;
+                    dqv:hasQualityMeasurement ?endpointReadableLabelsMeasurement .
+                ?endpointReadableLabelsMeasurement a dqv:QualityMeasurement ;
+                    rdfs:label "Proportion of labelled resources."@en ;
+                    dqv:computedOn ?endpointDescription ;
+                    dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> ;
+                    dqv:value ?measure .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             } WHERE {
@@ -433,26 +460,14 @@
                 {
                     SELECT (COUNT(DISTINCT ?r) AS ?countLabels) {
                          ?r ?p ?o .
-                         { ?r rdfs:label ?l }
-                         UNION { ?r rdfs:comment ?l }
-                         UNION { ?r dcterms:title ?l }
-                         UNION { ?r dcterms:description ?l }
-                         UNION { ?r dcterms:alternative ?l }
-                         UNION { ?r skos:altLabel ?l }
-                         UNION { ?r skos:prefLabel ?l }
-                         UNION { ?r skos:note ?l }
-                         UNION { ?r powder-s:text ?l }
-                         UNION { ?r skosxl:altLabel ?l }
-                         UNION { ?r skosxl:hiddenLabel ?l }
-                         UNION { ?r skosxl:prefLabel ?l }
-                         UNION { ?r skosxl:literalForm ?l }
-                         UNION { ?r schema:name ?l }
-                         UNION { ?r schema:description ?l }
-                         UNION { ?r schema:alternateName ?l }
-                         UNION { ?r foaf:name ?l }
+                         ?r ?labelProp ?l .
+                         VALUES ?labelProp { rdfs:label rdfs:comment dcterms:title dcterms:description dcterms:alternative skos:altLabel skos:prefLabel skos:note powder-s:text skosxl:altLabel skosxl:hiddenLabel skosxl:prefLabel skosxl:literalForm schema:name schema:description schema:alternateName foaf:name }
                     }
                 }
                 BIND( (?countLabels/?countResources) AS ?measure)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl")), "Measure")) AS ?endpointReadableLabelsMeasurement)
             }
             """
         ]
@@ -475,14 +490,13 @@
             PREFIX schema: <https://schema.org/>
             PREFIX foaf: <http://xmlns.com/foaf/0.1/>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/multipleLanguages.ttl#activity> ;
-                    dqv:hasQualityMeasurement [
-                            a dqv:QualityMeasurement ;
-                            rdfs:label "Proportion of literal with a language tag."@en ;
-                            dqv:computedOn $endpointDescription ;
-                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/multipleLanguages.ttl> ;
-                            dqv:value ?measure
-                        ] .
+                ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/multipleLanguages.ttl#activity> ;
+                    dqv:hasQualityMeasurement ?endpointMultipleLanguagesMeasurement .
+                ?endpointMultipleLanguagesMeasurement a dqv:QualityMeasurement ;
+                    rdfs:label "Proportion of literal with a language tag."@en ;
+                    dqv:computedOn ?endpointDescription ;
+                    dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/multipleLanguages.ttl> ;
+                    dqv:value ?measure .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/multipleLanguages.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             } WHERE {
@@ -497,6 +511,9 @@
                     }
                 }
                 BIND( (?countLitsWithLang/?countLits) AS ?measure)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/multipleLanguages.ttl")), "Measure")) AS ?endpointMultipleLanguagesMeasurement)
             }
             """
         ]
@@ -510,17 +527,20 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-            INSERT DATA {
-                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl#activity> ;
-                    dqv:hasQualityMeasurement [
-                            a dqv:QualityMeasurement ;
-                            rdfs:label "Presence of the URI pattern used for the resources instanced by the dataset"@en ;
-                            dqv:computedOn $endpointDescription ;
-                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl> ;
-                            dqv:value "true"^^xsd:boolean
-                        ] .
+            INSERT {
+                ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl#activity> ;
+                    dqv:hasQualityMeasurement ?endpointUriPatternMeasurement .
+                ?endpointUriPatternMeasurement a dqv:QualityMeasurement ;
+                    rdfs:label "Presence of the URI pattern used for the resources instanced by the dataset"@en ;
+                    dqv:computedOn ?endpointDescription ;
+                    dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl> ;
+                    dqv:value "true"^^xsd:boolean .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            } WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl")), "Measure")) AS ?endpointUriPatternMeasurement)
             }
             """
         ]
@@ -532,17 +552,20 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-            INSERT DATA {
-                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl#activity> ;
-                    dqv:hasQualityMeasurement [
-                            a dqv:QualityMeasurement ;
-                            rdfs:label "Presence of the URI pattern used for the resources instanced by the dataset"@en ;
-                            dqv:computedOn $endpointDescription ;
-                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl> ;
-                            dqv:value "false"^^xsd:boolean
-                        ] .
+            INSERT {
+                ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl#activity> ;
+                    dqv:hasQualityMeasurement ?endpointUriPatternMeasurement .
+                ?endpointUriPatternMeasurement a dqv:QualityMeasurement ;
+                    rdfs:label "Presence of the URI pattern used for the resources instanced by the dataset"@en ;
+                    dqv:computedOn ?endpointDescription ;
+                    dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl> ;
+                    dqv:value "false"^^xsd:boolean .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            } WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/uriPattern.ttl")), "Measure")) AS ?endpointUriPatternMeasurement)
             }
             """
         ]
@@ -556,17 +579,20 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-            INSERT DATA {
-                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl#activity> ;
-                    dqv:hasQualityMeasurement [
-                            a dqv:QualityMeasurement ;
-                            rdfs:label "The endpoint URL is a 'Cool URI'"@en ;
-                            dqv:computedOn $endpointDescription ;
-                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl> ;
-                            dqv:value "true"^^xsd:boolean
-                        ] .
+            INSERT {
+                ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl#activity> ;
+                    dqv:hasQualityMeasurement ?endpointCoolUriMeasurement .
+                ?endpointCoolUriMeasurement a dqv:QualityMeasurement ;
+                    rdfs:label "The endpoint URL is a 'Cool URI'"@en ;
+                    dqv:computedOn ?endpointDescription ;
+                    dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl> ;
+                    dqv:value "true"^^xsd:boolean .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            } WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl")), "Measure")) AS ?endpointCoolUriMeasurement)
             }
             """
         ]
@@ -578,17 +604,20 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-            INSERT DATA {
-                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl#activity> ;
-                    dqv:hasQualityMeasurement [
-                            a dqv:QualityMeasurement ;
-                            rdfs:label "The endpoint URL is a 'Cool URI'"@en ;
-                            dqv:computedOn $endpointDescription ;
-                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl> ;
-                            dqv:value "false"^^xsd:boolean
-                        ] .
+            INSERT {
+                ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl#activity> ;
+                    dqv:hasQualityMeasurement ?endpointCoolUriMeasurement .
+                ?endpointCoolUriMeasurement a dqv:QualityMeasurement ;
+                    rdfs:label "The endpoint URL is a 'Cool URI'"@en ;
+                    dqv:computedOn ?endpointDescription ;
+                    dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl> ;
+                    dqv:value "false"^^xsd:boolean .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            } WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/coolUri.ttl")), "Measure")) AS ?endpointCoolUriMeasurement)
             }
             """
         ]
@@ -604,14 +633,13 @@
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             PREFIX void: <http://rdfs.org/ns/void#>
             CONSTRUCT {
-                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl#activity> ;
-                    dqv:hasQualityMeasurement [
-                            a dqv:QualityMeasurement ;
-                            rdfs:label "Proportion of vocabularies used among the list of vocabularies used"@en ;
-                            dqv:computedOn $endpointDescription ;
-                            dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl> ;
-                            dqv:value ?measure
-                        ] .
+                ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl#activity> ;
+                    dqv:hasQualityMeasurement ?endpointIndicatesUsedVocabulariesMeasurement .
+                ?endpointIndicatesUsedVocabulariesMeasurement a dqv:QualityMeasurement ;
+                    rdfs:label "Proportion of vocabularies used among the list of vocabularies used"@en ;
+                    dqv:computedOn ?endpointDescription ;
+                    dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl> ;
+                    dqv:value ?measure .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             } WHERE {
@@ -643,6 +671,9 @@
                     }
                 }
                 BIND((?countAssertedVocab/?countUsedVocab) AS ?measure)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl")), "Measure")) AS ?endpointIndicatesUsedVocabulariesMeasurement)
             }
             """
         ]
@@ -654,17 +685,20 @@
             PREFIX kgi: <http://ns.inria.fr/kg/index#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-            INSERT DATA {
-                $metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl#activity> ;
-                    dqv:hasQualityMeasurement [
-                            a dqv:QualityMeasurement ;
+            INSERT {
+                ?metadataDescription prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl#activity> ;
+                    dqv:hasQualityMeasurement ?endpointIndicatesUsedVocabulariesMeasurement .
+                ?endpointIndicatesUsedVocabulariesMeasurement a dqv:QualityMeasurement ;
                             rdfs:label "Proportion of vocabularies used among the list of vocabularies used"@en ;
-                            dqv:computedOn $endpointDescription ;
+                            dqv:computedOn ?endpointDescription ;
                             dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl> ;
-                            dqv:value 0
-                        ] .
+                            dqv:value 0 .
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/provenance.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
+            } WHERE {
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Metadata")) AS ?metadataDescription)
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(CONCAT( str($rawEndpointUrl), "https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/indicatesUsedVocabularies.ttl")), "Measure")) AS ?endpointIndicatesUsedVocabulariesMeasurement)
             }
             """
         ]

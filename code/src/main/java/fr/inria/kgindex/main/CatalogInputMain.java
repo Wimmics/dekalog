@@ -19,6 +19,7 @@ import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.VOID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -64,12 +65,12 @@ public class CatalogInputMain {
         options.addOption(Option.builder(OPT_FEDERATION)
                 .required(false)
                 .hasArg()
-                .desc("SPARQL endpoint URL to a federation server used in rules for the generation. If none is given, rules using the kgi:federated endpoint will not be executed.")
+                .desc("SPARQL endpoint URL to a federation server used in rules for the generation. If none is given, rules using the kgi:federation endpoint will not be executed.")
                 .build());
         options.addOption(Option.builder(OPT_OUTPUT)
                 .required(false)
                 .hasArg()
-                .desc("Output filename. Default is 'output.trig'.")
+                .desc("Output filename. Default is 'output.ttl'.")
                 .build());
         options.addOption(Option.builder(OPT_MANIFEST)
                 .required(false)
@@ -89,9 +90,9 @@ public class CatalogInputMain {
                 formatter.printHelp( APP_NAME, options );
             }
 
-            String outputFilename = "output.trig";
+            String outputFilename = "output.ttl";
             if(cmd.hasOption(OPT_OUTPUT)) {
-                outputFilename = cmd.getOptionValue(OPT_OUTPUT, "output.trig");
+                outputFilename = cmd.getOptionValue(OPT_OUTPUT, "output.ttl");
             }
             if(cmd.hasOption(OPT_TIMEOUT)) {
                 String queryTimeoutString = cmd.getOptionValue(OPT_TIMEOUT, DEFAULT_TIMEOUT);
@@ -178,13 +179,14 @@ public class CatalogInputMain {
                     logger.trace("START dataset " + endpointUrl );
 
                     // Faire l'extraction de description selon nos regles
-                    Path tmpDatasetDescFile = Files.createTempFile(null, ".trig");
+                    Path tmpDatasetDescFile = Files.createTempFile(null, ".ttl");
 
                     DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetNames);
                     result.getDefaultModel().add(KGIndex.catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());
                     result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), RDF.type, DCAT.Dataset);
                     result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), RDF.type, PROV.Entity);
                     result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), RDF.type, EARL.TestSubject);
+                    result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), VOID.sparqlEndpoint, result.getDefaultModel().createResource(endpointUrl));
                     result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), DCAT.service, describedDataset.getEndpointDescriptionResource());
                     Resource distributionResource = result.getDefaultModel().createResource();
                     result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), DCAT.distribution, distributionResource);
@@ -207,6 +209,7 @@ public class CatalogInputMain {
                     describedDataset.getNames().forEach(name -> {
                         result.getDefaultModel().add(describedDataset.getDatasetDescriptionResource(), RDFS.label, name);
                     });
+                    
                     DatasetDescriptionExtraction.extractIndexDescriptionForDataset(describedDataset, tmpDatasetDescFile.toString());
                     logger.trace("END dataset " + endpointUrl);
                     logger.trace("Transfert to result START");
@@ -233,7 +236,7 @@ public class CatalogInputMain {
             });
 
             logger.trace("END of catalog processing");
-            RDFDataMgr.write(System.err, result, Lang.TRIG);
+            //RDFDataMgr.write(System.err, result, Lang.TRIG);
             try {
                 OutputStream outputStream = new FileOutputStream(outputFilename);
                 RDFDataMgr.write(outputStream, result, Lang.TRIG);

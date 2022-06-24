@@ -6,6 +6,12 @@
             <equivalences.ttl>
             <modifiedUpdate.ttl>
             <exampleQueries.ttl>
+            <inclusionByVocabularies.ttl>
+            <inclusionByDatatypes.ttl>
+            <inclusionByClasses.ttl>
+            <inclusionByProperties.ttl>
+            <inclusionByClassesAndProperties.ttl>
+            <inclusionByResourceHostname.ttl>
         ) .
 
 <equivalences.ttl> a mf:ManifestEntry ;
@@ -42,12 +48,42 @@
         [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#> PREFIX schema: <http://schema.org/> INSERT { ?s prov:wasAttributedTo ?o . } WHERE { ?s schema:author ?o . } """ ]
         [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s dcterms:licence ?o . } WHERE { ?s schema:licence ?o . } """ ]
         [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s schema:licence ?o . } WHERE { ?s dcterms:licence ?o . } """ ]
-        [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX dcat: <http://www.w3.org/ns/dcat#> INSERT { $endpointDescription sd:endpoint ?o . } WHERE { $datasetDescription dcat:endpointUrl ?o . } """ ]
-        [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX dcat: <http://www.w3.org/ns/dcat#> INSERT { $endpointDescription dcat:endpointUrl ?o . } WHERE { $datasetDescription sd:endpoint ?o . } """ ]
-        [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $endpointDescription sd:endpoint ?o . } WHERE { $datasetDescription void:sparqlEndpoint ?o . } """ ]
-        [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $datasetDescription void:sparqlEndpoint ?o . } WHERE { $endpointDescription sd:endpoint ?o . } """ ]
-        [ mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $datasetDescription void:sparqlEndpoint ?o . } WHERE { $endpointDescription dcat:endpointUrl ?o . } """ ]
-        [ mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $endpointDescription dcat:endpointUrl ?o . } WHERE { $datasetDescription void:sparqlEndpoint ?o . } """ ]
+        [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            INSERT { ?endpointDescription sd:endpoint ?o . }
+            WHERE {
+                ?datasetDescription dcat:endpointURL ?o .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str(?o)), "Endpoint")) AS ?endpointDescription)
+            } """ ]
+        [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX dcat: <http://www.w3.org/ns/dcat#>
+            INSERT { ?endpointDescription dcat:endpointURL ?o . }
+            WHERE {
+                ?datasetDescription sd:endpoint ?o .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str(?o)), "Endpoint")) AS ?endpointDescription)
+            }""" ]
+        [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX void: <http://rdfs.org/ns/void#>
+            INSERT { ?endpointDescription sd:endpoint ?o . }
+            WHERE {
+                ?datasetDescription void:sparqlEndpoint ?o .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str(?o)), "Endpoint")) AS ?endpointDescription)
+            } """ ]
+        [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX void: <http://rdfs.org/ns/void#>
+            INSERT { ?datasetDescription void:sparqlEndpoint ?o . }
+            WHERE {
+                ?endpointDescription sd:endpoint ?o .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str(?o)), "Dataset")) AS ?datasetDescription)
+            } """ ]
+        [ mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX void: <http://rdfs.org/ns/void#>
+            INSERT { ?datasetDescription void:sparqlEndpoint ?o . }
+            WHERE {
+                ?datasetDescription dcat:endpointURL ?o .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str(?o)), "Endpoint")) AS ?endpointDescription)
+            } """ ]
+        [ mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX void: <http://rdfs.org/ns/void#>
+            INSERT { ?datasetDescription dcat:endpointURL ?o . }
+            WHERE {
+                ?datasetDescription void:sparqlEndpoint ?o .
+                BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str(?o)), "Endpoint")) AS ?endpointDescription)
+            } """ ]
         [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s rdfs:comment ?o . } WHERE { ?s skos:definition ?o . } """ ]
         [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s skos:definition ?o . } WHERE { ?s rdfs:comment ?o . } """ ]
     ) .
@@ -58,13 +94,13 @@
             mf:action """
                 PREFIX dcterms: <http://purl.org/dc/terms/>
                 DELETE {
-                    $metadataDescription dcterms:modified ?mod .
+                    ?metadataDescription dcterms:modified ?mod .
                 }
                 INSERT {
-                    $metadataDescription dcterms:modified $dateLiteral .
+                    ?metadataDescription dcterms:modified $dateLiteral .
                 }
                 WHERE {
-                    OPTIONAL { $metadataDescription dcterms:modified ?mod . }
+                    OPTIONAL { ?metadataDescription dcterms:modified ?mod . }
                 }
             """
         ]
@@ -232,7 +268,7 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
                     kgi:catalogRoot skos:example kgi:example14 .
-                    kgi:example14 dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> PREFIX voidex: <http://ldf.fi/void-ext#> PREFIX dqv: <http://www.w3.org/ns/dqv#> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT (count(DISTINCT ?endpoint) AS ?count) WHERE {   ?endpointDesc dcat:endpointUrl ?endpoint .   ?measurement dqv:computedOn ?endpointDesc .   ?measurement dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> .   ?measurement dqv:value 'true'^^xsd:boolean }" ;
+                    kgi:example14 dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> PREFIX voidex: <http://ldf.fi/void-ext#> PREFIX dqv: <http://www.w3.org/ns/dqv#> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT (count(DISTINCT ?endpoint) AS ?count) WHERE {   ?endpointDesc dcat:endpointURL ?endpoint .   ?measurement dqv:computedOn ?endpointDesc .   ?measurement dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> .   ?measurement dqv:value 'true'^^xsd:boolean }" ;
                         dcterms:description "Returns the number of tests that passed the availability test." .
                 }"""
         ]
@@ -302,4 +338,188 @@
                         dcterms:description "Count the number of dataset description containing the list of properties appearing around the instances of each class." .
                 }"""
         ]
-    )
+    ) .
+
+
+<inclusionByVocabularies.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonVocabularies ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonVocabularies ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?otherDatasetDescription void:vocabulary ?vocab .
+                            ?datasetDescription void:vocabulary ?vocab .
+                            FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
+                            FILTER(?vocab != <http://www.w3.org/2001/XMLSchema#>)
+                            FILTER(?vocab != <http://www.w3.org/2000/01/rdf-schema#>)
+                            FILTER(?vocab != <http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+                            FILTER(?vocab != <http://www.w3.org/2002/07/owl#>)
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+    ) .
+
+<inclusionByDatatypes.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonDatatypes ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonDatatypes ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?otherDatasetDescription kgi:availableLiteralDatatypes ?datatype .
+                            ?datasetDescription kgi:availableLiteralDatatypes ?datatype .
+                            FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
+                            FILTER(?datatype != <http://www.w3.org/1999/02/22-rdf-syntax-ns#langString>)
+                            FILTER(?datatype != <http://www.w3.org/2001/XMLSchema#string> )
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+    ) .
+
+<inclusionByClasses.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonClasses ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonClasses ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?datasetDescription void:classPartition ?classPartition .
+                            ?classPartition void:class ?class .
+                            ?otherDatasetDescription void:classPartition ?otherClassPartition .
+                            ?otherClassPartition void:class ?class .
+                            FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
+                            FILTER(! strstarts(str(?class), "http://www.w3.org/2001/XMLSchema#"))
+                            FILTER(! strstarts(str(?class), "http://www.w3.org/2000/01/rdf-schema#"))
+                            FILTER(! strstarts(str(?class), "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
+                            FILTER(! strstarts(str(?class), "http://www.w3.org/2002/07/owl#"))
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+    ) .
+
+<inclusionByProperties.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonProperties ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonProperties ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?datasetDescription void:sparqlEndpoint ?endpoint .
+                            ?datasetDescription void:propertyPartition ?propertyPartition .
+                            ?propertyPartition void:property ?property .
+                            ?otherDatasetDescription void:propertyPartition ?otherPropertyPartition .
+                            ?otherPropertyPartition void:property ?property .
+                            ?otherPropertyPartition void:sparqlEndpoint ?otherEndpoint .
+                            FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
+                            FILTER(! strstarts(str(?property), "http://www.w3.org/2001/XMLSchema#"))
+                            FILTER(! strstarts(str(?property), "http://www.w3.org/2000/01/rdf-schema#"))
+                            FILTER(! strstarts(str(?property), "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
+                            FILTER(! strstarts(str(?property), "http://www.w3.org/2002/07/owl#"))
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+    ) .
+
+<inclusionByClassesAndProperties.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonClasses ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonClasses ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?otherDatasetDescription kgi:availableLiteralDatatypes ?datatype .
+                            ?datasetDescription void:classPartition ?classPartition .
+                            ?datasetDescription void:propertyPartition ?propertyPartition .
+                            ?propertyPartition void:property ?property .
+                            ?classPartition void:class ?class .
+                            ?otherDatasetDescription void:classPartition ?otherClassPartition .
+                            ?otherDatasetDescription void:propertyPartition ?otherPropertyPartition .
+                            ?otherPropertyPartition void:property ?property .
+                            ?otherClassPartition void:class ?class .
+                            FILTER(?otherDatasetDescription < ?datasetDescription)
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+    ) .
+
+<inclusionByresourceHostname.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
+                PREFIX kgi: <http://ns.inria.fr/kg/index#>
+                INSERT {
+                    ?datasetDescription kgi:commonResourceHostname ?otherDatasetDescription .
+                    ?otherDatasetDescription kgi:commonResourceHostname ?datasetDescription .
+                }
+                WHERE {
+                    {
+                        SELECT DISTINCT ?otherDatasetDescription {
+                            ?datasetDescription kgi:resourceHostname ?resourceHostname .
+                            ?otherDatasetDescription kgi:resourceHostname ?resourceHostname .
+                            FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
+                        }
+                    }
+                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
+                }
+            """
+        ]
+    ) .
+
+<inclusionByTriples.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            kgi:endpoint kgi:federation ;
+            mf:action """
+            """
+        ]
+    ) .
+
+<inclusionByStarPatterns.ttl> a mf:ManifestEntry ;
+    kgi:onSuccess (
+        [
+            kgi:endpoint kgi:federation ;
+            mf:action """
+            """
+        ]
+    ) .

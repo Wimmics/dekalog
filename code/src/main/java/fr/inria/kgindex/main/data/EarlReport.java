@@ -137,26 +137,4 @@ public class EarlReport {
     public static EarlReport createEarlFailedQueryReport(DescribedDataset describedDataset, String sentQuery, ManifestEntry entry, String message, Literal startDateLiteral, Literal endDateLiteral) {
         return createEarlQueryReport(false, describedDataset, sentQuery, entry, message, startDateLiteral, endDateLiteral);
     }
-
-    public static EarlReport createEarlSHACLReport(DescribedDataset describedDataset, ValidationReport report, ManifestEntry entry, Literal startDateLiteral, Literal endDateLiteral) {
-        EarlReport result = createEarlReport(report.conforms(), describedDataset, entry, entry.getTitle(), startDateLiteral, endDateLiteral);
-
-        Resource assertionResult = result.getAssertionResultResource();
-        result.getReport().add(assertionResult, EARL.info, report.getResource());
-        result.getReport().add(report.getModel());
-
-        return result;
-    }
-
-    public static EarlReport createEarlSHACLReport(DescribedDataset describedDataset, FakeSHACLValidationReport report, ManifestEntry entry, Literal startDateLiteral, Literal endDateLiteral) {
-        Property conforms = report.getValue().createProperty(SHACL.conforms.getURI());
-        boolean reportConforms = report.getValue().contains(null, conforms, report.getValue().createTypedLiteral(true));
-        EarlReport result = createEarlReport(reportConforms, describedDataset, entry, entry.getTitle(), startDateLiteral, endDateLiteral);
-
-        Resource assertionResult = result.getAssertionResultResource();
-        result.getReport().add(assertionResult, EARL.info, report.getKey());
-        result.getReport().add(report.getValue());
-
-        return result;
-    }
 }

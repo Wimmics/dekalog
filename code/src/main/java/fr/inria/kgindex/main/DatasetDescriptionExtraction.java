@@ -5,11 +5,10 @@ import fr.inria.kgindex.main.data.ManifestEntry;
 import fr.inria.kgindex.main.data.RuleLibrary;
 import fr.inria.kgindex.main.rules.InteractionApplication;
 import fr.inria.kgindex.main.rules.InteractionFactory;
-import fr.inria.kgindex.main.util.DatasetUtils;
+import fr.inria.kgindex.main.util.KGIndex;
 import fr.inria.kgindex.main.util.SPARQL_SD;
 import fr.inria.kgindex.main.util.Utils;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.NodeIterator;
@@ -41,8 +40,6 @@ public class DatasetDescriptionExtraction {
 		Model manifestModel = ModelFactory.createDefaultModel();
 		manifestModel.read(Utils.manifestRootFile, "TRIG");
 
-		Dataset datasetDescription = DatasetFactory.create();
-
 		List<RDFNode> manifestList = ManifestEntry.extractIncludedFromManifest(manifestModel);
 
 		Model includedManifestModel = ModelFactory.createDefaultModel();
@@ -62,21 +59,20 @@ public class DatasetDescriptionExtraction {
 
 			for (ManifestEntry testEntry : testEntrySet) {
 				try {
-					InteractionApplication application = InteractionFactory.create(testEntry, describedDataset, datasetDescription);
-					Dataset testResult = application.apply();
+					InteractionApplication application = InteractionFactory.create(testEntry, describedDataset);
+					application.apply();
 					logger.trace("Result update START");
-					datasetDescription = DatasetUtils.addDataset(datasetDescription, testResult);
 
 					// Keeping the list of the dataset namespaces up to date
 					if (describedDataset.getNamespaces().isEmpty()
-							&& (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
-							|| datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
+							&& (KGIndex.getResultDataset().getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)
+							|| KGIndex.getResultDataset().getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern))) {
 						NodeIterator namespaceIt = null;
-						if (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
-							namespaceIt = datasetDescription.getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
+						if (KGIndex.getResultDataset().getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace)) {
+							namespaceIt = KGIndex.getResultDataset().getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriSpace);
 						}
-						if (datasetDescription.getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
-							namespaceIt = datasetDescription.getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
+						if (KGIndex.getResultDataset().getUnionModel().contains(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern)) {
+							namespaceIt = KGIndex.getResultDataset().getUnionModel().listObjectsOfProperty(describedDataset.getDatasetDescriptionResource(), VOID.uriRegexPattern);
 						}
 
 						assert namespaceIt != null;
@@ -87,8 +83,8 @@ public class DatasetDescriptionExtraction {
 					}
 
 					// Checking if the graph list is necessary according to the endpoint description
-					if (!datasetDescription.getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
-							&& datasetDescription.getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
+					if (!KGIndex.getResultDataset().getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.UnionDefaultGraph)
+							&& KGIndex.getResultDataset().getUnionModel().contains(describedDataset.getEndpointDescriptionResource(), SPARQL_SD.feature, SPARQL_SD.RequiresDataset)) {
 						describedDataset.setGraphsAreRequired(true);
 					}
 					logger.trace("Result update END");
@@ -101,13 +97,13 @@ public class DatasetDescriptionExtraction {
 
 		try {
 			OutputStream outputStream = new FileOutputStream(outputFilename);
-			RDFDataMgr.write(outputStream, datasetDescription, Lang.TRIG);
+			RDFDataMgr.write(outputStream, KGIndex.getResultDataset(), Lang.TRIG);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		includedManifestModel.close();
 		manifestModel.close();
-		datasetDescription.close();
+		KGIndex.getResultDataset().close();
 	}
 
 }

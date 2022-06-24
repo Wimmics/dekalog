@@ -8,7 +8,6 @@ public abstract class TestExecution {
 
     public enum TYPE {
         SPARQL,
-        SHACL,
         DUMMY,
         UNKNOWN
     }
@@ -33,5 +32,5 @@ public abstract class TestExecution {
         this._endpointUrl = url;
     }
 
-    public abstract Dataset execute(DescribedDataset describedDataset, Dataset datasetDescription);
+    public abstract Dataset execute(DescribedDataset describedDataset);
 }

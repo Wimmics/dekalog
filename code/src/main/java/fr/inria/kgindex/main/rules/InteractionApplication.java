@@ -15,12 +15,13 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.web.HttpSC;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,14 +53,12 @@ public class InteractionApplication {
     private final DescribedDataset _describedDataset;
     private Actions _actionsSuccess = null;
     private Actions _actionsFailure = null;
-    private Dataset _datasetDescription;
     private TestExecution _tests = null;
-    private TestExecution.TYPE _type = TestExecution.TYPE.SHACL;
+    private TestExecution.TYPE _type = TestExecution.TYPE.UNKNOWN;
 
-    public InteractionApplication(ManifestEntry entry, TestExecution tests, Actions actionsSuccess, Actions actionsFailure, DescribedDataset describedDataset, Dataset datasetDescription) {
+    public InteractionApplication(ManifestEntry entry, TestExecution tests, Actions actionsSuccess, Actions actionsFailure, DescribedDataset describedDataset) {
         this._entry = entry;
         this._describedDataset = describedDataset;
-        this._datasetDescription = datasetDescription;
         this._actionsSuccess = actionsSuccess;
         this._actionsFailure = actionsFailure;
         this._tests = tests;
@@ -73,201 +72,166 @@ public class InteractionApplication {
         this._type = type;
     }
 
-    public Dataset apply() {
+    public void apply() {
         logger.trace("Test START " + this._entry.getTestResource() );
-        Dataset result = DatasetFactory.create();
 
         // Lancer fonction d'application
-        Dataset testResult = this._tests.execute( this._describedDataset, this._datasetDescription);
+        try {
+            Dataset testResult = this._tests.execute(this._describedDataset);
 
-        // Récupérer rapport d'application
-        boolean testPassed = false;
-        List<RDFNode> testResultList = testResult.getDefaultModel().listObjectsOfProperty(EARL.outcome).toList();
+            // Récupérer rapport d'application
+            boolean testPassed = false;
+            List<RDFNode> testResultList = testResult.getDefaultModel().listObjectsOfProperty(EARL.outcome).toList();
 
-        // Vérification du résultat
-        if(testResultList.size() > 0){
-            ArrayList<String> testResultNodeString = new ArrayList<>();
-            testResultList.forEach(node -> testResultNodeString.add(node.toString()));
-            for (String resultString : testResultNodeString) {
-                if (resultString.equals(EARL.passed.toString())) {
-                    testPassed = true;
+            // Vérification du résultat
+            if (testResultList.size() > 0) {
+                ArrayList<String> testResultNodeString = new ArrayList<>();
+                testResultList.forEach(node -> testResultNodeString.add(node.toString()));
+                for (String resultString : testResultNodeString) {
+                    if (resultString.equals(EARL.passed.toString())) {
+                        testPassed = true;
+                    }
                 }
             }
-        }
 
-        result = DatasetUtils.addDataset(result, testResult);
-        testResult.close();
+            DatasetUtils.addToDataset(KGIndex.getResultDataset(), testResult);
+            testResult.close();
 
-        logger.trace("Test END " + this._entry.getTestResource() + " " + testPassed );
-        Actions actionsToApply = null;
-        // Application des actions selon le resultat du test
-        if(testPassed){
-            actionsToApply = this._actionsSuccess;
-        } else {
-            actionsToApply = this._actionsFailure;
-        }
-        logger.trace("Action START " + actionsToApply.size() + " actions : " + this._entry.getFileResource() );
-        for(Action action : actionsToApply) {
-            if(action.getType() == Action.TYPE.SPARQL) {
-                String queryStringRaw = action.getActionNode().asLiteral().getString();
-                Set<String> queryStringSet = Utils.rewriteQueryPlaceholders(queryStringRaw, this._describedDataset);
-                for(String queryString : queryStringSet) {
-                    if((action.getEndpointUrl().equals(KGIndex.federation.getURI()) && (InteractionApplication.federationserver != null))
-                            || (! action.getEndpointUrl().equals(KGIndex.federation.getURI()))) {
-                        if(action.getEndpointUrl().equals(KGIndex.federation.getURI())) {
-                            action.setEndpointUrl(InteractionApplication.federationserver);
-                        }
-                        Date startDate = new Date();
-                        Model tmpModel = ModelFactory.createDefaultModel();
-                        Literal startDateLiteral = tmpModel.createLiteral(dateFormatter.format(startDate));
-                        tmpModel.close();
-
-                        try {
-                            if (queryString.contains("CONSTRUCT") && ! queryString.contains("GRAPH")) {
-                                Query constructQuery = QueryFactory.create(queryString);
-                                org.apache.http.client.config.RequestConfig requestConfig = org.apache.http.client.config.RequestConfig.copy(org.apache.http.client.config.RequestConfig.DEFAULT)
-                                        .setSocketTimeout(Math.toIntExact(action.getTimeout()))
-                                        .setConnectTimeout(Math.toIntExact(action.getTimeout()))
-                                        .setConnectionRequestTimeout(Math.toIntExact(action.getTimeout()))
-                                        .build();
-                                org.apache.http.client.HttpClient client = org.apache.http.impl.client.HttpClientBuilder.create()
-                                        .useSystemProperties()
-                                        .setDefaultRequestConfig(requestConfig)
-                                        .setUserAgent(InteractionsUtils.USER_AGENT)
-                                        .build();
-                                QueryEngineHTTP actionExecution = new QueryEngineHTTP(action.getEndpointUrl(), constructQuery, client);
-                                actionExecution.addParam("timeout", String.valueOf(action.getTimeout()));
-                                actionExecution.addParam("format", Lang.TRIG.getContentType().getContentTypeStr());
-                                actionExecution.setTimeout(action.getTimeout(), TimeUnit.MILLISECONDS, action.getTimeout(), TimeUnit.MILLISECONDS);
-
-                                try {
-                                    Dataset constructData = actionExecution.execConstructDataset();
-                                    result = DatasetUtils.addDataset(result, constructData);
-                                } catch (RiotException e) {
-                                    logger.error(e);
-                                    e.printStackTrace();
-                                    logger.trace(this._entry.getFileResource() + " action could not be added because of RiotException");
-                                } catch(QueryException e) {
-                                    logger.error(e);
-                                    e.printStackTrace();
-                                    logger.trace(this._entry.getFileResource() + " action could not be added because of QueryException");
-                                } catch(Exception e) {
-                                    logger.error(e);
-                                    e.printStackTrace();
-                                    logger.trace(this._entry.getFileResource() + " action could not be added because of unknown Exception");
-                                }
-                                actionExecution.close();
-                            } else if (queryString.contains("INSERT") || queryString.contains("DELETE")) {
-                                UpdateRequest insertUpdate = UpdateFactory.create(queryString);
-                                UpdateAction.execute(insertUpdate, this._datasetDescription);
-                                this._datasetDescription.commit();
-                            } else if (queryString.contains("CONSTRUCT") && queryString.contains("GRAPH")) {
-                                // Tentative d'envoyer la requête sans passer par Jena
-                                try {
-                                    HttpClient client = InteractionsUtils.getHttpClient();
-                                    URI queryURL = URI.create(action.getEndpointUrl()
-                                            + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString())
-                                            + "&timeout=" + action.getTimeout()
-                                            + "&format=" + Lang.TRIG.getContentType().getContentTypeStr());
-                                    HttpRequest request = HttpRequest.newBuilder()
-                                            .uri(queryURL)
-                                            .GET()
-                                            .timeout(Duration.of(action.getTimeout(), ChronoUnit.MILLIS))
-                                            .header("Accept", Lang.TRIG.getContentType().getContentTypeStr())
-                                            .build();
-                                    Dataset bodyData = DatasetFactory.create();
-                                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                                    if(response.statusCode() == 200) {
-                                        String bodyString = response.body();
-                                        bodyString = bodyString.replace("= {", " {");
-                                        StringReader bodyReader = new StringReader(bodyString);
-                                        RDFDataMgr.read(bodyData, bodyReader, "", Lang.TRIG);
-                                        DatasetUtils.addDataset(result, bodyData);
-                                    }
-                                } catch (RiotException | InterruptedException | IOException e1) {
-                                    logger.error(e1);
-                                }
+            logger.trace("Test END " + this._entry.getTestResource() + " " + testPassed);
+            Actions actionsToApply = null;
+            // Application des actions selon le resultat du test
+            if (testPassed) {
+                actionsToApply = this._actionsSuccess;
+            } else {
+                actionsToApply = this._actionsFailure;
+            }
+            logger.trace("Action START " + actionsToApply.size() + " actions : " + this._entry.getFileResource());
+            for (Action action : actionsToApply) {
+                if (action.getType() == Action.TYPE.SPARQL) {
+                    String queryStringRaw = action.getActionNode().asLiteral().getString();
+                    Set<String> queryStringSet = Utils.rewriteQueryPlaceholders(queryStringRaw, this._describedDataset);
+                    for (String queryString : queryStringSet) {
+                        if ((action.getEndpointUrl().equals(KGIndex.federation.getURI()) && (InteractionApplication.federationserver != null))
+                                || (!action.getEndpointUrl().equals(KGIndex.federation.getURI()))) {
+                            if (action.getEndpointUrl().equals(KGIndex.federation.getURI())) {
+                                action.setEndpointUrl(InteractionApplication.federationserver);
                             }
-                        } catch (QueryExceptionHTTP e) {
-                            logger.info(e);
-                            logger.trace(this._entry.getTestResource() + " : " + e.getMessage());
-                            Date endDate = new Date();
-                            Model tmpModel1 = ModelFactory.createDefaultModel();
-                            Literal endDateLiteral = tmpModel1.createLiteral(dateFormatter.format(endDate));
-                            tmpModel1.close();
-                            Model earlReport = EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral).getReport();
-                            result = DatasetUtils.addDataset(result, DatasetFactory.create(earlReport));
-                        } catch (QueryParseException ep) {
+                            Date startDate = new Date();
+                            Model tmpModel = ModelFactory.createDefaultModel();
+                            Literal startDateLiteral = tmpModel.createLiteral(dateFormatter.format(startDate));
+                            tmpModel.close();
+
                             try {
-                                if (queryString.contains("CONSTRUCT")) {
-                                    // Tentative d'envoyer la requête sans passer par Jena
-                                    HttpClient client = InteractionsUtils.getHttpClient();
-                                    HttpRequest request = null;
+                                 if (queryString.contains("INSERT")
+                                        || queryString.contains("DELETE")) {
+                                    UpdateRequest insertUpdate = UpdateFactory.create(queryString);
+                                    UpdateAction.execute(insertUpdate, KGIndex.getResultDataset());
+                                } else if (QueryFactory.create(queryString).isConstructType()) {
+                                    Query constructQuery = QueryFactory.create(queryString);
+                                    QueryExecutionHTTP actionExecution = QueryExecutionHTTP.service(action.getEndpointUrl()).useGet().param("timeout", String.valueOf(action.getTimeout())).param("format", Lang.TTL.getContentType().getContentTypeStr()).timeout(action.getTimeout(), TimeUnit.MILLISECONDS).query(constructQuery).build();
+
                                     try {
-                                        URI queryURL = URI.create(action.getEndpointUrl() + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
-                                        request = HttpRequest.newBuilder()
-                                                .uri(queryURL)
-                                                .GET()
-                                                .timeout(Duration.of(action.getTimeout(), ChronoUnit.MILLIS))
-                                                .header("Accept", "application/x-trig")
-                                                .build();
-                                    } catch (UnsupportedEncodingException e1) {
-                                        e1.printStackTrace();
+                                        Dataset constructData = actionExecution.execConstructDataset();
+                                        DatasetUtils.addToDataset(KGIndex.getResultDataset(), constructData);
+                                    } catch (RiotException e) {
+                                        logger.error(e);
+                                        e.printStackTrace();
+                                        logger.trace(this._entry.getFileResource() + " action could not be added because of RiotException");
+                                    } catch (QueryException e) {
+                                        logger.error(e);
+                                        e.printStackTrace();
+                                        logger.trace(this._entry.getFileResource() + " action could not be added because of QueryException");
+                                    } catch (Exception e) {
+                                        logger.error(e);
+                                        e.printStackTrace();
+                                        logger.trace(this._entry.getFileResource() + " action could not be added because of unknown Exception");
                                     }
-                                    Dataset bodyData = DatasetFactory.create();
-                                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                                    if(response.statusCode() == 200) {
-                                        String bodyString = response.body();
-                                        bodyString = bodyString.replace("= {", " {");
-                                        StringReader bodyReader = new StringReader(bodyString);
+                                    actionExecution.close();
+                                }
+                            } catch (QueryExceptionHTTP e) {
+                                logger.info(e);
+                                logger.trace(this._entry.getTestResource() + " : " + e.getMessage());
+                                Date endDate = new Date();
+                                Model tmpModel1 = ModelFactory.createDefaultModel();
+                                Literal endDateLiteral = tmpModel1.createLiteral(dateFormatter.format(endDate));
+                                tmpModel1.close();
+                                Model earlReport = EarlReport.createEarlFailedQueryReport(this._describedDataset, queryString, this._entry, e.getMessage(), startDateLiteral, endDateLiteral).getReport();
+                                DatasetUtils.addToDataset(KGIndex.getResultDataset(), DatasetFactory.create(earlReport));
+                            } catch (QueryParseException ep) {
+                                try {
+                                    if (queryString.contains("INSERT") || queryString.contains("DELETE")) {
                                         try {
-                                            RDFDataMgr.read(bodyData, bodyReader, "", Lang.TRIG);
-                                        } catch(RiotException er) {
-                                            logger.error(bodyString);
+                                            UpdateRequest insertUpdate = UpdateFactory.create(queryString);
+                                            UpdateAction.execute(insertUpdate, KGIndex.getResultDataset());
+                                        } catch (QueryParseException er) {
+                                            logger.error(queryString);
                                             throw er;
                                         }
-                                        DatasetUtils.addDataset(result, bodyData);
+                                    } else if (QueryFactory.create(queryString).isConstructType()) {
+                                        // Tentative d'envoyer la requête sans passer par Jena
+                                        HttpClient client = InteractionsUtils.getHttpClient();
+                                        HttpRequest request = null;
+                                        try {
+                                            URI queryURL = URI.create(action.getEndpointUrl() + "?query=" + URLEncoder.encode(queryString, java.nio.charset.StandardCharsets.UTF_8.toString()));
+                                            request = HttpRequest.newBuilder()
+                                                    .uri(queryURL)
+                                                    .GET()
+                                                    .timeout(Duration.of(action.getTimeout(), ChronoUnit.MILLIS))
+                                                    .header("Accept", "text/turtle")
+                                                    .build();
+                                        } catch (UnsupportedEncodingException e1) {
+                                            e1.printStackTrace();
+                                        }
+                                        Dataset bodyData = DatasetFactory.create();
+                                        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                                        if (HttpSC.isSuccess( response.statusCode())) {
+                                            String bodyString = response.body();
+                                            bodyString = bodyString.replace("= {", " {");
+                                            StringReader bodyReader = new StringReader(bodyString);
+                                            try {
+                                                RDFDataMgr.read(bodyData, bodyReader, "", Lang.TTL);
+                                            } catch (RiotException er) {
+                                                logger.error(bodyString);
+                                                throw er;
+                                            }
+                                            DatasetUtils.addToDataset(KGIndex.getResultDataset(), bodyData);
+                                        }
                                     }
-                                } else if (queryString.contains("INSERT") || queryString.contains("DELETE")) {
-                                    try {
-                                        UpdateRequest insertUpdate = UpdateFactory.create(queryString);
-                                        UpdateAction.execute(insertUpdate, this._datasetDescription);
-                                        this._datasetDescription.commit();
-                                    } catch(QueryParseException er) {
-                                        logger.error(queryString);
-                                        throw er;
-                                    }
+                                } catch (IOException | InterruptedException e) {
+                                    logger.error(e);
+                                } catch (QueryParseException e) {
+                                    logger.debug(queryString);
+                                    throw e;
+                                } catch (RiotException e) {
+                                    logger.error(e);
+                                    logger.trace(this._entry.getFileResource() + " action could not be added because of RiotException");
+                                } catch (Exception e) {
+                                    logger.error(e);
+                                    logger.trace(this._entry.getFileResource() + " action could not be added because of unknown Exception");
                                 }
-                            } catch (IOException | InterruptedException  e) {
-                                logger.error(e);
-                            } catch (QueryParseException e) {
-                                logger.debug(queryString);
-                                throw e;
-                            } catch (RiotException e) {
-                                logger.error(e);
-                                logger.trace(this._entry.getFileResource() + " action could not be added because of RiotException");
-                            } catch (Exception e) {
-                                logger.error(e);
-                                logger.trace(this._entry.getFileResource() + " action could not be added because of unknown Exception");
                             }
                         }
                     }
-                };
-            } else if(action.getType() == Action.TYPE.Manifest) {
-                Set<ManifestEntry> entrySet = RuleLibrary.getLibrary().get(action.getActionNode());
-                for(ManifestEntry entry : entrySet) {
-                    try {
-                        InteractionApplication application = InteractionFactory.create(entry, this._describedDataset, this._datasetDescription);
-                        application.apply();
-                    } catch (Exception e) {
-                        logger.error(entry.getTestResource().getURI());
-                        logger.error(e);
+                    ;
+                } else if (action.getType() == Action.TYPE.Manifest) {
+                    Set<ManifestEntry> entrySet = RuleLibrary.getLibrary().get(action.getActionNode());
+                    for (ManifestEntry entry : entrySet) {
+                        try {
+                            InteractionApplication application = InteractionFactory.create(entry, this._describedDataset);
+                            application.apply();
+                        } catch (Exception e) {
+                            logger.error(entry.getTestResource().getURI());
+                            logger.error(e);
+                        }
                     }
-                };
+                    ;
+                }
             }
-        };
+            ;
+        } catch(Exception e) {
+            logger.error(e);
+            e.printStackTrace();
+        }
         logger.trace("Action END " + this._entry.getFileResource() );
-
-        return result;
     }
 }
