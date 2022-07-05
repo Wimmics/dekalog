@@ -82,7 +82,6 @@
             """
         ]
         <../meta/modifiedUpdate.ttl>
-        <../meta/equivalences.ttl>
     ) ;
     kgi:onFailure (
         [ mf:action """PREFIX void: <http://rdfs.org/ns/void#>

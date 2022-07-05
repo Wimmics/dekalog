@@ -81,7 +81,6 @@
                 }"""
         ]
         <../../meta/modifiedUpdate.ttl>
-        <../../meta/equivalences.ttl>
     ) ;
     kgi:onFailure (
         <endpointDescResourceLocalhost.ttl>
@@ -159,7 +158,6 @@
                 }"""
         ]
         <../../meta/modifiedUpdate.ttl>
-        <../../meta/equivalences.ttl>
     ) ;
     kgi:onFailure (
         [
@@ -181,7 +179,6 @@
                 }"""
         ]
         <../../meta/modifiedUpdate.ttl>
-        <../../meta/equivalences.ttl>
     ) .
 
 <datasetDescResource.ttl> a mf:ManifestEntry ;
@@ -257,7 +254,6 @@
                  }"""
         ]
         <../../meta/modifiedUpdate.ttl>
-        <../../meta/equivalences.ttl>
         ) ;
         kgi:onFailure (
             <datasetDescResourceLocalhost.ttl>
@@ -338,7 +334,6 @@
                  }"""
         ]
         <../../meta/modifiedUpdate.ttl>
-        <../../meta/equivalences.ttl>
     ) ;
     kgi:onFailure (
         [
