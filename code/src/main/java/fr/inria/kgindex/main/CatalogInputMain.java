@@ -180,8 +180,8 @@ public class CatalogInputMain {
 
                     // Faire l'extraction de description selon nos regles
 
-                    Files.createDirectories(Path.of("temp"));
-                    Path tmpDatasetDescFile = Files.createTempFile(Path.of("temp"), null, ".ttl");
+                    Path tempFolder = Files.createDirectories(Path.of("temp"));
+                    Path tmpDatasetDescFile = Files.createTempFile(tempFolder, null, ".ttl");
 
                     DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetNames);
                     result.getDefaultModel().add(KGIndex.catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());
