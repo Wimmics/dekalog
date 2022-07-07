@@ -13,7 +13,7 @@ const dataFilePrefix = "./src/data/cache/";
 const graphLists = require(dataFilePrefix + 'runSets.json');
 const timezoneMap = require(dataFilePrefix + 'timezoneMap.json');
 const endpointIpMap = require(dataFilePrefix + 'endpointIpGeoloc.json');
-const queryPaginationSize = 10000;
+const queryPaginationSize = 500;
 
 const whiteListFilename = dataFilePrefix + "whiteLists.json";
 const geolocFilename = dataFilePrefix + "geolocData.json";
@@ -122,6 +122,9 @@ function paginatedSparqlQueryPromise(query, limit = queryPaginationSize, offset 
     })
     .catch(error => {
         console.log(error)
+        return finalResult;
+    })
+    .finally(() => {
         return finalResult;
     })
 }
@@ -718,17 +721,19 @@ function totalCategoryTestCountFill() {
         "?trace <http://www.w3.org/ns/earl#test> ?test . " +
         "?trace <http://www.w3.org/ns/earl#result> ?result . " +
         "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . " +
-        "FILTER(STRSTARTS(str(?test), ?category)) " +
+        "FILTER(STRSTARTS(str(?test), str(?category))) " +
         "VALUES ?category { " +
-        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/' " +
-        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/' " +
-        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/' " +
-        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/' " +
-        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/' " +
-        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' " +
-        "}" +
-        "}  " +
-        "} GROUP BY ?g ?date ?category ?endpointUrl";
+        "<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/> " +
+        "<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/> " +
+        "<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/> " +
+        "<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/> " +
+        "<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/> " +
+        "<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/> " +
+        "} " +
+        "} " +
+        "} " + 
+        "GROUP BY ?g ?date ?category ?endpointUrl " + 
+        "ORDER BY ?category ";
     var totalTestCategoryData = [];
     return paginatedSparqlQueryPromise(testCategoryQuery).then(json => {
         json.forEach((itemResult, i) => {
