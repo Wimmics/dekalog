@@ -1586,7 +1586,7 @@ $(function () {
                                 endpointKeywordsTableFill()
                                 $("#endpointKeywordsTable").DataTable()
                             } else {
-                                this.option.hide();
+                                this.hide();
                             }this.chartObject.on('click', 'series', event => {
                                 if((event.dataType.localeCompare("node") == 0) && (event.data.category.localeCompare("Endpoint") == 0)) {
                                     var uriLink = event.data.name;

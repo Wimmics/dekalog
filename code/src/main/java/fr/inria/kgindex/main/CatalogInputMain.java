@@ -65,7 +65,7 @@ public class CatalogInputMain {
         options.addOption(Option.builder(OPT_FEDERATION)
                 .required(false)
                 .hasArg()
-                .desc("SPARQL endpoint URL to a federation server used in rules for the generation. If none is given, rules using the kgi:federated endpoint will not be executed.")
+                .desc("SPARQL endpoint URL to a federation server used in rules for the generation. If none is given, rules using the kgi:federation endpoint will not be executed.")
                 .build());
         options.addOption(Option.builder(OPT_OUTPUT)
                 .required(false)
@@ -114,7 +114,7 @@ public class CatalogInputMain {
                 if(catalogFilename != null && catalogDataset != null ) {
                     logger.debug(catalogDataset + " " + catalogFilename);
                     RDFDataMgr.read(catalogDataset, catalogFilename);
-                    catalogConnection = RDFConnectionFactory.connect(catalogDataset);
+                    catalogConnection = RDFConnection.connect(catalogDataset);
                 } else {
                     HelpFormatter formatter = new HelpFormatter();
                     formatter.printHelp( APP_NAME, options );
@@ -123,7 +123,7 @@ public class CatalogInputMain {
             } else if(cmd.hasOption(OPT_CATALOG_ENDPOINT)) {
                 // Créer connexion distante
                 String catalogUrl = cmd.getOptionValue(OPT_CATALOG_ENDPOINT);
-                catalogConnection = RDFConnectionFactory.connect(catalogUrl);
+                catalogConnection = RDFConnection.connect(catalogUrl);
             }
 
             Dataset result = DatasetFactory.create();
@@ -179,7 +179,9 @@ public class CatalogInputMain {
                     logger.trace("START dataset " + endpointUrl );
 
                     // Faire l'extraction de description selon nos regles
-                    Path tmpDatasetDescFile = Files.createTempFile(null, ".ttl");
+
+                    Path tempFolder = Files.createDirectories(Path.of("temp"));
+                    Path tmpDatasetDescFile = Files.createTempFile(tempFolder, null, ".ttl");
 
                     DescribedDataset describedDataset = new DescribedDataset(endpointUrl, datasetNames);
                     result.getDefaultModel().add(KGIndex.catalogRoot, DCAT.dataset, describedDataset.getDatasetDescriptionResource());

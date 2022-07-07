@@ -3,60 +3,15 @@
 
 <> a mf:Manifest ;
     mf:entries (
-            <equivalences.ttl>
             <modifiedUpdate.ttl>
             <exampleQueries.ttl>
-            <inclusionByVocabularies.ttl>
-            <inclusionByDatatypes.ttl>
-            <inclusionByClasses.ttl>
-            <inclusionByProperties.ttl>
-            <inclusionByClassesAndProperties.ttl>
-            <inclusionByResourceHostname.ttl>
+#            <inclusionByVocabularies.ttl>
+#            <inclusionByDatatypes.ttl>
+#            <inclusionByClasses.ttl>
+#            <inclusionByProperties.ttl>
+#            <inclusionByClassesAndProperties.ttl>
+#            <inclusionByResourceHostname.ttl>
         ) .
-
-<equivalences.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s rdfs:label ?o . } WHERE { ?s skos:prefLabel ?o . } """ ]
-        [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s skos:prefLabel ?o . } WHERE { ?s rdfs:label ?o . } """ ]
-        [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX dcterms: <http://purl.org/dc/terms/> INSERT { ?s rdfs:label ?o . } WHERE { ?s dcterms:title ?o . } """ ]
-        [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX dcterms: <http://purl.org/dc/terms/> INSERT { ?s dcterms:title ?o . } WHERE { ?s rdfs:label ?o . } """ ]
-        [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> INSERT { ?s rdfs:label ?o . } WHERE { ?s foaf:name ?o . } """ ]
-        [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> INSERT { ?s foaf:name ?o . } WHERE { ?s rdfs:label ?o . } """ ]
-        [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX schema: <http://schema.org/> INSERT { ?s rdfs:label ?o . } WHERE { ?s schema:name ?o . } """ ]
-        [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX schema: <http://schema.org/> INSERT { ?s schema:name ?o . } WHERE { ?s rdfs:label ?o . } """ ]
-        [ mf:action """PREFIX skos: <http://www.w3.org/2004/02/skos/core#> PREFIX schema: <http://schema.org/> INSERT { ?s skos:prefLabel ?o . } WHERE { ?s schema:name ?o . } """ ]
-        [ mf:action """PREFIX skos: <http://www.w3.org/2004/02/skos/core#> PREFIX schema: <http://schema.org/> INSERT { ?s schema:name ?o . } WHERE { ?s skos:prefLabel ?o . } """ ]
-        [ mf:action """PREFIX skos: <http://www.w3.org/2004/02/skos/core#> PREFIX dcterms: <http://purl.org/dc/terms/> INSERT { ?s skos:prefLabel ?o . } WHERE { ?s dcterms:title ?o . } """ ]
-        [ mf:action """PREFIX skos: <http://www.w3.org/2004/02/skos/core#> PREFIX dcterms: <http://purl.org/dc/terms/> INSERT { ?s dcterms:title ?o . } WHERE { ?s skos:prefLabel ?o . } """ ]
-        [ mf:action """PREFIX skos: <http://www.w3.org/2004/02/skos/core#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> INSERT { ?s skos:prefLabel ?o . } WHERE { ?s foaf:name ?o . } """ ]
-        [ mf:action """PREFIX skos: <http://www.w3.org/2004/02/skos/core#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> INSERT { ?s foaf:name ?o . } WHERE { ?s skos:prefLabel ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s schema:name ?o . } WHERE { ?s dcterms:title ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s dcterms:title ?o . } WHERE { ?s schema:name ?o . } """ ]
-        [ mf:action """PREFIX schema: <http://schema.org/> PREFIX foaf: <http://xmlns.com/foaf/0.1/> INSERT { ?s schema:name ?o . } WHERE { ?s foaf:name ?o . } """ ]
-        [ mf:action """PREFIX schema: <http://schema.org/> PREFIX foaf: <http://xmlns.com/foaf/0.1/> INSERT { ?s foaf:name ?o . } WHERE { ?s schema:name ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX foaf: <http://xmlns.com/foaf/0.1/> INSERT { ?s dcterms:title ?o . } WHERE { ?s foaf:name ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX foaf: <http://xmlns.com/foaf/0.1/> INSERT { ?s foaf:name ?o . } WHERE { ?s dcterms:title ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s dcterms:publisher ?o . } WHERE { ?s schema:publisher ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s schema:publisher ?o . } WHERE { ?s dcterms:publisher ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s dcterms:subject ?o . } WHERE { ?s schema:keywords ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s schema:keywords ?o . } WHERE { ?s dcterms:subject ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s dcterms:creator ?o . } WHERE { ?s schema:author ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s schema:author ?o . } WHERE { ?s dcterms:creator ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX prov: <http://www.w3.org/ns/prov#> INSERT { ?s dcterms:creator ?o . } WHERE { ?s prov:wasAttributedTo ?o . } """ ]
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#> PREFIX dcterms: <http://purl.org/dc/terms/> INSERT { ?s prov:wasAttributedTo ?o . } WHERE { ?s dcterms:creator ?o . } """ ]
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#> PREFIX schema: <http://schema.org/> INSERT { ?s schema:author ?o . } WHERE { ?s prov:wasAttributedTo ?o . } """ ]
-        [ mf:action """PREFIX prov: <http://www.w3.org/ns/prov#> PREFIX schema: <http://schema.org/> INSERT { ?s prov:wasAttributedTo ?o . } WHERE { ?s schema:author ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s dcterms:licence ?o . } WHERE { ?s schema:licence ?o . } """ ]
-        [ mf:action """PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX schema: <http://schema.org/> INSERT { ?s schema:licence ?o . } WHERE { ?s dcterms:licence ?o . } """ ]
-        [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX dcat: <http://www.w3.org/ns/dcat#> INSERT { $endpointDescription sd:endpoint ?o . } WHERE { $datasetDescription dcat:endpointUrl ?o . } """ ]
-        [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX dcat: <http://www.w3.org/ns/dcat#> INSERT { $endpointDescription dcat:endpointUrl ?o . } WHERE { $datasetDescription sd:endpoint ?o . } """ ]
-        [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $endpointDescription sd:endpoint ?o . } WHERE { $datasetDescription void:sparqlEndpoint ?o . } """ ]
-        [ mf:action """PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $datasetDescription void:sparqlEndpoint ?o . } WHERE { $endpointDescription sd:endpoint ?o . } """ ]
-        [ mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $datasetDescription void:sparqlEndpoint ?o . } WHERE { $endpointDescription dcat:endpointUrl ?o . } """ ]
-        [ mf:action """PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX void: <http://rdfs.org/ns/void#> INSERT { $endpointDescription dcat:endpointUrl ?o . } WHERE { $datasetDescription void:sparqlEndpoint ?o . } """ ]
-        [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s rdfs:comment ?o . } WHERE { ?s skos:definition ?o . } """ ]
-        [ mf:action """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX skos: <http://www.w3.org/2004/02/skos/core#> INSERT { ?s skos:definition ?o . } WHERE { ?s rdfs:comment ?o . } """ ]
-    ) .
 
 <modifiedUpdate.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
@@ -238,7 +193,7 @@
                 PREFIX kgi: <http://ns.inria.fr/kg/index#>
                 INSERT DATA {
                     kgi:catalogRoot skos:example kgi:example14 .
-                    kgi:example14 dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> PREFIX voidex: <http://ldf.fi/void-ext#> PREFIX dqv: <http://www.w3.org/ns/dqv#> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT (count(DISTINCT ?endpoint) AS ?count) WHERE {   ?endpointDesc dcat:endpointUrl ?endpoint .   ?measurement dqv:computedOn ?endpointDesc .   ?measurement dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> .   ?measurement dqv:value 'true'^^xsd:boolean }" ;
+                    kgi:example14 dcterms:subject "PREFIX void: <http://rdfs.org/ns/void#> PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX earl: <http://www.w3.org/ns/earl#> PREFIX kgi: <http://ns.inria.fr/kg/index#> PREFIX voidex: <http://ldf.fi/void-ext#> PREFIX dqv: <http://www.w3.org/ns/dqv#> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT (count(DISTINCT ?endpoint) AS ?count) WHERE {   ?endpointDesc dcat:endpointURL ?endpoint .   ?measurement dqv:computedOn ?endpointDesc .   ?measurement dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> .   ?measurement dqv:value 'true'^^xsd:boolean }" ;
                         dcterms:description "Returns the number of tests that passed the availability test." .
                 }"""
         ]
@@ -330,6 +285,7 @@
                             FILTER(?vocab != <http://www.w3.org/2000/01/rdf-schema#>)
                             FILTER(?vocab != <http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
                             FILTER(?vocab != <http://www.w3.org/2002/07/owl#>)
+                            FILTER( NOT EXISTS { ?datasetDescription kgi:commonVocabularies ?otherDatasetDescription . } )
                         }
                     }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
@@ -355,6 +311,7 @@
                             FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
                             FILTER(?datatype != <http://www.w3.org/1999/02/22-rdf-syntax-ns#langString>)
                             FILTER(?datatype != <http://www.w3.org/2001/XMLSchema#string> )
+                            FILTER( NOT EXISTS { ?datasetDescription kgi:commonDatatypes ?otherDatasetDescription . } )
                         }
                     }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
@@ -384,6 +341,7 @@
                             FILTER(! strstarts(str(?class), "http://www.w3.org/2000/01/rdf-schema#"))
                             FILTER(! strstarts(str(?class), "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
                             FILTER(! strstarts(str(?class), "http://www.w3.org/2002/07/owl#"))
+                            FILTER( NOT EXISTS { ?datasetDescription kgi:commonClasses ?otherDatasetDescription . } )
                         }
                     }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
@@ -404,15 +362,18 @@
                 WHERE {
                     {
                         SELECT DISTINCT ?otherDatasetDescription {
+                            ?datasetDescription void:sparqlEndpoint ?endpoint .
                             ?datasetDescription void:propertyPartition ?propertyPartition .
                             ?propertyPartition void:property ?property .
                             ?otherDatasetDescription void:propertyPartition ?otherPropertyPartition .
                             ?otherPropertyPartition void:property ?property .
+                            ?otherPropertyPartition void:sparqlEndpoint ?otherEndpoint .
                             FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
                             FILTER(! strstarts(str(?property), "http://www.w3.org/2001/XMLSchema#"))
                             FILTER(! strstarts(str(?property), "http://www.w3.org/2000/01/rdf-schema#"))
                             FILTER(! strstarts(str(?property), "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
                             FILTER(! strstarts(str(?property), "http://www.w3.org/2002/07/owl#"))
+                            FILTER( NOT EXISTS { ?datasetDescription kgi:commonProperties ?otherDatasetDescription . } )
                         }
                     }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
@@ -443,6 +404,7 @@
                             ?otherPropertyPartition void:property ?property .
                             ?otherClassPartition void:class ?class .
                             FILTER(?otherDatasetDescription < ?datasetDescription)
+                            FILTER( NOT EXISTS { ?datasetDescription kgi:commonClasses ?otherDatasetDescription . } )
                         }
                     }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
@@ -466,29 +428,7 @@
                             ?datasetDescription kgi:resourceHostname ?resourceHostname .
                             ?otherDatasetDescription kgi:resourceHostname ?resourceHostname .
                             FILTER(str(?otherDatasetDescription) < str(?datasetDescription))
-                        }
-                    }
-                    BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)
-                }
-            """
-        ]
-    ) .
-
-<inclusionOf1000Individuals.ttl> a mf:ManifestEntry ;
-    kgi:onSuccess (
-        [
-            mf:action """PREFIX void: <http://rdfs.org/ns/void#>
-                PREFIX kgi: <http://ns.inria.fr/kg/index#>
-                INSERT {
-                    ?datasetDescription kgi:commonIndividuals ?otherDatasetDescription .
-                    ?otherDatasetDescription kgi:commonIndividuals ?datasetDescription .
-                }
-                WHERE {
-                    {
-                        SELECT DISTINCT ?otherDatasetDescription {
-                            ?datasetDescription kgi:resourceHostname ?resourceHostname .
-                            ?otherDatasetDescription void:resourceHostname ?resourceHostname .
-                            FILTER(?otherDatasetDescription < ?datasetDescription)
+                            FILTER( NOT EXISTS { ?datasetDescription kgi:commonResourceHostname ?otherDatasetDescription . } )
                         }
                     }
                     BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)

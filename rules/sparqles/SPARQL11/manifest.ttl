@@ -494,7 +494,7 @@
                             prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
                     ?endpointDescription sd:feature sd:SPARQL11Query .
                 } WHERE {
-                    $endpointDescription sd:feature
+                    ?endpointDescription sd:feature
                         sparqles:ASKFILNOTIN ,
                         sparqles:CON- ,
                         sparqles:SELAVG ,

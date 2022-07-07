@@ -10,6 +10,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix sp: <http://spinrdf.org/sp> .
 @prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix void: <http://rdfs.org/ns/void#> .
 
 kgi: dcterms:creator "Pierre Maillot" ;
     dcterms:creator <https://orcid.org/0000-0002-9814-439X> ;
@@ -90,3 +91,21 @@ kgi:timeout rdf:type rdf:Property ;
     rdfs:isDefinedBy kgi: ;
     rdfs:comment "Queries sent during test and actions may need a specific timeout, generally longer than normal. This property specify the timeout for a test or an action." ;
     rdfs:range xsd:duration .
+
+kgi:linkset rdf:type rdf:Property ;
+    rdfs:label "Link a dataset description to the linkset that were retrieved during its indexation" ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain void:Dataset ;
+    rdfs:range void:Linkset .
+
+kgi:resourceHostname rdf:type rdf:Property ;
+    rdfs:label "Hostname of the resources of the dataset" ;
+    rdfs:comment "Linked to URIs representing the hostnames of the resources of the dataset." ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain void:Dataset .
+
+kgi:vocabularyPartition rdf:type rdf:Property ;
+    rdfs:label "Partition of the dataset according to the vocabulary used in triples" ;
+    rdfs:comment "This property is to be used on the same model as void:classPartition and void:propertyPartition." ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain void:Dataset .
