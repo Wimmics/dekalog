@@ -47,26 +47,32 @@ $(() => {
     class CategoryView {
 
         constructor(config = { category: null }) {
-            this.core = config.category;
+            this.categoryCore = config.category;
             this.fields = [];
 
-            this.core.fields.forEach(field => {
-                if (this.core.minArity > 0) {
-                    for (var index = 0; index < this.core.minArity; index++) {
+            this.categoryCore.fields.forEach(field => {
+                if (this.categoryCore.minArity > 0) {
+                    for (var index = 0; index < this.categoryCore.minArity; index++) {
                         var fieldLine = new FieldInput({ core: field, index: index });
                         this.fields.push(fieldLine);
                     }
                 }
             });
-            this.categoryId = this.core.idPrefix + "Category";
+            this.categoryId = this.categoryCore.idPrefix + "Category";
 
-            this.jQueryContent = this.generateCategoryFields();
+
+
+            var dataDiv = $(document.createElement('div'));
+            dataDiv.addClass("row");
+            dataDiv.attr("id", this.categoryId); 
+            this.jQueryContent = dataDiv;
+            this.generateCategoryFields();
             this.navItem = this.generateNavItem();
         }
 
         refresh() {
-            jQueryContent.empty();
-            generateCategoryFields();
+            this.jQueryContent.empty();
+            this.jQueryContent = this.generateCategoryFields();
 
         }
 
@@ -74,29 +80,27 @@ $(() => {
             var navLink = $(document.createElement("a"));
             navLink.addClass('nav-link');
             navLink.addClass('dropdown-item');
-            navLink.text(this.core.categoryTitle);
+            navLink.text(this.categoryCore.categoryTitle);
             navLink.attr("href", "#" + this.categoryId);
             return navLink;
         }
 
         generateCategoryFields() {
-            var addButtonId = "add" + this.core.idPrefix + "Button";
-            var removeButtonId = "remove" + this.core.idPrefix + "Button";
-
-            var dataDiv = $(document.createElement('div'));
-            dataDiv.addClass("row");
-            dataDiv.attr("id", this.categoryId);
+            console.log( this.fields)
+            console.log( this.jQueryContent)
+            var addButtonId = "add" + this.categoryCore.idPrefix + "Button";
+            var removeButtonId = "remove" + this.categoryCore.idPrefix + "Button";
 
             var catTitle = $(document.createElement('h3'));
             catTitle.addClass("text-center");
-            catTitle.text(this.core.categoryTitle);
+            catTitle.text(this.categoryCore.categoryTitle);
 
             var catControlRow = $(document.createElement('div'));
             catControlRow.addClass("row")
             var catLegendCol = $(document.createElement('div'));
             catLegendCol.addClass("col-10")
             var catLegend = $(document.createElement('p'));
-            catLegend.text(this.core.legend);
+            catLegend.text(this.categoryCore.legend);
             catLegendCol.append(catLegend);
             catControlRow.append(catLegendCol);
             var catAddLineCol = $(document.createElement('div'));
@@ -129,37 +133,43 @@ $(() => {
             var catFieldCol = $(document.createElement('div'));
             catFieldCol.addClass("col")
 
-            dataDiv.append(catTitle);
-            dataDiv.append(catControlRow);
-            dataDiv.append(catFieldRow);
+            this.jQueryContent.append(catTitle);
+            this.jQueryContent.append(catControlRow);
+            this.jQueryContent.append(catFieldRow);
             catFieldRow.append(catFieldCol);
 
             this.fields.forEach(field => {
                 catFieldCol.append(field.jQueryContent);
             });
 
-            $('#' + addButtonId).on( "click", () => {
-                console.log("add")
-                if (this.maxArity >= this.fields.length) {
-                    this.fields.push((new FieldInput({ core: field, index: fields.length })).jQueryContent);
+            catAddLineButton.on( "click", () => {
+                console.log("ADD")
+                console.log(this.categoryCore)
+                if (this.categoryCore.maxArity >= this.fields.length) {
+                    this.categoryCore.fields.forEach(field => {
+                        var fieldInput = new FieldInput({ core: field, index: this.fields.length });
+                        this.fields.push(fieldInput);
+                        catFieldCol.append(fieldInput.jQueryContent);
+                    })
+                    console.log( this.fields)
+                    console.log( catFieldCol)
                     this.refresh();
+                    console.log( this.jQueryContent)
                 }
             });
-            $('#' + removeButtonId).on("click", () => {
-                console.log("remove")
-                if (this.minArity < this.fields.length) {
+            catRemoveLineButton.on("click", () => {
+                console.log("REMOVE")
+                if (this.categoryCore.minArity < this.fields.length) {
                     this.fields.pop();
                     this.refresh();
                 }
             });
-
-            return dataDiv;
         }
     }
 
     class FieldCore {
         constructor(config = { placeholder: "", dataValidationFunction: (inputVal) => { }, dataCreationFunction: (inputVal) => { }, parentCategory: null }) {
-            this.placeHolder = config.placeholder;
+            this.placeholder = config.placeholder;
             this.dataValidationFunction = (inputVal, inputId) => {
                 var result = false;
                 try {
@@ -183,9 +193,9 @@ $(() => {
 
     class FieldInput {
         constructor(config = { core: null, index: 0 }) {
-            this.core = config.core;
+            this.fieldCore = config.core;
             this.index = config.index;
-            this.metadataFieldIdPrefix = config.core.parentCategory.idPrefix + "Field";
+            this.metadataFieldIdPrefix = this.fieldCore.parentCategory.idPrefix + "Field";
             this.jQueryContent = null;
             this.generateJQueryContent();
         }
@@ -201,7 +211,7 @@ $(() => {
             textInput.addClass('form-control');
             textInput.attr('id', inputIdField);
             lineLabel.attr('for', inputIdField)
-            lineLabel.text(this.core.placeHolder);
+            lineLabel.text(this.fieldCore.placeholder);
 
             var lineFieldCol = $(document.createElement('div'));
             lineFieldCol.addClass('col-11');
@@ -222,10 +232,10 @@ $(() => {
             lineFieldCol.append(textInput);
             lineFieldCol.append(lineLabel);
             textInput.on("change", () => {
-                this.core.dataCreationFunction(textInput.val(), inputIdButton);
+                this.fieldCore.dataCreationFunction(textInput.val(), inputIdButton);
             })
             lineValidButton.on("click", () => {
-                contentDisplay.val(this.core.dataCreationFunction(textInput.val(), inputIdButton));
+                contentDisplay.val(this.fieldCore.dataCreationFunction(textInput.val(), inputIdButton));
             });
             this.jQueryContent = lineDiv;
         }
@@ -278,7 +288,7 @@ $(() => {
             maxArity: Infinity,
             fields: [
                 new FieldCore({
-                    placeHolder: "Creator's name or URI",
+                    placeholder: "Creator's name or URI",
                     dataValidationFunction: (inputVal, inputId) => {
                         var result = isValidLiteral(inputVal);
                         return result;
@@ -298,8 +308,8 @@ $(() => {
             minArity: 1,
             maxArity: Infinity,
             fields: [
-                new FieldCore({
-                    placeHolder: "Endpoint's URL",
+                {
+                    placeholder: "Endpoint's URL",
                     dataValidationFunction: (inputVal) => {
                         return isValidURI(inputVal);
                     },
@@ -307,7 +317,7 @@ $(() => {
                         store.add(exampleDataset, VOID('sparqlEndpoint'), $rdf.sym(inputVal));
                         return store.toNT();
                     }
-                })
+                }
             ]
         },
         {
@@ -319,7 +329,7 @@ $(() => {
             maxArity: Infinity,
             fields: [
                 {
-                    placeHolder: "Short title for the knowledge base",
+                    placeholder: "Short title for the knowledge base",
                     dataCreationFunction: (inputVal) => {
                         store.add(exampleDataset, DCT('title'), $rdf.lit(inputVal));
                         return store.toNT();
@@ -339,7 +349,7 @@ $(() => {
             maxArity: Infinity,
             fields: [
                 {
-                    placeHolder: "Long description of the knowledge base",
+                    placeholder: "Long description of the knowledge base",
                     dataCreationFunction: (inputVal) => {
                         store.add(exampleDataset, DCT('description'), $rdf.lit(inputVal));
                         return store.toNT();
@@ -359,7 +369,7 @@ $(() => {
             maxArity: 1,
             fields: [
                 {
-                    placeHolder: "Publication date of the knowledge base",
+                    placeholder: "Publication date of the knowledge base",
                     dataCreationFunction: (inputVal) => {
                         store.add(exampleDataset, DCT('issued'), $rdf.lit(inputVal));
                         return store.toNT();
@@ -379,7 +389,7 @@ $(() => {
             maxArity: Infinity,
             fields: [
                 {
-                    placeHolder: "Vocabularies used in the knowledge base",
+                    placeholder: "Vocabularies used in the knowledge base",
                     dataCreationFunction: (inputVal) => {
                         store.add(exampleDataset, VOID('vocabulary'), $rdf.sym(inputVal));
                         return store.toNT();
@@ -399,7 +409,7 @@ $(() => {
             maxArity: Infinity,
             fields: [
                 {
-                    placeHolder: "Language tags used in the literals of the knowledge base",
+                    placeholder: "Language tags used in the literals of the knowledge base",
                     dataCreationFunction: (inputVal) => {
                         store.add(exampleDataset, DCT('language'), $rdf.lit(inputVal));
                         return store.toNT();
@@ -419,7 +429,7 @@ $(() => {
             maxArity: Infinity,
             fields: [
                 {
-                    placeHolder: "Keyworks used to describe the knowledge base",
+                    placeholder: "Keyworks used to describe the knowledge base",
                     dataCreationFunction: (inputVal) => {
                         console.log(isValidLiteral(inputVal) + " " + isValidURI(inputVal));
                         if(isValidLiteral(inputVal)) {
@@ -445,7 +455,7 @@ $(() => {
             maxArity: 1,
             fields: [
                 {
-                    placeHolder: "Current version of the knowledge base",
+                    placeholder: "Current version of the knowledge base",
                     dataCreationFunction: (inputVal) => {
                         store.add(exampleDataset, DCAT('version'), $rdf.lit(inputVal));
                         return store.toNT();
