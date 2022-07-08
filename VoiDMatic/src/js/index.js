@@ -1,5 +1,6 @@
 import $ from 'jquery';
 const $rdf = require('rdflib');
+const EventEmitter = require('events');
 
 var RDFS = $rdf.Namespace("http://www.w3.org/2000/01/rdf-schema#");
 var OWL = $rdf.Namespace("http://www.w3.org/2002/07/owl#");
@@ -24,8 +25,9 @@ $(() => {
     var navCol = $('#navCol');
     var contentDisplay = $("#displayTextArea");
 
-    class CategoryCore {
+    class CategoryCore extends EventEmitter {
         constructor(config = { recommended: false, categoryTitle: "", legend: "", idPrefix: "id", minArity: 0, maxArity: Infinity, fields: [] }) {
+            super();
             this.recommended = config.recommended;
             this.categoryTitle = config.categoryTitle;
             this.legend = config.legend;
@@ -48,14 +50,11 @@ $(() => {
 
         constructor(config = { category: null }) {
             this.categoryCore = config.category;
-            this.fields = [];
+            this.lines = [];
 
             this.categoryCore.fields.forEach(field => {
                 if (this.categoryCore.minArity > 0) {
-                    for (var index = 0; index < this.categoryCore.minArity; index++) {
-                        var fieldLine = new FieldInput({ core: field, index: index });
-                        this.fields.push(fieldLine);
-                    }
+                    this.addLine()
                 }
             });
             this.categoryId = this.categoryCore.idPrefix + "Category";
@@ -64,10 +63,19 @@ $(() => {
 
             var dataDiv = $(document.createElement('div'));
             dataDiv.addClass("row");
-            dataDiv.attr("id", this.categoryId); 
+            dataDiv.attr("id", this.categoryId);
             this.jQueryContent = dataDiv;
             this.generateCategoryFields();
             this.navItem = this.generateNavItem();
+        }
+
+        addLine() {
+            this.categoryCore.fields.forEach(field => {
+                if(this.lines.length < this.categoryCore.maxArity) {
+                    var fieldLine = new FieldInput({ core: field, index: this.lines.length });
+                    this.lines.push(fieldLine);
+                }
+            })
         }
 
         refresh() {
@@ -86,8 +94,6 @@ $(() => {
         }
 
         generateCategoryFields() {
-            console.log( this.fields)
-            console.log( this.jQueryContent)
             var addButtonId = "add" + this.categoryCore.idPrefix + "Button";
             var removeButtonId = "remove" + this.categoryCore.idPrefix + "Button";
 
@@ -138,37 +144,38 @@ $(() => {
             this.jQueryContent.append(catFieldRow);
             catFieldRow.append(catFieldCol);
 
-            this.fields.forEach(field => {
+            this.lines.forEach(field => {
                 catFieldCol.append(field.jQueryContent);
             });
 
-            catAddLineButton.on( "click", () => {
+            catAddLineButton.on("click", () => {
                 console.log("ADD")
                 console.log(this.categoryCore)
-                if (this.categoryCore.maxArity >= this.fields.length) {
+                if (this.categoryCore.maxArity >= this.lines.length) {
                     this.categoryCore.fields.forEach(field => {
-                        var fieldInput = new FieldInput({ core: field, index: this.fields.length });
-                        this.fields.push(fieldInput);
+                        var fieldInput = new FieldInput({ core: field, index: this.lines.length });
+                        this.lines.push(fieldInput);
                         catFieldCol.append(fieldInput.jQueryContent);
                     })
-                    console.log( this.fields)
-                    console.log( catFieldCol)
+                    console.log(this.lines)
+                    console.log(catFieldCol)
                     this.refresh();
-                    console.log( this.jQueryContent)
+                    console.log(this.jQueryContent)
                 }
             });
             catRemoveLineButton.on("click", () => {
                 console.log("REMOVE")
-                if (this.categoryCore.minArity < this.fields.length) {
-                    this.fields.pop();
+                if (this.categoryCore.minArity < this.lines.length) {
+                    this.lines.pop();
                     this.refresh();
                 }
             });
         }
     }
 
-    class FieldCore {
-        constructor(config = { placeholder: "", dataValidationFunction: (inputVal) => { }, dataCreationFunction: (inputVal) => { }, parentCategory: null }) {
+    class FieldCore extends EventEmitter {
+        constructor(config = { placeholder: "", dataValidationFunction: (inputVal) => { }, dataCreationFunction: (inputVal) => { }, dataExtractionFunction: () => { }, parentCategory: null }) {
+            super();
             this.placeholder = config.placeholder;
             this.dataValidationFunction = (inputVal, inputId) => {
                 var result = false;
@@ -176,18 +183,25 @@ $(() => {
                     result = config.dataValidationFunction(inputVal);
                     setButtonValidatedState(inputId, result);
                     return result;
-                } catch( e) {
+                } catch (e) {
                     return result;
                 }
             }
             this.dataCreationFunction = (inputVal, inputId) => {
-                    if (this.dataValidationFunction(inputVal, inputId)) {
-                        return config.dataCreationFunction(inputVal);
-                    }
-                    return "";
+                if (this.dataValidationFunction(inputVal, inputId)) {
+                    return config.dataCreationFunction(inputVal);
+                }
+                return store.toNT();
             };
+            this.dataExtractionFunction = () => {
+                try {
+                    return config.dataExtractionFunction();
+                } catch (e) {
+                    this.emit("error", e);
+                    return [];
+                }
+            }
             this.parentCategory = config.parentCategory;
-            this.value = config.value;
         }
     }
 
@@ -198,6 +212,10 @@ $(() => {
             this.metadataFieldIdPrefix = this.fieldCore.parentCategory.idPrefix + "Field";
             this.jQueryContent = null;
             this.generateJQueryContent();
+
+            this.fieldCore.addListener("error", error => {
+                console.log(error);
+            });
         }
 
         generateJQueryContent() {
@@ -432,10 +450,10 @@ $(() => {
                     placeholder: "Keyworks used to describe the knowledge base",
                     dataCreationFunction: (inputVal) => {
                         console.log(isValidLiteral(inputVal) + " " + isValidURI(inputVal));
-                        if(isValidLiteral(inputVal)) {
+                        if (isValidLiteral(inputVal)) {
                             store.add(exampleDataset, DCAT('keyword'), $rdf.lit(inputVal));
-                        } 
-                        if(isValidURI(inputVal)) {
+                        }
+                        if (isValidURI(inputVal)) {
                             store.add(exampleDataset, DCAT('theme'), $rdf.sym(inputVal));
                         }
                         return store.toNT();
