@@ -17,6 +17,7 @@
 # This template tries to use as much of the most common vocabularies as possible to create a basic description.
 # The resources linked to this description should also be described in the Dataset when relevant.
 # The literals should be either tagged with their languages or typed with a xsd:datatype.
+# As much as possible, every URI should have a label or a title.
 
 <dataset-uri>
     a                       dcat:Dataset , void:Dataset , sd:Dataset ;
@@ -45,7 +46,7 @@
             dcat:accessURL          <Url of the SPARQL endpoint> ;
             dcat:mediaType          "application/sparql-query"
         ] ;
-    dcat:distribution [
+    dcat:distribution       [
             a                       dcat:Distribution ;
             dct:title               "This dataset's archive title" ;
             dcat:downloadUrl        <Url where the dataset can be downloaded as a file, if any> ;
@@ -55,7 +56,8 @@
     ] ;
     sd:namedGraph           <Named graphs uris> .
 
-<Named graphs uris> a sd:Graph, sd:NamedGraph ;
+<Named graphs uris>
+    a                       sd:Graph, sd:NamedGraph ;
     sd:name                 <URI of the named graph> .
 
 <endpoint-uri>
@@ -66,13 +68,12 @@
 
 
 # The given template can be expanded using the DCAT, PROV-O, Schema, VoID, SPARQL-SD, DCTERMS, or any other vocabulary.
-# As much as possible, every URI should have a label or a title.
 # As an example, here are some elements that can be use to expand the dataset description:
 #
 #<dataset-uri>
-#    schema:isBasedOn        <Uri of the source of the dataset, if relevant> ;
-#    prov:wasDerivedFrom     <Uri of the source of the dataset, if relevant> ;
-#    prov:wasGeneratedBy     <Uri of the process at the origin of the dataset> ;
+#    schema:isBasedOn    <Uri of the source of the dataset, if relevant> ;
+#    prov:wasDerivedFrom <Uri of the source of the dataset, if relevant> ;
+#    prov:wasGeneratedBy <Uri of the process at the origin of the dataset> ;
 #
 #    void:triples        "Number of triples in the dataset"^^xsd:integer ;
 #    void:classes        "Number of classes in the dataset"^^xsd:integer ;
@@ -89,14 +90,14 @@
 # Repeated information as objects of different properties will facilitate the access to the description for future users and should be kept.
 # Feel free to duplicate or precise information using the following properties
 #<dataset-uri> a void:Dataset , schema:Dataset , prov:Entity ;
-#    schema:name     "Name of the dataset" ;
-#    skos:prefLabel  "Name of the dataset" ;
-#    rdfs:label      "Name of the dataset" ;
-#    schema:description  "Long description of the dataset" ;
-#    rdfs:comment        "Long description of the dataset" ;
-#    foaf:homepage       "Url of a web page describing this dataset, if any" ;
-#    dcat:landingPage    "Url of a web page describing this dataset, if any" ;
-#    dcat:contactPoint   "Contact information for this dataset, preferably an email adress or a VCard" ;
+#    schema:name             "Name of the dataset" ;
+#    skos:prefLabel          "Name of the dataset" ;
+#    rdfs:label              "Name of the dataset" ;
+#    schema:description      "Long description of the dataset" ;
+#    rdfs:comment            "Long description of the dataset" ;
+#    foaf:homepage           "Url of a web page describing this dataset, if any" ;
+#    dcat:landingPage        "Url of a web page describing this dataset, if any" ;
+#    dcat:contactPoint       "Contact information for this dataset, preferably an email adress or a VCard" ;
 #    dct:creator             <Uri of creator(s)> , "Avoid string literals when possible" ;
 #    schema:author           <Uri of creator(s)> , "Avoid string literals when possible" ;
 #    dct:publisher           <Uri of creator(s)> , "Avoid string literals when possible" ;
@@ -104,23 +105,21 @@
 #    schema:publisher        <Uri of creator(s)> , <publisher(s)> , "Avoid string literals when possible" ;
 #    schema:editor           <Uri of creator(s)> , <editor(s)> , "Avoid string literals when possible" ;
 #    dct:contributor         <Uri of contributor(s)> , "Avoid string literals when possible" ;
-#    dct:license     <Uri/Url of license> ;
-#    schema:license  <Uri/Url of license> ;
-#    owl:versionInfo "Version number" ;
-#    schema:version  "Version number" ;
-#	dct:language       "Lang" , "tags" , "used" , "in" , "the" , "literals" , "if" , "any" ;
-#    schema:inLanguage  "Lang" , "tags" , "used" , "in" , "the" , "literals" , "if" , "any" ;
+#    dct:license             <Uri/Url of license> ;
+#    schema:license          <Uri/Url of license> ;
+#    owl:versionInfo         "Version number" ;
+#    schema:version          "Version number" ;
+#	 dct:language            "Lang" , "tags" , "used" , "in" , "the" , "literals" , "if" , "any" ;
+#    schema:inLanguage       "Lang" , "tags" , "used" , "in" , "the" , "literals" , "if" , "any" ;
 #    prov:wasGeneratedAtTime "Date time of creation"^^xsd:date ;
 #    schema:datePublished    "Date time of creation/publication"^^xsd:date ;
 #    dct:modified            "Date time of the last modification"^^xsd:date ;
-#    dct:subject     "Keywords" , "describing" , "the" , "content" , "of" , "the" , "dataset" , "strings" , "or" , <URIs> ;
-#    dcat:keyword    "Keywords" , "describing" , "the" , "content" , "of" , "the" , "dataset" , "strings" , "or" , <URIs> ;
-#    schema:keywords "Keywords" , "describing" , "the" , "content" , "of" , "the" , "dataset" , "strings" , "or" , <URIs> ;
+#    dct:subject             "Keywords" , "describing" , "the" , "content" , "of" , "the" , "dataset" , "strings" , "or" , <URIs> ;
+#    dcat:keyword            "Keywords" , "describing" , "the" , "content" , "of" , "the" , "dataset" , "strings" , "or" , <URIs> ;
+#    schema:keywords         "Keywords" , "describing" , "the" , "content" , "of" , "the" , "dataset" , "strings" , "or" , <URIs> ;
 #    void:uriSpace           "Namespace of the uris of the resources created in the dataset, if any" ;
-#    void:dataDump       <Url where the dataset can be downloaded as a file, if any> ;
-#    sd:defaultGraph <Resource used to describe the default graph> .
+#    void:dataDump           <Url where the dataset can be downloaded as a file, if any> .
 #
 #<endpoint-uri>
 #    dct:creator             <Uri of creator(s) of the endpoint> , "Avoid string literals when possible" ;
-#    prov:wasAttributedTo    <Uri of creator(s) of the endpoint> , "Avoid string literals when possible" ;
-#    sd:defaultDataset       <dataset-uri> .
+#    prov:wasAttributedTo    <Uri of creator(s) of the endpoint> , "Avoid string literals when possible" .
