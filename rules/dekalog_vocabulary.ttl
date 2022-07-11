@@ -104,8 +104,16 @@ kgi:resourceHostname rdf:type rdf:Property ;
     rdfs:isDefinedBy kgi: ;
     rdfs:domain void:Dataset .
 
+kgi:hostnamePartition rdf:type rdf:Property ;
+    rdfs:label "Partition of the dataset according to the hostname used the URIs of instances" ;
+    rdfs:comment "This property is to be used on the same model as void:classPartition and void:propertyPartition." ;
+    rdfs:subPropertyOf void:subset ;
+    rdfs:isDefinedBy kgi: ;
+    rdfs:domain void:Dataset .
+
 kgi:vocabularyPartition rdf:type rdf:Property ;
     rdfs:label "Partition of the dataset according to the vocabulary used in triples" ;
     rdfs:comment "This property is to be used on the same model as void:classPartition and void:propertyPartition." ;
+    rdfs:subPropertyOf void:subset ;
     rdfs:isDefinedBy kgi: ;
     rdfs:domain void:Dataset .
