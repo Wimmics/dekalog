@@ -9,3 +9,24 @@ This depot contains the code and data files created by the WIMMICS team as part 
 - [docs/](https://github.com/Wimmics/dekalog/tree/master/docs) contains the preliminary design document in which we discussed the basic concepts and methods used in our framework.
 - [LODMap/](https://github.com/Wimmics/dekalog/tree/master/LODMap) contains the code for the [KartoGraphI website](http://prod-dekalog.inria.fr/).
 - The file [template-description.ttl](https://github.com/Wimmics/dekalog/blob/master/template-description.ttl) is a basic template for the description of knowledge bases.
+
+# To Cite This Work
+
+To cite IndeGx:
+
+Publication under review
+
+To cite KartoGraphI:
+```
+@inproceedings{maillot:hal-03652865,
+    TITLE = {{KartoGraphI: Drawing a Map of Linked Data}},
+    AUTHOR = {Maillot, Pierre and Corby, Olivier and Faron, Catherine and Gandon, Fabien and Michel, Franck},
+    URL = {https://hal.archives-ouvertes.fr/hal-03652865},
+    BOOKTITLE = {{ESWC 2022 - 19th European Semantic Web Conferences}},
+    ADDRESS = {Hersonissos, Greece},
+    PUBLISHER = {{Springer}},
+    YEAR = {2022},
+    MONTH = May,
+    KEYWORDS = {linked data ; semantic web}
+}
+```
