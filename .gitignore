@@ -61,3 +61,5 @@ code/data/
 code/dependency-reduced-pom.xml
 
 code/kgindex.log
+
+code/out/artifacts/kgindex_jar/temp/
