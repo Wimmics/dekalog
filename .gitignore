@@ -67,3 +67,5 @@ code/out/artifacts/kgindex_jar/temp/
 script/retrieve_LODCloud_catalog/node_modules/
 
 script/retrieve_LODCloud_catalog/package-lock.json
+
+script/retrieve_LODCloud_catalog/catalog.ttl
