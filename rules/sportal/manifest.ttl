@@ -16,10 +16,13 @@
             <sportalDistinctIRIReferences.ttl>
             <sportalDistinctRDFNodes.ttl>
             <sportalDistinctLiterals.ttl>
+            <sportalClassPartition.ttl>
             <sportalClassPartitionClasses.ttl>
+            <sportalClassPartitionTriples.ttl>
             <sportalClassPartitionDistinctObjects.ttl>
             <sportalClassPartitionDistinctSubjects.ttl>
             <sportalClassPartitionProperties.ttl>
+            <sportalClassPartitionPropertyPartitionTriples.ttl>
             <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl>
             <sportalPropertyPartitionDistinctObject.ttl>
             <sportalPropertyPartitionDistinctSubject.ttl>
