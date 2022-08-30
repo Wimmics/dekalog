@@ -1,0 +1,1 @@
+# Script to retrive the statistics about the application of each generation assets of IndeGx

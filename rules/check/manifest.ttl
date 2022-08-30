@@ -459,8 +459,22 @@
                 {
                     SELECT (COUNT(DISTINCT ?r) AS ?countLabels) {
                          ?r ?p ?o .
-                         ?r ?labelProp ?l .
-                         VALUES ?labelProp { rdfs:label rdfs:comment dcterms:title dcterms:description dcterms:alternative skos:altLabel skos:prefLabel skos:note powder-s:text skosxl:altLabel skosxl:hiddenLabel skosxl:prefLabel skosxl:literalForm schema:name schema:description schema:alternateName foaf:name }
+                         { ?r rdfs:label ?l }
+                        UNION { ?r rdfs:comment ?l }
+                        UNION { ?r dcterms:title ?l }
+                        UNION { ?r dcterms:description ?l }
+                        UNION { ?r dcterms:alternative ?l }
+                        UNION { ?r skos:altLabel ?l }
+                        UNION { ?r skos:prefLabel ?l }
+                        UNION { ?r skos:note ?l }
+                        UNION { ?r powder-s:text ?l }
+                        UNION { ?r skosxl:altLabel ?e . ?e skosxl:literalForm ?l }
+                        UNION { ?r skosxl:hiddenLabel ?e . ?e skosxl:literalForm ?l }
+                        UNION { ?r skosxl:prefLabel ?e . ?e skosxl:literalForm ?l }
+                        UNION { ?r schema:name ?l }
+                        UNION { ?r schema:description ?l }
+                        UNION { ?r schema:alternateName ?l }
+                        UNION { ?r foaf:name ?l }
                     }
                 }
                 BIND( (?countLabels/?countResources) AS ?measure)
