@@ -2,6 +2,7 @@ import * as $rdf from "rdflib";
 import * as http from "node:http";
 import * as https from "node:https";
 import fetch from 'node-fetch';
+import * as fs from "fs";
 
 var RDF = $rdf.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 var RDFS = $rdf.Namespace("http://www.w3.org/2000/01/rdf-schema#");
@@ -21,6 +22,16 @@ var MOD = $rdf.Namespace("https://w3id.org/mod#");
 var KGI = $rdf.Namespace("http://ns.inria.fr/kg/index/")
 
 const queryPaginationSize = 500;
+
+const content = 'Some content!';
+
+function writeFile(filename, content) {
+    fs.writeFile(filename, content, err => {
+        if (err) {
+            console.error(err);
+        }
+    });
+}
 
 function fetchPromise(url, header = new Map()) {
     var myHeaders = new Headers();
@@ -91,7 +102,7 @@ function paginatedSparqlQueryPromise(endpoint, query, limit = queryPaginationSiz
         })
 }
 
-function promisePoolExecution(promiseArray, poolSize = 5, offset = 0) {
+function promisePoolExecution(promiseArray, poolSize = 10, offset = 0) {
     console.log(offset)
     var finalResult = [];
     if ((promiseArray.length > 0) && (offset < promiseArray.length)) {
@@ -100,7 +111,7 @@ function promisePoolExecution(promiseArray, poolSize = 5, offset = 0) {
             tmpArray.push(promiseArray[i]);
         }
 
-        return Promise.all(tmpArray).then(results => {
+        return Promise.allSettled(tmpArray).then(results => {
             console.log("Pool n°", offset, "Results: ", results)
             return promisePoolExecution(promiseArray, poolSize, offset + poolSize).then(nextResults => {
                 finalResult = results.concat(nextResults)
@@ -124,16 +135,16 @@ var fetchInit = {
 
 function mapToCSV(matrix = new Map(), testFileSet = new Set(), graphSet = new Set(), delimiter = ";") {
     var resultArray = [];
-    var header = "test;"+Array.from(graphSet).join(delimiter);
+    var header = "test;" + Array.from(graphSet).join(delimiter);
     resultArray.push(header);
     testFileSet.forEach(testFileUrl => {
         var lineMap = matrix.get(testFileUrl);
-            
+
         var lineString = testFileUrl + ";";
         graphSet.forEach(graphUri => {
-            if(lineMap != undefined) {
+            if (lineMap != undefined) {
                 var testGraphCount = lineMap.get(graphUri);
-                if(testGraphCount != undefined) {
+                if (testGraphCount != undefined) {
                     lineString += testGraphCount + ";";
                 } else {
                     lineString += "0;";
@@ -151,19 +162,22 @@ function mapToCSV(matrix = new Map(), testFileSet = new Set(), graphSet = new Se
 fetch("https://raw.githubusercontent.com/Wimmics/dekalog/statscript/script/Generation_assets_application_statistics/queries.json", fetchInit).then(queriesJsonResponse => {
     return queriesJsonResponse.json()
 }).then(queriesJson => {
-    var endpointsPromiseArray = []
+    var endpointsPromiseArray = [];
+    var triplesPromiseArray = [];
     var countResultsEndpointsTestMap = new Map();
     var countResultsTriplesTestMap = new Map();
     var graphSet = new Set();
     var testFileSet = new Set();
-    Object.entries(queriesJson).forEach(testObject => {
 
+    // TODO: RELANCER PROMISE EN CAS D'ERREUR
+    function createPromises(testObject) {
         const testFileUrl = testObject[0];
         const testEndpointsQuery = testObject[1].endpoints;
         const testTriplesQuery = testObject[1].triples;
-        testFileSet.add(testFileUrl);
+        var testEndpointsPromise = null;
+        var testTriplesPromise = null;
         if (testEndpointsQuery.length > 0) {
-            var testEndpointsPromise = sparqlQueryPromise(dekalogEndpoint, testEndpointsQuery).then(results => {
+            testEndpointsPromise = sparqlQueryPromise(dekalogEndpoint, testEndpointsQuery).then(results => {
                 var testGraphCountMap = new Map();
                 results.results.bindings.forEach(binding => {
                     var graph = binding.g.value;
@@ -171,31 +185,62 @@ fetch("https://raw.githubusercontent.com/Wimmics/dekalog/statscript/script/Gener
                     graphSet.add(graph);
                     testGraphCountMap.set(graph, count);
                 })
-                countResultsEndpointsTestMap.set(testFileUrl, testGraphCountMap);
-                return results;
-            })
-            endpointsPromiseArray.push(testEndpointsPromise)
+                return { test: testFileUrl, results: results };
+            });
         }
-        // if (testTriplesQuery.length > 0) {
-        //     var testTriplesPromise = sparqlQueryPromise(dekalogEndpoint, testTriplesQuery).then(results => {
-        //         var testGraphCountMap = new Map();
-        //         results.results.bindings.forEach(binding => {
-        //             var graph = binding.g.value;
-        //             var count = binding.count.value;
-        //             graphSet.add(graph);
-        //             testGraphCountMap.set(graph, count);
-        //         })
-        //         countResultsTriplesTestMap.set(testFileUrl, testGraphCountMap);
-        //         return results;
-        //     })
-        //     endpointsPromiseArray.push(testTriplesPromise)
-        // }
+        if (testTriplesQuery.length > 0) {
+            testTriplesPromise = sparqlQueryPromise(dekalogEndpoint, testTriplesQuery).then(results => {
+                var testGraphCountMap = new Map();
+                results.results.bindings.forEach(binding => {
+                    var graph = binding.g.value;
+                    var count = binding.count.value;
+                    graphSet.add(graph);
+                    testGraphCountMap.set(graph, count);
+                })
+                countResultsTriplesTestMap.set(testFileUrl, testGraphCountMap);
+                return { test: testFileUrl, results: results };
+            });
+            endpointsPromiseArray.push(testTriplesPromise)
+        }
 
+        return { endpoints: testEndpointsPromise, triples: testTriplesPromise }
+    }
+
+    Object.entries(queriesJson).forEach(testObject => {
+        var promisesObject = createPromises(testObject);
+
+        if(promisesObject.endpoints != null) {
+            endpointsPromiseArray.push(promisesObject.endpoints);
+        }
+        if(promisesObject.triples != null) {
+            triplesPromiseArray.push(promisesObject.triples);
+        }
     })
-    promisePoolExecution(endpointsPromiseArray).then(results => {
-        console.log(mapToCSV(countResultsEndpointsTestMap, testFileSet, graphSet))
-        // console.log(mapToCSV(countResultsTriplesTestMap, testFileSet, graphSet))
-        console.log("END")
+    promisePoolExecution(endpointsPromiseArray).then(resultsObjectArray => {
+        resultsObjectArray.forEach(resultObject => {
+            if (resultObject.status.localeCompare('fulfilled') == 0) {
+                countResultsEndpointsTestMap.set(resultObject.value.test, resultObject.value.results);
+            } else {
+                throw new Error("Query unfulfilled " + JSON.stringify(resultObject))
+            }
+        })
+        return;
+    }).then(() => {
+        writeFile("endpoints.csv", mapToCSV(countResultsEndpointsTestMap, testFileSet, graphSet))
+        return;
+    }).then(() => {
+        return promisePoolExecution(triplesPromiseArray).then(resultsObjectArray => {
+            resultsObjectArray.forEach(resultObject => {
+                if (resultObject.status.localeCompare('fulfilled') == 0) {
+                    countResultsTriplesTestMap.set(resultObject.value.test, resultObject.value.results);
+                } else {
+                    throw new Error("Query unfulfilled " + JSON.stringify(resultObject))
+                }
+            })
+            return;
+        }).then(() => {
+            writeFile("triples.csv", mapToCSV(countResultsTriplesTestMap, testFileSet, graphSet))
+        }).catch(error => console.error(error));
     }).catch(error => console.error(error));
 
 })
