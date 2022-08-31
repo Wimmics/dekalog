@@ -27,21 +27,21 @@ function fetchPromise(url, header = new Map()) {
     header.forEach((value, key) => {
         myHeaders.set(key, value);
     });
-    var myInit = { 
+    var myInit = {
         method: 'GET',
         headers: myHeaders,
         mode: 'cors',
         cache: 'no-cache',
-        redirect: 'follow'                 
+        redirect: 'follow'
     };
     return fetch(url, myInit)
         .then(response => {
-        if(response.ok) {
-            return response.blob().then(blob => blob.text())
-        } else {
-            throw response;
-        }
-    });
+            if (response.ok) {
+                return response.blob().then(blob => blob.text())
+            } else {
+                throw response;
+            }
+        });
 }
 
 function fetchURLGetJSONPromise(url) {
@@ -53,14 +53,14 @@ function fetchURLGetJSONPromise(url) {
 }
 
 function sparqlQueryPromise(endpoint, query) {
-    if (query.includes("SELECT") || query.includes("ASK")) {
+    if (query.length > 0 && endpoint.length > 0 && (query.includes("SELECT") || query.includes("ASK"))) {
         return fetchURLGetJSONPromise(endpoint + '?query=' + encodeURIComponent(query) + '&format=json')
             .catch(error => {
                 console.error(query, error)
             });
     }
     else {
-        console.error(query)
+        throw new Error("Unexpected query type " + query);
     }
 }
 
@@ -114,7 +114,14 @@ function promisePoolExecution(promiseArray, poolSize = 5, offset = 0) {
 
 // MAIN
 const dekalogEndpoint = "http://prod-dekalog.inria.fr/sparql";
-fetch("https://raw.githubusercontent.com/Wimmics/dekalog/statscript/script/Generation_assets_application_statistics/queries.json").then(queriesJsonResponse => {
+
+var fetchInit = {
+    method: 'GET',
+    mode: 'cors',
+    cache: 'no-cache',
+    redirect: 'follow'
+};
+fetch("https://raw.githubusercontent.com/Wimmics/dekalog/statscript/script/Generation_assets_application_statistics/queries.json", fetchInit).then(queriesJsonResponse => {
     return queriesJsonResponse.json()
 }).then(queriesJson => {
     var endpointsPromiseArray = []
@@ -125,35 +132,38 @@ fetch("https://raw.githubusercontent.com/Wimmics/dekalog/statscript/script/Gener
         const testFileUrl = testObject[0];
         const testEndpointsQuery = testObject[1].endpoints;
         const testTriplesQuery = testObject[1].triples;
-
-        var testEndpointsPromise = sparqlQueryPromise(dekalogEndpoint, testEndpointsQuery).then(results => {
-            var testGraphCountMap = new Map();
-            results.results.bindings.forEach(binding => {
-                var graph = binding.g.value;
-                var count = binding.count.value;
-                testGraphCountMap.set(graph, count);
+        if (testEndpointsQuery.length > 0) {
+            var testEndpointsPromise = sparqlQueryPromise(dekalogEndpoint, testEndpointsQuery).then(results => {
+                var testGraphCountMap = new Map();
+                results.results.bindings.forEach(binding => {
+                    var graph = binding.g.value;
+                    var count = binding.count.value;
+                    testGraphCountMap.set(graph, count);
+                })
+                countResultsEndpointsTestMap.set(testFileUrl, testGraphCountMap);
+                return results;
             })
-            countResultsEndpointsTestMap.set(testFileUrl, testGraphCountMap);
-            return results;
-        })
-        var testTriplesPromise = sparqlQueryPromise(dekalogEndpoint, testTriplesQuery).then(results => {
-            var testGraphCountMap = new Map();
-            results.results.bindings.forEach(binding => {
-                var graph = binding.g.value;
-                var count = binding.count.value;
-                testGraphCountMap.set(graph, count);
+            endpointsPromiseArray.push(testEndpointsPromise)
+        }
+        if (testTriplesQuery.length > 0) {
+            var testTriplesPromise = sparqlQueryPromise(dekalogEndpoint, testTriplesQuery).then(results => {
+                var testGraphCountMap = new Map();
+                results.results.bindings.forEach(binding => {
+                    var graph = binding.g.value;
+                    var count = binding.count.value;
+                    testGraphCountMap.set(graph, count);
+                })
+                countResultsTriplesTestMap.set(testFileUrl, testGraphCountMap);
+                return results;
             })
-            countResultsTriplesTestMap.set(testFileUrl, testGraphCountMap);
-            return results;
-        })
-        endpointsPromiseArray.push(testEndpointsPromise)
-        endpointsPromiseArray.push(testTriplesPromise)
+            endpointsPromiseArray.push(testTriplesPromise)
+        }
 
     })
     promisePoolExecution(endpointsPromiseArray).then(results => {
         console.log(countResultsEndpointsTestMap)
         console.log(countResultsTriplesTestMap)
         console.log("END")
-    })
+    }).catch(error => console.error(error));
 
-}).catch(error => console.error(error));
+})
