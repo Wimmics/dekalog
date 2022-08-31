@@ -121,23 +121,54 @@ var fetchInit = {
     cache: 'no-cache',
     redirect: 'follow'
 };
+
+function mapToCSV(matrix = new Map(), testFileSet = new Set(), graphSet = new Set(), delimiter = ";") {
+    var resultArray = [];
+    var header = "test;"+Array.from(graphSet).join(delimiter);
+    resultArray.push(header);
+    testFileSet.forEach(testFileUrl => {
+        var lineMap = matrix.get(testFileUrl);
+            
+        var lineString = testFileUrl + ";";
+        graphSet.forEach(graphUri => {
+            if(lineMap != undefined) {
+                var testGraphCount = lineMap.get(graphUri);
+                if(testGraphCount != undefined) {
+                    lineString += testGraphCount + ";";
+                } else {
+                    lineString += "0;";
+                }
+            } else {
+                lineString += "0;";
+            }
+        })
+        resultArray.push(lineString);
+    })
+
+    return resultArray.join('\n')
+}
+
 fetch("https://raw.githubusercontent.com/Wimmics/dekalog/statscript/script/Generation_assets_application_statistics/queries.json", fetchInit).then(queriesJsonResponse => {
     return queriesJsonResponse.json()
 }).then(queriesJson => {
     var endpointsPromiseArray = []
     var countResultsEndpointsTestMap = new Map();
     var countResultsTriplesTestMap = new Map();
+    var graphSet = new Set();
+    var testFileSet = new Set();
     Object.entries(queriesJson).forEach(testObject => {
 
         const testFileUrl = testObject[0];
         const testEndpointsQuery = testObject[1].endpoints;
         const testTriplesQuery = testObject[1].triples;
+        testFileSet.add(testFileUrl);
         if (testEndpointsQuery.length > 0) {
             var testEndpointsPromise = sparqlQueryPromise(dekalogEndpoint, testEndpointsQuery).then(results => {
                 var testGraphCountMap = new Map();
                 results.results.bindings.forEach(binding => {
                     var graph = binding.g.value;
                     var count = binding.count.value;
+                    graphSet.add(graph);
                     testGraphCountMap.set(graph, count);
                 })
                 countResultsEndpointsTestMap.set(testFileUrl, testGraphCountMap);
@@ -145,24 +176,25 @@ fetch("https://raw.githubusercontent.com/Wimmics/dekalog/statscript/script/Gener
             })
             endpointsPromiseArray.push(testEndpointsPromise)
         }
-        if (testTriplesQuery.length > 0) {
-            var testTriplesPromise = sparqlQueryPromise(dekalogEndpoint, testTriplesQuery).then(results => {
-                var testGraphCountMap = new Map();
-                results.results.bindings.forEach(binding => {
-                    var graph = binding.g.value;
-                    var count = binding.count.value;
-                    testGraphCountMap.set(graph, count);
-                })
-                countResultsTriplesTestMap.set(testFileUrl, testGraphCountMap);
-                return results;
-            })
-            endpointsPromiseArray.push(testTriplesPromise)
-        }
+        // if (testTriplesQuery.length > 0) {
+        //     var testTriplesPromise = sparqlQueryPromise(dekalogEndpoint, testTriplesQuery).then(results => {
+        //         var testGraphCountMap = new Map();
+        //         results.results.bindings.forEach(binding => {
+        //             var graph = binding.g.value;
+        //             var count = binding.count.value;
+        //             graphSet.add(graph);
+        //             testGraphCountMap.set(graph, count);
+        //         })
+        //         countResultsTriplesTestMap.set(testFileUrl, testGraphCountMap);
+        //         return results;
+        //     })
+        //     endpointsPromiseArray.push(testTriplesPromise)
+        // }
 
     })
     promisePoolExecution(endpointsPromiseArray).then(results => {
-        console.log(countResultsEndpointsTestMap)
-        console.log(countResultsTriplesTestMap)
+        console.log(mapToCSV(countResultsEndpointsTestMap, testFileSet, graphSet))
+        // console.log(mapToCSV(countResultsTriplesTestMap, testFileSet, graphSet))
         console.log("END")
     }).catch(error => console.error(error));
 
