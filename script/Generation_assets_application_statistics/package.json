@@ -2,6 +2,7 @@
   "type": "module",
   "dependencies": {
     "node-fetch": "^3.2.10",
-    "rdflib": "^2.2.20"
+    "rdflib": "^2.2.20",
+    "xmlhttprequest-ssl": "^2.0.0"
   }
 }
