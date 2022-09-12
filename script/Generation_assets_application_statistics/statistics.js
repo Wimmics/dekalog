@@ -277,8 +277,8 @@ fetchURLGetJSONPromise("https://raw.githubusercontent.com/Wimmics/dekalog/statsc
                 return { ref: testFileUrl, endpoints: testEndpointsPromise, triples: testTriplesPromise }
             }
 
-
-            var header = "test;" + Array.from(graphSet).join(csvDelimiter) + "\n";
+            var graphHeaders = Array.from(graphSet).sort((graphA, graphB) => graphA.localeCompare(graphB));
+            var header = "test;" + graphHeaders.join(csvDelimiter) + "\n";
             writeFile("endpoints.csv", header);
             writeFile("triples.csv", header);
             Object.entries(queriesJson).forEach(testObject => {
@@ -286,13 +286,13 @@ fetchURLGetJSONPromise("https://raw.githubusercontent.com/Wimmics/dekalog/statsc
 
                 if (promisesObject.endpoints != null) {
                     endpointsPromiseArray.push(promisesObject.endpoints.then(resultObject => {
-                        appendToFile("endpoints.csv", matrixLineToCSV(resultObject.map, resultObject.test, graphSet) + "\n");
+                        appendToFile("endpoints.csv", matrixLineToCSV(resultObject.map, resultObject.test, graphHeaders) + "\n");
                         return resultObject;
                     }));
                 }
                 if (promisesObject.triples != null) {
                     triplesPromiseArray.push(promisesObject.triples.then(resultObject => {
-                        appendToFile("triples.csv", matrixLineToCSV(resultObject.map, resultObject.test, graphSet) + "\n");
+                        appendToFile("triples.csv", matrixLineToCSV(resultObject.map, resultObject.test, graphHeaders) + "\n");
                         return resultObject;
                     }));
                 }
