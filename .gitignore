@@ -71,3 +71,5 @@ script/retrieve_LODCloud_catalog/package-lock.json
 script/retrieve_LODCloud_catalog/catalog.ttl
 
 script/Generation_assets_application_statistics/node_modules/
+
+*.csv
