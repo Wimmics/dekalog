@@ -278,7 +278,7 @@ fetchURLGetJSONPromise("https://raw.githubusercontent.com/Wimmics/dekalog/statsc
             }
 
 
-            var header = "test;" + Array.from(graphSet).join(csvDelimiter);
+            var header = "test;" + Array.from(graphSet).join(csvDelimiter) + "\n";
             writeFile("endpoints.csv", header);
             writeFile("triples.csv", header);
             Object.entries(queriesJson).forEach(testObject => {
