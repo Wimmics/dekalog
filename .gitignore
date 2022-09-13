@@ -72,4 +72,6 @@ script/retrieve_LODCloud_catalog/catalog.ttl
 
 script/Generation_assets_application_statistics/node_modules/
 
+script/well-known_script/node_modules/
+
 *.csv

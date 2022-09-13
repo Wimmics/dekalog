@@ -55,7 +55,7 @@ const fetchInit = {
 };
 
 function appendToFile(filename, content) {
-    fs.writeFile(filename, content, {flag:'a+'}, err => {
+    fs.writeFile(filename, content, { flag: 'a+' }, err => {
         if (err) {
             console.error(err);
         }
@@ -75,9 +75,12 @@ function fetchPromise(url, header = new Map()) {
         const xhr = new XMLHttpRequest();
 
         xhr.addEventListener('load', function () {
-            if(xhr.status >= 300 && xhr.status <= 308 ) {
+            if (xhr.status >= 300 && xhr.status <= 308) {
                 var location = xhr.getResponseHeader("Location");
-                return fetchPromise(location, header);
+                if(url.localeCompare(location) != 0) {
+                    console.log(url, "followed", location);
+                    return fetchPromise(location, header);
+                }
             }
             resolve(xhr.responseText);
         });
@@ -89,7 +92,7 @@ function fetchPromise(url, header = new Map()) {
             xhr.setRequestHeader(key, value);
         })
         xhr.send();
-    });
+    }).catch(error => { console.error(error) });
 }
 
 function fetchURLGetJSONPromise(url) {
@@ -101,17 +104,13 @@ function fetchURLGetJSONPromise(url) {
             console.error(response)
             return new Promise((resolve, reject) => reject(error))
         }
-    }).catch(error => {
-        console.error(error);
-    })
+    }).catch(error => { console.error(error); })
 }
 
 function loadToGraph(graph, url) {
     return fetchPromise(url).then(ttlDoc => {
         $rdf.parse(ttlDoc, graph, "http://ns.inria.fr/kg/index/", "text/turtle");
-    }).catch(error => {
-        console.error(error);
-    })
+    }).catch(error => { console.error(error); })
 }
 
 function serializeStoreToTurtlePromise(store) {
@@ -124,40 +123,78 @@ function serializeStoreToTurtlePromise(store) {
             }
             accept(str)
         }, { namespaces: store.namespaces });
-    })
+    }).catch(error => { console.error(error) });
 }
 
 
 var catalogFileUrl = "https://raw.githubusercontent.com/Wimmics/dekalog/master/catalogs/web_semantics_catalog.ttl";
 var graph = $rdf.graph();
 var csvDelimiter = "\t";
+var filename = "return.csv";
 
 loadToGraph(graph, catalogFileUrl).then(() => {
     var sparqlEndpointUrls = graph.match(null, VOID("sparqlEndpoint"), null).map(triple => triple.object.value);
+    var regex = new RegExp("^(https?:\/\/)(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)");
     console.log(sparqlEndpointUrls);
-    writeFile("return.csv","")
+    appendToFile(filename, csvDelimiter)
+    var promiseArray = [];
     sparqlEndpointUrls.forEach(endpointUrl => {
-        var simpleAddition = endpointUrl + ".well-known/void" 
-        if(! endpointUrl.endsWith("/")) {
-            simpleAddition = endpointUrl + "/.well-known/void" 
+        var simpleAddition = endpointUrl + ".well-known/void"
+        if (!endpointUrl.endsWith("/")) {
+            simpleAddition = endpointUrl + "/.well-known/void"
         }
-        return fetchPromise(simpleAddition).then(content => {
-            console.log(simpleAddition, content);
-            var csvLine = endpointUrl + csvDelimiter + content.replaceAll("\n", "").replaceAll(csvDelimiter, "");
-            appendToFile("return.csv", csvLine);
-        }).then(() => {
-            if(endpointUrl.endsWith("sparql") || endpointUrl.endsWith("sparql/")) {
-                var sparqlReplaceAddition = endpointUrl.replace("sparql/", "");
-                sparqlReplaceAddition = sparqlReplaceAddition + ".well-known/void" ;
-                return fetchPromise(sparqlReplaceAddition).then(content => {
-                    console.log(sparqlReplaceAddition, content);
-                    var csvLine = endpointUrl + csvDelimiter + content.replaceAll("\n", "").replaceAll(csvDelimiter, "");
-                    appendToFile("return.csv", csvLine);
-                }).catch(error => {});
+        promiseArray.push(fetchPromise(simpleAddition).then(content => {
+            console.log("content:", typeof content);
+            if(content !== undefined) {
+                var csvLine = endpointUrl;
+                csvLine += csvDelimiter 
+                var editedContent = new String(content).replaceAll("\n", "");
+                editedContent = editedContent.replaceAll(csvDelimiter, "");
+                csvLine += editedContent;
+                console.log(csvLine);
+                appendToFile(filename, csvLine);
             }
-        }).catch(error => {});
+        }).catch(error => { console.error(error) }))
+
+        if (endpointUrl.endsWith("sparql") || endpointUrl.endsWith("sparql/")) {
+            var sparqlReplaceAddition = endpointUrl.replace("sparql/", "");
+            sparqlReplaceAddition = endpointUrl.replace("sparql", "");
+            sparqlReplaceAddition = sparqlReplaceAddition + ".well-known/void";
+            promiseArray.push(fetchPromise(sparqlReplaceAddition).then(content => {
+                console.log("content:", typeof content);
+                if(content !== undefined) {
+                    var csvLine = endpointUrl;
+                    csvLine += csvDelimiter 
+                    var editedContent = new String(content).replaceAll("\n", "");
+                    editedContent = editedContent.replaceAll(csvDelimiter, "");
+                    csvLine += editedContent;
+                    console.log(csvLine);
+                    appendToFile(filename, csvLine);
+                }
+            }).catch(error => { console.error(error) }));
+        }
+
+        var endpointUrlObject = new URL(endpointUrl);
+        var protocol = endpointUrlObject.protocol;
+        var domain = endpointUrlObject.hostname;
+        var basicUrl = protocol + "//" + domain;
+        console.log(basicUrl)
+        promiseArray.push(fetchPromise(basicUrl).then(content => {
+            console.log("content:", typeof content);
+            if(content !== undefined) {
+                var csvLine = endpointUrl;
+                csvLine += csvDelimiter 
+                var editedContent = new String(content).replaceAll("\n", "");
+                editedContent = editedContent.replaceAll(csvDelimiter, "");
+                csvLine += editedContent;
+                console.log(csvLine);
+                appendToFile(filename, csvLine);
+            }
+        }).catch(error => { console.error(error) }))
+
     })
+    return Promise.allSettled(promiseArray).catch(error => { console.error(error) });
     // serializeStoreToTurtlePromise(graph).then(ttl => {
     //     console.log(ttl)
     // })
-})
+}).catch(error => { });
