@@ -12,8 +12,8 @@
 
 kgi:dbpediaCatalog a dcat:Catalog ;
     dcat:dataset [
-        void:sparqlEndpoint <http://es.dbpedia.org/sparql>
-    ] ,
-    [
+#        void:sparqlEndpoint <http://es.dbpedia.org/sparql>
+#    ] ,
+#    [
         void:sparqlEndpoint <http://fr.dbpedia.org/sparql>
     ] .
