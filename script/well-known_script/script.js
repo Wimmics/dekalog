@@ -71,12 +71,14 @@ function fetchPromise(url, header = new Map()) {
         xhr.addEventListener('load', function () {
             if (xhr.status >= 300 && xhr.status <= 308) {
                 var location = xhr.getResponseHeader("Location");
-                if(url.localeCompare(location) != 0) {
-                    console.log(url, "followed", location);
-                    return fetchPromise(location, header);
+                if (url.localeCompare(location) != 0) {
+                    fetchPromise(location, header).then(content => {
+                        resolve(content);
+                    })
                 }
+            } else {
+                resolve(xhr.responseText);
             }
-            resolve(xhr.responseText);
         });
 
         xhr.addEventListener('error', reject);
@@ -86,7 +88,14 @@ function fetchPromise(url, header = new Map()) {
             xhr.setRequestHeader(key, value);
         })
         xhr.send();
-    }).catch(error => { console.error(error) });
+    }).catch(error => {
+        if (error !== undefined) {
+            console.error(error)
+            return;
+        }
+    }).finally(() => {
+        return;
+    })
 }
 
 function fetchURLGetJSONPromise(url) {
@@ -96,15 +105,29 @@ function fetchURLGetJSONPromise(url) {
             return jsonResult;
         } catch (error) {
             console.error(response)
-            return new Promise((resolve, reject) => reject(error))
+            return;
         }
-    }).catch(error => { console.error(error); })
+    }).catch(error => {
+        if (error !== undefined) {
+            console.error(error)
+            return;
+        }
+    }).finally(() => {
+        return;
+    })
 }
 
 function loadToGraph(graph, url) {
     return fetchPromise(url).then(ttlDoc => {
         $rdf.parse(ttlDoc, graph, "http://ns.inria.fr/kg/index/", "text/turtle");
-    }).catch(error => { console.error(error); })
+    }).catch(error => {
+        if (error !== undefined) {
+            console.error(error)
+            return;
+        }
+    }).finally(() => {
+        return;
+    })
 }
 
 function serializeStoreToTurtlePromise(store) {
@@ -117,77 +140,143 @@ function serializeStoreToTurtlePromise(store) {
             }
             accept(str)
         }, { namespaces: store.namespaces });
-    }).catch(error => { console.error(error) });
+    }).catch(error => {
+        if (error !== undefined) {
+            console.error(error)
+            return;
+        }
+
+    }).finally(() => {
+        return;
+    })
 }
 
 
-var catalogFileUrl = "https://raw.githubusercontent.com/Wimmics/dekalog/master/catalogs/web_semantics_catalog.ttl";
+const catalogFileUrl = "https://raw.githubusercontent.com/Wimmics/dekalog/well-knownscript/script/well-known_script/web_semantics_catalog.ttl";
 var graph = $rdf.graph();
-var csvDelimiter = '\t';
-var filename = "return.csv";
-var headers = new Map([["Content-Type", "application/rdf+xml"], ["Content-Type", "text/turtle"], ["Content-Type", "application/rdf+json"]])
+const csvDelimiter = '\t';
+const tripleCountFilename = "return.csv";
+const descriptionsFilename = "descriptions.json";
+const headers = new Map([["Content-Type", "application/rdf+xml"], ["Content-Type", "text/turtle"], ["Content-Type", "application/rdf+json"]]);
+var countDescription = 0;
+var countUrl = 0;
+var descriptionsObject = new Map();
+var descriptionsSizeObject = new Map();
+
+function createWellKnownFilePromise(url, endpointUrl) {
+    return fetchPromise(url, headers).then(content => {
+        if (content !== undefined) {
+            var editedContent = content.split('\n').join(' ');
+            editedContent = editedContent.split('\r').join(' ');
+            editedContent = editedContent.split(csvDelimiter).join(' ');
+            return new Promise((resolve, reject) => {
+                try {
+                    var kb = $rdf.graph();
+                    $rdf.parse(editedContent, kb, "http://e.g", "text/turtle", () => {
+                        if (!descriptionsObject.has(endpointUrl)) {
+                            descriptionsObject.set(endpointUrl, new Map())
+                        }
+                        if (!descriptionsSizeObject.has(endpointUrl)) {
+                            descriptionsSizeObject.set(endpointUrl, new Map())
+                        }
+                        if (kb.length > 1) {
+                            countDescription++;
+                            serializeStoreToTurtlePromise(kb).then(text => {
+                                descriptionsObject.get(endpointUrl).set(url, text);
+                                return;
+                            })
+                            descriptionsSizeObject.get(endpointUrl).set(url, kb.length);
+                        } else {
+                            descriptionsSizeObject.get(endpointUrl).set(url, 0);
+                        }
+                        resolve(descriptionsObject);
+                    })
+                } catch (error) {
+                    reject(error)
+                }
+            }).finally(() => { return; });
+        }
+        return new Promise((resolve, reject) => reject);
+    }).catch(error => {
+        if (error !== undefined) {
+            console.error(error)
+            return;
+        }
+
+    }).finally(() => {
+        console.log(countUrl);
+        countUrl++;
+        return;
+    })
+}
+
+function writeDescriptionObjectToFile(descriptionsObject, filename) {
+    writeFile(filename, "url" + csvDelimiter + "well-known" + csvDelimiter + "attribute" + "\n");
+    descriptionsObject.forEach((urlMap, endpointUrl) => {
+        urlMap.forEach((( kbSize, url) => {
+            var csvLine = endpointUrl + csvDelimiter + url + csvDelimiter + kbSize + "\n";
+            appendToFile(filename, csvLine);
+        }));
+    });
+}
 
 loadToGraph(graph, catalogFileUrl).then(() => {
     var sparqlEndpointUrls = graph.match(null, VOID("sparqlEndpoint"), null).map(triple => triple.object.value);
-    var regex = new RegExp("^(https?:\/\/)(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)");
-    console.log(sparqlEndpointUrls);
-    writeFile(filename, "url" + csvDelimiter + "content" + "\n")
+    console.log(sparqlEndpointUrls.length, "endpoints")
     var promiseArray = [];
     sparqlEndpointUrls.forEach(endpointUrl => {
         var simpleAddition = endpointUrl + ".well-known/void"
         if (!endpointUrl.endsWith("/")) {
             simpleAddition = endpointUrl + "/.well-known/void"
         }
-        promiseArray.push(fetchPromise(simpleAddition, headers).then(content => {
-            console.log(simpleAddition)
-            if(content !== undefined) {
-                var csvLine = endpointUrl;
-                csvLine += csvDelimiter 
-                var editedContent = content.split('\n').join('');
-                editedContent = editedContent.split('\r').join('');
-                editedContent = editedContent.split(csvDelimiter).join('');
-                csvLine += editedContent + "\n";
-                appendToFile(filename, csvLine);
-            }
-        }).catch(error => { console.error(error) }))
+        promiseArray.push(createWellKnownFilePromise(simpleAddition, endpointUrl));
 
-        if (endpointUrl.endsWith("sparql") || endpointUrl.endsWith("sparql/")) {
-            var sparqlReplaceAddition = endpointUrl.replace("sparql/", "");
-            sparqlReplaceAddition = endpointUrl.replace("sparql", "");
-            sparqlReplaceAddition = sparqlReplaceAddition + ".well-known/void";
-            promiseArray.push(fetchPromise(sparqlReplaceAddition, headers).then(content => {
-                console.log(sparqlReplaceAddition)
-                if(content !== undefined) {
-                    var csvLine = endpointUrl;
-                    csvLine += csvDelimiter 
-                    var editedContent = content.split('\n').join('');
-                    editedContent = editedContent.split('\r').join('');
-                    editedContent = editedContent.split(csvDelimiter).join('');
-                    csvLine += editedContent + "\n";
-                    appendToFile(filename, csvLine);
-                }
-            }).catch(error => { console.error(error) }));
+        var sparqlReplaceAddition = endpointUrl.replace("sparql/", "");
+        sparqlReplaceAddition = endpointUrl.replace("sparql", "");
+        sparqlReplaceAddition = sparqlReplaceAddition + ".well-known/void";
+        if ((endpointUrl.endsWith("sparql") || endpointUrl.endsWith("sparql/")) && (simpleAddition.localeCompare(sparqlReplaceAddition) != 0)) {
+            promiseArray.push(createWellKnownFilePromise(sparqlReplaceAddition, endpointUrl).then(() => {
+                writeDescriptionObjectToFile(descriptionsSizeObject, tripleCountFilename);
+                writeFile(descriptionsFilename, JSON.stringify(descriptionsObject));
+                return;
+            }));
         }
 
         var endpointUrlObject = new URL(endpointUrl);
         var protocol = endpointUrlObject.protocol;
         var domain = endpointUrlObject.hostname;
         var basicUrl = protocol + "//" + domain;
-        promiseArray.push(fetchPromise(basicUrl, headers).then(content => {
-            console.log(basicUrl)
-            if(content !== undefined) {
-                var csvLine = endpointUrl;
-                csvLine += csvDelimiter 
-                var editedContent = content.split('\n').join('');
-                editedContent = editedContent.split('\r').join('');
-                editedContent = editedContent.split(csvDelimiter).join('');
-                csvLine += editedContent + "\n";
-                appendToFile(filename, csvLine);
-            }
-        }).catch(error => { console.error(error) }))
-
+        var basicAndSimpleAddition = basicUrl + ".well-known/void"
+        if (!basicUrl.endsWith("/")) {
+            basicAndSimpleAddition = basicUrl + "/.well-known/void"
+        }
+        if(basicAndSimpleAddition.localeCompare(simpleAddition) != 0  && (basicAndSimpleAddition.localeCompare(sparqlReplaceAddition) != 0)) {
+            promiseArray.push(createWellKnownFilePromise(basicAndSimpleAddition, endpointUrl).then(() => {
+                writeDescriptionObjectToFile(descriptionsSizeObject, tripleCountFilename);
+                writeFile(descriptionsFilename, JSON.stringify(descriptionsObject));
+                return;
+            }));
+        }
     })
-    return Promise.allSettled(promiseArray).catch(error => { console.error(error) });
+    console.log(promiseArray.length, " urls")
+    return Promise.allSettled(promiseArray).catch(error => {
+        if (error !== undefined) {
+            console.error(error)
+            return;
+        }
+    }).finally(() => {
+        return;
+    })
 }).then(() => {
+    console.log("============== ", countDescription, "descriptions =================")
     console.log("============== DONE =================")
-}).catch(error => { console.error(error) });
+    return;
+}).catch(error => {
+    if (error !== undefined) {
+        console.error(error)
+        return;
+    }
+
+}).finally(() => {
+    return;
+})
