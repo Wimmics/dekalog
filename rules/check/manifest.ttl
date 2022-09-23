@@ -515,12 +515,21 @@
             } WHERE {
                 {
                         SELECT (COUNT(DISTINCT ?lit) AS ?countLits) {
-                            ?s ?p ?lit . FILTER( isLiteral(?lit) )
+                            ?s ?p ?lit .
+                            FILTER( isLiteral(?lit) )
+                            FILTER((datatype(?litWithLang) = xsd:string)
+                            || (datatype(?litWithLang) = rdf:langString)
+                            || (datatype(?litWithLang) = ""))
                         }
                 }
                 {
                     SELECT (COUNT(DISTINCT ?litWithLang) AS ?countLitsWithLang) {
-                        ?sWithLang ?pWithLang ?litWithLang . FILTER( isLiteral(?litWithLang) ) FILTER(lang(?litWithLang) != "")
+                        ?sWithLang ?pWithLang ?litWithLang .
+                        FILTER( isLiteral(?litWithLang) )
+                        FILTER(lang(?litWithLang) != "")
+                        FILTER((datatype(?litWithLang) = xsd:string)
+                        || (datatype(?litWithLang) = rdf:langString)
+                        || (datatype(?litWithLang) = ""))
                     }
                 }
                 BIND( (?countLitsWithLang/?countLits) AS ?measure)
