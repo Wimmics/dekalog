@@ -87,30 +87,6 @@ function fetchPromise(url, header = new Map()) {
         })
         xhr.send();
     });
-    // var myHeaders = new Headers();
-    // header.forEach((value, key) => {
-    //     myHeaders.set(key, value);
-    // });
-    // const myInit = {
-    //     method: fetchInit.method,
-    //     headers: myHeaders,
-    //     mode: fetchInit.mode,
-    //     cache: fetchInit.cache,
-    //     redirect: fetchInit.redirect,
-    //     keepalive: fetchInit.keepalive,
-    //     agent: fetchInit.agent
-    // };
-    // const request = new Request(url, myInit);
-    // return fetch(request)
-    //     .then(response => {
-    //         if (response.ok && response.status >= 200 && response.status < 400) {
-    //             return response.blob().then(blob => blob.text())
-    //         } else {
-    //             throw new FetchError(url + " " + response.text);
-    //         }
-    //     }).catch(e => {
-    //         console.error(e)
-    //     })
 }
 
 function fetchURLGetJSONPromise(url) {
