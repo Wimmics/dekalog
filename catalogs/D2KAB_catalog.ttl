@@ -39,3 +39,5 @@ kgi:INRA_IATE_onto void:sparqlEndpoint <https://ico.iate.inra.fr/fuseki/ontology
 
 kgi:PO2 void:sparqlEndpoint <http://quantum.agroparistech.fr/graphdb/repositories/Composite_making_process> ;
     rdfs:label "PO2" .
+
+kgi:webkg void:sparqlEndpoint <http://weakg.i3s.unice.fr/sparql> .

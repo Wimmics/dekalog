@@ -1420,4 +1420,7 @@ kgi:dbpediaCatalog a dcat:Catalog ;
     ] ,
     [
         void:sparqlEndpoint <http://zbw.eu/beta/sparql/stwv/query>
-    ] .
+    ] ,
+    [
+        void:sparqlEndpoint <http://weakg.i3s.unice.fr/sparql>
+    ].
