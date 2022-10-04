@@ -79,3 +79,7 @@ script/well-known_script/node_modules/
 script/googleCatalog/node_modules/
 
 script/googleCatalog/package-lock.json
+
+script/timeStatistics/node_modules/
+
+script/timeStatistics/package-lock.json
