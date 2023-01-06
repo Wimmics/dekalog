@@ -12,7 +12,6 @@ This depot contains the code and data files created by the WIMMICS team as part 
 
 # To Cite This Work
 
-To cite this work:
 ```
 @inproceedings{maillot:hal-03652865,
     TITLE = {{KartoGraphI: Drawing a Map of Linked Data}},
