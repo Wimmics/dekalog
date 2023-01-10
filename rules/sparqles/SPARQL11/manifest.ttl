@@ -119,7 +119,7 @@
         <SPARQLES_SPARQL11.ttl>
     ) .
 
-<SPARQLES_SELFILNOTEXISTS.ttl> a mf:ManifestEntry ;
+<SPARQLES_SELFILEXISTS.ttl> a mf:ManifestEntry ;
     kgi:onSuccess (
         [
             mf:action """
@@ -130,9 +130,9 @@
             PREFIX sparqles: <https://sparqles.ai.wu.ac.at/#>
             INSERT {
                 ?endpointDescription sd:endpoint $rawEndpointUrl ;
-                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILNOTEXISTS.ttl#activity> ;
-                    sd:feature sparqles:SELFILNOTEXISTS .
-                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILNOTEXISTS.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILNOTEXISTS.ttl> ;
+                    prov:wasGeneratedBy <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILEXISTS.ttl#activity> ;
+                    sd:feature sparqles:SELFILEXISTS .
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILEXISTS.ttl#activity> prov:used <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/SPARQLES_SELFILEXISTS.ttl> ;
                     prov:wasAssociatedWith <https://orcid.org/0000-0002-9814-439X> .
             } WHERE {
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Endpoint")) AS ?endpointDescription)

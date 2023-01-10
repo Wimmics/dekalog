@@ -1,0 +1,35 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix kgi: <http://ns.inria.fr/kg/index#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix void: <http://rdfs.org/ns/void#> .
+
+kgi:catalogTest a dcat:Catalog ;
+    dcat:dataset kgi:dbpedia , kgi:edmo , kgi:agrovocFao , kgi:numismatics , kgi:europa , kgi:bneDatos , kgi:scotGov , kgi:nerc , kgi:proEuropeana .
+
+
+kgi:dbpedia void:sparqlEndpoint <https://dbpedia.org/sparql/> ;
+    dcterms:title "OpenLink Virtuoso SPARQL Query Editor - DBpedia" .
+
+kgi:edmo void:sparqlEndpoint <https://edmo.seadatanet.org/sparql/> ;
+    dcterms:title "SPARQL Endpoint - European Directory of Marine ..." .
+
+kgi:agrovocFao void:sparqlEndpoint <https://agrovoc.fao.org/sparql> ;
+    dcterms:title "AGROVOC SPARQLEndpoint" .
+
+kgi:numismatics void:sparqlEndpoint <http://numismatics.org/archives/sparql> ;
+    dcterms:title "ARCHER | Archives: SPARQL" .
+
+kgi:europa void:sparqlEndpoint <https://data.europa.eu/sparql> ;
+    dcterms:title "OpenLink Virtuoso SPARQL Query Editor" .
+
+kgi:bneDatos void:sparqlEndpoint <https://datos.bne.es/sparql> ;
+    dcterms:title "OpenLink Virtuoso SPARQL Query Editor - BNE datos" .
+
+kgi:scotGov void:sparqlEndpoint <https://statistics.gov.scot/sparql> ;
+    dcterms:title "SPARQL 1.1 Query: Endpoint - Scottish Government" .
+
+kgi:nerc void:sparqlEndpoint <https://vocab.nerc.ac.uk/sparql/> ;
+    dcterms:title "sparql - NERC Vocabulary Server (NVS)" .
+
+kgi:proEuropeana void:sparqlEndpoint <https://pro.europeana.eu/page/sparql> ;
+    dcterms:title "SPARQL | Europeana Pro" .

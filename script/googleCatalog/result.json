@@ -1,0 +1,250 @@
+[
+    {
+        "position": 6,
+        "title": "OpenLink Virtuoso SPARQL Query Editor - DBpedia",
+        "link": "https://dbpedia.org/sparql/",
+        "displayed_link": "https://dbpedia.org › sparql",
+        "snippet": "SPARQL · Strict checking of void variables · Strict checking of variable names used in multiple clauses but not logically connected to each other · Suppress errors ...",
+        "about_this_result": {
+            "source": {
+                "description": "DBpedia is a project aiming to extract structured content from the information created in the Wikipedia project. This structured information is made available on the World Wide Web.",
+                "source_info_link": "https://en.wikipedia.org/wiki/DBpedia",
+                "icon": "https://serpapi.com/searches/62471dd5f05eb8b57f4c33ee/images/bff0b3d0ceaa596e82ee7f99a0d8c950486d58a31affca974652ffc4e4cea82642f5823ee0d719c7a6c9c05c52fc0d47.png"
+            },
+            "keywords": [
+                "sparql"
+            ],
+            "languages": [
+                "English"
+            ],
+            "regions": [
+                "the United States"
+            ]
+        },
+        "about_page_link": "https://www.google.com/search?q=About+https://dbpedia.org/sparql/&tbm=ilp&ilps=AC47Oe8AuHXVg1nXnj59uUDRMyodYjjfAw",
+        "cached_page_link": "https://webcache.googleusercontent.com/search?q=cache:gUSySXfLdBkJ:https://dbpedia.org/sparql/+&cd=15&hl=en&ct=clnk&gl=us"
+    },
+    {
+        "position": 14,
+        "title": "SPARQL Endpoint - European Directory of Marine ...",
+        "link": "https://edmo.seadatanet.org/sparql/",
+        "displayed_link": "https://edmo.seadatanet.org › sparql",
+        "snippet": "Links to SPARQL 1.1 Specifications · SPARQL Query language · SPARQL Update · SPARQL Protocol · SPARQL Graph Store Protocol · SPARQL Result formats. SPARQL Query ...",
+        "about_this_result": {
+            "source": {
+                "description": "SeaDataNet is an international project of oceanography. Its main goal is to enable the scientific community to access historical datasets owned by national data centers.",
+                "source_info_link": "https://en.wikipedia.org/wiki/SeaDataNet",
+                "icon": "https://serpapi.com/searches/62471dd5f05eb8b57f4c33ee/images/bff0b3d0ceaa596e82ee7f99a0d8c9508afb7c583f4af4add539bbaccb83d4b783037e6cc3f34ae48699440d8072be00977c39fe5a940286.png"
+            },
+            "keywords": [
+                "sparql"
+            ],
+            "languages": [
+                "English"
+            ],
+            "regions": [
+                "the United States"
+            ]
+        },
+        "about_page_link": "https://www.google.com/search?q=About+https://edmo.seadatanet.org/sparql/&tbm=ilp&ilps=AC47Oe9yoWcfFMdBIto5HfmeLTY8XESwAQ",
+        "cached_page_link": "https://webcache.googleusercontent.com/search?q=cache:c7nWXg2zM_sJ:https://edmo.seadatanet.org/sparql/+&cd=24&hl=en&ct=clnk&gl=us"
+    },
+    {
+        "position": 17,
+        "title": "AGROVOC SPARQLEndpoint",
+        "link": "https://agrovoc.fao.org/sparql",
+        "displayed_link": "https://agrovoc.fao.org › sparql",
+        "snippet": "AGROVOC Thesaurus - SPARQL service ; 1. PREFIX rdf: ; 2. PREFIX rdfs: ; 3. SELECT * ; 4 ?sub ?pred ; 5. } LIMIT ...",
+        "about_this_result": {
+            "source": {
+                "description": "The Food and Agriculture Organization of the United Nations is a specialized agency of the United Nations that leads international efforts to defeat hunger and improve nutrition and food security. Its Latin motto, fiat panis, translates to \"let there be bread\". It was founded on 16th October 1945.",
+                "source_info_link": "https://en.wikipedia.org/wiki/Food_and_Agriculture_Organization",
+                "icon": "https://serpapi.com/searches/62471dd5f05eb8b57f4c33ee/images/bff0b3d0ceaa596e82ee7f99a0d8c950f4f2c0bdee52ea1cff7ef1943a4de558fdb4205859ce9901d96a2c4ee8998cb559c9e290efdeded1.png"
+            },
+            "keywords": [
+                "sparql"
+            ],
+            "languages": [
+                "English"
+            ],
+            "regions": [
+                "the United States"
+            ]
+        },
+        "about_page_link": "https://www.google.com/search?q=About+https://agrovoc.fao.org/sparql&tbm=ilp&ilps=AC47Oe_7TPEy8ItSztaVuikbAqn5-rva8w",
+        "cached_page_link": "https://webcache.googleusercontent.com/search?q=cache:BEtLCLWDraMJ:https://agrovoc.fao.org/sparql+&cd=27&hl=en&ct=clnk&gl=us"
+    },
+    {
+        "position": 18,
+        "title": "ARCHER | Archives: SPARQL",
+        "link": "http://numismatics.org/archives/sparql",
+        "displayed_link": "http://numismatics.org › archives › sparql",
+        "snippet": "SPARQL Query. PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX dcterms: <http://purl.org/dc/terms/> PREFIX edm: ...",
+        "about_this_result": {
+            "source": {
+                "description": "The American Numismatic Society is a New York City-based organization dedicated to the study of coins, money, medals, tokens, and related objects. Founded in 1858, it is the only American museum devoted exclusively to their preservation and study.",
+                "source_info_link": "https://en.wikipedia.org/wiki/American_Numismatic_Society",
+                "icon": "https://serpapi.com/searches/62471dd5f05eb8b57f4c33ee/images/bff0b3d0ceaa596e82ee7f99a0d8c950cac6ddf262350d5a256fe054be0cfaf16f38d4393994971bd14e75e890b9e64478f7399689f94853.png"
+            },
+            "keywords": [
+                "sparql"
+            ],
+            "languages": [
+                "English"
+            ],
+            "regions": [
+                "the United States"
+            ]
+        },
+        "about_page_link": "https://www.google.com/search?q=About+http://numismatics.org/archives/sparql&tbm=ilp&ilps=AC47Oe94FyGDksh9jvrudiYNMsJX6fvEZw",
+        "cached_page_link": "http://webcache.googleusercontent.com/search?q=cache:5acZ918rFhcJ:numismatics.org/archives/sparql+&cd=28&hl=en&ct=clnk&gl=us"
+    },
+    {
+        "position": 19,
+        "title": "SPARQL | Europeana Pro",
+        "link": "https://pro.europeana.eu/page/sparql",
+        "displayed_link": "https://pro.europeana.eu › page › sparql",
+        "snippet": "The SPARQL API is different from the other Europeana APIs in that it allows you to explore connections between Europeana data and outside data sources, ...",
+        "about_this_result": {
+            "source": {
+                "description": "Europeana is a web portal created by the European Union containing digitised cultural heritage collections of more than 3,000 institutions across Europe.",
+                "source_info_link": "https://en.wikipedia.org/wiki/Europeana",
+                "icon": "https://serpapi.com/searches/62471dd5f05eb8b57f4c33ee/images/bff0b3d0ceaa596e82ee7f99a0d8c95088ceac63c78cb5f494b43333e2bef8b383f33ca0e2003791f27720fe8efbe2c4b869d34f9e17d45d.png"
+            },
+            "keywords": [
+                "sparql"
+            ],
+            "languages": [
+                "English"
+            ],
+            "regions": [
+                "the United States"
+            ]
+        },
+        "about_page_link": "https://www.google.com/search?q=About+https://pro.europeana.eu/page/sparql&tbm=ilp&ilps=AC47Oe9O5l_m8Ai3gKuqB9Ko4ImL_2vYSA",
+        "cached_page_link": "https://webcache.googleusercontent.com/search?q=cache:n81zuxH38dgJ:https://pro.europeana.eu/page/sparql+&cd=29&hl=en&ct=clnk&gl=us"
+    },
+    {
+        "position": 23,
+        "title": "OpenLink Virtuoso SPARQL Query Editor",
+        "link": "https://data.europa.eu/sparql",
+        "displayed_link": "https://data.europa.eu › sparql",
+        "snippet": "Log debug info at the end of output (has no effect on some queries and output formats). Generate SPARQL compilation report (instead of executing the query).",
+        "about_this_result": {
+            "source": {
+                "description": "Consolidating the former EU Open Data Portal and the European Data Portal, data.europa.eu is the European Union’s services package to promote the reuse of open data from its institutions’ and EU Member States’ among its citizens, businesses and other organisations.",
+                "source_info_link": "https://en.wikipedia.org/wiki/Data.europa.eu",
+                "icon": "https://serpapi.com/searches/62471dd5f05eb8b57f4c33ee/images/bff0b3d0ceaa596e82ee7f99a0d8c950af2a9fe084a9e9be5ba8e33ede8a505737a1732acbee06ffd4789fa59f1961378f2cffe2dd3a5bbe.png"
+            },
+            "keywords": [
+                "sparql"
+            ],
+            "languages": [
+                "English"
+            ],
+            "regions": [
+                "the United States"
+            ]
+        },
+        "about_page_link": "https://www.google.com/search?q=About+https://data.europa.eu/sparql&tbm=ilp&ilps=AC47Oe-rj-dlGAxXrS9hRfh8bywYx50IYw",
+        "cached_page_link": "https://webcache.googleusercontent.com/search?q=cache:THIcu9C5gJsJ:https://data.europa.eu/sparql+&cd=33&hl=en&ct=clnk&gl=us"
+    },
+    {
+        "position": 24,
+        "title": "OpenLink Virtuoso SPARQL Query Editor - BNE datos",
+        "link": "https://datos.bne.es/sparql",
+        "displayed_link": "https://datos.bne.es › sparql",
+        "snippet": "SPARQL · Strict checking of void variables · Log debug info at the end of output (has no effect on some queries and output formats) · Generate SPARQL compilation ...",
+        "about_this_result": {
+            "source": {
+                "description": "The Biblioteca Nacional de España is a major public library, the largest in Spain, and one of the largest in the world. It is located in Madrid, on the Paseo de Recoletos.",
+                "source_info_link": "https://en.wikipedia.org/wiki/Biblioteca_Nacional_de_Espa%C3%B1a",
+                "icon": "https://serpapi.com/searches/62471dd5f05eb8b57f4c33ee/images/bff0b3d0ceaa596e82ee7f99a0d8c95062a6ddef2e78acb27d518006ca54319f4a679463f399d204e2e01bc98bc3c0b7c5a2d5b047915831.jpeg"
+            },
+            "keywords": [
+                "sparql"
+            ],
+            "languages": [
+                "English"
+            ],
+            "regions": [
+                "the United States"
+            ]
+        },
+        "about_page_link": "https://www.google.com/search?q=About+https://datos.bne.es/sparql&tbm=ilp&ilps=AC47Oe9oaxFuCywpvOFqNa0A7j_G2UNeog",
+        "cached_page_link": "https://webcache.googleusercontent.com/search?q=cache:3ZfgiHHY3wYJ:https://datos.bne.es/sparql+&cd=34&hl=en&ct=clnk&gl=us"
+    },
+    {
+        "position": 3,
+        "title": "SPARQL 1.1 Query: Endpoint - Scottish Government",
+        "link": "https://statistics.gov.scot/sparql",
+        "displayed_link": "https://statistics.gov.scot › sparql",
+        "snippet": "To submit a SPARQL query from your code, you issue an HTTP GET or POST to our endpoint: http://statistics.gov.scot/sparql , with the query itself as a url- ...",
+        "about_this_result": {
+            "source": {
+                "description": "The Scottish Government is the devolved government of Scotland. It was formed in 1999 as the Scottish Executive following the 1997 referendum on Scottish devolution.\nThe Scottish Government consists of the Scottish Ministers, which is used to describe their collective legal functions.",
+                "source_info_link": "https://en.wikipedia.org/wiki/Scottish_Government",
+                "icon": "https://serpapi.com/searches/62471dddada54bb7f5ae7c80/images/947cbc5590c342c0d7b0018ec2b12ceccc7da2e7f5f071d3b7350f2f5c188d1dc782020ea34c13db64d5cabc145280e4.png"
+            },
+            "keywords": [
+                "sparql"
+            ],
+            "languages": [
+                "English"
+            ],
+            "regions": [
+                "the United States"
+            ]
+        },
+        "about_page_link": "https://www.google.com/search?q=About+https://statistics.gov.scot/sparql&tbm=ilp&ilps=AC47Oe_ycKhzy9heid0JcobyhfHuIIFHHQ",
+        "cached_page_link": "https://webcache.googleusercontent.com/search?q=cache:ybJyz1dQDq8J:https://statistics.gov.scot/sparql+&cd=28&hl=en&ct=clnk&gl=us"
+    },
+    {
+        "position": 5,
+        "title": "sparql - NERC Vocabulary Server (NVS)",
+        "link": "https://vocab.nerc.ac.uk/sparql/",
+        "displayed_link": "https://vocab.nerc.ac.uk › sparql",
+        "snippet": "SPARQL. This page allows you to lodge SPARQL queries against the triplestore (graph database) that stores all of this systems' vocabularies'.",
+        "about_this_result": {
+            "source": {
+                "description": "This result comes from vocab.nerc.ac.uk",
+                "icon": "https://serpapi.com/searches/62471dddada54bb7f5ae7c80/images/947cbc5590c342c0d7b0018ec2b12cec32822bb3a2df9df157128ea1f1b987733cb1cf0f833580527f35ef1d3d2f3de1.png"
+            },
+            "keywords": [
+                "sparql"
+            ],
+            "languages": [
+                "English"
+            ],
+            "regions": [
+                "the United States"
+            ]
+        },
+        "about_page_link": "https://www.google.com/search?q=About+https://vocab.nerc.ac.uk/sparql/&tbm=ilp&ilps=AC47Oe8tkv2zdSuckXoD-Ma7pLjtPgYLvQ",
+        "cached_page_link": "https://webcache.googleusercontent.com/search?q=cache:d6QTsIgUI3EJ:https://vocab.nerc.ac.uk/sparql/+&cd=30&hl=en&ct=clnk&gl=us"
+    },
+    {
+        "position": 6,
+        "title": "SPARQL | Europeana Pro",
+        "link": "https://pro.europeana.eu/page/sparql",
+        "displayed_link": "https://pro.europeana.eu › page › sparql",
+        "snippet": "The SPARQL API is different from the other Europeana APIs in that it allows you to explore connections between Europeana data and outside data sources, ...",
+        "about_this_result": {
+            "source": {
+                "description": "This result comes from pro.europeana.eu",
+                "icon": "https://serpapi.com/searches/62471dddada54bb7f5ae7c80/images/947cbc5590c342c0d7b0018ec2b12cec4174a1b2d05c123c2a60e82a725c08f2be74c166cdad3fe042e958781f3408cb.png"
+            },
+            "keywords": [
+                "sparql"
+            ],
+            "languages": [
+                "English"
+            ],
+            "regions": [
+                "the United States"
+            ]
+        },
+        "about_page_link": "https://www.google.com/search?q=About+https://pro.europeana.eu/page/sparql&tbm=ilp&ilps=AC47Oe9O5l_m8Ai3gKuqB9Ko4ImL_2vYSA",
+        "cached_page_link": "https://webcache.googleusercontent.com/search?q=cache:n81zuxH38dgJ:https://pro.europeana.eu/page/sparql+&cd=31&hl=en&ct=clnk&gl=us"
+    }
+]

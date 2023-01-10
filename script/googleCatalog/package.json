@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "google-search-results-nodejs": "^2.1.0"
+  }
+}

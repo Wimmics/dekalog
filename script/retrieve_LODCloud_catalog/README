@@ -1,0 +1,7 @@
+# Script to retrieve the catalog of the LOD Cloud website
+
+## Execution
+node LODCloud_catalog.js
+
+## Output
+A turtle file named "catalog.ttl" containing a RDF version of the LOD-Cloud catalog using standard vocabularies.

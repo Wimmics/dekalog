@@ -61,3 +61,25 @@ code/data/
 code/dependency-reduced-pom.xml
 
 code/kgindex.log
+
+code/out/artifacts/kgindex_jar/temp/
+
+script/retrieve_LODCloud_catalog/node_modules/
+
+script/retrieve_LODCloud_catalog/package-lock.json
+
+script/retrieve_LODCloud_catalog/catalog.ttl
+
+script/Generation_assets_application_statistics/node_modules/
+
+script/well-known_script/node_modules/
+
+*.csv
+
+script/googleCatalog/node_modules/
+
+script/googleCatalog/package-lock.json
+
+script/timeStatistics/node_modules/
+
+script/timeStatistics/package-lock.json

@@ -16,10 +16,13 @@
             <sportalDistinctIRIReferences.ttl>
             <sportalDistinctRDFNodes.ttl>
             <sportalDistinctLiterals.ttl>
+            <sportalClassPartition.ttl>
             <sportalClassPartitionClasses.ttl>
+            <sportalClassPartitionTriples.ttl>
             <sportalClassPartitionDistinctObjects.ttl>
             <sportalClassPartitionDistinctSubjects.ttl>
             <sportalClassPartitionProperties.ttl>
+            <sportalClassPartitionPropertyPartitionTriples.ttl>
             <sportalClassPartitionPropertyPartitionDistinctSubjects.ttl>
             <sportalPropertyPartitionDistinctObject.ttl>
             <sportalPropertyPartitionDistinctSubject.ttl>
@@ -231,7 +234,7 @@
             WHERE {
                 {
                     SELECT (COUNT(DISTINCT ?u ) AS ?x) {
-                        { ?u ?p ?o } UNION { ?s ?u ?o } UNION { ?s ?p ?u } FILTER(isIri(?u))
+                        { ?u ?p ?o } UNION { ?s ?p ?u } FILTER(isIri(?u))
                     }
                 }
                 BIND(Iri(CONCAT("http://ns.inria.fr/kg/index#", MD5(str($rawEndpointUrl)), "Dataset")) AS ?datasetDescription)

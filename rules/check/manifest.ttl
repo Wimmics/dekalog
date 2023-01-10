@@ -459,8 +459,22 @@
                 {
                     SELECT (COUNT(DISTINCT ?r) AS ?countLabels) {
                          ?r ?p ?o .
-                         ?r ?labelProp ?l .
-                         VALUES ?labelProp { rdfs:label rdfs:comment dcterms:title dcterms:description dcterms:alternative skos:altLabel skos:prefLabel skos:note powder-s:text skosxl:altLabel skosxl:hiddenLabel skosxl:prefLabel skosxl:literalForm schema:name schema:description schema:alternateName foaf:name }
+                         { ?r rdfs:label ?l }
+                        UNION { ?r rdfs:comment ?l }
+                        UNION { ?r dcterms:title ?l }
+                        UNION { ?r dcterms:description ?l }
+                        UNION { ?r dcterms:alternative ?l }
+                        UNION { ?r skos:altLabel ?l }
+                        UNION { ?r skos:prefLabel ?l }
+                        UNION { ?r skos:note ?l }
+                        UNION { ?r powder-s:text ?l }
+                        UNION { ?r skosxl:altLabel ?e . ?e skosxl:literalForm ?l }
+                        UNION { ?r skosxl:hiddenLabel ?e . ?e skosxl:literalForm ?l }
+                        UNION { ?r skosxl:prefLabel ?e . ?e skosxl:literalForm ?l }
+                        UNION { ?r schema:name ?l }
+                        UNION { ?r schema:description ?l }
+                        UNION { ?r schema:alternateName ?l }
+                        UNION { ?r foaf:name ?l }
                     }
                 }
                 BIND( (?countLabels/?countResources) AS ?measure)
@@ -501,12 +515,21 @@
             } WHERE {
                 {
                         SELECT (COUNT(DISTINCT ?lit) AS ?countLits) {
-                            ?s ?p ?lit . FILTER( isLiteral(?lit) )
+                            ?s ?p ?lit .
+                            FILTER( isLiteral(?lit) )
+                            FILTER((datatype(?litWithLang) = xsd:string)
+                            || (datatype(?litWithLang) = rdf:langString)
+                            || (datatype(?litWithLang) = ""))
                         }
                 }
                 {
                     SELECT (COUNT(DISTINCT ?litWithLang) AS ?countLitsWithLang) {
-                        ?sWithLang ?pWithLang ?litWithLang . FILTER( isLiteral(?litWithLang) ) FILTER(lang(?litWithLang) != "")
+                        ?sWithLang ?pWithLang ?litWithLang .
+                        FILTER( isLiteral(?litWithLang) )
+                        FILTER(lang(?litWithLang) != "")
+                        FILTER((datatype(?litWithLang) = xsd:string)
+                        || (datatype(?litWithLang) = rdf:langString)
+                        || (datatype(?litWithLang) = ""))
                     }
                 }
                 BIND( (?countLitsWithLang/?countLits) AS ?measure)
