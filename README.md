@@ -12,6 +12,24 @@ This depot contains the code and data files created by the WIMMICS team as part 
 
 # To Cite This Work
 
+To cite this work in general or IndeGx in particular:
+```
+@article{maillot:hal-03946680,
+  TITLE = {{IndeGx: A Model and a Framework for Indexing RDF Knowledge Graphs with SPARQL-based Test Suits}},
+  AUTHOR = {Maillot, Pierre and Corby, Olivier and Faron, Catherine and Gandon, Fabien and Michel, Franck},
+  URL = {https://hal.science/hal-03946680},
+  JOURNAL = {{Journal of Web Semantics}},
+  PUBLISHER = {{Elsevier}},
+  YEAR = {2023},
+  MONTH = Jan,
+  KEYWORDS = {semantic index metadata extraction dataset description endpoint description knowledge graph ; semantic index ; metadata extraction ; dataset description ; endpoint description ; knowledge graph},
+  PDF = {https://hal.science/hal-03946680/file/_DeKaloG__IndeGx___Web_Semantics_2022-1.pdf},
+  HAL_ID = {hal-03946680},
+  HAL_VERSION = {v1},
+}
+```
+
+To cite KartoGraphI:
 ```
 @inproceedings{maillot:hal-03652865,
     TITLE = {{KartoGraphI: Drawing a Map of Linked Data}},
