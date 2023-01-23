@@ -105,28 +105,28 @@ function sparqlQueryPromise(query) {
 function paginatedSparqlQueryPromise(query, limit = queryPaginationSize, offset = 0, finalResult = []) {
     var paginatedQuery = query + " LIMIT " + limit + " OFFSET " + offset;
     return sparqlQueryPromise(paginatedQuery)
-    .then(queryResult => {
-        queryResult.results.bindings.forEach(resultItem => {
-            var finaResultItem = {};
-            queryResult.head.vars.forEach(variable => {
-                finaResultItem[variable] = resultItem[variable];
+        .then(queryResult => {
+            queryResult.results.bindings.forEach(resultItem => {
+                var finaResultItem = {};
+                queryResult.head.vars.forEach(variable => {
+                    finaResultItem[variable] = resultItem[variable];
+                })
+                finalResult.push(finaResultItem);
             })
-            finalResult.push(finaResultItem);
+            if (queryResult.results.bindings.length > 0) {
+                return paginatedSparqlQueryPromise(query, limit + queryPaginationSize, offset + queryPaginationSize, finalResult)
+            }
         })
-        if(queryResult.results.bindings.length > 0) {
-            return paginatedSparqlQueryPromise(query, limit + queryPaginationSize, offset + queryPaginationSize, finalResult)
-        } 
-    })
-    .then(() => {
-        return finalResult;
-    })
-    .catch(error => {
-        console.log(error)
-        return finalResult;
-    })
-    .finally(() => {
-        return finalResult;
-    })
+        .then(() => {
+            return finalResult;
+        })
+        .catch(error => {
+            console.log(error)
+            return finalResult;
+        })
+        .finally(() => {
+            return finalResult;
+        })
 }
 
 function whiteListFill() {
@@ -168,6 +168,13 @@ function whiteListFill() {
             }
         }).catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(whiteListFilename, content)
+                console.log("whiteListFill END")
+            } catch (err) {
+                console.error(err)
+            }
         });
 }
 
@@ -234,7 +241,7 @@ function endpointMapfill() {
                     }
                     if (endpointItem.timezone != undefined) {
                         popupString += "<tr><td>Timezone of endpoint URL: </td><td>" + endpointItem.timezone + "</td></tr>";
-                        if(endpointItem.sparqlTimezone != undefined) {
+                        if (endpointItem.sparqlTimezone != undefined) {
                             var badTimezone = endpointItem.timezone.localeCompare(endpointItem.sparqlTimezone) != 0;
                             if (badTimezone) {
                                 popupString += "<tr><td>Timezone declared by endpoint: </td><td>" + endpointItem.sparqlTimezone + "</td></tr>";
@@ -269,6 +276,13 @@ function endpointMapfill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(geolocFilename, content)
+                console.log("endpointMapfill END")
+            } catch (err) {
+                console.error(err)
+            }
         })
 
 }
@@ -389,6 +403,18 @@ function SPARQLCoverageFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(sparqlCoverageFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(sparqlFeaturesFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         })
 }
 
@@ -540,6 +566,24 @@ function vocabFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(vocabEndpointFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(knownVocabsFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(vocabKeywordsFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         })
 }
 
@@ -564,7 +608,7 @@ function tripleDataFill() {
                 var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var triples = Number.parseInt(itemResult.o.value);
-                endpointTripleData.push({ endpoint: endpointUrl, graph: graph, date:date, triples: triples })
+                endpointTripleData.push({ endpoint: endpointUrl, graph: graph, date: date, triples: triples })
             });
         })
         .then(() => {
@@ -578,6 +622,12 @@ function tripleDataFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(tripleCountFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         });
 }
 
@@ -602,7 +652,7 @@ function classDataFill() {
                 var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
                 var endpointUrl = itemResult.endpointUrl.value;
                 var triples = Number.parseInt(itemResult.o.value);
-                endpointClassCountData.push({ endpoint: endpointUrl, graph: graph, date:date, classes: triples })
+                endpointClassCountData.push({ endpoint: endpointUrl, graph: graph, date: date, classes: triples })
             });
 
         })
@@ -617,6 +667,12 @@ function classDataFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(classCountFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         });
 }
 
@@ -641,7 +697,7 @@ function propertyDataFill() {
                 var endpointUrl = itemResult.endpointUrl.value;
                 var properties = Number.parseInt(itemResult.o.value);
                 var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
-                endpointPropertyCountData.push({ endpoint: endpointUrl, graph: graph, date:date, properties: properties })
+                endpointPropertyCountData.push({ endpoint: endpointUrl, graph: graph, date: date, properties: properties })
             });
         })
         .then(() => {
@@ -655,6 +711,12 @@ function propertyDataFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(propertyCountFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         });
 }
 
@@ -691,7 +753,7 @@ function categoryTestCountFill() {
                 var endpoint = itemResult.endpointUrl.value;
                 var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
                 var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
-                testCategoryData.push({ category: category, graph: graph, date:date, endpoint: endpoint, count: count });
+                testCategoryData.push({ category: category, graph: graph, date: date, endpoint: endpoint, count: count });
             });
         })
         .then(() => {
@@ -705,6 +767,12 @@ function categoryTestCountFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(categoryTestCountFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         });
 }
 
@@ -731,8 +799,8 @@ function totalCategoryTestCountFill() {
         "<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/> " +
         "} " +
         "} " +
-        "} " + 
-        "GROUP BY ?g ?date ?category ?endpointUrl " + 
+        "} " +
+        "GROUP BY ?g ?date ?category ?endpointUrl " +
         "ORDER BY ?category ";
     var totalTestCategoryData = [];
     return paginatedSparqlQueryPromise(testCategoryQuery).then(json => {
@@ -743,7 +811,7 @@ function totalCategoryTestCountFill() {
             var graph = itemResult.g.value;
             var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
-            totalTestCategoryData.push({ category: category, endpoint: endpoint, graph: graph, date:date, count: count })
+            totalTestCategoryData.push({ category: category, endpoint: endpoint, graph: graph, date: date, count: count })
         });
     })
         .then(() => {
@@ -757,6 +825,12 @@ function totalCategoryTestCountFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(totalCategoryTestCountFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         });
 }
 
@@ -782,7 +856,7 @@ function endpointTestsDataFill() {
                 var graph = item.g.value;
                 var date = parseDate(item.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
-                endpointTestsData.push({ endpoint: endpointUrl, activity: rule, graph: graph, date:date })
+                endpointTestsData.push({ endpoint: endpointUrl, activity: rule, graph: graph, date: date })
             });
         })
         .then(() => {
@@ -796,23 +870,29 @@ function endpointTestsDataFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(endpointTestsDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         });
 }
 
 function totalRuntimeDataFill() {
     console.log("totalRuntimeDataFill START")
     var maxMinTimeQuery = "SELECT DISTINCT ?g ?endpointUrl ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { " +
-    " GRAPH ?g { " +
-    "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " + 
-    "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
-    "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-    "?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . " +
-    "?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
-    "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-    "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
-    "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-    "} "+
-    "} ";
+        " GRAPH ?g { " +
+        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
+        "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
+        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
+        "?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . " +
+        "?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
+        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
+        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
+        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+        "} " +
+        "} ";
     var totalRuntimeData = []
     return paginatedSparqlQueryPromise(maxMinTimeQuery).then(jsonResponse => {
         jsonResponse.forEach((itemResult, i) => {
@@ -822,7 +902,7 @@ function totalRuntimeDataFill() {
             var end = parseDate(itemResult.end.value);
             var endpointUrl = itemResult.endpointUrl.value;
             var runtimeData = dayjs.duration(end.diff(start));
-            totalRuntimeData.push({ graph: graph, endpoint: endpointUrl, date:date, start: start, end: end, runtime: runtimeData })
+            totalRuntimeData.push({ graph: graph, endpoint: endpointUrl, date: date, start: start, end: end, runtime: runtimeData })
         });
     })
         .then(() => {
@@ -836,6 +916,12 @@ function totalRuntimeDataFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(totalRuntimeDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         });
 }
 
@@ -864,24 +950,24 @@ function averageRuntimeDataFill() {
                     var end = parseDate(itemResult.end.value, 'YYYY-MM-DDTHH:mm:ss');
                     var runtime = dayjs.duration(end.diff(start));
 
-                    if(graphStartEndMap.get(graph) == undefined) {
-                        graphStartEndMap.set(graph, {  });
+                    if (graphStartEndMap.get(graph) == undefined) {
+                        graphStartEndMap.set(graph, {});
                     }
                     graphStartEndMap.get(graph).start = start;
-                    graphStartEndMap.get(graph).end = end; 
-                    graphStartEndMap.get(graph).runtime = runtime ;
-                    graphStartEndMap.get(graph).graph = graph ;
-                    graphStartEndMap.get(graph).date = date ;
+                    graphStartEndMap.get(graph).end = end;
+                    graphStartEndMap.get(graph).runtime = runtime;
+                    graphStartEndMap.get(graph).graph = graph;
+                    graphStartEndMap.get(graph).date = date;
                 })
             }),
-            paginatedSparqlQueryPromise(numberOfEndpointQuery)
+        paginatedSparqlQueryPromise(numberOfEndpointQuery)
             .then(numberOfEndpointJson => {
                 numberOfEndpointJson.forEach((numberEndpointItem, i) => {
                     var graph = numberEndpointItem.g.value;
                     graph = graph.replace('http://ns.inria.fr/indegx#', '');
                     var count = numberEndpointItem.count.value;
-                    if(graphStartEndMap.get(graph) == undefined) {
-                        graphStartEndMap.set(graph, {  });
+                    if (graphStartEndMap.get(graph) == undefined) {
+                        graphStartEndMap.set(graph, {});
                     }
                     graphStartEndMap.get(graph).count = count
                     averageRuntimeData.push(graphStartEndMap.get(graph))
@@ -899,6 +985,12 @@ function averageRuntimeDataFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(averageRuntimeDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         });
 }
 
@@ -1073,7 +1165,7 @@ function classAndPropertiesDataFill() {
                 if (classCountItem == undefined) {
                     classItem = { class: className };
                 }
-                if(classItem.endpoints != undefined) {
+                if (classItem.endpoints != undefined) {
                     classItem.endpoints = [...classItem.endpoints]
                 }
                 var classPropertyItem = classPropertyCountsEndpointsMap.get(className);
@@ -1096,6 +1188,12 @@ function classAndPropertiesDataFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(classPropertyDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         })
 }
 
@@ -1250,6 +1348,12 @@ function datasetDescriptionDataFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(datasetDescriptionDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         });
 }
 
@@ -1277,7 +1381,7 @@ function shortUrisDataFill() {
                 var date = parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
                 graphSet.add(graph);
-                shortUriData.push({ graph: graph, date:date, endpoint: endpoint, measure: shortUriMeasure })
+                shortUriData.push({ graph: graph, date: date, endpoint: endpoint, measure: shortUriMeasure })
             });
         })
         .then(() => {
@@ -1291,6 +1395,12 @@ function shortUrisDataFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(shortUriDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         });
 }
 
@@ -1317,7 +1427,7 @@ function readableLabelsDataFill() {
                 var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
                 var date = parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
-                readableLabelData.push({ graph: graph, date:date, endpoint: endpoint, measure: readableLabelMeasure })
+                readableLabelData.push({ graph: graph, date: date, endpoint: endpoint, measure: readableLabelMeasure })
             });
 
         })
@@ -1332,6 +1442,12 @@ function readableLabelsDataFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(readableLabelDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         });
 }
 
@@ -1357,7 +1473,7 @@ function rdfDataStructureDataFill() {
             var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
             var date = parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
-            rdfDataStructureData.push({ graph: graph, date:date, endpoint: endpoint, measure: rdfDataStructureMeasure })
+            rdfDataStructureData.push({ graph: graph, date: date, endpoint: endpoint, measure: rdfDataStructureMeasure })
         });
     })
         .then(() => {
@@ -1371,6 +1487,12 @@ function rdfDataStructureDataFill() {
         })
         .catch(error => {
             console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(rdfDataStructureDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
         });
 }
 
@@ -1389,34 +1511,40 @@ function blankNodeDataFill() {
         " } " +
         "GROUP BY ?g ?date ?endpointUrl ?measure ";
 
-        var blankNodeData = []
-    sparqlQueryPromise(blankNodeQuery).then(json => {
+    var blankNodeData = []
+    return sparqlQueryPromise(blankNodeQuery).then(json => {
         var graphSet = new Set();
         json.results.bindings.forEach((jsonItem, i) => {
             var endpoint = jsonItem.endpointUrl.value;
-                var blankNodeMeasure = Number.parseFloat(jsonItem.measure.value * 100);
-                var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-                var date = parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
+            var blankNodeMeasure = Number.parseFloat(jsonItem.measure.value * 100);
+            var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+            var date = parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
-                graphSet.add(graph);
-                blankNodeData.push({ graph: graph, date: date, endpoint: endpoint, measure: blankNodeMeasure })
+            graphSet.add(graph);
+            blankNodeData.push({ graph: graph, date: date, endpoint: endpoint, measure: blankNodeMeasure })
         });
     })
-    .then(() => {
-        try {
-            var content = JSON.stringify(blankNodeData);
-            fs.writeFileSync(blankNodesDataFilename, content)
-        } catch (err) {
-            console.error(err)
-        }
-        console.log("blankNodeDataFill END")
-    })
-    .catch(error => {
-        console.log(error)
-    });
+        .then(() => {
+            try {
+                var content = JSON.stringify(blankNodeData);
+                fs.writeFileSync(blankNodesDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+            console.log("blankNodeDataFill END")
+        })
+        .catch(error => {
+            console.log(error)
+            try {
+                var content = JSON.stringify([]);
+                fs.writeFileSync(blankNodesDataFilename, content)
+            } catch (err) {
+                console.error(err)
+            }
+        });
 }
 
-Promise.all([
+Promise.allSettled([
     whiteListFill(),
     endpointMapfill(),
     SPARQLCoverageFill(),

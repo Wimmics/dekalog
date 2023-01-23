@@ -1,7 +1,7 @@
 import * as echarts from "./echarts.js";
 import $, { get } from 'jquery';
 import 'leaflet';
-const dt = require('datatables.net-bs5')();
+const dt = require('datatables.net-bs5');
 const ttl_read = require('@graphy/content.ttl.read');
 const dayjs = require('dayjs')
 const md5 = require('md5');
