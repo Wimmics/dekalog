@@ -9,7 +9,7 @@ This depot contains the code and data files created by the WIMMICS team as part 
 - [docs/](https://github.com/Wimmics/dekalog/tree/master/docs) contains the preliminary design document in which we discussed the basic concepts and methods used in our framework.
 - [LODMap/](https://github.com/Wimmics/dekalog/tree/master/LODMap) contains the code for the [KartoGraphI website](http://prod-dekalog.inria.fr/).
 - The file [template-description.ttl](https://github.com/Wimmics/dekalog/blob/master/template-description.ttl) is a basic template for the description of knowledge bases.
-  - [Metadatamatic](https://wimmics.github.io/voidmatic/) is another of our project that allows the creation of a dataset description using a simple form.  
+  - [Metadatamatic](https://wimmics.github.io/voidmatic/) is another of our project that allows the creation of a dataset description using a simple form. Its creation was inspired by the results of our experimentations of the IndeGx framework.  
 
 # To Cite This Work
 
