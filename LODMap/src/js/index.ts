@@ -1,5 +1,5 @@
-import * as echarts from "./echarts.js";
-import $, { get } from 'jquery';
+import * as echarts from "echarts";
+import $ from 'jquery';
 import 'leaflet';
 const dt = require('datatables.net-bs5');
 const ttl_read = require('@graphy/content.ttl.read');
@@ -12,6 +12,8 @@ dayjs.extend(relativeTime)
 dayjs.extend(customParseFormat)
 dayjs.extend(duration)
 import { greenIcon, orangeIcon } from "./leaflet-color-markers.js";
+import { KartoChart } from "./Widgets.ts";
+import { cachePromise, xhrJSONPromise } from "./DataConnexion.ts";
 
 // Cached files
 const whiteListFile = cachePromise('whiteLists.json');
@@ -43,106 +45,6 @@ const queryPaginationSize = 10000;
 
 const graphListsFile = cachePromise('runSets.json');
 const sparqlFeatureDescFile = cachePromise('SPARQLFeatureDescriptions.json');
-
-class KartoChart {
-    constructor(config = { chartObject, option, fillFunction: () => { }, redrawFunction: () => { }, clearFunction: () => { }, hideFunction: () => { }, showFunction: () => { }, divId, filled: false }) {
-        this.chartObject = config.chartObject;
-        this.option = config.option;
-        this.fill = config.fillFunction;
-        if (this.fill === undefined) {
-            this.fill = () => { };
-        }
-        this.redraw = config.redrawFunction;
-        if (this.redraw === undefined) {
-            this.redraw = () => { };
-        }
-        this.clear = config.clearFunction;
-        if (this.clear === undefined) {
-            this.clear = () => { };
-        }
-        this.hide = config.hideFunction;
-        if (this.hide === undefined) {
-            this.hide = () => { };
-        }
-        this.show = config.showFunction;
-        if (this.show === undefined) {
-            this.show = () => { };
-        }
-    }
-};
-
-function xhrGetPromise(url) {
-    return new Promise(function (resolve, reject) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url);
-        xhr.onload = function () {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                resolve(xhr.responseText);
-            } else {
-                reject({
-                    url: decodeURIComponent(url),
-                    encodedUrl: url,
-                    response: xhr.responseText,
-                    status: xhr.status,
-                    statusText: xhr.statusText
-                });
-            }
-        };
-        xhr.onerror = function () {
-            reject({
-                url: decodeURIComponent(url),
-                encodedUrl: url,
-                response: xhr.responseText,
-                status: xhr.status,
-                statusText: xhr.statusText
-            });
-        };
-        xhr.send();
-    });
-}
-
-function xhrJSONPromise(url) {
-    return xhrGetPromise(url).then(response => {
-        return JSON.parse(response);
-    });
-}
-
-function sparqlQueryPromise(query) {
-    if (query.includes("SELECT") || query.includes("ASK")) {
-        return xhrJSONPromise('http://prod-dekalog.inria.fr/sparql?query=' + encodeURIComponent(query) + '&format=json');
-    }
-    else {
-        throw "ERROR " + query;
-    }
-}
-
-function paginatedSparqlQueryPromise(query, limit = queryPaginationSize, offset = 0, finalResult = []) {
-    var paginatedQuery = query + " LIMIT " + limit + " OFFSET " + offset;
-    return sparqlQueryPromise(paginatedQuery)
-        .then(queryResult => {
-            queryResult.results.bindings.forEach(resultItem => {
-                var finaResultItem = {};
-                queryResult.head.vars.forEach(variable => {
-                    finaResultItem[variable] = resultItem[variable];
-                })
-                finalResult.push(finaResultItem);
-            })
-            if (queryResult.results.bindings.length > 0) {
-                return paginatedSparqlQueryPromise(query, limit + queryPaginationSize, offset + queryPaginationSize, finalResult)
-            }
-        })
-        .then(() => {
-            return finalResult;
-        })
-        .catch(error => {
-            console.log(error)
-            return finalResult;
-        })
-}
-
-function cachePromise(cacheFile) {
-    return xhrJSONPromise("http://prod-dekalog.inria.fr/cache/" + cacheFile);
-}
 
 function intersection(setA, setB) {
     var intersection = new Set();
@@ -508,7 +410,7 @@ $(function () {
                 });
             }
 
-            function removeBlacklistedEndpoint(endpointIndex) {
+            function removeBlacklistedEndpoint(endpointIndex): Promise<void> {
                 return new Promise((resolve, reject) => {
                     urlParams = new URLSearchParams(window.location.search);
                     urlParams.delete(blackListedEndpointParameter);
@@ -520,7 +422,7 @@ $(function () {
                     blackistedEndpointIndexList = [...blackistedEndpointIndexSet];
                     var jsonBlacklist = encodeURI(JSON.stringify(blackistedEndpointIndexList));
                     urlParams.append(blackListedEndpointParameter, jsonBlacklist);
-                    history.pushState(null, null, '?' + urlParams.toString());
+                    history.pushState(null, "", '?' + urlParams.toString());
                     resolve();
                 }).then(() => {
                     refresh();
@@ -536,7 +438,7 @@ $(function () {
                         urlParams = new URLSearchParams(window.location.search);
                         urlParams.delete(graphSetIndexParameter);
                         urlParams.append(graphSetIndexParameter, index);
-                        history.pushState(null, null, '?' + urlParams.toString());
+                        history.pushState(null, "", '?' + urlParams.toString());
                         graphList = graphLists[index].graphs;
                         var graphListEndpointKey = md5(''.concat(graphList));
                         filteredEndpointWhiteList = whiteListData[graphListEndpointKey]

@@ -1,6 +1,6 @@
 import "leaflet";
 
-var blueIcon = new L.Icon({
+export var blueIcon = new L.Icon({
 	iconUrl: require('../img/marker-icon-2x-blue.png'),
 	shadowUrl: require('../img/marker-shadow.png'),
 	iconSize: [25, 41],
@@ -27,7 +27,7 @@ var redIcon = new L.Icon({
 	shadowSize: [41, 41]
 });
 
-var greenIcon = new L.Icon({
+export var greenIcon = new L.Icon({
 	iconUrl: require('../img/marker-icon-2x-green.png'),
 	shadowUrl: require('../img/marker-shadow.png'),
 	iconSize: [25, 41],
@@ -36,7 +36,7 @@ var greenIcon = new L.Icon({
 	shadowSize: [41, 41]
 });
 
-var orangeIcon = new L.Icon({
+export var orangeIcon = new L.Icon({
 	iconUrl: require('../img/marker-icon-2x-orange.png'),
 	shadowUrl: require('../img/marker-shadow.png'),
 	iconSize: [25, 41],
