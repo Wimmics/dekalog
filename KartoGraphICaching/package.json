@@ -1,0 +1,39 @@
+{
+   "name": "kartographicaching",
+   "source": "src/dataCaching.ts",
+   "main": "dist/dataCaching.js",
+   "types": "dist/dataCaching.d.ts",
+   "type":"module",
+   "scripts": {
+      "build": "npx parcel build",
+      "predev": "npm run build",
+      "dev": "node dist/dataCaching.js",
+      "postdev": "rm dist/* || true"
+   },
+   "devDependencies": {
+      "@parcel/packager-ts": "^2.8.3",
+      "@parcel/transformer-typescript-types": "^2.8.3",
+      "@types/node-fetch": "^2.6.2",
+      "crypto-browserify": "^3.12.0",
+      "parcel": "^2.3.1",
+      "stream-browserify": "^3.0.0"
+   },
+   "dependencies": {
+      "@types/md5": "latest",
+      "@types/node": "^18.11.9",
+      "@types/rdflib": "^1.2.0",
+      "@types/uuid": "^9.0.0",
+      "buffer": "^6.0.3",
+      "dayjs": "^1.11.7",
+      "events": "^3.3.0",
+      "fetch": "^1.1.0",
+      "graphy": "^4.3.4",
+      "md5": "^2.3.0",
+      "node-fetch": "^3.3.1",
+      "process": "^0.11.10",
+      "rdflib": "^2.2.31",
+      "sparqljs": "^3.6.2",
+      "typescript": "^4.9.5",
+      "xmlhttprequest": "^1.8.0"
+   }
+}

@@ -83,3 +83,9 @@ script/googleCatalog/package-lock.json
 script/timeStatistics/node_modules/
 
 script/timeStatistics/package-lock.json
+
+KartoGraphICaching/.parcel-cache/
+
+KartoGraphICaching/node_modules/
+
+KartoGraphICaching/package-lock.json

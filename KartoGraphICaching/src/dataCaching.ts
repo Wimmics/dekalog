@@ -1,19 +1,21 @@
-const fs = require('fs');
-const dayjs = require('dayjs')
-const md5 = require('md5');
-const customParseFormat = require('dayjs/plugin/customParseFormat')
-const duration = require('dayjs/plugin/duration');
-const relativeTime = require('dayjs/plugin/relativeTime')
+import * as fs from 'node:fs';
+import dayjs from "dayjs";
+import duration from 'dayjs/plugin/duration.js';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+import relativeTime from 'dayjs/plugin/relativeTime.js';
+dayjs.extend(duration);
 dayjs.extend(relativeTime)
 dayjs.extend(customParseFormat)
 dayjs.extend(duration)
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+import md5 from 'md5';
+import * as Global from "./GlobalUtils";
 
-const dataFilePrefix = "./src/data/cache/";
-const graphLists = require(dataFilePrefix + 'runSets.json');
-const timezoneMap = require(dataFilePrefix + 'timezoneMap.json');
-const endpointIpMap = require(dataFilePrefix + 'endpointIpGeoloc.json');
 const queryPaginationSize = 500;
+
+const dataFilePrefix = "./data/cache/";
+const graphLists = fs.readFileSync(dataFilePrefix + 'runSets.json');
+const timezoneMap = fs.readFileSync(dataFilePrefix + 'timezoneMap.json');
+const endpointIpMap = fs.readFileSync(dataFilePrefix + 'endpointIpGeoloc.json');
 
 const whiteListFilename = dataFilePrefix + "whiteLists.json";
 const geolocFilename = dataFilePrefix + "geolocData.json";
@@ -39,13 +41,8 @@ const blankNodesDataFilename = dataFilePrefix + "blankNodesData.json";
 
 const LOVFilename = dataFilePrefix + "knownVocabulariesLOV.json"
 
-// Parse the date in any format
-function parseDate(input, format) {
-    return dayjs(input, format);
-}
-
 function generateGraphValueFilterClause(graphList) {
-    var result = "FILTER( ";
+    let result = "FILTER( ";
     graphList.forEach((item, i) => {
         if (i > 0) {
             result += " || REGEX( str(?g) , '" + item + "' )";
@@ -57,45 +54,9 @@ function generateGraphValueFilterClause(graphList) {
     return result;
 }
 
-function xmlHTTPRequestGetPromise(url) {
-    return new Promise(function (resolve, reject) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url);
-        xhr.onload = function () {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                resolve(xhr.responseText);
-            } else {
-                reject({
-                    url: decodeURIComponent(url),
-                    encodedUrl: url,
-                    response: xhr.responseText,
-                    status: xhr.status,
-                    statusText: xhr.statusText
-                });
-            }
-        };
-        xhr.onerror = function () {
-            reject({
-                url: decodeURIComponent(url),
-                encodedUrl: url,
-                response: xhr.responseText,
-                status: xhr.status,
-                statusText: xhr.statusText
-            });
-        };
-        xhr.send();
-    });
-}
-
-function xmlhttpRequestJSONPromise(url) {
-    return xmlHTTPRequestGetPromise(url).then(response => {
-        return JSON.parse(response);
-    });
-}
-
 function sparqlQueryPromise(query) {
     if (query.includes("SELECT") || query.includes("ASK")) {
-        return xmlhttpRequestJSONPromise('http://prod-dekalog.inria.fr/sparql?query=' + encodeURIComponent(query) + '&format=json');
+        return Global.fetchJSONPromise('http://prod-dekalog.inria.fr/sparql?query=' + encodeURIComponent(query) + '&format=json');
     }
     else {
         throw "ERROR " + query;
@@ -103,11 +64,11 @@ function sparqlQueryPromise(query) {
 }
 
 function paginatedSparqlQueryPromise(query, limit = queryPaginationSize, offset = 0, finalResult = []) {
-    var paginatedQuery = query + " LIMIT " + limit + " OFFSET " + offset;
+    let paginatedQuery = query + " LIMIT " + limit + " OFFSET " + offset;
     return sparqlQueryPromise(paginatedQuery)
         .then(queryResult => {
             queryResult.results.bindings.forEach(resultItem => {
-                var finaResultItem = {};
+                let finaResultItem = {};
                 queryResult.head.vars.forEach(variable => {
                     finaResultItem[variable] = resultItem[variable];
                 })
@@ -133,8 +94,8 @@ function whiteListFill() {
     console.log("whiteListFill START")
     return Promise.all(
         graphLists.map(graphListItem => {
-            var graphList = graphListItem.graphs
-            var endpointListQuery = 'SELECT DISTINCT ?endpointUrl WHERE {' +
+            let graphList = graphListItem.graphs
+            let endpointListQuery = 'SELECT DISTINCT ?endpointUrl WHERE {' +
                 ' GRAPH ?g { ' +
                 "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
                 "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
@@ -144,10 +105,10 @@ function whiteListFill() {
                 generateGraphValueFilterClause(graphList) +
                 '} ' +
                 'GROUP BY ?endpointUrl';
-            var graphListKey = md5(''.concat(graphList));
+            let graphListKey = md5(''.concat(graphList));
             return paginatedSparqlQueryPromise(endpointListQuery)
                 .then(json => {
-                    var endpointList = [];
+                    let endpointList = [];
                     json.forEach((item) => {
                         endpointList.push(item.endpointUrl.value);
                     });
@@ -155,12 +116,12 @@ function whiteListFill() {
                 });
         }))
         .then(graphListItemArray => {
-            var tmpWhiteListMap = {};
+            let tmpWhiteListMap = {};
             graphListItemArray.forEach(graphListItem => {
                 tmpWhiteListMap[graphListItem.graphKey] = graphListItem.endpoints;
             });
             try {
-                var content = JSON.stringify(tmpWhiteListMap);
+                let content = JSON.stringify(tmpWhiteListMap);
                 fs.writeFileSync(whiteListFilename, content)
                 console.log("whiteListFill END")
             } catch (err) {
@@ -169,7 +130,7 @@ function whiteListFill() {
         }).catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(whiteListFilename, content)
                 console.log("whiteListFill END")
             } catch (err) {
@@ -178,36 +139,48 @@ function whiteListFill() {
         });
 }
 
+type EndpointItem = {
+    endpoint: string
+    lat: number
+    lon: number
+    country: string
+    region: string
+    city: string
+    org: string
+    timezone: string
+    sparqlTimezone: string
+    popupHTML: string
+}
 
 function endpointMapfill() {
     console.log("endpointMapfill START")
-    var endpointGeolocData = [];
+    let endpointGeolocData = [];
 
     // Marked map with the geoloc of each endpoint
     return Promise.all(endpointIpMap.map((item) => {
         // Add the markers for each endpoints.
-        var endpoint = item.key;
-        var endpointItem = {};
+        let endpoint = item.key;
+        let endpointItem: EndpointItem;
 
-        var timezoneSPARQLquery = "SELECT DISTINCT ?timezone { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <" + endpoint + "> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone } }";
+        let timezoneSPARQLquery = "SELECT DISTINCT ?timezone { GRAPH ?g { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <" + endpoint + "> . ?metadata <http://ns.inria.fr/kg/index#curated> ?base . ?base <https://schema.org/broadcastTimezone> ?timezone } }";
         return paginatedSparqlQueryPromise(timezoneSPARQLquery)
             .then(jsonResponse => {
-                var endpointTimezoneSPARQL = new Map();
+                let endpointTimezoneSPARQL = new Map();
                 jsonResponse.forEach((itemResponse, i) => {
                     endpointTimezoneSPARQL.set(endpoint, itemResponse.timezone.value);
                 });
 
-                var ipTimezoneArrayFiltered = timezoneMap.filter(itemtza => itemtza.key == item.value.geoloc.timezone);
-                var ipTimezone;
+                let ipTimezoneArrayFiltered = timezoneMap.filter(itemtza => itemtza.key == item.value.geoloc.timezone);
+                let ipTimezone;
                 if (ipTimezoneArrayFiltered.length > 0) {
                     ipTimezone = ipTimezoneArrayFiltered[0].value.utc_offset.padStart(6, '-').padStart(6, '+');
                 }
-                var sparqlTimezone;
+                let sparqlTimezone;
                 if (endpointTimezoneSPARQL.get(endpoint) != undefined) {
                     sparqlTimezone = endpointTimezoneSPARQL.get(endpoint).padStart(6, '-').padStart(6, '+');
                 }
 
-                endpointItem = { endpoint: endpoint, lat: item.value.geoloc.lat, lon: item.value.geoloc.lon, country: "", region: "", city: "", org: "", timezone: ipTimezone, sparqlTimezone: sparqlTimezone };
+                endpointItem = { endpoint: endpoint, lat: item.value.geoloc.lat, lon: item.value.geoloc.lon, country: "", region: "", city: "", org: "", timezone: ipTimezone, sparqlTimezone: sparqlTimezone, popupHTML: "" };
                 if (item.value.geoloc.country != undefined) {
                     endpointItem.country = item.value.geoloc.country;
                 }
@@ -220,12 +193,12 @@ function endpointMapfill() {
                 if (item.value.geoloc.org != undefined) {
                     endpointItem.org = item.value.geoloc.org;
                 }
-                var labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + endpoint + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . }  }";
+                let labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + endpoint + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . }  }";
                 return labelQuery;
             })
             .then(labelQuery => sparqlQueryPromise(labelQuery)
                 .then(responseLabels => {
-                    var popupString = "<table> <thead> <tr> <th colspan='2'> <a href='" + endpointItem.endpoint + "' >" + endpointItem.endpoint + "</a> </th> </tr> </thead>";
+                    let popupString = "<table> <thead> <tr> <th colspan='2'> <a href='" + endpointItem.endpoint + "' >" + endpointItem.endpoint + "</a> </th> </tr> </thead>";
                     popupString += "</body>"
                     if (endpointItem.country != undefined) {
                         popupString += "<tr><td>Country: </td><td>" + endpointItem.country + "</td></tr>";
@@ -242,7 +215,7 @@ function endpointMapfill() {
                     if (endpointItem.timezone != undefined) {
                         popupString += "<tr><td>Timezone of endpoint URL: </td><td>" + endpointItem.timezone + "</td></tr>";
                         if (endpointItem.sparqlTimezone != undefined) {
-                            var badTimezone = endpointItem.timezone.localeCompare(endpointItem.sparqlTimezone) != 0;
+                            let badTimezone = endpointItem.timezone.localeCompare(endpointItem.sparqlTimezone) != 0;
                             if (badTimezone) {
                                 popupString += "<tr><td>Timezone declared by endpoint: </td><td>" + endpointItem.sparqlTimezone + "</td></tr>";
                             }
@@ -267,7 +240,7 @@ function endpointMapfill() {
     }))
         .finally(() => {
             try {
-                var content = JSON.stringify(endpointGeolocData);
+                let content = JSON.stringify(endpointGeolocData);
                 fs.writeFileSync(geolocFilename, content)
                 console.log("endpointMapfill END")
             } catch (err) {
@@ -277,7 +250,7 @@ function endpointMapfill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(geolocFilename, content)
                 console.log("endpointMapfill END")
             } catch (err) {
@@ -290,7 +263,7 @@ function endpointMapfill() {
 function SPARQLCoverageFill() {
     console.log("SPARQLCoverageFill START")
     // Create an histogram of the SPARQLES rules passed by endpoint.
-    var sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) { ' +
+    let sparqlesFeatureQuery = 'SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) { ' +
         'GRAPH ?g { ' +
         '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ' +
         '?metadata <http://ns.inria.fr/kg/index#curated> ?base . ' +
@@ -302,21 +275,21 @@ function SPARQLCoverageFill() {
         '} ' +
         '} ' +
         'GROUP BY ?endpoint ?sparqlNorm ';
-    var jsonBaseFeatureSparqles = [];
-    var sparqlFeaturesDataArray = [];
+    let jsonBaseFeatureSparqles = [];
+    let sparqlFeaturesDataArray = [];
     return paginatedSparqlQueryPromise(sparqlesFeatureQuery)
         .then(json => {
-            var endpointSet = new Set();
-            var sparql10Map = new Map();
-            var sparql11Map = new Map();
+            let endpointSet = new Set();
+            let sparql10Map = new Map();
+            let sparql11Map = new Map();
             json.forEach((bindingItem, i) => {
-                var endpointUrl = bindingItem.endpoint.value;
+                let endpointUrl = bindingItem.endpoint.value;
                 endpointSet.add(endpointUrl);
-                var feature = undefined;
+                let feature = undefined;
                 if (bindingItem.sparqlNorm != undefined) {
                     feature = bindingItem.sparqlNorm.value;
                 }
-                var count = bindingItem.count.value;
+                let count = bindingItem.count.value;
                 if (feature == undefined || feature.localeCompare("SPARQL10") == 0) {
                     sparql10Map.set(endpointUrl, Number(count));
                 }
@@ -326,15 +299,15 @@ function SPARQLCoverageFill() {
             });
 
             endpointSet.forEach((item) => {
-                var sparql10 = sparql10Map.get(item);
-                var sparql11 = sparql11Map.get(item);
+                let sparql10 = sparql10Map.get(item);
+                let sparql11 = sparql11Map.get(item);
                 if (sparql10 == undefined) {
                     sparql10 = 0;
                 }
                 if (sparql11 == undefined) {
                     sparql11 = 0;
                 }
-                var sparqlJSONObject = { 'endpoint': item, 'sparql10': sparql10, 'sparql11': sparql11, 'sparqlTotal': (sparql10 + sparql11) };
+                let sparqlJSONObject = { 'endpoint': item, 'sparql10': sparql10, 'sparql11': sparql11, 'sparqlTotal': (sparql10 + sparql11) };
                 jsonBaseFeatureSparqles.push(sparqlJSONObject);
             });
 
@@ -353,12 +326,12 @@ function SPARQLCoverageFill() {
                 '} ' +
                 '} ' +
                 'GROUP BY ?endpoint ?activity ';
-            var endpointFeatureMap = new Map();
-            var featuresShortName = new Map();
+            let endpointFeatureMap = new Map();
+            let featuresShortName = new Map();
             return paginatedSparqlQueryPromise(sparqlFeatureQuery)
                 .then(json => {
                     endpointFeatureMap = new Map();
-                    var featuresSet = new Set();
+                    let featuresSet = new Set();
                     json.forEach(bindingItem => {
                         const endpointUrl = bindingItem.endpoint.value;
                         if (!endpointFeatureMap.has(endpointUrl)) {
@@ -377,7 +350,7 @@ function SPARQLCoverageFill() {
                         }
                     });
                     endpointFeatureMap.forEach((featureSet, endpointUrl, map) => {
-                        var sortedFeatureArray = [...featureSet].sort((a, b) => a.localeCompare(b));
+                        let sortedFeatureArray = [...featureSet].sort((a, b) => a.localeCompare(b));
                         sparqlFeaturesDataArray.push({ endpoint: endpointUrl, features: sortedFeatureArray });
                     });
 
@@ -388,13 +361,13 @@ function SPARQLCoverageFill() {
         })
         .finally(() => {
             try {
-                var content = JSON.stringify(jsonBaseFeatureSparqles);
+                let content = JSON.stringify(jsonBaseFeatureSparqles);
                 fs.writeFileSync(sparqlCoverageFilename, content)
             } catch (err) {
                 console.error(err)
             }
             try {
-                var content = JSON.stringify(sparqlFeaturesDataArray);
+                let content = JSON.stringify(sparqlFeaturesDataArray);
                 fs.writeFileSync(sparqlFeaturesFilename, content)
             } catch (err) {
                 console.error(err)
@@ -404,13 +377,13 @@ function SPARQLCoverageFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(sparqlCoverageFilename, content)
             } catch (err) {
                 console.error(err)
             }
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(sparqlFeaturesFilename, content)
             } catch (err) {
                 console.error(err)
@@ -421,7 +394,7 @@ function SPARQLCoverageFill() {
 function vocabFill() {
     console.log("vocabFill START")
     // Create an force graph with the graph linked by co-ocurrence of vocabularies
-    sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
+    let sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
         "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
         "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
         "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
@@ -430,21 +403,21 @@ function vocabFill() {
         "} " +
         " } " +
         "GROUP BY ?endpointUrl ?vocabulary ";
-    var knownVocabularies = new Set();
-    var rawGatherVocab = new Map();
-    var gatherVocabData = [];
-    var rawVocabSet = new Set();
-    var vocabSet = new Set();
-    var keywordSet = new Set();
-    var vocabKeywordData = [];
+    let knownVocabularies = new Set();
+    let rawGatherVocab = new Map();
+    let gatherVocabData = [];
+    let rawVocabSet = new Set();
+    let vocabSet = new Set();
+    let keywordSet = new Set();
+    let vocabKeywordData = [];
 
     return paginatedSparqlQueryPromise(sparqlesVocabulariesQuery)
         .then(json => {
 
-            var endpointSet = new Set();
+            let endpointSet = new Set();
             json.forEach((bindingItem, i) => {
-                var vocabulariUri = bindingItem.vocabulary.value;
-                var endpointUri = bindingItem.endpointUrl.value;
+                let vocabulariUri = bindingItem.vocabulary.value;
+                let endpointUri = bindingItem.endpointUrl.value;
                 endpointSet.add(endpointUri);
                 rawVocabSet.add(vocabulariUri);
                 if (!rawGatherVocab.has(endpointUri)) {
@@ -460,29 +433,29 @@ function vocabFill() {
 
             // Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
         })
-        .then(xmlhttpRequestJSONPromise("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list")
+        .then(Global.fetchJSONPromise("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list")
             .then(responseLOV => {
                 responseLOV.forEach((item, i) => {
                     knownVocabularies.add(item.uri)
                 });
                 try {
-                    var content = JSON.stringify(responseLOV);
+                    let content = JSON.stringify(responseLOV);
                     fs.writeFileSync(LOVFilename, content)
                 } catch (err) {
                     console.error(err)
                 }
             }))
-        .then(xmlhttpRequestJSONPromise("http://prefix.cc/context")
+        .then(Global.fetchJSONPromise("http://prefix.cc/context")
             .then(responsePrefixCC => {
-                for (var prefix of Object.keys(responsePrefixCC['@context'])) {
+                for (let prefix of Object.keys(responsePrefixCC['@context'])) {
                     knownVocabularies.add(responsePrefixCC['@context'][prefix])
                 };
             }))
-        .then(xmlhttpRequestJSONPromise("https://www.ebi.ac.uk/ols/api/ontologies?page=0&size=1000")
+        .then(Global.fetchJSONPromise("https://www.ebi.ac.uk/ols/api/ontologies?page=0&size=1000")
             .then(responseOLS => {
                 responseOLS._embedded.ontologies.forEach(ontologyItem => {
                     if (ontologyItem.config.baseUris.length > 0) {
-                        var ontology = ontologyItem.config.baseUris[0]
+                        let ontology = ontologyItem.config.baseUris[0]
                         knownVocabularies.add(ontology);
                     }
                 });
@@ -498,34 +471,34 @@ function vocabFill() {
                 gatherVocabData.push({ endpoint: endpointUri, vocabularies: [...vocabulariUriSet] })
             });
 
-            var queryArray = [];
-            var vocabArray = [...vocabSet];
-            for (var i = 20; i < vocabArray.length + 20; i += 20) {
-                var vocabSetSlice = vocabArray.slice(i - 20, i); // Slice the array into arrays of 20 elements
+            let queryArray = [];
+            let vocabArray = [...vocabSet];
+            for (let i = 20; i < vocabArray.length + 20; i += 20) {
+                let vocabSetSlice = vocabArray.slice(i - 20, i); // Slice the array into arrays of 20 elements
                 // Endpoint and vocabulary keywords graph
-                var vocabularyQueryValues = "";
+                let vocabularyQueryValues = "";
                 vocabSetSlice.forEach((item, i) => {
                     vocabularyQueryValues += "<" + item + ">";
                     vocabularyQueryValues += " ";
                 });
 
-                var keywordLOVQuery = "SELECT DISTINCT ?vocabulary ?keyword { " +
+                let keywordLOVQuery = "SELECT DISTINCT ?vocabulary ?keyword { " +
                     "GRAPH <https://lov.linkeddata.es/dataset/lov> { " +
                     "   ?vocabulary a <http://purl.org/vocommons/voaf#Vocabulary> . " +
                     "   ?vocabulary <http://www.w3.org/ns/dcat#keyword> ?keyword . " +
                     "} " +
                     "VALUES ?vocabulary { " + vocabularyQueryValues + " } " +
                     "}"
-                queryArray.push(xmlhttpRequestJSONPromise("https://lov.linkeddata.es/dataset/lov/sparql?query=" + encodeURIComponent(keywordLOVQuery) + "&format=json"));
+                queryArray.push(Global.fetchJSONPromise("https://lov.linkeddata.es/dataset/lov/sparql?query=" + encodeURIComponent(keywordLOVQuery) + "&format=json"));
             }
 
             return Promise.all(queryArray)
                 .then(jsonKeywordsArray => {
-                    var vocabKeywordMap = new Map();
+                    let vocabKeywordMap = new Map();
                     jsonKeywordsArray.forEach(jsonKeywords => {
                         jsonKeywords.results.bindings.forEach((keywordItem, i) => {
-                            var keyword = keywordItem.keyword.value;
-                            var vocab = keywordItem.vocabulary.value;
+                            let keyword = keywordItem.keyword.value;
+                            let vocab = keywordItem.vocabulary.value;
                             if (vocabKeywordMap.get(vocab) == undefined) {
                                 vocabKeywordMap.set(vocab, []);
                             }
@@ -541,7 +514,7 @@ function vocabFill() {
         })
         .finally(() => {
             try {
-                var content = JSON.stringify(gatherVocabData);
+                let content = JSON.stringify(gatherVocabData);
                 fs.writeFileSync(vocabEndpointFilename, content)
             } catch (err) {
                 console.error(err)
@@ -549,7 +522,7 @@ function vocabFill() {
         })
         .finally(() => {
             try {
-                var content = JSON.stringify([...knownVocabularies]);
+                let content = JSON.stringify([...knownVocabularies]);
                 fs.writeFileSync(knownVocabsFilename, content)
             } catch (err) {
                 console.error(err)
@@ -557,7 +530,7 @@ function vocabFill() {
         })
         .finally(() => {
             try {
-                var content = JSON.stringify(vocabKeywordData);
+                let content = JSON.stringify(vocabKeywordData);
                 fs.writeFileSync(vocabKeywordsFilename, content)
             } catch (err) {
                 console.error(err)
@@ -567,19 +540,19 @@ function vocabFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(vocabEndpointFilename, content)
             } catch (err) {
                 console.error(err)
             }
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(knownVocabsFilename, content)
             } catch (err) {
                 console.error(err)
             }
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(vocabKeywordsFilename, content)
             } catch (err) {
                 console.error(err)
@@ -590,7 +563,7 @@ function vocabFill() {
 function tripleDataFill() {
     console.log("tripleDataFill START")
     // Scatter plot of the number of triples through time
-    var triplesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) { " +
+    let triplesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) { " +
         "GRAPH ?g {" +
         "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
         "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
@@ -600,20 +573,20 @@ function tripleDataFill() {
         "?curated <http://rdfs.org/ns/void#triples> ?rawO ." +
         "}" +
         "} GROUP BY ?g ?date ?endpointUrl ?o";
-    var endpointTripleData = [];
+    let endpointTripleData = [];
     return paginatedSparqlQueryPromise(triplesSPARQLquery)
         .then(json => {
             json.forEach((itemResult, i) => {
-                var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
-                var endpointUrl = itemResult.endpointUrl.value;
-                var triples = Number.parseInt(itemResult.o.value);
+                let graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                let date = Global.parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
+                let endpointUrl = itemResult.endpointUrl.value;
+                let triples = Number.parseInt(itemResult.o.value);
                 endpointTripleData.push({ endpoint: endpointUrl, graph: graph, date: date, triples: triples })
             });
         })
         .then(() => {
             try {
-                var content = JSON.stringify(endpointTripleData);
+                let content = JSON.stringify(endpointTripleData);
                 fs.writeFileSync(tripleCountFilename, content)
             } catch (err) {
                 console.error(err)
@@ -623,7 +596,7 @@ function tripleDataFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(tripleCountFilename, content)
             } catch (err) {
                 console.error(err)
@@ -634,7 +607,7 @@ function tripleDataFill() {
 function classDataFill() {
     console.log("classDataFill START")
     // Scatter plot of the number of classes through time
-    var classesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) ?modifDate { " +
+    let classesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) ?modifDate { " +
         "GRAPH ?g {" +
         "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
         "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
@@ -644,21 +617,21 @@ function classDataFill() {
         "?base <http://rdfs.org/ns/void#classes> ?rawO ." +
         "}" +
         "} GROUP BY ?g ?date ?endpointUrl ?modifDate ?o";
-    var endpointClassCountData = [];
+    let endpointClassCountData = [];
     return paginatedSparqlQueryPromise(classesSPARQLquery)
         .then(json => {
             json.forEach((itemResult, i) => {
-                var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
-                var endpointUrl = itemResult.endpointUrl.value;
-                var triples = Number.parseInt(itemResult.o.value);
+                let graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                let date = Global.parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
+                let endpointUrl = itemResult.endpointUrl.value;
+                let triples = Number.parseInt(itemResult.o.value);
                 endpointClassCountData.push({ endpoint: endpointUrl, graph: graph, date: date, classes: triples })
             });
 
         })
         .then(() => {
             try {
-                var content = JSON.stringify(endpointClassCountData);
+                let content = JSON.stringify(endpointClassCountData);
                 fs.writeFileSync(classCountFilename, content)
             } catch (err) {
                 console.error(err)
@@ -668,7 +641,7 @@ function classDataFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(classCountFilename, content)
             } catch (err) {
                 console.error(err)
@@ -679,7 +652,7 @@ function classDataFill() {
 function propertyDataFill() {
     console.log("propertyDataFill START")
     // scatter plot of the number of properties through time
-    var propertiesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) { " +
+    let propertiesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) { " +
         "GRAPH ?g {" +
         "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
         "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
@@ -689,20 +662,20 @@ function propertyDataFill() {
         "?base <http://rdfs.org/ns/void#properties> ?rawO ." +
         "}" +
         "} GROUP BY ?endpointUrl ?g ?date ?o";
-    var endpointPropertyCountData = [];
+    let endpointPropertyCountData = [];
     return paginatedSparqlQueryPromise(propertiesSPARQLquery)
         .then(json => {
             json.forEach((itemResult, i) => {
-                var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                var endpointUrl = itemResult.endpointUrl.value;
-                var properties = Number.parseInt(itemResult.o.value);
-                var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
+                let graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                let endpointUrl = itemResult.endpointUrl.value;
+                let properties = Number.parseInt(itemResult.o.value);
+                let date = Global.parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
                 endpointPropertyCountData.push({ endpoint: endpointUrl, graph: graph, date: date, properties: properties })
             });
         })
         .then(() => {
             try {
-                var content = JSON.stringify(endpointPropertyCountData);
+                let content = JSON.stringify(endpointPropertyCountData);
                 fs.writeFileSync(propertyCountFilename, content)
             } catch (err) {
                 console.error(err)
@@ -712,7 +685,7 @@ function propertyDataFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(propertyCountFilename, content)
             } catch (err) {
                 console.error(err)
@@ -722,9 +695,9 @@ function propertyDataFill() {
 
 function categoryTestCountFill() {
     console.log("categoryTestCountFill START")
-    var testCategoryData = [];
+    let testCategoryData = [];
     // Number of tests passed by test categories
-    var testCategoryQuery = "SELECT DISTINCT ?g ?date ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
+    let testCategoryQuery = "SELECT DISTINCT ?g ?date ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
         "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
         "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
@@ -748,17 +721,17 @@ function categoryTestCountFill() {
     return paginatedSparqlQueryPromise(testCategoryQuery)
         .then(json => {
             json.forEach((itemResult, i) => {
-                var category = itemResult.category.value;
-                var count = itemResult.count.value;
-                var endpoint = itemResult.endpointUrl.value;
-                var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
+                let category = itemResult.category.value;
+                let count = itemResult.count.value;
+                let endpoint = itemResult.endpointUrl.value;
+                let graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                let date = Global.parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
                 testCategoryData.push({ category: category, graph: graph, date: date, endpoint: endpoint, count: count });
             });
         })
         .then(() => {
             try {
-                var content = JSON.stringify(testCategoryData);
+                let content = JSON.stringify(testCategoryData);
                 fs.writeFileSync(categoryTestCountFilename, content)
             } catch (err) {
                 console.error(err)
@@ -768,7 +741,7 @@ function categoryTestCountFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(categoryTestCountFilename, content)
             } catch (err) {
                 console.error(err)
@@ -779,7 +752,7 @@ function categoryTestCountFill() {
 function totalCategoryTestCountFill() {
     console.log("totalCategoryTestCountFill START")
     // Number of tests passed by test categories
-    var testCategoryQuery = "SELECT DISTINCT ?category ?g ?date (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
+    let testCategoryQuery = "SELECT DISTINCT ?category ?g ?date (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
         "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
         "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
@@ -802,21 +775,21 @@ function totalCategoryTestCountFill() {
         "} " +
         "GROUP BY ?g ?date ?category ?endpointUrl " +
         "ORDER BY ?category ";
-    var totalTestCategoryData = [];
+    let totalTestCategoryData = [];
     return paginatedSparqlQueryPromise(testCategoryQuery).then(json => {
         json.forEach((itemResult, i) => {
-            var category = itemResult.category.value;
-            var count = itemResult.count.value;
-            var endpoint = itemResult.endpointUrl.value;
-            var graph = itemResult.g.value;
-            var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
+            let category = itemResult.category.value;
+            let count = itemResult.count.value;
+            let endpoint = itemResult.endpointUrl.value;
+            let graph = itemResult.g.value;
+            let date = Global.parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
             totalTestCategoryData.push({ category: category, endpoint: endpoint, graph: graph, date: date, count: count })
         });
     })
         .then(() => {
             try {
-                var content = JSON.stringify(totalTestCategoryData);
+                let content = JSON.stringify(totalTestCategoryData);
                 fs.writeFileSync(totalCategoryTestCountFilename, content)
             } catch (err) {
                 console.error(err)
@@ -826,7 +799,7 @@ function totalCategoryTestCountFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(totalCategoryTestCountFilename, content)
             } catch (err) {
                 console.error(err)
@@ -837,7 +810,7 @@ function totalCategoryTestCountFill() {
 function endpointTestsDataFill() {
     console.log("endpointTestsDataFill START")
 
-    var appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?g ?date ?rule { " +
+    let appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?g ?date ?rule { " +
         "GRAPH ?g { " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://purl.org/dc/terms/modified> ?date . " +
@@ -847,21 +820,21 @@ function endpointTestsDataFill() {
         "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
         "} " +
         "}";
-    var endpointTestsData = [];
+    let endpointTestsData = [];
     return paginatedSparqlQueryPromise(appliedTestQuery)
         .then(json => {
             json.forEach((item, i) => {
-                var endpointUrl = item.endpointUrl.value;
-                var rule = item.rule.value;
-                var graph = item.g.value;
-                var date = parseDate(item.date.value, 'YYYY-MM-DDTHH:mm:ss');
+                let endpointUrl = item.endpointUrl.value;
+                let rule = item.rule.value;
+                let graph = item.g.value;
+                let date = Global.parseDate(item.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
                 endpointTestsData.push({ endpoint: endpointUrl, activity: rule, graph: graph, date: date })
             });
         })
         .then(() => {
             try {
-                var content = JSON.stringify(endpointTestsData);
+                let content = JSON.stringify(endpointTestsData);
                 fs.writeFileSync(endpointTestsDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -871,7 +844,7 @@ function endpointTestsDataFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(endpointTestsDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -881,7 +854,7 @@ function endpointTestsDataFill() {
 
 function totalRuntimeDataFill() {
     console.log("totalRuntimeDataFill START")
-    var maxMinTimeQuery = "SELECT DISTINCT ?g ?endpointUrl ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { " +
+    let maxMinTimeQuery = "SELECT DISTINCT ?g ?endpointUrl ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { " +
         " GRAPH ?g { " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
         "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
@@ -893,21 +866,21 @@ function totalRuntimeDataFill() {
         "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
         "} " +
         "} ";
-    var totalRuntimeData = []
+    let totalRuntimeData = []
     return paginatedSparqlQueryPromise(maxMinTimeQuery).then(jsonResponse => {
         jsonResponse.forEach((itemResult, i) => {
-            var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-            var date = parseDate(itemResult.date.value);
-            var start = parseDate(itemResult.start.value);
-            var end = parseDate(itemResult.end.value);
-            var endpointUrl = itemResult.endpointUrl.value;
-            var runtimeData = dayjs.duration(end.diff(start));
+            let graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+            let date = Global.parseDate(itemResult.date.value);
+            let start = Global.parseDate(itemResult.start.value);
+            let end = Global.parseDate(itemResult.end.value);
+            let endpointUrl = itemResult.endpointUrl.value;
+            let runtimeData = dayjs.duration(end.diff(start));
             totalRuntimeData.push({ graph: graph, endpoint: endpointUrl, date: date, start: start, end: end, runtime: runtimeData })
         });
     })
         .then(() => {
             try {
-                var content = JSON.stringify(totalRuntimeData);
+                let content = JSON.stringify(totalRuntimeData);
                 fs.writeFileSync(totalRuntimeDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -917,7 +890,7 @@ function totalRuntimeDataFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(totalRuntimeDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -927,7 +900,7 @@ function totalRuntimeDataFill() {
 
 function averageRuntimeDataFill() {
     console.log("averageRuntimeDataFill START")
-    var maxMinTimeQuery = "SELECT DISTINCT ?g ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end)" +
+    let maxMinTimeQuery = "SELECT DISTINCT ?g ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end)" +
         " { " +
         "GRAPH ?g {" +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?data , ?endpoint . " +
@@ -937,18 +910,18 @@ function averageRuntimeDataFill() {
         "?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
         "} " +
         "}";
-    var numberOfEndpointQuery = "SELECT DISTINCT ?g (COUNT(?endpointUrl) AS ?count) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?dataset . { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } } }";
-    var averageRuntimeData = [];
-    var graphStartEndMap = new Map();
+    let numberOfEndpointQuery = "SELECT DISTINCT ?g (COUNT(?endpointUrl) AS ?count) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?dataset . { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } } }";
+    let averageRuntimeData = [];
+    let graphStartEndMap = new Map();
     return Promise.all([
         paginatedSparqlQueryPromise(maxMinTimeQuery)
             .then(jsonResponse => {
                 jsonResponse.forEach((itemResult, i) => {
-                    var graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
-                    var date = parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
-                    var start = parseDate(itemResult.start.value, 'YYYY-MM-DDTHH:mm:ss');
-                    var end = parseDate(itemResult.end.value, 'YYYY-MM-DDTHH:mm:ss');
-                    var runtime = dayjs.duration(end.diff(start));
+                    let graph = itemResult.g.value.replace('http://ns.inria.fr/indegx#', '');
+                    let date = Global.parseDate(itemResult.date.value, 'YYYY-MM-DDTHH:mm:ss');
+                    let start = Global.parseDate(itemResult.start.value, 'YYYY-MM-DDTHH:mm:ss');
+                    let end = Global.parseDate(itemResult.end.value, 'YYYY-MM-DDTHH:mm:ss');
+                    let runtime = dayjs.duration(end.diff(start));
 
                     if (graphStartEndMap.get(graph) == undefined) {
                         graphStartEndMap.set(graph, {});
@@ -963,9 +936,9 @@ function averageRuntimeDataFill() {
         paginatedSparqlQueryPromise(numberOfEndpointQuery)
             .then(numberOfEndpointJson => {
                 numberOfEndpointJson.forEach((numberEndpointItem, i) => {
-                    var graph = numberEndpointItem.g.value;
+                    let graph = numberEndpointItem.g.value;
                     graph = graph.replace('http://ns.inria.fr/indegx#', '');
-                    var count = numberEndpointItem.count.value;
+                    let count = numberEndpointItem.count.value;
                     if (graphStartEndMap.get(graph) == undefined) {
                         graphStartEndMap.set(graph, {});
                     }
@@ -976,7 +949,7 @@ function averageRuntimeDataFill() {
     ])
         .then(() => {
             try {
-                var content = JSON.stringify(averageRuntimeData);
+                let content = JSON.stringify(averageRuntimeData);
                 fs.writeFileSync(averageRuntimeDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -986,7 +959,7 @@ function averageRuntimeDataFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(averageRuntimeDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -997,7 +970,7 @@ function averageRuntimeDataFill() {
 
 function classAndPropertiesDataFill() {
     console.log("classAndPropertiesDataFill START")
-    var classPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co { " +
+    let classPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co { " +
         "GRAPH ?g {" +
         "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
         "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
@@ -1023,22 +996,22 @@ function classAndPropertiesDataFill() {
         "FILTER(! isBlank(?c)) " +
         "}" +
         "} GROUP BY ?endpointUrl ?c ?ct ?cc ?cp ?cs ?co ";
-    var classSet = new Set();
-    var classCountsEndpointsMap = new Map();
-    var classPropertyCountsEndpointsMap = new Map();
-    var classContentData = [];
+    let classSet = new Set();
+    let classCountsEndpointsMap = new Map();
+    let classPropertyCountsEndpointsMap = new Map();
+    let classContentData = [];
     return paginatedSparqlQueryPromise(classPartitionQuery)
         .then(json => {
             json.forEach((item, i) => {
-                var c = item.c.value;
+                let c = item.c.value;
                 classSet.add(c);
-                var endpointUrl = item.endpointUrl.value;
+                let endpointUrl = item.endpointUrl.value;
                 if (classCountsEndpointsMap.get(c) == undefined) {
                     classCountsEndpointsMap.set(c, { class: c });
                 }
                 if (item.ct != undefined) {
-                    var ct = Number.parseInt(item.ct.value);
-                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    let ct = Number.parseInt(item.ct.value);
+                    let currentClassItem = classCountsEndpointsMap.get(c);
                     if (classCountsEndpointsMap.get(c).triples == undefined) {
                         currentClassItem.triples = 0;
                         classCountsEndpointsMap.set(c, currentClassItem);
@@ -1047,8 +1020,8 @@ function classAndPropertiesDataFill() {
                     classCountsEndpointsMap.set(c, currentClassItem);
                 }
                 if (item.cc != undefined) {
-                    var cc = Number.parseInt(item.cc.value);
-                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    let cc = Number.parseInt(item.cc.value);
+                    let currentClassItem = classCountsEndpointsMap.get(c);
                     if (classCountsEndpointsMap.get(c).classes == undefined) {
                         currentClassItem.classes = 0;
                         classCountsEndpointsMap.set(c, currentClassItem);
@@ -1057,8 +1030,8 @@ function classAndPropertiesDataFill() {
                     classCountsEndpointsMap.set(c, currentClassItem);
                 }
                 if (item.cp != undefined) {
-                    var cp = Number.parseInt(item.cp.value);
-                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    let cp = Number.parseInt(item.cp.value);
+                    let currentClassItem = classCountsEndpointsMap.get(c);
                     if (classCountsEndpointsMap.get(c).properties == undefined) {
                         currentClassItem.properties = 0;
                         classCountsEndpointsMap.set(c, currentClassItem);
@@ -1067,8 +1040,8 @@ function classAndPropertiesDataFill() {
                     classCountsEndpointsMap.set(c, currentClassItem);
                 }
                 if (item.cs != undefined) {
-                    var cs = Number.parseInt(item.cs.value);
-                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    let cs = Number.parseInt(item.cs.value);
+                    let currentClassItem = classCountsEndpointsMap.get(c);
                     if (classCountsEndpointsMap.get(c).distinctSubjects == undefined) {
                         currentClassItem.distinctSubjects = 0;
                         classCountsEndpointsMap.set(c, currentClassItem);
@@ -1077,8 +1050,8 @@ function classAndPropertiesDataFill() {
                     classCountsEndpointsMap.set(c, currentClassItem);
                 }
                 if (item.co != undefined) {
-                    var co = Number.parseInt(item.co.value);
-                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    let co = Number.parseInt(item.co.value);
+                    let currentClassItem = classCountsEndpointsMap.get(c);
                     if (classCountsEndpointsMap.get(c).distinctObjects == undefined) {
                         currentClassItem.distinctObjects = 0;
                         classCountsEndpointsMap.set(c, currentClassItem);
@@ -1087,7 +1060,7 @@ function classAndPropertiesDataFill() {
                     classCountsEndpointsMap.set(c, currentClassItem);
                 }
                 if (classCountsEndpointsMap.get(c).endpoints == undefined) {
-                    var currentClassItem = classCountsEndpointsMap.get(c);
+                    let currentClassItem = classCountsEndpointsMap.get(c);
                     currentClassItem.endpoints = new Set();
                     classCountsEndpointsMap.set(c, currentClassItem);
                 }
@@ -1095,7 +1068,7 @@ function classAndPropertiesDataFill() {
             });
         })
         .then(() => {
-            var classPropertyPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?p ?pt ?po ?ps { " +
+            let classPropertyPartitionQuery = "SELECT DISTINCT ?endpointUrl ?c ?p ?pt ?po ?ps { " +
                 "GRAPH ?g {" +
                 "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
                 "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?base . " +
@@ -1117,9 +1090,9 @@ function classAndPropertiesDataFill() {
                 "} GROUP BY ?endpointUrl ?c ?p ?pt ?po ?ps ";
             return paginatedSparqlQueryPromise(classPropertyPartitionQuery).then(json => {
                 json.forEach((item, i) => {
-                    var c = item.c.value;
-                    var p = item.p.value;
-                    var endpointUrl = item.endpointUrl.value;
+                    let c = item.c.value;
+                    let p = item.p.value;
+                    let endpointUrl = item.endpointUrl.value;
 
                     classSet.add(c);
 
@@ -1130,21 +1103,21 @@ function classAndPropertiesDataFill() {
                         classPropertyCountsEndpointsMap.get(c).set(p, { property: p });
                     }
                     if (item.pt != undefined) {
-                        var pt = Number.parseInt(item.pt.value);
+                        let pt = Number.parseInt(item.pt.value);
                         if (classPropertyCountsEndpointsMap.get(c).get(p).triples == undefined) {
                             classPropertyCountsEndpointsMap.get(c).get(p).triples = 0;
                         }
                         classPropertyCountsEndpointsMap.get(c).get(p).triples = classPropertyCountsEndpointsMap.get(c).get(p).triples + pt;
                     }
                     if (item.ps != undefined) {
-                        var ps = Number.parseInt(item.ps.value);
+                        let ps = Number.parseInt(item.ps.value);
                         if (classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects == undefined) {
                             classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects = 0;
                         }
                         classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects = classPropertyCountsEndpointsMap.get(c).get(p).distinctSubjects + ps;
                     }
                     if (item.po != undefined) {
-                        var po = Number.parseInt(item.po.value);
+                        let po = Number.parseInt(item.po.value);
                         if (classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects == undefined) {
                             classPropertyCountsEndpointsMap.get(c).get(p).distinctObjects = 0;
                         }
@@ -1160,15 +1133,15 @@ function classAndPropertiesDataFill() {
         })
         .then(() => {
             classSet.forEach(className => {
-                var classCountItem = classCountsEndpointsMap.get(className);
-                var classItem = classCountItem;
+                let classCountItem = classCountsEndpointsMap.get(className);
+                let classItem = classCountItem;
                 if (classCountItem == undefined) {
                     classItem = { class: className };
                 }
                 if (classItem.endpoints != undefined) {
                     classItem.endpoints = [...classItem.endpoints]
                 }
-                var classPropertyItem = classPropertyCountsEndpointsMap.get(className);
+                let classPropertyItem = classPropertyCountsEndpointsMap.get(className);
                 if (classPropertyItem != undefined) {
                     classItem.propertyPartitions = [];
                     classPropertyItem.forEach((propertyPartitionItem, propertyName, map1) => {
@@ -1179,7 +1152,7 @@ function classAndPropertiesDataFill() {
                 classContentData.push(classItem)
             })
             try {
-                var content = JSON.stringify(classContentData);
+                let content = JSON.stringify(classContentData);
                 fs.writeFileSync(classPropertyDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -1189,7 +1162,7 @@ function classAndPropertiesDataFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(classPropertyDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -1199,7 +1172,7 @@ function classAndPropertiesDataFill() {
 
 function datasetDescriptionDataFill() {
     console.log("datasetDescriptionDataDataFill START")
-    var provenanceWhoCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
+    let provenanceWhoCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
         "GRAPH ?g { " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
         "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
@@ -1212,7 +1185,7 @@ function datasetDescriptionDataFill() {
         "} " +
         "} " +
         "} ";
-    var provenanceLicenseCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
+    let provenanceLicenseCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
         "GRAPH ?g { " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
         "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
@@ -1224,7 +1197,7 @@ function datasetDescriptionDataFill() {
         "} " +
         "} " +
         "} ";
-    var provenanceDateCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
+    let provenanceDateCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
         "GRAPH ?g { " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
         "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
@@ -1237,7 +1210,7 @@ function datasetDescriptionDataFill() {
         "} " +
         "} " +
         "} ";
-    var provenanceSourceCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
+    let provenanceSourceCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
         "GRAPH ?g { " +
         "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
         "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
@@ -1250,16 +1223,16 @@ function datasetDescriptionDataFill() {
         "} " +
         "} " +
         "} ";
-    var endpointDescriptionElementMap = new Map();
+    let endpointDescriptionElementMap = new Map();
 
-    var datasetDescriptionData = [];
+    let datasetDescriptionData = [];
     return Promise.all([
         paginatedSparqlQueryPromise(provenanceWhoCheckQuery)
             .then(json => {
                 json.forEach((item, i) => {
-                    var endpointUrl = item.endpointUrl.value;
-                    var who = (item.o != undefined);
-                    var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                    let endpointUrl = item.endpointUrl.value;
+                    let who = (item.o != undefined);
+                    let currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
                     if (currentEndpointItem == undefined) {
                         endpointDescriptionElementMap.set(endpointUrl, { endpoint: endpointUrl })
                         currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl);
@@ -1274,9 +1247,9 @@ function datasetDescriptionDataFill() {
         paginatedSparqlQueryPromise(provenanceLicenseCheckQuery)
             .then(json => {
                 json.forEach((item, i) => {
-                    var endpointUrl = item.endpointUrl.value;
-                    var license = (item.o != undefined);
-                    var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                    let endpointUrl = item.endpointUrl.value;
+                    let license = (item.o != undefined);
+                    let currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
                     if (currentEndpointItem == undefined) {
                         endpointDescriptionElementMap.set(endpointUrl, { endpoint: endpointUrl })
                         currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl);
@@ -1295,9 +1268,9 @@ function datasetDescriptionDataFill() {
         paginatedSparqlQueryPromise(provenanceDateCheckQuery)
             .then(json => {
                 json.forEach((item, i) => {
-                    var endpointUrl = item.endpointUrl.value;
-                    var time = (item.o != undefined);
-                    var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                    let endpointUrl = item.endpointUrl.value;
+                    let time = (item.o != undefined);
+                    let currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
                     if (currentEndpointItem == undefined) {
                         endpointDescriptionElementMap.set(endpointUrl, { endpoint: endpointUrl })
                         currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl);
@@ -1316,9 +1289,9 @@ function datasetDescriptionDataFill() {
         paginatedSparqlQueryPromise(provenanceSourceCheckQuery)
             .then(json => {
                 json.forEach((item, i) => {
-                    var endpointUrl = item.endpointUrl.value;
-                    var source = (item.o != undefined);
-                    var currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
+                    let endpointUrl = item.endpointUrl.value;
+                    let source = (item.o != undefined);
+                    let currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
                     if (currentEndpointItem == undefined) {
                         endpointDescriptionElementMap.set(endpointUrl, { endpoint: endpointUrl })
                         currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl);
@@ -1339,7 +1312,7 @@ function datasetDescriptionDataFill() {
     ])
         .finally(() => {
             try {
-                var content = JSON.stringify(datasetDescriptionData);
+                let content = JSON.stringify(datasetDescriptionData);
                 fs.writeFileSync(datasetDescriptionDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -1349,7 +1322,7 @@ function datasetDescriptionDataFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(datasetDescriptionDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -1359,7 +1332,7 @@ function datasetDescriptionDataFill() {
 
 function shortUrisDataFill() {
     console.log("shortUrisDataFill START")
-    var shortUrisMeasureQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
+    let shortUrisMeasureQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
         "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
         "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
@@ -1370,15 +1343,15 @@ function shortUrisDataFill() {
         "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
         "}" +
         " } GROUP BY ?g ?date ?endpointUrl ?measure ";
-    var shortUriData = []
+    let shortUriData = []
     return paginatedSparqlQueryPromise(shortUrisMeasureQuery)
         .then(json => {
-            var graphSet = new Set();
+            let graphSet = new Set();
             json.forEach((jsonItem, i) => {
-                var endpoint = jsonItem.endpointUrl.value;
-                var shortUriMeasure = Number.parseFloat(jsonItem.measure.value * 100);
-                var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-                var date = parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
+                let endpoint = jsonItem.endpointUrl.value;
+                let shortUriMeasure = Number.parseFloat(jsonItem.measure.value) * 100;
+                let graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+                let date = Global.parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
                 graphSet.add(graph);
                 shortUriData.push({ graph: graph, date: date, endpoint: endpoint, measure: shortUriMeasure })
@@ -1386,7 +1359,7 @@ function shortUrisDataFill() {
         })
         .then(() => {
             try {
-                var content = JSON.stringify(shortUriData);
+                let content = JSON.stringify(shortUriData);
                 fs.writeFileSync(shortUriDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -1396,7 +1369,7 @@ function shortUrisDataFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(shortUriDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -1406,7 +1379,7 @@ function shortUrisDataFill() {
 
 function readableLabelsDataFill() {
     console.log("readableLabelsDataFill START")
-    var readableLabelsQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
+    let readableLabelsQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
         "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
         "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
@@ -1418,14 +1391,14 @@ function readableLabelsDataFill() {
         "} " +
         " } GROUP BY ?g ?date ?endpointUrl ?measure ";
 
-    var readableLabelData = [];
+    let readableLabelData = [];
     return paginatedSparqlQueryPromise(readableLabelsQuery)
         .then(json => {
             json.forEach((jsonItem, i) => {
-                var endpoint = jsonItem.endpointUrl.value;
-                var readableLabelMeasure = Number.parseFloat(jsonItem.measure.value * 100);
-                var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-                var date = parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
+                let endpoint = jsonItem.endpointUrl.value;
+                let readableLabelMeasure = Number.parseFloat(jsonItem.measure.value) * 100;
+                let graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+                let date = Global.parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
                 readableLabelData.push({ graph: graph, date: date, endpoint: endpoint, measure: readableLabelMeasure })
             });
@@ -1433,7 +1406,7 @@ function readableLabelsDataFill() {
         })
         .then(() => {
             try {
-                var content = JSON.stringify(readableLabelData);
+                let content = JSON.stringify(readableLabelData);
                 fs.writeFileSync(readableLabelDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -1443,7 +1416,7 @@ function readableLabelsDataFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(readableLabelDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -1453,7 +1426,7 @@ function readableLabelsDataFill() {
 
 function rdfDataStructureDataFill() {
     console.log("rdfDataStructureDataFill START")
-    var rdfDataStructureQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
+    let rdfDataStructureQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
         "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
         "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
@@ -1465,20 +1438,20 @@ function rdfDataStructureDataFill() {
         "}" +
         " } GROUP BY ?g ?date ?endpointUrl ?measure ";
 
-    var rdfDataStructureData = []
+    let rdfDataStructureData = []
     paginatedSparqlQueryPromise(rdfDataStructureQuery).then(json => {
         json.forEach((jsonItem, i) => {
-            var endpoint = jsonItem.endpointUrl.value;
-            var rdfDataStructureMeasure = Number.parseFloat(jsonItem.measure.value * 100);
-            var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-            var date = parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
+            let endpoint = jsonItem.endpointUrl.value;
+            let rdfDataStructureMeasure = Number.parseFloat(jsonItem.measure.value) * 100;
+            let graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+            let date = Global.parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
             rdfDataStructureData.push({ graph: graph, date: date, endpoint: endpoint, measure: rdfDataStructureMeasure })
         });
     })
         .then(() => {
             try {
-                var content = JSON.stringify(rdfDataStructureData);
+                let content = JSON.stringify(rdfDataStructureData);
                 fs.writeFileSync(rdfDataStructureDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -1488,7 +1461,7 @@ function rdfDataStructureDataFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(rdfDataStructureDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -1498,7 +1471,7 @@ function rdfDataStructureDataFill() {
 
 function blankNodeDataFill() {
     console.log("blankNodeDataFill START")
-    var blankNodeQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
+    let blankNodeQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
         "?metadata <http://purl.org/dc/terms/modified> ?date . " +
         "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
@@ -1511,14 +1484,14 @@ function blankNodeDataFill() {
         " } " +
         "GROUP BY ?g ?date ?endpointUrl ?measure ";
 
-    var blankNodeData = []
+    let blankNodeData = []
     return sparqlQueryPromise(blankNodeQuery).then(json => {
-        var graphSet = new Set();
+        let graphSet = new Set();
         json.results.bindings.forEach((jsonItem, i) => {
-            var endpoint = jsonItem.endpointUrl.value;
-            var blankNodeMeasure = Number.parseFloat(jsonItem.measure.value * 100);
-            var graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-            var date = parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
+            let endpoint = jsonItem.endpointUrl.value;
+            let blankNodeMeasure = Number.parseFloat(jsonItem.measure.value) * 100;
+            let graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
+            let date = Global.parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
 
             graphSet.add(graph);
             blankNodeData.push({ graph: graph, date: date, endpoint: endpoint, measure: blankNodeMeasure })
@@ -1526,7 +1499,7 @@ function blankNodeDataFill() {
     })
         .then(() => {
             try {
-                var content = JSON.stringify(blankNodeData);
+                let content = JSON.stringify(blankNodeData);
                 fs.writeFileSync(blankNodesDataFilename, content)
             } catch (err) {
                 console.error(err)
@@ -1536,7 +1509,7 @@ function blankNodeDataFill() {
         .catch(error => {
             console.log(error)
             try {
-                var content = JSON.stringify([]);
+                let content = JSON.stringify([]);
                 fs.writeFileSync(blankNodesDataFilename, content)
             } catch (err) {
                 console.error(err)
