@@ -5,6 +5,8 @@ import * as Logger from "./LogUtils"
 
 export let defaultQueryTimeout = 60000;
 
+export const queryPaginationSize = 500;
+
 export function setDefaultQueryTimeout(timeout: number) {
     if(timeout != undefined && timeout != null && timeout >= 0) {
         defaultQueryTimeout = timeout;
@@ -46,7 +48,7 @@ export function sendUpdateQuery(endpoint, updateQuery) {
     })
 }
 
-function checkSparqlType(queryString: string, queryType: "CONSTRUCT" | "SELECT" | "ASK" | "DESCRIBE" | "update") {
+export function checkSparqlType(queryString: string, queryType: "CONSTRUCT" | "SELECT" | "ASK" | "DESCRIBE" | "update") {
     let parser = new sparqljs.Parser();
     try {
         const parsedQuery = parser.parse(queryString);
@@ -82,3 +84,37 @@ export function isSparqlUpdate(queryString: string): boolean {
     return checkSparqlType(queryString, "update");
 }
 
+export function sparqlQueryToIndeGxPromise(query: string, timeout: number = defaultQueryTimeout): Promise<any> {
+    return sparqlQueryPromise("http://prod-dekalog.inria.fr/sparql", query, timeout);
+}
+
+export function paginatedSparqlQueryPromise(endpoint, query, limit = queryPaginationSize, offset = 0, finalResult = []) {
+    let paginatedQuery = query + " LIMIT " + limit + " OFFSET " + offset;
+    return sparqlQueryPromise(endpoint, paginatedQuery)
+        .then(queryResult => {
+            queryResult.results.bindings.forEach(resultItem => {
+                let finaResultItem = {};
+                queryResult.head.vars.forEach(variable => {
+                    finaResultItem[variable] = resultItem[variable];
+                })
+                finalResult.push(finaResultItem);
+            })
+            if (queryResult.results.bindings.length > 0) {
+                return paginatedSparqlQueryPromise(endpoint, query, limit + queryPaginationSize, offset + queryPaginationSize, finalResult)
+            }
+        })
+        .then(() => {
+            return finalResult;
+        })
+        .catch(error => {
+            Logger.log(error)
+            return finalResult;
+        })
+        .finally(() => {
+            return finalResult;
+        })
+}
+
+export function paginatedSparqlQueryToIndeGxPromise(query, limit = queryPaginationSize, offset = 0, finalResult = []) {
+    return paginatedSparqlQueryPromise("http://prod-dekalog.inria.fr/sparql", query, limit, offset, finalResult);
+}

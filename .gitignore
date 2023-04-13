@@ -89,3 +89,7 @@ KartoGraphICaching/.parcel-cache/
 KartoGraphICaching/node_modules/
 
 KartoGraphICaching/package-lock.json
+
+KartoGraphICaching/dist/
+
+*.log

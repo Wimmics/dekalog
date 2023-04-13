@@ -75,6 +75,20 @@ export function readFile(filename: string): Promise<string> {
     return readFilePromise;
 }
 
+export function readJSONFile(filename: string): Promise<any> {
+    return readFile(filename).then(content => JSON.parse(content));
+}
+
+export function extractSettledPromiseValues(settledPromisesResult: PromiseSettledResult<any>[]) {
+    return settledPromisesResult.map(promiseResult => {
+        if (promiseResult.status === "fulfilled") {
+            return promiseResult.value;
+        } else {
+            return undefined;
+        }
+    });
+}
+
 type promiseCreationFunction = {
     (...args: any[]): Promise<any>;
 }
