@@ -1,6 +1,7 @@
-import { fetchGETPromise, fetchJSONPromise, fetchPOSTPromise } from "./GlobalUtils";
+import { fetchGETPromise, fetchJSONPromise, fetchPOSTPromise, JSONValue } from "./GlobalUtils";
 import * as RDFUtils from "./RDFUtils";
 import sparqljs from "sparqljs";
+import * as $rdf from "rdflib";
 import * as Logger from "./LogUtils"
 
 export let defaultQueryTimeout = 60000;
@@ -8,31 +9,33 @@ export let defaultQueryTimeout = 60000;
 export const queryPaginationSize = 500;
 
 export function setDefaultQueryTimeout(timeout: number) {
-    if(timeout != undefined && timeout != null && timeout >= 0) {
+    if (timeout != undefined && timeout != null && timeout >= 0) {
         defaultQueryTimeout = timeout;
     } else {
         throw new Error("Timeout must be a positive number")
     }
 }
 
-export function sparqlQueryPromise(endpoint, query, timeout: number = defaultQueryTimeout): Promise<any> {
+export function sparqlQueryPromise(endpoint, query, timeout: number = defaultQueryTimeout): Promise<$rdf.Formula | JSONValue> {
     let jsonHeaders = new Map();
     jsonHeaders.set("Accept", "application/sparql-results+json")
     if (isSparqlSelect(query)) {
+        Logger.log("Query SELECT", query)
         return fetchJSONPromise(endpoint + '?query=' + encodeURIComponent(query) + '&format=json&timeout=' + timeout, jsonHeaders).catch(error => { Logger.error(endpoint, query, error); throw error })
     } else if (isSparqlAsk(query)) {
+        Logger.log("Query ASK", query)
         return fetchJSONPromise(endpoint + '?query=' + encodeURIComponent(query) + '&format=json&timeout=' + timeout, jsonHeaders).catch(() => { return { boolean: false } })
     } else if (isSparqlConstruct(query)) {
-        return fetchGETPromise(endpoint + '?query=' + encodeURIComponent(query) + '&format=turtle&timeout=' + timeout).then(result => {
-            let resultStore = RDFUtils.createStore();
-            result = result.replaceAll("nodeID://", "_:") // Dirty hack to fix nodeID:// from Virtuoso servers for turtle
-            return RDFUtils.parseTurtleToStore(result, resultStore).catch(error => {
-                Logger.error(endpoint, query, error, result);
-                return;
-            });
-        }).catch(error => { Logger.error(endpoint, query, error); throw error })
-    } else if (isSparqlUpdate(query)) {
-        return sendUpdateQuery(endpoint, query).catch(error => { Logger.error(endpoint, query, error); throw error });
+        Logger.log("Query CONSTRUCT", query)
+        return fetchGETPromise(endpoint + '?query=' + encodeURIComponent(query) + '&format=turtle&timeout=' + timeout)
+            .then(result => {
+                result = result.replaceAll("nodeID://", "_:") // Dirty hack to fix nodeID:// from Virtuoso servers for turtle
+                console.log(result)
+                return RDFUtils.parseTurtleToStore(result, RDFUtils.createStore()).catch(error => {
+                    Logger.error(endpoint, query, error, result);
+                    throw error;
+                });
+            }).catch(error => { Logger.error(endpoint, query, error); throw error })
     } else {
         Logger.error(new Error("Unexpected query type"))
     }
@@ -44,7 +47,7 @@ export function sendUpdateQuery(endpoint, updateQuery) {
     return fetchPOSTPromise(endpoint, updateQuery, updateHeader).then(response => {
         return response;
     }).catch(error => {
-        Logger.error("Error send update query",  error);
+        Logger.error("Error send update query", error);
     })
 }
 
@@ -88,33 +91,72 @@ export function sparqlQueryToIndeGxPromise(query: string, timeout: number = defa
     return sparqlQueryPromise("http://prod-dekalog.inria.fr/sparql", query, timeout);
 }
 
-export function paginatedSparqlQueryPromise(endpoint, query, limit = queryPaginationSize, offset = 0, finalResult = []) {
-    let paginatedQuery = query + " LIMIT " + limit + " OFFSET " + offset;
-    return sparqlQueryPromise(endpoint, paginatedQuery)
-        .then(queryResult => {
-            queryResult.results.bindings.forEach(resultItem => {
-                let finaResultItem = {};
-                queryResult.head.vars.forEach(variable => {
-                    finaResultItem[variable] = resultItem[variable];
-                })
-                finalResult.push(finaResultItem);
-            })
-            if (queryResult.results.bindings.length > 0) {
-                return paginatedSparqlQueryPromise(endpoint, query, limit + queryPaginationSize, offset + queryPaginationSize, finalResult)
+
+function paginatedSparqlQueryPromise(endpointUrl: string, query: string, pageSize: number, iteration?: number, timeout?: number, finalResult?: $rdf.Formula | Array<JSONValue>): Promise<$rdf.Formula | Array<JSONValue>> {
+    let generator = new sparqljs.Generator();
+    let parser = new sparqljs.Parser();
+    if (iteration == undefined) {
+        iteration = 0;
+    }
+    if (timeout == undefined) {
+        timeout = defaultQueryTimeout;
+    }
+    let queryObject = parser.parse(query);
+    if (isSparqlSelect(query)) {
+        if (finalResult == undefined) {
+            finalResult = [] as Array<JSONValue>;
+        }
+    } else if (isSparqlConstruct(query)) {
+        if (finalResult == undefined) {
+            finalResult = RDFUtils.createStore() as $rdf.Formula;
+        }
+    }
+
+    // We add the OFFSET and LIMIT to the query
+    queryObject.offset = iteration * pageSize;
+    queryObject.limit = pageSize;
+
+    let generatedQuery = generator.stringify(queryObject);
+
+    // We send the paginated CONSTRUCT query
+    return sparqlQueryPromise(endpointUrl, generatedQuery, timeout).then(generatedQueryResult => {
+        if (generatedQueryResult !== undefined) {
+            if (isSparqlSelect(query)) {
+                try {
+                let parsedSelectQueryResult: JSONValue = generatedQueryResult as JSONValue;
+                (finalResult as Array<JSONValue>) = (finalResult as Array<JSONValue>).concat(parsedSelectQueryResult["results"].bindings as JSONValue[]);
+                if ((parsedSelectQueryResult as JSONValue)["results"].bindings.length > 0) {
+                    return paginatedSparqlQueryPromise(endpointUrl, query, pageSize, iteration + 1, timeout, finalResult);
+                } else {
+                    return finalResult;
+                }
+                    
+            } catch (error) {
+                Logger.error("Error while parsing the query result as SELECT result: ", error, generatedQueryResult);
+                throw error;
             }
-        })
-        .then(() => {
+            } else if (isSparqlConstruct(query)) {
+                (finalResult as $rdf.Formula).addAll((generatedQueryResult as $rdf.Formula).statements)
+                if ((generatedQueryResult as $rdf.Formula).statements.length > 0) {
+                    return paginatedSparqlQueryPromise(endpointUrl, query, pageSize, iteration + 1, timeout, finalResult);
+                } else {
+                    return finalResult;
+                }
+            } else {
+                return finalResult;
+            }
+        } else {
             return finalResult;
-        })
-        .catch(error => {
-            Logger.log(error)
-            return finalResult;
-        })
+        }
+    }).catch(error => {
+        Logger.error("Error while paginating the query: ", error);
+        throw error;
+    })
         .finally(() => {
             return finalResult;
-        })
+        });
 }
 
-export function paginatedSparqlQueryToIndeGxPromise(query, limit = queryPaginationSize, offset = 0, finalResult = []) {
-    return paginatedSparqlQueryPromise("http://prod-dekalog.inria.fr/sparql", query, limit, offset, finalResult);
+export function paginatedSparqlQueryToIndeGxPromise(query, pageSize = 100) {
+    return paginatedSparqlQueryPromise("http://prod-dekalog.inria.fr/sparql", query, pageSize);
 }

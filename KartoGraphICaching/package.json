@@ -6,7 +6,7 @@
    "type": "module",
    "scripts": {
       "build": "npx parcel build",
-      "predev": "npm run build",
+      "predev": "rm kartographicaching.log || true ; rm data/cache/* || true ; npm run build",
       "dev": "node dist/dataCaching.js",
       "postdev": "rm dist/* || true"
    },
@@ -19,6 +19,10 @@
       "stream-browserify": "^3.0.0"
    },
    "dependencies": {
+      "@graphy/content.nq.read": "latest",
+      "@graphy/content.nt.read": "latest",
+      "@graphy/content.trig.read": "latest",
+      "@graphy/content.ttl.read": "latest",
       "@types/md5": "latest",
       "@types/node": "^18.11.9",
       "@types/rdflib": "^1.2.0",
@@ -28,15 +32,12 @@
       "events": "^3.3.0",
       "fetch": "^1.1.0",
       "graphy": "^4.3.6",
-      "@graphy/content.ttl.read": "latest",
-      "@graphy/content.nt.read": "latest",
-      "@graphy/content.nq.read": "latest",
-      "@graphy/content.trig.read": "latest",
       "md5": "^2.3.0",
       "node-fetch": "^3.3.1",
       "process": "^0.11.10",
       "rdflib": "^2.2.31",
       "sparqljs": "^3.6.2",
+      "sparqljs-legacy-type": "^1.0.2",
       "typescript": "^4.9.5",
       "xmlhttprequest": "^1.8.0"
    }

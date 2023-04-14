@@ -28,13 +28,13 @@ export const KGI = $rdf.Namespace("http://ns.inria.fr/kg/index#");
 
 export const rdfTypeProperty = RDF("type");
 
-export function urlToBaseURI(url: string) {
+export function urlToBaseURI(url: string): string {
     const baseURI = url.replace(new RegExp("/^(?:.*\/)*([^\/\r\n]+?|)(?=(?:\.[^\/\r\n.\.]*\.)?$)/gm"), "");
     return baseURI;
 }
 
 
-export function createStore() {
+export function createStore(): $rdf.Store {
     let store = $rdf.graph();
     store.setPrefixForURI("cc", "http://creativecommons.org/ns#");
     store.setPrefixForURI("culturefr", "https://www.culture.gouv.fr/");
@@ -82,7 +82,7 @@ function getGraphyReadingFunction(contentType: FileContentType) {
     }
 }
 
-function graphyQuadLoadingToStore(store: $rdf.Store, y_quad: any, baseURI = KGI("").value) {
+function graphyQuadLoadingToStore(store: $rdf.Store, y_quad: any, baseURI = KGI("").value): void {
     let s = undefined;
     if (y_quad.subject.termType === "NamedNode") { 
         s = $rdf.sym(y_quad.subject.value) 
@@ -125,11 +125,11 @@ function graphyQuadLoadingToStore(store: $rdf.Store, y_quad: any, baseURI = KGI(
     }
 }
 
-export function loadRDFFile(file: string, store: $rdf.Store, baseURI?: string): Promise<any> {
+export function loadRDFFile(file: string, store: $rdf.Store, baseURI?: string): Promise<void> {
     return loadRDFFiles([file], store, baseURI);
 }
 
-export function loadRDFFiles(files: Array<string>, store: $rdf.Store, generalBaseUri?: string): Promise<any> {
+export function loadRDFFiles(files: Array<string>, store: $rdf.Store, generalBaseUri?: string): Promise<void> {
     try {
         const promiseArray = files.map(filename => {
             let baseURI = urlToBaseURI(filename);
@@ -141,7 +141,7 @@ export function loadRDFFiles(files: Array<string>, store: $rdf.Store, generalBas
             if (contentType != undefined) {
                 readingFunction = getGraphyReadingFunction(contentType)
             } else {
-                throw new Error("Unsupported content type for " + filename + ", only .ttl, .nq and .nt supported.");
+                throw new Error("Unsupported content type for " + filename + ", only .ttl, .nq, .nt and .trig supported.");
             }
 
             return new Promise<void>((resolve, reject) => {
@@ -172,7 +172,7 @@ export function loadRDFFiles(files: Array<string>, store: $rdf.Store, generalBas
                 return Promise.reject(error);
             })
         });
-        return Promise.allSettled(promiseArray)
+        return Promise.allSettled(promiseArray).then(() => { });
     } catch (error) {
         Logger.error("Error while loading RDF files", files, "error", error);
         return Promise.reject(error);
@@ -278,15 +278,21 @@ export function parseN3ToStore(content: string, store: $rdf.Store): Promise<$rdf
     });
 }
 
-export function parseTurtleToStore(content: string, store: $rdf.Store, base = KGI("").value): Promise<$rdf.Formula> {
+export function parseTurtleToStore(content: string, store: $rdf.Store, baseURI = KGI("").value): Promise<$rdf.Formula> {
     return new Promise((accept, reject) => {
         try {
-            content = Global.unicodeToUrlendcode(content)
-            $rdf.parse(content, store, base, "text/turtle", (err, kb) => {
-                if (err != null) {
-                    reject(err);
+            ttl_read(content, {
+                data(y_quad) {
+                    Logger.log("Quad", y_quad.subject.value, y_quad.predicate.value, y_quad.object.value)
+                    graphyQuadLoadingToStore(store, y_quad, baseURI)
+                },
+                eof( prefixes) {
+                    accept(store);
+                },
+                error(error) {
+                    Logger.error("Error while parsing turtle content", "error", error);
+                    reject(error)
                 }
-                accept(kb);
             })
         } catch (error) {
             reject(error);

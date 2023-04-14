@@ -10,6 +10,20 @@ let countConcurrentQueries = 0;
 export let maxConccurentQueries = 300;
 export let delayMillisecondsTimeForConccurentQuery = 1000
 
+export type JSONValue =
+    | string
+    | number
+    | boolean
+    | JSONObject
+    | JSONArray;
+
+interface JSONObject {
+    [x: string]: JSONValue;
+}
+
+interface JSONArray extends Array<JSONValue> { }
+
+
 // Parse the date in any format
 export function parseDate(input: string, format: string = "yyyy-MM-dd'T'HH:mm:ss.SSSZ") {
     return dayjs(input, format);
@@ -75,7 +89,7 @@ export function readFile(filename: string): Promise<string> {
     return readFilePromise;
 }
 
-export function readJSONFile(filename: string): Promise<any> {
+export function readJSONFile(filename: string): Promise<JSONValue> {
     return readFile(filename).then(content => JSON.parse(content));
 }
 
@@ -146,7 +160,7 @@ export function fetchPromise(url, header = new Map(), method = "GET", query = ""
                         Logger.error("Too many retries", error);
                     }
                 } else {
-                    Logger.error("Too many retries", error);
+                    Logger.error("FetchError, try n°", numTry, error);
                 }
             }).finally(() => {
                 countConcurrentQueries--;
@@ -156,15 +170,15 @@ export function fetchPromise(url, header = new Map(), method = "GET", query = ""
     }
 }
 
-export function fetchGETPromise(url, header = new Map()) {
+export function fetchGETPromise(url: string, header = new Map()): Promise<string> {
     return fetchPromise(url, header);
 }
 
-export function fetchPOSTPromise(url, query = "", header = new Map()) {
+export function fetchPOSTPromise(url: string, query = "", header = new Map()): Promise<string> {
     return fetchPromise(url, header, "POST", query);
 }
 
-export function fetchJSONPromise(url, otherHeaders = new Map()) {
+export function fetchJSONPromise(url: string, otherHeaders = new Map()): Promise<JSONValue> {
     let header = new Map();
     header.set('Content-Type', 'application/json');
     otherHeaders.forEach((value, key) => {
@@ -189,7 +203,7 @@ export function fetchJSONPromise(url, otherHeaders = new Map()) {
  * @param text 
  * @returns a string with unicode codes replaced by characters
  */
-export function unicodeToUrlendcode(text) {
+export function unicodeToUrlendcode(text: string): string {
     return text.replace(/\\u[\dA-F]{4}/gi,
         function (match) {
             let unicodeMatch = String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
