@@ -67,7 +67,7 @@
                     kgi:curated ?datasetDescription , ?endpointDescription ;
                     dqv:hasQualityMeasurement ?endpointReachabilityMeasurement .
                 ?endpointReachabilityMeasurement a dqv:QualityMeasurement ;
-                    prov:wasGeneratedAtTime ?time ;
+                    prov:generatedAtTime ?time ;
                     dqv:computedOn ?endpointDescription ;
                     dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
                     dqv:value "true"^^xsd:boolean .
@@ -111,7 +111,7 @@
                     kgi:curated ?datasetDescription , ?endpointDescription ;
                     dqv:hasQualityMeasurement ?endpointReachabilityMeasurement .
                     ?endpointReachabilityMeasurement a dqv:QualityMeasurement ;
-                        prov:wasGeneratedAtTime ?time ;
+                        prov:generatedAtTime ?time ;
                         dqv:computedOn ?endpointDescription ;
                         dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/reachability.ttl> ;
                         dqv:value "false"^^xsd:boolean .
@@ -220,7 +220,7 @@
                             UNION {?dataset dcterms:conformsTo ?o }
                         }
                         OPTIONAL { { ?dataset dcterms:modified ?o }
-                            UNION { ?dataset prov:wasGeneratedAtTime ?o }
+                            UNION { ?dataset prov:generatedAtTime ?o }
                             UNION { ?dataset dcterms:issued ?o }
                         }
                         OPTIONAL { { ?dataset dcterms:source ?o }
