@@ -20,13 +20,10 @@ export function sparqlQueryPromise(endpoint, query, timeout: number = defaultQue
     let jsonHeaders = new Map();
     jsonHeaders.set("Accept", "application/sparql-results+json")
     if (isSparqlSelect(query)) {
-        Logger.log("Query SELECT", query)
         return fetchJSONPromise(endpoint + '?query=' + encodeURIComponent(query) + '&format=json&timeout=' + timeout, jsonHeaders).catch(error => { Logger.error(endpoint, query, error); throw error })
     } else if (isSparqlAsk(query)) {
-        Logger.log("Query ASK", query)
         return fetchJSONPromise(endpoint + '?query=' + encodeURIComponent(query) + '&format=json&timeout=' + timeout, jsonHeaders).catch(() => { return { boolean: false } })
     } else if (isSparqlConstruct(query)) {
-        Logger.log("Query CONSTRUCT", query)
         return fetchGETPromise(endpoint + '?query=' + encodeURIComponent(query) + '&format=turtle&timeout=' + timeout)
             .then(result => {
                 result = result.replaceAll("nodeID://", "_:") // Dirty hack to fix nodeID:// from Virtuoso servers for turtle

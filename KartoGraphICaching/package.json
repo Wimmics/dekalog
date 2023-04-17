@@ -1,13 +1,13 @@
 {
    "name": "kartographicaching",
-   "source": "src/dataCaching.ts",
-   "main": "dist/dataCaching.js",
-   "types": "dist/dataCaching.d.ts",
+   "source": "src/index.ts",
+   "main": "dist/index.js",
+   "types": "dist/index.d.ts",
    "type": "module",
    "scripts": {
       "build": "npx parcel build",
       "predev": "rm kartographicaching.log || true ; rm data/cache/* || true ; npm run build",
-      "dev": "node dist/dataCaching.js",
+      "dev": "node dist/index.js",
       "postdev": "rm dist/* || true"
    },
    "devDependencies": {
@@ -23,12 +23,14 @@
       "@graphy/content.nt.read": "latest",
       "@graphy/content.trig.read": "latest",
       "@graphy/content.ttl.read": "latest",
+      "@types/echarts": "^4.9.16",
       "@types/md5": "latest",
       "@types/node": "^18.11.9",
       "@types/rdflib": "^1.2.0",
       "@types/uuid": "^9.0.0",
       "buffer": "^6.0.3",
       "dayjs": "^1.11.7",
+      "echarts": "^5.4.2",
       "events": "^3.3.0",
       "fetch": "^1.1.0",
       "graphy": "^4.3.6",

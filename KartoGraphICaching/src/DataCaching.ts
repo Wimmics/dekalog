@@ -13,85 +13,37 @@ import * as Global from "./GlobalUtils";
 import * as Logger from "./LogUtils";
 import * as Sparql from "./SparqlUtils";
 import * as RDFUtils from "./RDFUtils";
+import { EndpointIpGeolocObject, RunSetObject, TimezoneMapObject } from './DataTypes';
 
 const dataFilePrefix = "./data/";
-const dataCachedFilePrefix = "./data/cache/";
+export const dataCachedFilePrefix = "./data/cache/";
 const graphLists = Global.readJSONFile(dataFilePrefix + 'runSets.json');
 const timezoneMap = Global.readJSONFile(dataFilePrefix + 'timezoneMap.json');
 const endpointIpMap = Global.readJSONFile(dataFilePrefix + 'endpointIpGeoloc.json');
 
-const whiteListFilename = dataCachedFilePrefix + "whiteLists.json";
-const geolocFilename = dataCachedFilePrefix + "geolocData.json";
-const sparqlCoverageFilename = dataCachedFilePrefix + "sparqlCoverageData.json";
-const sparqlFeaturesFilename = dataCachedFilePrefix + "sparqlFeaturesData.json";
-const vocabEndpointFilename = dataCachedFilePrefix + "vocabEndpointData.json";
-const knownVocabsFilename = dataCachedFilePrefix + "knownVocabsData.json";
-const vocabKeywordsFilename = dataCachedFilePrefix + "vocabKeywordsData.json";
-const tripleCountFilename = dataCachedFilePrefix + "tripleCountData.json";
-const classCountFilename = dataCachedFilePrefix + "classCountData.json";
-const propertyCountFilename = dataCachedFilePrefix + "propertyCountData.json";
-const categoryTestCountFilename = dataCachedFilePrefix + "categoryTestCountData.json";
-const totalCategoryTestCountFilename = dataCachedFilePrefix + "totalCategoryTestCountData.json";
-const endpointTestsDataFilename = dataCachedFilePrefix + "endpointTestsData.json";
-const totalRuntimeDataFilename = dataCachedFilePrefix + "totalRuntimeData.json";
-const averageRuntimeDataFilename = dataCachedFilePrefix + "averageRuntimeData.json";
-const classPropertyDataFilename = dataCachedFilePrefix + "classPropertyData.json";
-const datasetDescriptionDataFilename = dataCachedFilePrefix + "datasetDescriptionData.json";
-const shortUriDataFilename = dataCachedFilePrefix + "shortUriData.json";
-const rdfDataStructureDataFilename = dataCachedFilePrefix + "rdfDataStructureData.json";
-const readableLabelDataFilename = dataCachedFilePrefix + "readableLabelData.json";
-const blankNodesDataFilename = dataCachedFilePrefix + "blankNodesData.json";
+export const whiteListFilename = dataCachedFilePrefix + "whiteLists.json";
+export const geolocFilename = dataCachedFilePrefix + "geolocData.json";
+export const sparqlCoverageFilename = dataCachedFilePrefix + "sparqlCoverageData.json";
+export const sparqlFeaturesFilename = dataCachedFilePrefix + "sparqlFeaturesData.json";
+export const vocabEndpointFilename = dataCachedFilePrefix + "vocabEndpointData.json";
+export const knownVocabsFilename = dataCachedFilePrefix + "knownVocabsData.json";
+export const vocabKeywordsFilename = dataCachedFilePrefix + "vocabKeywordsData.json";
+export const tripleCountFilename = dataCachedFilePrefix + "tripleCountData.json";
+export const classCountFilename = dataCachedFilePrefix + "classCountData.json";
+export const propertyCountFilename = dataCachedFilePrefix + "propertyCountData.json";
+export const categoryTestCountFilename = dataCachedFilePrefix + "categoryTestCountData.json";
+export const totalCategoryTestCountFilename = dataCachedFilePrefix + "totalCategoryTestCountData.json";
+export const endpointTestsDataFilename = dataCachedFilePrefix + "endpointTestsData.json";
+export const totalRuntimeDataFilename = dataCachedFilePrefix + "totalRuntimeData.json";
+export const averageRuntimeDataFilename = dataCachedFilePrefix + "averageRuntimeData.json";
+export const classPropertyDataFilename = dataCachedFilePrefix + "classPropertyData.json";
+export const datasetDescriptionDataFilename = dataCachedFilePrefix + "datasetDescriptionData.json";
+export const shortUriDataFilename = dataCachedFilePrefix + "shortUriData.json";
+export const rdfDataStructureDataFilename = dataCachedFilePrefix + "rdfDataStructureData.json";
+export const readableLabelDataFilename = dataCachedFilePrefix + "readableLabelData.json";
+export const blankNodesDataFilename = dataCachedFilePrefix + "blankNodesData.json";
 
-const LOVFilename = dataCachedFilePrefix + "knownVocabulariesLOV.json"
-
-type RunSetObject = {
-    name: string,
-    graphs: string[]
-}
-
-type EndpointIpGeolocObject = {
-    key: string,
-    value: {
-        ip: string,
-        geoloc: {
-            status: string,
-            country: string,
-            countryCode: string,
-            region: string,
-            regionName: string,
-            city: string,
-            zip: string,
-            lat: number,
-            lon: number,
-            timezone: string,
-            isp: string,
-            org: string,
-            as: string,
-            query: string
-        }
-    }
-}
-
-type TimezoneMapObject = {
-    key: string,
-    value: {
-        abbreviation: string,
-        client_ip: string,
-        datetime: string,
-        day_of_week: number,
-        day_of_year: number,
-        dst: boolean,
-        dst_from: string,
-        dst_offset: number,
-        dst_until: string,
-        raw_offset: number,
-        timezone: string,
-        unixtime: number,
-        utc_datetime: string,
-        utc_offset: string,
-        week_number: number
-    }
-}
+export const LOVFilename = dataCachedFilePrefix + "knownVocabulariesLOV.json"
 
 function generateGraphValueFilterClause(graphList) {
     let result = "FILTER( ";
@@ -106,23 +58,22 @@ function generateGraphValueFilterClause(graphList) {
     return result;
 }
 
-function whiteListFill() {
+export function whiteListFill() {
     Logger.log("whiteListFill START")
     return graphLists.then(graphListArray => {
         if (Array.isArray(graphListArray)) {
             return Promise.allSettled(
                 (graphListArray as RunSetObject[]).map(graphListItem => {
                     let graphList = graphListItem.graphs
-                    let endpointListQuery = 'SELECT DISTINCT ?endpointUrl WHERE {' +
-                        ' GRAPH ?g { ' +
-                        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
-                        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-                        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
-                        '?metadata <http://ns.inria.fr/kg/index#curated> ?curated . ' +
-                        '} ' +
-                        generateGraphValueFilterClause(graphList) +
-                        '} ' +
-                        'GROUP BY ?endpointUrl';
+                    let endpointListQuery = `SELECT DISTINCT ?endpointUrl WHERE {
+                        GRAPH ?g {
+                            { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+                            UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
+                            UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
+                            ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
+                        } ${generateGraphValueFilterClause(graphList)}
+                    }
+                    GROUP BY ?endpointUrl`;
                     let graphListKey = md5(''.concat(...graphList));
                     return Sparql.paginatedSparqlQueryToIndeGxPromise(endpointListQuery)
                         .then(json => {
@@ -152,7 +103,7 @@ function whiteListFill() {
                     }
                     Logger.log("whiteListFill END")
                 }).catch(error => {
-                    Logger.log(error)
+                    Logger.error(error)
                 })
         }
     }
@@ -172,7 +123,7 @@ type EndpointItem = {
     popupHTML: string
 }
 
-function endpointMapfill() {
+export function endpointMapfill() {
     Logger.log("endpointMapfill START")
     let endpointGeolocData = [];
 
@@ -256,13 +207,13 @@ function endpointMapfill() {
                         endpointItem.popupHTML = popupString;
                     })
                     .catch(error => {
-                        Logger.log(error)
+                        Logger.error(error)
                     })
                 ).then(() => {
                     endpointGeolocData.push(endpointItem);
                 })
                 .catch(error => {
-                    Logger.log(error)
+                    Logger.error(error)
                 })
         } else {
             return Promise.reject();
@@ -280,12 +231,12 @@ function endpointMapfill() {
             Logger.log("endpointMapfill END")
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
         })
 
 }
 
-function SPARQLCoverageFill() {
+export function SPARQLCoverageFill() {
     Logger.log("SPARQLCoverageFill START")
     // Create an histogram of the SPARQLES rules passed by endpoint.
     let sparqlesFeatureQuery = `SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) { 
@@ -339,18 +290,17 @@ function SPARQLCoverageFill() {
 
         })
         .then(() => {
-            const sparqlFeatureQuery = 'SELECT DISTINCT ?endpoint ?activity { ' +
-                'GRAPH ?g { ' +
-                '?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . ' +
-                '?metadata <http://ns.inria.fr/kg/index#curated> ?base . ' +
-                'OPTIONAL { ' +
-                '?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . ' +
-                'FILTER(CONTAINS(str(?activity), ?sparqlNorm)) ' +
-                'VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } ' +
-                '} ' +
-                '} ' +
-                '} ' +
-                'GROUP BY ?endpoint ?activity ';
+            const sparqlFeatureQuery = `SELECT DISTINCT ?endpoint ?activity { 
+                GRAPH ?g { 
+                    ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . 
+                    ?metadata <http://ns.inria.fr/kg/index#curated> ?base . 
+                    OPTIONAL { 
+                        ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . 
+                        FILTER(CONTAINS(str(?activity), ?sparqlNorm)) 
+                        VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } 
+                    } 
+                } 
+            } GROUP BY ?endpoint ?activity `;
             let endpointFeatureMap = new Map();
             let featuresShortName = new Map();
             return Sparql.paginatedSparqlQueryToIndeGxPromise(sparqlFeatureQuery)
@@ -404,22 +354,22 @@ function SPARQLCoverageFill() {
             Logger.log("SPARQLCoverageFill END")
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
         })
 }
 
-function vocabFill(): Promise<void> {
+export function vocabFill(): Promise<void> {
     Logger.log("vocabFill START")
     // Create an force graph with the graph linked by co-ocurrence of vocabularies
-    let sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
-        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
-        "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
-        "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
-        "} " +
-        " } " +
-        "GROUP BY ?endpointUrl ?vocabulary ";
+    let sparqlesVocabulariesQuery = `SELECT DISTINCT ?endpointUrl ?vocabulary { 
+        GRAPH ?g { 
+            { ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+            UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
+            UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . 
+            ?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary } 
+        } 
+        GROUP BY ?endpointUrl ?vocabulary `;
     let knownVocabularies = new Set();
     let rawGatherVocab = new Map();
     let gatherVocabData = [];
@@ -507,13 +457,13 @@ function vocabFill(): Promise<void> {
                     vocabularyQueryValues += `<${item}> `;
                 });
 
-                let keywordLOVQuery = "SELECT DISTINCT ?vocabulary ?keyword { " +
-                    "GRAPH <https://lov.linkeddata.es/dataset/lov> { " +
-                    "   ?vocabulary a <http://purl.org/vocommons/voaf#Vocabulary> . " +
-                    "   ?vocabulary <http://www.w3.org/ns/dcat#keyword> ?keyword . " +
-                    "} " +
-                    "VALUES ?vocabulary { " + vocabularyQueryValues + " } " +
-                    "}"
+                let keywordLOVQuery = `SELECT DISTINCT ?vocabulary ?keyword { 
+                    GRAPH <https://lov.linkeddata.es/dataset/lov> { 
+                        ?vocabulary a <http://purl.org/vocommons/voaf#Vocabulary> .
+                        ?vocabulary <http://www.w3.org/ns/dcat#keyword> ?keyword .
+                    }
+                    VALUES ?vocabulary { ${vocabularyQueryValues} } 
+                }`
                 queryArray.push(Global.fetchJSONPromise("https://lov.linkeddata.es/dataset/lov/sparql?query=" + encodeURIComponent(keywordLOVQuery) + "&format=json"));
             }
 
@@ -576,24 +526,24 @@ function vocabFill(): Promise<void> {
             Logger.log("vocabFill END")
         })
         .catch(error => {
-            Logger.log(error);
+            Logger.error(error);
             return Promise.reject(error);
         })
 }
 
-function tripleDataFill() {
+export function tripleDataFill() {
     Logger.log("tripleDataFill START")
     // Scatter plot of the number of triples through time
-    let triplesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) { " +
-        "GRAPH ?g {" +
-        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
-        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?curated <http://rdfs.org/ns/void#triples> ?rawO ." +
-        "}" +
-        "} GROUP BY ?g ?date ?endpointUrl ?o";
+    let triplesSPARQLquery = `SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) {
+        GRAPH ?g {
+            { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+            UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
+            UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
+            ?metadata <http://purl.org/dc/terms/modified> ?date .
+            ?curated <http://rdfs.org/ns/void#triples> ?rawO .
+        }
+    } GROUP BY ?g ?date ?endpointUrl ?o`;
     let endpointTripleData = [];
     return Sparql.paginatedSparqlQueryToIndeGxPromise(triplesSPARQLquery)
         .then(json => {
@@ -617,23 +567,23 @@ function tripleDataFill() {
             Logger.log("tripleDataFill END")
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
         });
 }
 
-function classDataFill() {
+export function classDataFill() {
     Logger.log("classDataFill START")
     // Scatter plot of the number of classes through time
-    let classesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) ?modifDate { " +
-        "GRAPH ?g {" +
-        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?base <http://rdfs.org/ns/void#classes> ?rawO ." +
-        "}" +
-        "} GROUP BY ?g ?date ?endpointUrl ?modifDate ?o";
+    let classesSPARQLquery = `SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) ?modifDate { 
+        GRAPH ?g {
+            { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+            UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
+            UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
+            ?metadata <http://purl.org/dc/terms/modified> ?date . 
+            ?base <http://rdfs.org/ns/void#classes> ?rawO .
+        }
+    } GROUP BY ?g ?date ?endpointUrl ?modifDate ?o`;
     let endpointClassCountData = [];
     return Sparql.paginatedSparqlQueryToIndeGxPromise(classesSPARQLquery)
         .then(json => {
@@ -659,24 +609,24 @@ function classDataFill() {
             return Promise.resolve();
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
             return Promise.reject(error);
         });
 }
 
-function propertyDataFill() {
+export function propertyDataFill() {
     Logger.log("propertyDataFill START")
     // scatter plot of the number of properties through time
-    let propertiesSPARQLquery = "SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) { " +
-        "GRAPH ?g {" +
-        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?base <http://rdfs.org/ns/void#properties> ?rawO ." +
-        "}" +
-        "} GROUP BY ?endpointUrl ?g ?date ?o";
+    let propertiesSPARQLquery = `SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) {
+        GRAPH ?g {
+            { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+            UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
+            UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
+            ?metadata <http://purl.org/dc/terms/modified> ?date .
+            ?base <http://rdfs.org/ns/void#properties> ?rawO .
+        }
+    } GROUP BY ?endpointUrl ?g ?date ?o"`;
     let endpointPropertyCountData = [];
     return Sparql.paginatedSparqlQueryToIndeGxPromise(propertiesSPARQLquery)
         .then(json => {
@@ -702,36 +652,37 @@ function propertyDataFill() {
             return Promise.resolve();
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
             return Promise.reject();
         });
 }
 
-function categoryTestCountFill() {
+export function categoryTestCountFill() {
     Logger.log("categoryTestCountFill START")
     let testCategoryData = [];
     // Number of tests passed by test categories
-    let testCategoryQuery = "SELECT DISTINCT ?g ?date ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
-        "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-        "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
-        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
-        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?trace <http://www.w3.org/ns/earl#test> ?test . " +
-        "?trace <http://www.w3.org/ns/earl#result> ?result . " +
-        "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . " +
-        "FILTER(STRSTARTS(str(?test), ?category)) " +
-        "VALUES ?category { " +
-        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/' " +
-        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/' " +
-        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/' " +
-        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/' " +
-        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/' " +
-        "'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' " +
-        "}" +
-        "}  " +
-        "} GROUP BY ?g ?date ?category ?endpointUrl";
+    let testCategoryQuery = `SELECT DISTINCT ?g ?date ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { 
+        GRAPH ?g { 
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
+            ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . 
+            { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
+            UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
+            UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
+            ?metadata <http://purl.org/dc/terms/modified> ?date .
+            ?trace <http://www.w3.org/ns/earl#test> ?test . 
+            ?trace <http://www.w3.org/ns/earl#result> ?result .
+            ?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> .
+            FILTER(STRSTARTS(str(?test), ?category))
+            VALUES ?category { 
+                'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/' 
+                'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/' 
+                'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/' 
+                'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/' 
+                'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/'
+                'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' 
+            }
+        }  
+    } GROUP BY ?g ?date ?category ?endpointUrl`;
     return Sparql.paginatedSparqlQueryToIndeGxPromise(testCategoryQuery)
         .then(json => {
             (json as Global.JSONValue[]).forEach((itemResult, i) => {
@@ -757,37 +708,38 @@ function categoryTestCountFill() {
             return Promise.resolve();
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
             return Promise.reject();
         });
 }
 
-function totalCategoryTestCountFill() {
+export function totalCategoryTestCountFill() {
     Logger.log("totalCategoryTestCountFill START")
     // Number of tests passed by test categories
-    let testCategoryQuery = "SELECT DISTINCT ?category ?g ?date (count(DISTINCT ?test) AS ?count) ?endpointUrl { " +
-        "GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-        "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
-        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
-        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?trace <http://www.w3.org/ns/earl#test> ?test . " +
-        "?trace <http://www.w3.org/ns/earl#result> ?result . " +
-        "?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> . " +
-        "FILTER(STRSTARTS(str(?test), str(?category))) " +
-        "VALUES ?category { " +
-        "<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/> " +
-        "<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/> " +
-        "<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/> " +
-        "<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/> " +
-        "<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/> " +
-        "<https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/> " +
-        "} " +
-        "} " +
-        "} " +
-        "GROUP BY ?g ?date ?category ?endpointUrl " +
-        "ORDER BY ?category ";
+    let testCategoryQuery = `SELECT DISTINCT ?category ?g ?date (count(DISTINCT ?test) AS ?count) ?endpointUrl { 
+        GRAPH ?g { 
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
+            ?metadata <http://ns.inria.fr/kg/index#trace> ?trace .
+            { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+            UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
+            UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
+            ?metadata <http://purl.org/dc/terms/modified> ?date .
+            ?trace <http://www.w3.org/ns/earl#test> ?test .
+            ?trace <http://www.w3.org/ns/earl#result> ?result .
+            ?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> .
+            FILTER(STRSTARTS(str(?test), str(?category))) 
+            VALUES ?category {
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/> 
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/asserted/> 
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/extraction/computed/> 
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sportal/>
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL10/> 
+                <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/> 
+            } 
+        } 
+    } 
+    GROUP BY ?g ?date ?category ?endpointUrl 
+    ORDER BY ?category `;
     let totalTestCategoryData = [];
     return Sparql.paginatedSparqlQueryToIndeGxPromise(testCategoryQuery).then(json => {
         (json as Global.JSONValue[]).forEach((itemResult, i) => {
@@ -814,24 +766,24 @@ function totalCategoryTestCountFill() {
             return Promise.resolve();
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
             return Promise.reject();
         });
 }
 
-function endpointTestsDataFill() {
+export function endpointTestsDataFill() {
     Logger.log("endpointTestsDataFill START")
 
-    let appliedTestQuery = "SELECT DISTINCT ?endpointUrl ?g ?date ?rule { " +
-        "GRAPH ?g { " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?curated <http://www.w3.org/ns/prov#wasGeneratedBy> ?rule . " +
-        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
-        "} " +
-        "}";
+    let appliedTestQuery = `SELECT DISTINCT ?endpointUrl ?g ?date ?rule { 
+        GRAPH ?g { 
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . 
+            ?metadata <http://purl.org/dc/terms/modified> ?date . 
+            ?curated <http://www.w3.org/ns/prov#wasGeneratedBy> ?rule . 
+            { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
+            UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
+            UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
+        } 
+    }`;
     let endpointTestsData = [];
     return Sparql.paginatedSparqlQueryToIndeGxPromise(appliedTestQuery)
         .then(json => {
@@ -858,25 +810,25 @@ function endpointTestsDataFill() {
             return Promise.resolve();
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
             return Promise.reject();
         });
 }
 
-function totalRuntimeDataFill() {
+export function totalRuntimeDataFill() {
     Logger.log("totalRuntimeDataFill START")
-    let maxMinTimeQuery = "SELECT DISTINCT ?g ?endpointUrl ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { " +
-        " GRAPH ?g { " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-        "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
-        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . " +
-        "?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
-        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }" +
-        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "} " +
-        "} ";
+    let maxMinTimeQuery = `SELECT DISTINCT ?g ?endpointUrl ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { 
+        GRAPH ?g { 
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
+            ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . 
+            ?metadata <http://purl.org/dc/terms/modified> ?date .
+            ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime .
+            ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime .
+            { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+            UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
+            UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
+        }
+    } `;
     let totalRuntimeData = []
     return Sparql.paginatedSparqlQueryToIndeGxPromise(maxMinTimeQuery).then(jsonResponse => {
         (jsonResponse as Global.JSONValue[]).forEach((itemResult, i) => {
@@ -903,24 +855,29 @@ function totalRuntimeDataFill() {
             return Promise.resolve();
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
             return Promise.reject();
         });
 }
 
-function averageRuntimeDataFill() {
+export function averageRuntimeDataFill() {
     Logger.log("averageRuntimeDataFill START")
-    let maxMinTimeQuery = "SELECT DISTINCT ?g ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end)" +
-        " { " +
-        "GRAPH ?g {" +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?data , ?endpoint . " +
-        "?metadata <http://ns.inria.fr/kg/index#trace> ?trace . " +
-        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime . " +
-        "?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime . " +
-        "} " +
-        "}";
-    let numberOfEndpointQuery = "SELECT DISTINCT ?g (COUNT(?endpointUrl) AS ?count) { GRAPH ?g { ?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?dataset . { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } } } GROUP BY ?g";
+    let maxMinTimeQuery = `SELECT DISTINCT ?g ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { 
+        GRAPH ?g {
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?data , ?endpoint .
+            ?metadata <http://ns.inria.fr/kg/index#trace> ?trace .
+            ?metadata <http://purl.org/dc/terms/modified> ?date .
+            ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime .
+            ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime .
+        }
+    }`;
+    let numberOfEndpointQuery = `SELECT DISTINCT ?g (COUNT(?endpointUrl) AS ?count) { 
+        GRAPH ?g { 
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?dataset . 
+            { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
+            UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
+        } 
+    } GROUP BY ?g`;
     let averageRuntimeData = [];
     let graphStartEndMap = new Map();
     return Promise.allSettled([
@@ -972,13 +929,12 @@ function averageRuntimeDataFill() {
             return Promise.resolve();
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
             return Promise.reject();
         });
 }
 
-
-function classAndPropertiesDataFill() {
+export function classAndPropertiesDataFill() {
     Logger.log("classAndPropertiesDataFill START")
     let classPartitionQuery = `CONSTRUCT { ?classPartition <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl ;
             <http://rdfs.org/ns/void#class> ?c ;
@@ -1007,7 +963,6 @@ function classAndPropertiesDataFill() {
     let classContentData = [];
     return Sparql.paginatedSparqlQueryToIndeGxPromise(classPartitionQuery)
         .then(classPartitionStore => {
-            Logger.log("classPartitionStore", (classPartitionStore as $rdf.Store).length, "statements")
             classPartitionStore = classPartitionStore as $rdf.Store;
             let classStatements: $rdf.Statement[] = classPartitionStore.statementsMatching(null, RDFUtils.VOID("class"), null);
             classStatements.forEach((classStatement, i) => {
@@ -1179,64 +1134,64 @@ function classAndPropertiesDataFill() {
             return Promise.resolve();
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
             return Promise.reject(error);
         })
 }
 
-function datasetDescriptionDataFill() {
+export function datasetDescriptionDataFill() {
     Logger.log("datasetDescriptionDataDataFill START")
-    let provenanceWhoCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
-        "GRAPH ?g { " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
-        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl } " +
-        "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
-        "OPTIONAL {" +
-        "{ ?dataset <http://purl.org/dc/terms/creator> ?o } " +
-        "UNION { ?dataset <http://purl.org/dc/terms/contributor> ?o } " +
-        "UNION { ?dataset <http://purl.org/dc/terms/publisher> ?o } " +
-        "} " +
-        "} " +
-        "} ";
-    let provenanceLicenseCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
-        "GRAPH ?g { " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
-        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl } " +
-        "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
-        "OPTIONAL {" +
-        "{ ?dataset <http://purl.org/dc/terms/license> ?o } " +
-        "UNION {?dataset <http://purl.org/dc/terms/conformsTo> ?o } " +
-        "} " +
-        "} " +
-        "} ";
-    let provenanceDateCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
-        "GRAPH ?g { " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
-        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl } " +
-        "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
-        "OPTIONAL {" +
-        " { ?dataset <http://purl.org/dc/terms/modified> ?o } " +
-        "UNION { ?dataset <http://www.w3.org/ns/prov#wasGeneratedAtTime> ?o } " +
-        "UNION { ?dataset <http://purl.org/dc/terms/issued> ?o } " +
-        "} " +
-        "} " +
-        "} ";
-    let provenanceSourceCheckQuery = "SELECT DISTINCT ?endpointUrl ?o { " +
-        "GRAPH ?g { " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . " +
-        "{ ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl } " +
-        "UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }" +
-        "OPTIONAL {" +
-        "{ ?dataset <http://purl.org/dc/terms/source> ?o } " +
-        "UNION { ?dataset <http://www.w3.org/ns/prov#wasDerivedFrom> ?o } " +
-        "UNION { ?dataset <http://purl.org/dc/terms/format> ?o } " +
-        "} " +
-        "} " +
-        "} ";
+    let provenanceWhoCheckQuery = `SELECT DISTINCT ?endpointUrl ?o { 
+        GRAPH ?g { 
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . 
+            { ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
+            UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl }
+            UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }
+            OPTIONAL {
+                { ?dataset <http://purl.org/dc/terms/creator> ?o }
+                UNION { ?dataset <http://purl.org/dc/terms/contributor> ?o }
+                UNION { ?dataset <http://purl.org/dc/terms/publisher> ?o }
+            }
+        }
+    }`;
+    let provenanceLicenseCheckQuery = `SELECT DISTINCT ?endpointUrl ?o { 
+        GRAPH ?g {
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset .
+            { ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+            UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl } 
+            UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }
+            OPTIONAL {
+                { ?dataset <http://purl.org/dc/terms/license> ?o } 
+                UNION {?dataset <http://purl.org/dc/terms/conformsTo> ?o }
+            } 
+        }
+    } `;
+    let provenanceDateCheckQuery = `SELECT DISTINCT ?endpointUrl ?o { 
+        GRAPH ?g { 
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . 
+            { ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+            UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl }
+            UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }
+            OPTIONAL {
+                { ?dataset <http://purl.org/dc/terms/modified> ?o }
+                UNION { ?dataset <http://www.w3.org/ns/prov#wasGeneratedAtTime> ?o } 
+                UNION { ?dataset <http://purl.org/dc/terms/issued> ?o }
+            }
+        }
+    } `;
+    let provenanceSourceCheckQuery = `SELECT DISTINCT ?endpointUrl ?o {
+        GRAPH ?g {
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset .
+            { ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+            UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl }
+            UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl }
+            OPTIONAL {
+                { ?dataset <http://purl.org/dc/terms/source> ?o } 
+                UNION { ?dataset <http://www.w3.org/ns/prov#wasDerivedFrom> ?o }
+                UNION { ?dataset <http://purl.org/dc/terms/format> ?o }
+            }
+        }
+    } `;
     let endpointDescriptionElementMap = new Map();
 
     let datasetDescriptionData = [];
@@ -1301,7 +1256,7 @@ function datasetDescriptionDataFill() {
                 return Promise.resolve();
             })
             .catch(error => {
-                Logger.log(error)
+                Logger.error(error)
                 return Promise.reject(error);
             })
         ,
@@ -1327,7 +1282,7 @@ function datasetDescriptionDataFill() {
                 return Promise.resolve();
             })
             .catch(error => {
-                Logger.log(error)
+                Logger.error(error)
                 return Promise.reject(error);
             })
     ])
@@ -1344,12 +1299,12 @@ function datasetDescriptionDataFill() {
             return Promise.resolve();
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
             return Promise.reject(error);
         });
 }
 
-function shortUrisDataFill() {
+export function shortUrisDataFill() {
     Logger.log("shortUrisDataFill START")
     let shortUrisMeasureQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
@@ -1390,12 +1345,12 @@ function shortUrisDataFill() {
             return Promise.resolve();
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
             return Promise.reject(error);
         });
 }
 
-function readableLabelsDataFill() {
+export function readableLabelsDataFill() {
     Logger.log("readableLabelsDataFill START")
     let readableLabelsQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
@@ -1435,12 +1390,12 @@ function readableLabelsDataFill() {
             return Promise.resolve();
         })
         .catch(error => {
-            Logger.log(error);
+            Logger.error(error);
             return Promise.reject(error);
         });
 }
 
-function rdfDataStructureDataFill() {
+export function rdfDataStructureDataFill() {
     Logger.log("rdfDataStructureDataFill START")
     let rdfDataStructureQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
@@ -1477,11 +1432,11 @@ function rdfDataStructureDataFill() {
             Logger.log("rdfDataStructureDataFill END")
         })
         .catch(error => {
-            Logger.log(error);
+            Logger.error(error);
         });
 }
 
-function blankNodeDataFill() {
+export function blankNodeDataFill() {
     Logger.log("blankNodeDataFill START")
     let blankNodeQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
@@ -1521,30 +1476,6 @@ function blankNodeDataFill() {
             Logger.log("blankNodeDataFill END")
         })
         .catch(error => {
-            Logger.log(error)
+            Logger.error(error)
         });
 }
-
-Promise.allSettled([
-    whiteListFill(),
-    endpointMapfill(),
-    SPARQLCoverageFill(),
-    vocabFill(),
-    tripleDataFill(),
-    classDataFill(),
-    propertyDataFill(),
-    categoryTestCountFill(),
-    totalCategoryTestCountFill(),
-    endpointTestsDataFill(),
-    totalRuntimeDataFill(),
-    averageRuntimeDataFill(),
-    classAndPropertiesDataFill(),
-    datasetDescriptionDataFill(),
-    shortUrisDataFill(),
-    rdfDataStructureDataFill(),
-    readableLabelsDataFill(),
-    blankNodeDataFill()
-])
-    .catch(error => {
-        Logger.log(error)
-    });

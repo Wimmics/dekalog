@@ -115,11 +115,9 @@ function graphyQuadLoadingToStore(store: $rdf.Store, y_quad: any, baseURI = KGI(
 
     if (!$rdf.isLiteral(s)) { // The application of RDF reasoning makes appear Literals as subjects, for some reason. We filter them out.
         if (y_quad.graph.value === '') {
-            // Logger.log(s.toNT(), p.toNT(), o.toNT());
             store.add(s, p, o);
         } else {
             const g = $rdf.sym(y_quad.graph);
-            // Logger.log(s.toNT(), p.toNT(), o.toNT(), g.toNT());
             store.add(s, p, o, g);
         }
     }
@@ -283,7 +281,6 @@ export function parseTurtleToStore(content: string, store: $rdf.Store, baseURI =
         try {
             ttl_read(content, {
                 data(y_quad) {
-                    Logger.log("Quad", y_quad.subject.value, y_quad.predicate.value, y_quad.object.value)
                     graphyQuadLoadingToStore(store, y_quad, baseURI)
                 },
                 eof( prefixes) {
