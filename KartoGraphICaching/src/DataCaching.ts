@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import * as $rdf from "rdflib";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import duration from 'dayjs/plugin/duration.js';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
@@ -13,7 +13,7 @@ import * as Global from "./GlobalUtils";
 import * as Logger from "./LogUtils";
 import * as Sparql from "./SparqlUtils";
 import * as RDFUtils from "./RDFUtils";
-import { EndpointIpGeolocObject, RunSetObject, TimezoneMapObject } from './DataTypes';
+import { ClassCountDataObject, EndpointIpGeolocObject, EndpointTestObject, RunSetObject, TimezoneMapObject, TripleCountDataObject } from './DataTypes';
 
 const dataFilePrefix = "./data/";
 export const dataCachedFilePrefix = "./data/cache/";
@@ -540,25 +540,48 @@ export function tripleDataFill() {
             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
             UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
             ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
-            ?metadata <http://purl.org/dc/terms/modified> ?date .
+    		{?metadata <http://purl.org/dc/terms/modified> ?date .}
+            UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
             ?curated <http://rdfs.org/ns/void#triples> ?rawO .
         }
-    } GROUP BY ?g ?date ?endpointUrl ?o`;
-    let endpointTripleData = [];
+    } GROUP BY ?g ?date ?endpointUrl`;
+    type EndpointTripleIndexItem = { date: Dayjs, triples: number };
+    let endpointTriplesDataIndex: Map<string, Map<string, EndpointTripleIndexItem>> = new Map();
+    let endpointTriplesData: TripleCountDataObject[] = [];
     return Sparql.paginatedSparqlQueryToIndeGxPromise(triplesSPARQLquery)
         .then(json => {
             (json as Global.JSONValue[]).forEach((itemResult, i) => {
                 let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
-                let date = Global.parseDate(itemResult["date"].value, 'YYYY-MM-DDTHH:mm:ss');
+                let date = Global.parseDate(itemResult["date"].value);
                 let endpointUrl = itemResult["endpointUrl"].value;
                 let triples = Number.parseInt(itemResult["o"].value);
-                endpointTripleData.push({ endpoint: endpointUrl, graph: graph, date: date, triples: triples })
+
+                if (endpointTriplesDataIndex.get(endpointUrl) == undefined) {
+                    endpointTriplesDataIndex.set(endpointUrl, new Map());
+                }
+                Logger.log(endpointTriplesDataIndex.get(endpointUrl))
+                if (endpointTriplesDataIndex.get(endpointUrl).get(graph) == undefined) {
+                    endpointTriplesDataIndex.get(endpointUrl).set(graph, { date: date, triples: triples });
+                } else {
+                    let previousDate = endpointTriplesDataIndex.get(endpointUrl).get(graph).date;
+                    if (date.isAfter(previousDate)) {
+                        endpointTriplesDataIndex.get(endpointUrl).set(graph, { date: date, triples: triples });
+                    }
+                }
+                Logger.log
             });
+            Logger.log("endpointTripleDataIndex", endpointTriplesDataIndex.size)
+            endpointTriplesDataIndex.forEach((graphTripleMap, endpointUrl) => {
+                graphTripleMap.forEach((tripleData, graph) => {
+                    endpointTriplesData.push({ endpoint: endpointUrl, graph: graph, date: tripleData.date, triples: tripleData.triples })
+                })
+            });
+            return Promise.resolve();
         })
         .then(() => {
-            if (endpointTripleData.length > 0) {
+            if (endpointTriplesData.length > 0) {
                 try {
-                    let content = JSON.stringify(endpointTripleData);
+                    let content = JSON.stringify(endpointTriplesData);
                     fs.writeFileSync(tripleCountFilename, content)
                 } catch (err) {
                     Logger.error(err)
@@ -574,25 +597,43 @@ export function tripleDataFill() {
 export function classDataFill() {
     Logger.log("classDataFill START")
     // Scatter plot of the number of classes through time
-    let classesSPARQLquery = `SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) ?modifDate { 
+    let classesSPARQLquery = `SELECT DISTINCT ?g ?endpointUrl ?date (MAX(?rawO) AS ?o) { 
         GRAPH ?g {
             { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
             UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
             ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
-            ?metadata <http://purl.org/dc/terms/modified> ?date . 
-            ?base <http://rdfs.org/ns/void#classes> ?rawO .
+    		{?metadata <http://purl.org/dc/terms/modified> ?date .}
+            UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
+            ?curated <http://rdfs.org/ns/void#classes> ?rawO .
         }
-    } GROUP BY ?g ?date ?endpointUrl ?modifDate ?o`;
-    let endpointClassCountData = [];
+    } GROUP BY ?g ?endpointUrl ?date`;
+    type EndpointClassesIndexItem = { date: Dayjs, classes: number };
+    let endpointClassCountData: ClassCountDataObject[] = [];
+    let endpointClassesDataIndex: Map<string, Map<string, EndpointClassesIndexItem>> = new Map();
     return Sparql.paginatedSparqlQueryToIndeGxPromise(classesSPARQLquery)
         .then(json => {
             (json as Global.JSONValue[]).forEach((itemResult, i) => {
                 let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
-                let date = Global.parseDate(itemResult["date"].value, 'YYYY-MM-DDTHH:mm:ss');
+                let date = Global.parseDate(itemResult["date"].value);
                 let endpointUrl = itemResult["endpointUrl"].value;
-                let triples = Number.parseInt(itemResult["o"].value);
-                endpointClassCountData.push({ endpoint: endpointUrl, graph: graph, date: date, classes: triples })
+                let classes = Number.parseInt(itemResult["o"].value);
+                if (endpointClassesDataIndex.get(endpointUrl) == undefined) {
+                    endpointClassesDataIndex.set(endpointUrl, new Map());
+                }
+                if (endpointClassesDataIndex.get(endpointUrl).get(graph) == undefined) {
+                    endpointClassesDataIndex.get(endpointUrl).set(graph, { date: date, classes: classes });
+                } else {
+                    let previousDate = endpointClassesDataIndex.get(endpointUrl).get(graph).date;
+                    if (date.isAfter(previousDate)) {
+                        endpointClassesDataIndex.get(endpointUrl).set(graph, { date: date, classes: classes });
+                    }
+                }
+            });
+            endpointClassesDataIndex.forEach((graphClassesMap, endpointUrl) => {
+                graphClassesMap.forEach((classesData, graph) => {
+                    endpointClassCountData.push({ endpoint: endpointUrl, graph: graph, date: classesData.date, classes: classesData.classes })
+                })
             });
             return Promise.resolve();
         })
@@ -623,11 +664,14 @@ export function propertyDataFill() {
             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
             UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
             ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
-            ?metadata <http://purl.org/dc/terms/modified> ?date .
-            ?base <http://rdfs.org/ns/void#properties> ?rawO .
+    		{?metadata <http://purl.org/dc/terms/modified> ?date .}
+            UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
+            ?curated <http://rdfs.org/ns/void#properties> ?rawO .
         }
-    } GROUP BY ?endpointUrl ?g ?date ?o"`;
+    } GROUP BY ?endpointUrl ?g ?date`;
+    type EndpointPropertiesIndexItem = { date: Dayjs, properties: number };
     let endpointPropertyCountData = [];
+    let endpointPropertiesDataIndex = new Map();
     return Sparql.paginatedSparqlQueryToIndeGxPromise(propertiesSPARQLquery)
         .then(json => {
             (json as Global.JSONValue[]).forEach((itemResult, i) => {
@@ -635,7 +679,23 @@ export function propertyDataFill() {
                 let endpointUrl = itemResult["endpointUrl"].value;
                 let properties = Number.parseInt(itemResult["o"].value);
                 let date = Global.parseDate(itemResult["date"].value, 'YYYY-MM-DDTHH:mm:ss');
-                endpointPropertyCountData.push({ endpoint: endpointUrl, graph: graph, date: date, properties: properties })
+
+                if (endpointPropertiesDataIndex.get(endpointUrl) == undefined) {
+                    endpointPropertiesDataIndex.set(endpointUrl, new Map());
+                }
+                if (endpointPropertiesDataIndex.get(endpointUrl).get(graph) == undefined) {
+                    endpointPropertiesDataIndex.get(endpointUrl).set(graph, { date: date, properties: properties });
+                } else {
+                    let previousDate = endpointPropertiesDataIndex.get(endpointUrl).get(graph).date;
+                    if (date.isAfter(previousDate)) {
+                        endpointPropertiesDataIndex.get(endpointUrl).set(graph, { date: date, properties: properties });
+                    }
+                }
+            });
+            endpointPropertiesDataIndex.forEach((graphPropertiesMap, endpointUrl) => {
+                graphPropertiesMap.forEach((propertiesData, graph) => {
+                    endpointPropertyCountData.push({ endpoint: endpointUrl, graph: graph, date: propertiesData.date, properties: propertiesData.properties })
+                })
             });
             return Promise.resolve();
         })
@@ -668,7 +728,8 @@ export function categoryTestCountFill() {
             { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
             UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
-            ?metadata <http://purl.org/dc/terms/modified> ?date .
+    		{?metadata <http://purl.org/dc/terms/modified> ?date .}
+            UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
             ?trace <http://www.w3.org/ns/earl#test> ?test . 
             ?trace <http://www.w3.org/ns/earl#result> ?result .
             ?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> .
@@ -690,7 +751,7 @@ export function categoryTestCountFill() {
                 let count = itemResult["count"].value;
                 let endpoint = itemResult["endpointUrl"].value;
                 let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
-                let date = Global.parseDate(itemResult["date"].value, 'YYYY-MM-DDTHH:mm:ss');
+                let date = Global.parseDate(itemResult["date"].value);
                 testCategoryData.push({ category: category, graph: graph, date: date, endpoint: endpoint, count: count });
             });
             return Promise.resolve();
@@ -777,25 +838,45 @@ export function endpointTestsDataFill() {
     let appliedTestQuery = `SELECT DISTINCT ?endpointUrl ?g ?date ?rule { 
         GRAPH ?g { 
             ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . 
-            ?metadata <http://purl.org/dc/terms/modified> ?date . 
+    		{?metadata <http://purl.org/dc/terms/modified> ?date .}
+            UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
             ?curated <http://www.w3.org/ns/prov#wasGeneratedBy> ?rule . 
             { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
             UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
         } 
     }`;
-    let endpointTestsData = [];
+    type EndpointTestItem = { activity: string, date: Dayjs };
+    let endpointTestsData: EndpointTestObject[] = [];
+    let endpointGraphTestsIndex: Map<string, Map<string, EndpointTestItem>> = new Map();
     return Sparql.paginatedSparqlQueryToIndeGxPromise(appliedTestQuery)
         .then(json => {
             (json as Global.JSONValue[]).forEach((item, i) => {
                 let endpointUrl = item["endpointUrl"].value;
                 let rule = item["rule"].value;
                 let graph = item["g"].value;
-                let date = Global.parseDate(item["date"].value, 'YYYY-MM-DDTHH:mm:ss');
+                let date = Global.parseDate(item["date"].value);
 
-                endpointTestsData.push({ endpoint: endpointUrl, activity: rule, graph: graph, date: date })
+                if (!endpointGraphTestsIndex.has(endpointUrl)) {
+                    endpointGraphTestsIndex.set(endpointUrl, new Map());
+                }
+                let graphTestsIndex = endpointGraphTestsIndex.get(endpointUrl);
+                if (!graphTestsIndex.has(graph)) {
+                    graphTestsIndex.set(graph, { activity: rule, date: date });
+                } else {
+                    let previousDate = endpointGraphTestsIndex.get(endpointUrl).get(graph).date;
+                    if (date.isAfter(previousDate)) {
+                        endpointGraphTestsIndex.get(endpointUrl).set(graph, { activity: rule, date: date });
+                    }
+                }
+
+                endpointGraphTestsIndex.forEach((graphTestsIndex, endpointUrl) => {
+                    graphTestsIndex.forEach((item, graph) => {
+                        endpointTestsData.push({ endpoint: endpointUrl, activity: item.activity, graph: graph, date: item.date })
+                    })
+                })
+                return Promise.resolve();
             });
-            return Promise.resolve();
         })
         .then(() => {
             if (endpointTestsData.length > 0) {

@@ -5,16 +5,20 @@ import * as EChartsChache from './EChartsDataCaching';
 Promise.allSettled([
     // DataCache.whiteListFill(),
     // DataCache.endpointMapfill(),
-    DataCache.SPARQLCoverageFill().then(() => 
-        EChartsChache.sparqlCoverageEchartsOption()
-        ),
-    // DataCache.vocabFill(),
-    // DataCache.tripleDataFill(),
+    // DataCache.SPARQLCoverageFill().then(() =>
+    //     EChartsChache.sparqlCoverageEchartsOption()
+    // ),
+    // DataCache.vocabFill().then(() =>
+    //     EChartsChache.vocabGraphEchartsOption()
+    // ),
+    // DataCache.tripleDataFill().then(() =>
+    //     EChartsChache.triplesEchartsOption()
+    // ),
     // DataCache.classDataFill(),
     // DataCache.propertyDataFill(),
-    // DataCache.categoryTestCountFill(),
-    // DataCache.totalCategoryTestCountFill(),
-    // DataCache.endpointTestsDataFill(),
+    // DataCache.categoryTestCountFill(), // Pas OK
+    // DataCache.totalCategoryTestCountFill(), // Pas OK
+    DataCache.endpointTestsDataFill(),
     // DataCache.totalRuntimeDataFill(),
     // DataCache.averageRuntimeDataFill(),
     // DataCache.classAndPropertiesDataFill(),

@@ -25,8 +25,20 @@ interface JSONArray extends Array<JSONValue> { }
 
 
 // Parse the date in any format
-export function parseDate(input: string, format: string = "yyyy-MM-dd'T'HH:mm:ss.SSSZ") {
-    return dayjs(input, format);
+export function parseDate(input: string, format: string = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") {
+    let result = dayjs(input, format);
+    if((format.localeCompare("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") == 0) && ! result.isValid()) {
+        result = parseDate(input, "dd-MM-yyyy'T'HH:mm:ss.SSS'Z'");
+    } else if(format.localeCompare("dd-MM-yyyy'T'HH:mm:ss.SSS'Z'") && ! result.isValid()) {
+        result = parseDate(input, "yyyy-MM-dd'T'HH:mm:ss");
+    } else if(format.localeCompare("yyyy-MM-dd'T'HH:mm:ss") && ! result.isValid()) {
+        result = parseDate(input, "dd-MM-yyyy'T'HH:mm:ss");
+    } else if(format.localeCompare("dd-MM-yyyy'T'HH:mm:ss") && ! result.isValid()) { 
+        result = parseDate(input, "dd-MM-yyyy'T'HH:mm:ss.SSSXXX");
+    } else if(format.localeCompare("dd-MM-yyyy'T'HH:mm:ss.SSSXXX") && ! result.isValid()) {
+        result = parseDate(input, "dd-MM-yyyy'T'HH:mm:ssXXX");
+    }
+    return result;
 }
 
 export function getCountConccurentQueries() {

@@ -1,12 +1,17 @@
 import * as echarts from "echarts";
-import * as dataChache from "./DataCaching";
+import * as DataCache from "./DataCaching";
 import { readFile, writeFile } from "fs/promises";
 import { AverageRuntimeDataObject, ClassCountDataObject, DatasetDescriptionDataObject, EndpointTestDataObject, GeolocDataObject, GraphListDataObject, PropertyCountDataObject, QualityMeasureDataObject, ShortUriDataObject, SPARQLCoverageDataObject, SPARQLFeatureDataObject, SPARQLFeatureDescriptionDataObject, TotalRuntimeDataObject, TripleCountDataObject, VocabEndpointDataObject, VocabKeywordsDataObject } from "./DataTypes";
 import * as Logger from "./LogUtils";
+import * as ChartsUtils from "./ChartsUtils";
 
-export const sparqlCoverageEchartsOptionFilename = dataChache.dataCachedFilePrefix + "sparqlCoverageEchartsOption.json";
-export const sparql10CoverageEchartsOptionFilename = dataChache.dataCachedFilePrefix + "sparql10CoverageEchartsOption.json";
-export const sparql11CoverageEchartsOptionFilename = dataChache.dataCachedFilePrefix + "sparql11CoverageEchartsOption.json";
+const numberOfVocabulariesLimit = 1000;
+
+export const sparqlCoverageEchartsOptionFilename = DataCache.dataCachedFilePrefix + "sparqlCoverageEchartsOption.json";
+export const sparql10CoverageEchartsOptionFilename = DataCache.dataCachedFilePrefix + "sparql10CoverageEchartsOption.json";
+export const sparql11CoverageEchartsOptionFilename = DataCache.dataCachedFilePrefix + "sparql11CoverageEchartsOption.json";
+export const vocabEndpointEchartsOptionFilename = DataCache.dataCachedFilePrefix + "vocabEndpointEchartsOption.json";
+export const tripleEchartOptionFilename = DataCache.dataCachedFilePrefix + "tripleEchartOption.json";
 
 
 let whiteListData: Map<string, Array<string>>;
@@ -34,7 +39,7 @@ let sparqlFeatureDesc: Array<SPARQLFeatureDescriptionDataObject>;
 // let textElements: Array<TextElement>;
 
 export function sparqlCoverageEchartsOption(): Promise<void> {
-    return readFile(dataChache.sparqlCoverageFilename, "utf8").then(sparqlCoverageCountRawData => {
+    return readFile(DataCache.sparqlCoverageFilename, "utf8").then(sparqlCoverageCountRawData => {
 
         const sparqlCoverageCountData: Array<SPARQLCoverageDataObject> = JSON.parse(sparqlCoverageCountRawData);
 
@@ -120,7 +125,7 @@ export function sparqlCoverageEchartsOption(): Promise<void> {
         });
         // let categories = ([...categorySet]).sort((a, b) => a.localeCompare(b));
 
-        let sparql10Series: echarts.EChartsOption.SeriesBar[] = [];
+        let sparql10Series: any[] = [];
         chart10DataMap.forEach((percentage, category, map) => {
             sparql10Series.push({
                 name: category,
@@ -134,7 +139,7 @@ export function sparqlCoverageEchartsOption(): Promise<void> {
                 }
             })
         });
-        let sparql11Series: echarts.EChartOption.SeriesBar[] = [];
+        let sparql11Series: any[] = [];
         chart11DataMap.forEach((percentage, category, map) => {
             sparql11Series.push({
                 name: category,
@@ -148,7 +153,7 @@ export function sparqlCoverageEchartsOption(): Promise<void> {
                 }
             })
         });
-        let sparqlCategorySeries: echarts.EChartOption.SeriesBar[] = [];
+        let sparqlCategorySeries: any[] = [];
         chartSPARQLDataMap.forEach((percentage, category, map) => {
             sparqlCategorySeries.push({
                 name: category,
@@ -269,4 +274,130 @@ export function sparqlCoverageEchartsOption(): Promise<void> {
     }).catch((error) => {
         Logger.error("Error during sparql cached data reading", error)
     });
+}
+
+export function vocabGraphEchartsOption(): Promise<void> {
+    return readFile(DataCache.vocabEndpointFilename, "utf-8").then(vocabEndpointRawData => {
+
+        vocabEndpointData = JSON.parse(vocabEndpointRawData);
+        // Create an force graph with the graph linked by co-ocurrence of vocabularies
+
+        let endpointSet = new Set();
+        let vocabSet = new Set();
+        let rawVocabSet = new Set<string>();
+        let rawGatherVocab = new Map();
+        vocabEndpointData.forEach((item, i) => {
+            let endpoint = item.endpoint;
+            let vocabularies = item.vocabularies;
+            if (vocabularies.length < numberOfVocabulariesLimit) {
+                endpointSet.add(endpoint);
+                vocabularies.forEach(vocab => {
+                    rawVocabSet.add(vocab);
+                })
+                if (!rawGatherVocab.has(endpoint)) {
+                    rawGatherVocab.set(endpoint, new Set());
+                }
+                rawGatherVocab.set(endpoint, vocabularies);
+            }
+        });
+
+        let jsonRawVocabNodes = new Set();
+        let jsonRawVocabLinks = new Set();
+
+        endpointSet.forEach(item => {
+            jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
+        });
+        rawVocabSet.forEach(item => {
+            jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
+        });
+        rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+            endpointVocabs.forEach((vocab, i) => {
+                jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
+            });
+        });
+
+        let gatherVocab = new Map();
+        // Filtering according to ontology repositories
+        rawVocabSet.forEach(vocabulariUri => {
+            if (knownVocabData.includes(vocabulariUri)) {
+                vocabSet.add(vocabulariUri);
+            }
+        });
+        rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
+            vocabulariUriSet.forEach(vocabulariUri => {
+                if (knownVocabData.includes(vocabulariUri)) {
+                    if (!gatherVocab.has(endpointUri)) {
+                        gatherVocab.set(endpointUri, new Set());
+                    }
+                    gatherVocab.get(endpointUri).add(vocabulariUri);
+                }
+            });
+        });
+
+        // Endpoint and vocabularies graph
+        let jsonVocabLinks = new Set();
+        let jsonVocabNodes = new Set();
+
+        endpointSet.forEach(item => {
+            jsonVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
+        });
+        vocabSet.forEach(item => {
+            jsonVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
+        });
+
+        gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+            endpointVocabs.forEach((vocab, i) => {
+                jsonVocabLinks.add({ source: endpointUrl, target: vocab })
+            });
+        });
+        if (jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
+            let knowVocabsData = [];
+            gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+                let measure = (endpointVocabs.size / rawGatherVocab.get(endpointUrl).length);
+                knowVocabsData.push({ 'endpoint': endpointUrl, 'measure': measure })
+
+                endpointVocabs.forEach((vocab, i) => {
+                    jsonVocabLinks.add({ source: endpointUrl, target: vocab });
+                });
+            });
+
+            return writeFile(vocabEndpointEchartsOptionFilename, JSON.stringify(ChartsUtils.getForceGraphOption('Endpoints and vocabularies with filtering*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks])));
+        } else {
+            return Promise.reject("No data to generate the vocabulary graph");
+        }
+    }).catch((error) => {
+        Logger.error("Error during vocab graph data reading", error)
+    });
+}
+
+export function triplesEchartsOption(): Promise<void> {
+    return readFile(DataCache.tripleCountFilename, "utf-8").then(tripleCountRawData => {
+        tripleCountData = JSON.parse(tripleCountRawData);
+        // Scatter plot of the number of triples through time
+        let endpointDataSerieMap = new Map();
+        tripleCountData.forEach((itemResult, i) => {
+            let endpointUrl = itemResult.endpoint;
+            endpointDataSerieMap.set(endpointUrl, []);
+
+        });
+        tripleCountData.forEach((itemResult, i) => {
+            let date = itemResult.date;
+            let endpointUrl = itemResult.endpoint;
+            let triples = itemResult.triples;
+            endpointDataSerieMap.get(endpointUrl).push([date, triples])
+        });
+
+        if (endpointDataSerieMap.size > 0) {
+            let triplesSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
+            return writeFile(tripleEchartOptionFilename, JSON.stringify(ChartsUtils.getTimeScatterOption("Size of the datasets", triplesSeries))).then(() => {
+                Logger.log("Triple chart data generated");
+            });
+
+        } else {
+            return Promise.reject("No data to generate the triple graph");
+        }
+    }).catch((error) => {
+        Logger.error("Error during triple data reading", error)
+    });
+
 }

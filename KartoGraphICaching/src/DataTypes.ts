@@ -49,6 +49,13 @@ export type TimezoneMapObject = {
     }
 }
 
+export type EndpointTestObject = { 
+    endpoint: string, 
+    activity: string, 
+    graph: string, 
+    date: Dayjs 
+}
+
 export type GeolocDataObject = {
     endpoint: string,
     lat: number,
