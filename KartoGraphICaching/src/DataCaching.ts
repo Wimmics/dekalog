@@ -559,16 +559,14 @@ export function tripleDataFill() {
                 if (endpointTriplesDataIndex.get(endpointUrl) == undefined) {
                     endpointTriplesDataIndex.set(endpointUrl, new Map());
                 }
-                Logger.log(endpointTriplesDataIndex.get(endpointUrl))
                 if (endpointTriplesDataIndex.get(endpointUrl).get(graph) == undefined) {
                     endpointTriplesDataIndex.get(endpointUrl).set(graph, { date: date, triples: triples });
                 } else {
                     let previousDate = endpointTriplesDataIndex.get(endpointUrl).get(graph).date;
-                    if (date.isAfter(previousDate)) {
+                    if (date.isBefore(previousDate) && date.year() != previousDate.year() && date.month() != previousDate.month() && date.date() != previousDate.date()) {
                         endpointTriplesDataIndex.get(endpointUrl).set(graph, { date: date, triples: triples });
                     }
                 }
-                Logger.log
             });
             Logger.log("endpointTripleDataIndex", endpointTriplesDataIndex.size)
             endpointTriplesDataIndex.forEach((graphTripleMap, endpointUrl) => {
@@ -625,7 +623,7 @@ export function classDataFill() {
                     endpointClassesDataIndex.get(endpointUrl).set(graph, { date: date, classes: classes });
                 } else {
                     let previousDate = endpointClassesDataIndex.get(endpointUrl).get(graph).date;
-                    if (date.isAfter(previousDate)) {
+                    if (date.isBefore(previousDate) && date.year() != previousDate.year() && date.month() != previousDate.month() && date.date() != previousDate.date()) {
                         endpointClassesDataIndex.get(endpointUrl).set(graph, { date: date, classes: classes });
                     }
                 }
@@ -865,7 +863,7 @@ export function endpointTestsDataFill() {
                     graphTestsIndex.set(graph, { activity: rule, date: date });
                 } else {
                     let previousDate = endpointGraphTestsIndex.get(endpointUrl).get(graph).date;
-                    if (date.isAfter(previousDate)) {
+                    if (date.isBefore(previousDate)) {
                         endpointGraphTestsIndex.get(endpointUrl).set(graph, { activity: rule, date: date });
                     }
                 }
@@ -1477,7 +1475,7 @@ export function readableLabelsDataFill() {
 }
 
 export function rdfDataStructureDataFill() {
-    Logger.log("rdfDataStructureDataFill START")
+    Logger.info("rdfDataStructureDataFill START")
     let rdfDataStructureQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
         "GRAPH ?g {" +
         "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
@@ -1491,7 +1489,7 @@ export function rdfDataStructureDataFill() {
         " } GROUP BY ?g ?date ?endpointUrl ?measure ";
 
     let rdfDataStructureData = []
-    Sparql.paginatedSparqlQueryToIndeGxPromise(rdfDataStructureQuery).then(json => {
+    return Sparql.paginatedSparqlQueryToIndeGxPromise(rdfDataStructureQuery).then(json => {
         (json as Global.JSONValue[]).forEach((jsonItem, i) => {
             let endpoint = jsonItem["endpointUrl"].value;
             let rdfDataStructureMeasure = Number.parseFloat(jsonItem["measure"].value) * 100;
@@ -1510,7 +1508,7 @@ export function rdfDataStructureDataFill() {
                     Logger.error(err)
                 }
             }
-            Logger.log("rdfDataStructureDataFill END")
+            Logger.info("rdfDataStructureDataFill END")
         })
         .catch(error => {
             Logger.error(error);

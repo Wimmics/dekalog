@@ -11,7 +11,13 @@ export const sparqlCoverageEchartsOptionFilename = DataCache.dataCachedFilePrefi
 export const sparql10CoverageEchartsOptionFilename = DataCache.dataCachedFilePrefix + "sparql10CoverageEchartsOption.json";
 export const sparql11CoverageEchartsOptionFilename = DataCache.dataCachedFilePrefix + "sparql11CoverageEchartsOption.json";
 export const vocabEndpointEchartsOptionFilename = DataCache.dataCachedFilePrefix + "vocabEndpointEchartsOption.json";
-export const tripleEchartOptionFilename = DataCache.dataCachedFilePrefix + "tripleEchartOption.json";
+export const triplesEchartOptionFilename = DataCache.dataCachedFilePrefix + "triplesEchartOption.json";
+export const classesEchartOptionFilename = DataCache.dataCachedFilePrefix + "classesEchartOption.json";
+export const propertiesEchartOptionFilename = DataCache.dataCachedFilePrefix + "propertiesEchartOption.json";
+export const shortUrisEchartOptionFilename = DataCache.dataCachedFilePrefix + "shortUrisEchartOption.json";
+export const rdfDataStructuresEchartOptionFilename = DataCache.dataCachedFilePrefix + "rdfDataStructuresEchartOption.json";
+export const readableLabelsEchartOptionFilename = DataCache.dataCachedFilePrefix + "readableLabelsEchartOption.json";
+export const blankNodesEchartOptionFilename = DataCache.dataCachedFilePrefix + "blankNodesEchartOption.json";
 
 
 let whiteListData: Map<string, Array<string>>;
@@ -23,6 +29,10 @@ let vocabKeywordData: Array<VocabKeywordsDataObject>;
 let classCountData: Array<ClassCountDataObject>;
 let propertyCountData: Array<PropertyCountDataObject>;
 let tripleCountData: Array<TripleCountDataObject>;
+let shortUrisData: Array<ShortUriDataObject>;
+let rdfDataStructureData: Array<QualityMeasureDataObject>;
+let readableLabelData: Array<QualityMeasureDataObject>;
+let blankNodesData: Array<QualityMeasureDataObject>;
 let categoryTestCountData: any;
 let totalCategoryTestCountData: any;
 let endpointTestsData: Array<EndpointTestDataObject>;
@@ -30,10 +40,6 @@ let totalRuntimeData: Array<TotalRuntimeDataObject>;
 let averageRuntimeData: Array<AverageRuntimeDataObject>;
 let classPropertyData: any;
 let datasetDescriptionData: Array<DatasetDescriptionDataObject>;
-let shortUriData: Array<ShortUriDataObject>;
-let rdfDataStructureData: Array<QualityMeasureDataObject>;
-let readableLabelData: Array<QualityMeasureDataObject>;
-let blankNodesData: Array<QualityMeasureDataObject>;
 let graphLists: Array<GraphListDataObject>;
 let sparqlFeatureDesc: Array<SPARQLFeatureDescriptionDataObject>;
 // let textElements: Array<TextElement>;
@@ -266,9 +272,9 @@ export function sparqlCoverageEchartsOption(): Promise<void> {
         };
 
         return Promise.allSettled([
-            writeFile(sparql10CoverageEchartsOptionFilename, JSON.stringify(sparql10ChartOption)).then(() => { Logger.log("SPARQL 1.0 chart data generated"); }),
-            writeFile(sparql11CoverageEchartsOptionFilename, JSON.stringify(sparql11ChartOption)).then(() => { Logger.log("SPARQL 1.1 chart data generated"); }),
-            writeFile(sparqlCoverageEchartsOptionFilename, JSON.stringify(sparqlChartOption)).then(() => { Logger.log("SPARQL chart data generated"); })
+            writeFile(sparql10CoverageEchartsOptionFilename, JSON.stringify(sparql10ChartOption)).then(() => { Logger.info("SPARQL 1.0 chart data generated"); }),
+            writeFile(sparql11CoverageEchartsOptionFilename, JSON.stringify(sparql11ChartOption)).then(() => { Logger.info("SPARQL 1.1 chart data generated"); }),
+            writeFile(sparqlCoverageEchartsOptionFilename, JSON.stringify(sparqlChartOption)).then(() => { Logger.info("SPARQL chart data generated"); })
         ]).then(() => {
         });
     }).catch((error) => {
@@ -378,7 +384,6 @@ export function triplesEchartsOption(): Promise<void> {
         tripleCountData.forEach((itemResult, i) => {
             let endpointUrl = itemResult.endpoint;
             endpointDataSerieMap.set(endpointUrl, []);
-
         });
         tripleCountData.forEach((itemResult, i) => {
             let date = itemResult.date;
@@ -389,8 +394,8 @@ export function triplesEchartsOption(): Promise<void> {
 
         if (endpointDataSerieMap.size > 0) {
             let triplesSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
-            return writeFile(tripleEchartOptionFilename, JSON.stringify(ChartsUtils.getTimeScatterOption("Size of the datasets", triplesSeries))).then(() => {
-                Logger.log("Triple chart data generated");
+            return writeFile(triplesEchartOptionFilename, JSON.stringify(ChartsUtils.getTimeScatterOption("Size of the datasets", triplesSeries))).then(() => {
+                Logger.info("Triple chart data generated");
             });
 
         } else {
@@ -400,4 +405,185 @@ export function triplesEchartsOption(): Promise<void> {
         Logger.error("Error during triple data reading", error)
     });
 
+}
+
+export function classesEchartsOption(): Promise<void> {
+    return readFile(DataCache.classCountFilename, "utf-8").then(classesCountRawData => {
+        classCountData = JSON.parse(classesCountRawData);
+        // Scatter plot of the number of classes through time
+        let endpointDataSerieMap = new Map();
+        classCountData.forEach((itemResult, i) => {
+            let endpointUrl = itemResult.endpoint;
+            endpointDataSerieMap.set(endpointUrl, []);
+        });
+        classCountData.forEach((itemResult, i) => {
+            let date = itemResult.date;
+            let endpointUrl = itemResult.endpoint;
+            let classes = itemResult.classes;
+            endpointDataSerieMap.get(endpointUrl).push([date, classes])
+        });
+
+        if (endpointDataSerieMap.size > 0) {
+            let classesSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
+            return writeFile(classesEchartOptionFilename, JSON.stringify(ChartsUtils.getTimeScatterOption("Number of classes in the datasets", classesSeries))).then(() => {
+                Logger.info("Class chart data generated");
+            });
+
+        } else {
+            return Promise.reject("No data to generate the classes graph");
+        }
+    }).catch((error) => {
+        Logger.error("Error during classes data reading", error)
+    });
+
+}
+
+export function propertiesEchartsOption(): Promise<void> {
+    return readFile(DataCache.propertyCountFilename, "utf-8").then(propertiesCountRawData => {
+        propertyCountData = JSON.parse(propertiesCountRawData);
+        // Scatter plot of the number of classes through time
+        let endpointDataSerieMap = new Map();
+        propertyCountData.forEach((itemResult, i) => {
+            let endpointUrl = itemResult.endpoint;
+            endpointDataSerieMap.set(endpointUrl, []);
+        });
+        propertyCountData.forEach((itemResult, i) => {
+            let date = itemResult.date;
+            let endpointUrl = itemResult.endpoint;
+            let properties = itemResult.properties;
+            endpointDataSerieMap.get(endpointUrl).push([date, properties])
+        });
+
+        if (endpointDataSerieMap.size > 0) {
+            let propertiesSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
+            return writeFile(propertiesEchartOptionFilename, JSON.stringify(ChartsUtils.getTimeScatterOption("Number of properties in the datasets", propertiesSeries))).then(() => {
+                Logger.info("Property chart data generated");
+            });
+
+        } else {
+            return Promise.reject("No data to generate the properties graph");
+        }
+    }).catch((error) => {
+        Logger.error("Error during properties data reading", error)
+    });
+}
+
+export function shortUrisEchartsOption(): Promise<void> {
+    return readFile(DataCache.shortUriDataFilename, "utf-8").then(shortUrisCountRawData => {
+        shortUrisData = JSON.parse(shortUrisCountRawData);
+        // Scatter plot of the number of classes through time
+        let endpointDataSerieMap = new Map();
+        shortUrisData.forEach((itemResult, i) => {
+            let endpointUrl = itemResult.endpoint;
+            endpointDataSerieMap.set(endpointUrl, []);
+        });
+        shortUrisData.forEach((itemResult, i) => {
+            let date = itemResult.date;
+            let endpointUrl = itemResult.endpoint;
+            let shortUris = itemResult.measure;
+            endpointDataSerieMap.get(endpointUrl).push([date, shortUris])
+        });
+
+        if (endpointDataSerieMap.size > 0) {
+            let shortUrisSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
+            return writeFile(shortUrisEchartOptionFilename, JSON.stringify(ChartsUtils.getTimeScatterOption("Proportion of short URIs in the datasets", shortUrisSeries))).then(() => {
+                Logger.info("Short URIs chart data generated");
+            });
+
+        } else {
+            return Promise.reject("No data to generate the Short URIs graph");
+        }
+    }).catch((error) => {
+        Logger.error("Error during Short URIs data reading", error)
+    });
+}
+
+export function rdfDataStructuresEchartsOption(): Promise<void> {
+    return readFile(DataCache.rdfDataStructureDataFilename, "utf-8").then(rdfDataStructuresCountRawData => {
+        rdfDataStructureData = JSON.parse(rdfDataStructuresCountRawData);
+        // Scatter plot of the number of classes through time
+        let endpointDataSerieMap = new Map();
+        rdfDataStructureData.forEach((itemResult, i) => {
+            let endpointUrl = itemResult.endpoint;
+            endpointDataSerieMap.set(endpointUrl, []);
+        });
+        rdfDataStructureData.forEach((itemResult, i) => {
+            let date = itemResult.date;
+            let endpointUrl = itemResult.endpoint;
+            let rdfDatastructures = itemResult.measure;
+            endpointDataSerieMap.get(endpointUrl).push([date, rdfDatastructures])
+        });
+
+        if (endpointDataSerieMap.size > 0) {
+            let rdfDataStructuresSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
+            return writeFile(shortUrisEchartOptionFilename, JSON.stringify(ChartsUtils.getTimeScatterOption("Proportion of RDF data structures in the datasets", rdfDataStructuresSeries))).then(() => {
+                Logger.info("RDF data structures chart data generated");
+            });
+
+        } else {
+            return Promise.reject("No data to generate the RDF data structures chart");
+        }
+    }).catch((error) => {
+        Logger.error("Error during RDF data structures data reading", error)
+    });
+}
+
+export function readableLabelsEchartsOption(): Promise<void> {
+    return readFile(DataCache.rdfDataStructureDataFilename, "utf-8").then(readableLabelsCountRawData => {
+        readableLabelData = JSON.parse(readableLabelsCountRawData);
+        // Scatter plot of the number of classes through time
+        let endpointDataSerieMap = new Map();
+        readableLabelData.forEach((itemResult, i) => {
+            let endpointUrl = itemResult.endpoint;
+            endpointDataSerieMap.set(endpointUrl, []);
+        });
+        readableLabelData.forEach((itemResult, i) => {
+            let date = itemResult.date;
+            let endpointUrl = itemResult.endpoint;
+            let readableLabels = itemResult.measure;
+            endpointDataSerieMap.get(endpointUrl).push([date, readableLabels])
+        });
+
+        if (endpointDataSerieMap.size > 0) {
+            let readableLabelsSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
+            return writeFile(shortUrisEchartOptionFilename, JSON.stringify(ChartsUtils.getTimeScatterOption("Proportion of resources with readable labels in the datasets", readableLabelsSeries))).then(() => {
+                Logger.info("Readable labels chart data generated");
+            });
+
+        } else {
+            return Promise.reject("No data to generate the readable labels chart");
+        }
+    }).catch((error) => {
+        Logger.error("Error during RDF data structures data reading", error)
+    });
+}
+
+export function blankNodesEchartsOption(): Promise<void> {
+    return readFile(DataCache.blankNodesDataFilename, "utf-8").then(blankNodesCountRawData => {
+        blankNodesData = JSON.parse(blankNodesCountRawData);
+        // Scatter plot of the number of classes through time
+        let endpointDataSerieMap = new Map();
+        blankNodesData.forEach((itemResult, i) => {
+            let endpointUrl = itemResult.endpoint;
+            endpointDataSerieMap.set(endpointUrl, []);
+        });
+        blankNodesData.forEach((itemResult, i) => {
+            let date = itemResult.date;
+            let endpointUrl = itemResult.endpoint;
+            let blankNodes = itemResult.measure;
+            endpointDataSerieMap.get(endpointUrl).push([date, blankNodes])
+        });
+
+        if (endpointDataSerieMap.size > 0) {
+            let blankNodesSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
+            return writeFile(shortUrisEchartOptionFilename, JSON.stringify(ChartsUtils.getTimeScatterOption("Proportion of blank nodes in the datasets", blankNodesSeries))).then(() => {
+                Logger.info("Blank nodes chart data generated");
+            });
+
+        } else {
+            return Promise.reject("No data to generate the blank nodes chart");
+        }
+    }).catch((error) => {
+        Logger.error("Error during blank nodes data reading", error)
+    });
 }
