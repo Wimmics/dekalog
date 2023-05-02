@@ -93,3 +93,5 @@ KartoGraphICaching/package-lock.json
 KartoGraphICaching/dist/
 
 *.log
+
+KartoGraphICaching/data/cache/

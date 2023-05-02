@@ -3,25 +3,13 @@ import * as fs from 'node:fs/promises';
 import { setTimeout } from 'node:timers/promises';
 import dayjs from "dayjs";
 import * as Logger from "./LogUtils"
+import { JSONValue } from './DataTypes';
 
 export let nbFetchRetries = 10;
 export let millisecondsBetweenRetries = 5000;
 let countConcurrentQueries = 0;
 export let maxConccurentQueries = 300;
 export let delayMillisecondsTimeForConccurentQuery = 1000
-
-export type JSONValue =
-    | string
-    | number
-    | boolean
-    | JSONObject
-    | JSONArray;
-
-interface JSONObject {
-    [x: string]: JSONValue;
-}
-
-interface JSONArray extends Array<JSONValue> { }
 
 
 // Parse the date in any format
@@ -78,13 +66,13 @@ export function setDelayMillisecondsTimeForConccurentQuery(milliseconds: number)
 }
 
 export function appendToFile(filename, content) {
-    fs.writeFile(filename, content, { flag: 'a+' }).catch(error => {
+    return fs.writeFile(filename, content, { flag: 'a+' }).catch(error => {
         Logger.error("Error appending to file", error)
     });
 }
 
 export function writeFile(filename, content) {
-    fs.writeFile(filename, content).catch(error => {
+    return fs.writeFile(filename, content).catch(error => {
         Logger.error("Error writing to file", filename, error)
     });
 }

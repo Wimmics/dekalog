@@ -13,7 +13,7 @@ import * as Global from "./GlobalUtils";
 import * as Logger from "./LogUtils";
 import * as Sparql from "./SparqlUtils";
 import * as RDFUtils from "./RDFUtils";
-import { ClassCountDataObject, EndpointIpGeolocObject, EndpointTestObject, RunSetObject, TimezoneMapObject, TripleCountDataObject } from './DataTypes';
+import { ClassCountDataObject, EndpointIpGeolocObject, EndpointTestObject, JSONValue, RunSetObject, TimezoneMapObject, TripleCountDataObject } from './DataTypes';
 
 const dataFilePrefix = "./data/";
 export const dataCachedFilePrefix = "./data/cache/";
@@ -77,8 +77,9 @@ export function whiteListFill() {
                     let graphListKey = md5(''.concat(...graphList));
                     return Sparql.paginatedSparqlQueryToIndeGxPromise(endpointListQuery)
                         .then(json => {
+                            let jsonResult = (json as Global.JSONValue[]);
                             let endpointList = [];
-                            (json as Global.JSONValue[]).forEach((item) => {
+                            jsonResult.forEach((item) => {
                                 endpointList.push(item["endpointUrl"].value);
                             });
                             return { graphKey: graphListKey, endpoints: endpointList };
@@ -87,16 +88,17 @@ export function whiteListFill() {
             )
                 .then(graphListItemArraySettled => {
                     let graphListItemArray = Global.extractSettledPromiseValues(graphListItemArraySettled);
-                    let tmpWhiteListMap = new Map();
+                    let tmpWhiteListMap = { size: 0 };
                     graphListItemArray.forEach(graphListItem => {
                         if (graphListItem !== undefined) {
                             tmpWhiteListMap[graphListItem.graphKey] = graphListItem.endpoints;
+                            tmpWhiteListMap.size++;
                         }
                     });
                     if (tmpWhiteListMap.size > 0) {
                         try {
                             let content = JSON.stringify(tmpWhiteListMap);
-                            fs.writeFileSync(whiteListFilename, content)
+                            return Global.writeFile(whiteListFilename, content)
                         } catch (err) {
                             Logger.error(err)
                         }
@@ -223,7 +225,7 @@ export function endpointMapfill() {
             if (endpointGeolocData.length > 0) {
                 try {
                     let content = JSON.stringify(endpointGeolocData);
-                    fs.writeFileSync(geolocFilename, content)
+                    return Global.writeFile(geolocFilename, content)
                 } catch (err) {
                     Logger.error(err)
                 }
@@ -307,7 +309,7 @@ export function SPARQLCoverageFill() {
                 .then(json => {
                     endpointFeatureMap = new Map();
                     let featuresSet = new Set();
-                    (json as Global.JSONValue[]).forEach(bindingItem => {
+                    (json as JSONValue[]).forEach(bindingItem => {
                         const endpointUrl = bindingItem["endpoint"].value;
                         if (!endpointFeatureMap.has(endpointUrl)) {
                             endpointFeatureMap.set(endpointUrl, new Set());
@@ -382,7 +384,7 @@ export function vocabFill(): Promise<void> {
         .then(json => {
 
             let endpointSet = new Set();
-            (json as Global.JSONValue[]).forEach((bindingItem, i) => {
+            (json as JSONValue[]).forEach((bindingItem, i) => {
                 let vocabulariUri = bindingItem["vocabulary"].value;
                 let endpointUri = bindingItem["endpointUrl"].value;
                 endpointSet.add(endpointUri);
@@ -404,13 +406,12 @@ export function vocabFill(): Promise<void> {
         .then(() => Global.fetchJSONPromise("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list")
             .then(responseLOV => {
                 if (responseLOV !== undefined) {
-                    (responseLOV as Global.JSONValue[]).forEach((item) => {
+                    (responseLOV as JSONValue[]).forEach((item) => {
                         knownVocabularies.add(item["uri"])
                     });
                     try {
                         let content = JSON.stringify(responseLOV);
-                        fs.writeFileSync(LOVFilename, content)
-                        return Promise.resolve();
+                        return Global.writeFile(LOVFilename, content)
                     } catch (err) {
                         Logger.error(err)
                         return Promise.reject(err);
@@ -495,8 +496,7 @@ export function vocabFill(): Promise<void> {
             if (gatherVocabData.length > 0) {
                 try {
                     let content = JSON.stringify(gatherVocabData);
-                    fs.writeFileSync(vocabEndpointFilename, content)
-                    return Promise.resolve();
+                    return Global.writeFile(vocabEndpointFilename, content)
                 } catch (err) {
                     Logger.error(err)
                 }
@@ -506,7 +506,7 @@ export function vocabFill(): Promise<void> {
             if (knownVocabularies.size > 0) {
                 try {
                     let content = JSON.stringify([...knownVocabularies]);
-                    fs.writeFileSync(knownVocabsFilename, content)
+                    return Global.writeFile(knownVocabsFilename, content)
                     return Promise.resolve();
                 } catch (err) {
                     Logger.error(err)
@@ -517,7 +517,7 @@ export function vocabFill(): Promise<void> {
             if (vocabKeywordData.length > 0) {
                 try {
                     let content = JSON.stringify(vocabKeywordData);
-                    fs.writeFileSync(vocabKeywordsFilename, content)
+                    return Global.writeFile(vocabKeywordsFilename, content)
                     return Promise.resolve();
                 } catch (err) {
                     Logger.error(err)
@@ -550,7 +550,7 @@ export function tripleDataFill() {
     let endpointTriplesData: TripleCountDataObject[] = [];
     return Sparql.paginatedSparqlQueryToIndeGxPromise(triplesSPARQLquery)
         .then(json => {
-            (json as Global.JSONValue[]).forEach((itemResult, i) => {
+            (json as JSONValue[]).forEach((itemResult, i) => {
                 let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
                 let date = Global.parseDate(itemResult["date"].value);
                 let endpointUrl = itemResult["endpointUrl"].value;
@@ -580,7 +580,7 @@ export function tripleDataFill() {
             if (endpointTriplesData.length > 0) {
                 try {
                     let content = JSON.stringify(endpointTriplesData);
-                    fs.writeFileSync(tripleCountFilename, content)
+                    return Global.writeFile(tripleCountFilename, content)
                 } catch (err) {
                     Logger.error(err)
                 }
@@ -611,7 +611,7 @@ export function classDataFill() {
     let endpointClassesDataIndex: Map<string, Map<string, EndpointClassesIndexItem>> = new Map();
     return Sparql.paginatedSparqlQueryToIndeGxPromise(classesSPARQLquery)
         .then(json => {
-            (json as Global.JSONValue[]).forEach((itemResult, i) => {
+            (json as JSONValue[]).forEach((itemResult, i) => {
                 let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
                 let date = Global.parseDate(itemResult["date"].value);
                 let endpointUrl = itemResult["endpointUrl"].value;
@@ -639,7 +639,7 @@ export function classDataFill() {
             if (endpointClassCountData.length > 0) {
                 try {
                     let content = JSON.stringify(endpointClassCountData);
-                    fs.writeFileSync(classCountFilename, content)
+                    return Global.writeFile(classCountFilename, content)
                 } catch (err) {
                     Logger.error(err)
                 }
@@ -744,7 +744,7 @@ export function categoryTestCountFill() {
     } GROUP BY ?g ?date ?category ?endpointUrl`;
     return Sparql.paginatedSparqlQueryToIndeGxPromise(testCategoryQuery)
         .then(json => {
-            (json as Global.JSONValue[]).forEach((itemResult, i) => {
+            (json as JSONValue[]).forEach((itemResult, i) => {
                 let category = itemResult["category"].value;
                 let count = itemResult["count"].value;
                 let endpoint = itemResult["endpointUrl"].value;
@@ -758,7 +758,7 @@ export function categoryTestCountFill() {
             if (testCategoryData.length > 0) {
                 try {
                     let content = JSON.stringify(testCategoryData);
-                    fs.writeFileSync(categoryTestCountFilename, content)
+                    return Global.writeFile(categoryTestCountFilename, content)
                 } catch (err) {
                     Logger.error(err)
                 }
@@ -801,7 +801,7 @@ export function totalCategoryTestCountFill() {
     ORDER BY ?category `;
     let totalTestCategoryData = [];
     return Sparql.paginatedSparqlQueryToIndeGxPromise(testCategoryQuery).then(json => {
-        (json as Global.JSONValue[]).forEach((itemResult, i) => {
+        (json as JSONValue[]).forEach((itemResult, i) => {
             let category = itemResult["category"].value;
             let count = itemResult["count"].value;
             let endpoint = itemResult["endpointUrl"].value;
@@ -880,7 +880,7 @@ export function endpointTestsDataFill() {
             if (endpointTestsData.length > 0) {
                 try {
                     let content = JSON.stringify(endpointTestsData);
-                    fs.writeFileSync(endpointTestsDataFilename, content)
+                    return Global.writeFile(endpointTestsDataFilename, content)
                 } catch (err) {
                     Logger.error(err)
                 }
@@ -999,7 +999,7 @@ export function averageRuntimeDataFill() {
             if (averageRuntimeData.length > 0) {
                 try {
                     let content = JSON.stringify(averageRuntimeData);
-                    fs.writeFileSync(averageRuntimeDataFilename, content)
+                    return Global.writeFile(averageRuntimeDataFilename, content)
                 } catch (err) {
                     Logger.error(err)
                 }
@@ -1369,7 +1369,7 @@ export function datasetDescriptionDataFill() {
             if (datasetDescriptionData.length > 0) {
                 try {
                     let content = JSON.stringify(datasetDescriptionData);
-                    fs.writeFileSync(datasetDescriptionDataFilename, content)
+                    return Global.writeFile(datasetDescriptionDataFilename, content)
                 } catch (err) {
                     Logger.error(err)
                 }
@@ -1460,7 +1460,7 @@ export function readableLabelsDataFill() {
             if (readableLabelData.length > 0) {
                 try {
                     let content = JSON.stringify(readableLabelData);
-                    fs.writeFileSync(readableLabelDataFilename, content)
+                    return Global.writeFile(readableLabelDataFilename, content)
                 } catch (err) {
                     Logger.error(err)
                 }
@@ -1503,11 +1503,12 @@ export function rdfDataStructureDataFill() {
             if (rdfDataStructureData.length > 0) {
                 try {
                     let content = JSON.stringify(rdfDataStructureData);
-                    fs.writeFileSync(rdfDataStructureDataFilename, content)
+                    return Global.writeFile(rdfDataStructureDataFilename, content)
                 } catch (err) {
                     Logger.error(err)
                 }
             }
+            return Promise.resolve();
             Logger.info("rdfDataStructureDataFill END")
         })
         .catch(error => {

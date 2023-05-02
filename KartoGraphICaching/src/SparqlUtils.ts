@@ -1,8 +1,9 @@
-import { fetchGETPromise, fetchJSONPromise, fetchPOSTPromise, JSONValue } from "./GlobalUtils";
+import { fetchGETPromise, fetchJSONPromise, fetchPOSTPromise } from "./GlobalUtils";
 import * as RDFUtils from "./RDFUtils";
 import sparqljs from "sparqljs";
 import * as $rdf from "rdflib";
 import * as Logger from "./LogUtils"
+import { JSONValue } from "./DataTypes";
 
 export let defaultQueryTimeout = 60000;
 
