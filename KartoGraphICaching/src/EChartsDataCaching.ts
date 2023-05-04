@@ -44,7 +44,6 @@ let totalRuntimeData: Array<TotalRuntimeDataObject>;
 let averageRuntimeData: Array<AverageRuntimeDataObject>;
 let classPropertyData: any;
 let datasetDescriptionData: Array<DatasetDescriptionDataObject>;
-let graphLists: Array<GraphListDataObject>;
 let sparqlFeatureDesc: Array<SPARQLFeatureDescriptionDataObject>;
 // let textElements: Array<TextElement>;
 
@@ -276,9 +275,9 @@ export function sparqlCoverageEchartsOption(runsetId: string): Promise<void> {
         };
 
         return Promise.allSettled([
-            writeFile(Global.getCachedFilenameForRunset(runsetId, sparql10CoverageEchartsOptionFilename), JSON.stringify(sparql10ChartOption)).then(() => { Logger.info("SPARQL 1.0 chart data generated"); }),
-            writeFile(Global.getCachedFilenameForRunset(runsetId, sparql11CoverageEchartsOptionFilename), JSON.stringify(sparql11ChartOption)).then(() => { Logger.info("SPARQL 1.1 chart data generated"); }),
-            writeFile(Global.getCachedFilenameForRunset(runsetId, sparqlCoverageEchartsOptionFilename), JSON.stringify(sparqlChartOption)).then(() => { Logger.info("SPARQL chart data generated"); })
+            writeFile(Global.getCachedFilenameForRunset(runsetId, sparql10CoverageEchartsOptionFilename), JSON.stringify(sparql10ChartOption)).then(() => { Logger.info("SPARQL 1.0 chart data for", runsetId, " generated"); }),
+            writeFile(Global.getCachedFilenameForRunset(runsetId, sparql11CoverageEchartsOptionFilename), JSON.stringify(sparql11ChartOption)).then(() => { Logger.info("SPARQL 1.1 chart data for", runsetId, " generated"); }),
+            writeFile(Global.getCachedFilenameForRunset(runsetId, sparqlCoverageEchartsOptionFilename), JSON.stringify(sparqlChartOption)).then(() => { Logger.info("SPARQL chart data for", runsetId, " generated"); })
         ]).then(() => {
         });
     }).catch((error) => {
@@ -373,7 +372,8 @@ export function vocabGraphEchartsOption(runsetId: string): Promise<void> {
                         });
                     });
 
-                    return writeFile(Global.getCachedFilenameForRunset(runsetId, vocabEndpointEchartsOptionFilename), JSON.stringify(ChartsUtils.getForceGraphOption('Endpoints and vocabularies with filtering*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks])));
+                    let content =JSON.stringify(ChartsUtils.getForceGraphOption('Endpoints and vocabularies with filtering*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]));
+                    return writeFile(Global.getCachedFilenameForRunset(runsetId, vocabEndpointEchartsOptionFilename), content);
                 } else {
                     return Promise.reject("No data to generate the vocabulary graph");
                 }
@@ -402,7 +402,7 @@ export function triplesEchartsOption(runsetId: string): Promise<void> {
         if (endpointDataSerieMap.size > 0) {
             let triplesSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
             return writeFile(Global.getCachedFilenameForRunset(runsetId, triplesEchartOptionFilename), JSON.stringify(ChartsUtils.getTimeScatterOption("Size of the datasets", triplesSeries))).then(() => {
-                Logger.info("Triple chart data generated");
+                Logger.info("Triple chart data for", runsetId, " generated");
             });
 
         } else {
@@ -433,7 +433,7 @@ export function classesEchartsOption(runsetId: string): Promise<void> {
         if (endpointDataSerieMap.size > 0) {
             let classesSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
             return writeFile(Global.getCachedFilenameForRunset(runsetId, classesEchartOptionFilename), JSON.stringify(ChartsUtils.getTimeScatterOption("Number of classes in the datasets", classesSeries))).then(() => {
-                Logger.info("Class chart data generated");
+                Logger.info("Class chart data for", runsetId, " generated");
             });
 
         } else {
@@ -464,7 +464,7 @@ export function propertiesEchartsOption(runsetId: string): Promise<void> {
         if (endpointDataSerieMap.size > 0) {
             let propertiesSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
             return writeFile(Global.getCachedFilenameForRunset(runsetId, propertiesEchartOptionFilename), JSON.stringify(ChartsUtils.getTimeScatterOption("Number of properties in the datasets", propertiesSeries))).then(() => {
-                Logger.info("Property chart data generated");
+                Logger.info("Property chart data for", runsetId, " generated");
             });
 
         } else {
@@ -494,7 +494,7 @@ export function shortUrisEchartsOption(runsetId: string): Promise<void> {
         if (endpointDataSerieMap.size > 0) {
             let shortUrisSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
             return writeFile(Global.getCachedFilenameForRunset(runsetId, shortUrisEchartOptionFilename), JSON.stringify(ChartsUtils.getTimeScatterOption("Proportion of short URIs in the datasets", shortUrisSeries))).then(() => {
-                Logger.info("Short URIs chart data generated");
+                Logger.info("Short URIs chart data for", runsetId, " generated");
             });
 
         } else {
@@ -554,7 +554,7 @@ export function readableLabelsEchartsOption(runsetId: string): Promise<void> {
         if (endpointDataSerieMap.size > 0) {
             let readableLabelsSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
             return writeFile(Global.getCachedFilenameForRunset(runsetId, shortUrisEchartOptionFilename), JSON.stringify(ChartsUtils.getTimeScatterOption("Proportion of resources with readable labels in the datasets", readableLabelsSeries))).then(() => {
-                Logger.info("Readable labels chart data generated");
+                Logger.info("Readable labels chart data for", runsetId, " generated");
             });
 
         } else {
@@ -584,7 +584,7 @@ export function blankNodesEchartsOption(runsetId: string): Promise<void> {
         if (endpointDataSerieMap.size > 0) {
             let blankNodesSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
             return writeFile(Global.getCachedFilenameForRunset(runsetId, shortUrisEchartOptionFilename), JSON.stringify(ChartsUtils.getTimeScatterOption("Proportion of blank nodes in the datasets", blankNodesSeries))).then(() => {
-                Logger.info("Blank nodes chart data generated");
+                Logger.info("Blank nodes chart data for", runsetId, " generated");
             });
 
         } else {
@@ -596,7 +596,7 @@ export function blankNodesEchartsOption(runsetId: string): Promise<void> {
 }
 
 export function datasetDescriptionEchartsOption(runsetId) {
-    Logger.info("Dataset description chart data generation started")
+    Logger.info("Dataset description chart data for", runsetId, " generation started")
     return readFile(Global.getCachedFilenameForRunset(runsetId, DataCache.datasetDescriptionDataFilename), "utf-8").then(datasetDescriptionRawData => {
         datasetDescriptionData = JSON.parse(datasetDescriptionRawData);
 
@@ -774,7 +774,7 @@ export function datasetDescriptionEchartsOption(runsetId) {
     }).then((datasetDescriptionEchartOption) => {
         let content = JSON.stringify(datasetDescriptionEchartOption);
         return writeFile(Global.getCachedFilenameForRunset(runsetId, datasetDescriptionEchartOptionFilename), content).then(() => {
-            Logger.info("Dataset description chart option generation ended");
+            Logger.info("Dataset description chart option for", runsetId, " generation ended");
             return Promise.resolve();
         });
     });

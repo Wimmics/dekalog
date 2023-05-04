@@ -58,7 +58,7 @@ function generateGraphValueFilterClause(graphList: string[]) {
 }
 
 export function endpointMapfill(runset: RunSetObject) {
-    Logger.info("endpointMapfill START")
+    Logger.info("endpointMapfill", runset.id, " START")
     let endpointGeolocData = [];
     let endpointTimezoneSPARQL = new Map();
     let endpointLabelMap = new Map<string, string>();
@@ -193,7 +193,7 @@ export function endpointMapfill(runset: RunSetObject) {
         .then(endpointGeolocData => {
             try {
                 let content = JSON.stringify(endpointGeolocData);
-                Logger.info("endpointMapfill for", runset.name, "END")
+                Logger.info("endpointMapfill for", runset.id, "END")
                 return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, geolocFilename), content)
             } catch (err) {
                 Logger.error(err)
@@ -205,7 +205,7 @@ export function endpointMapfill(runset: RunSetObject) {
 }
 
 export function SPARQLCoverageFill(runset: RunSetObject) {
-    Logger.info("SPARQLCoverageFill START")
+    Logger.info("SPARQLCoverageFill", runset.id, " START")
     // Create an histogram of the SPARQLES rules passed by endpoint.
     let sparqlesFeatureQuery = `SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) { 
             GRAPH ?g { 
@@ -321,7 +321,7 @@ export function SPARQLCoverageFill(runset: RunSetObject) {
                     Logger.error(err)
                 }
             }
-            Logger.info("SPARQLCoverageFill END")
+            Logger.info("SPARQLCoverageFill", runset.id, " END")
         })
         .catch(error => {
             Logger.error(error)
@@ -329,7 +329,7 @@ export function SPARQLCoverageFill(runset: RunSetObject) {
 }
 
 export function vocabFill(runset: RunSetObject): Promise<void> {
-    Logger.info("vocabFill START")
+    Logger.info("vocabFill", runset.id, " START")
     // Create an force graph with the graph linked by co-ocurrence of vocabularies
     let sparqlesVocabulariesQuery = `SELECT DISTINCT ?endpointUrl ?vocabulary { 
         GRAPH ?g { 
@@ -490,7 +490,7 @@ export function vocabFill(runset: RunSetObject): Promise<void> {
                 try {
                     let content = JSON.stringify(vocabKeywordData);
                     return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, vocabKeywordsFilename), content).then(() => {
-                        Logger.info("vocabFill END");
+                        Logger.info("vocabFill", runset.id, " END");
                         return Promise.resolve();
                     });
                 } catch (err) {
@@ -505,7 +505,7 @@ export function vocabFill(runset: RunSetObject): Promise<void> {
 }
 
 export function tripleDataFill(runset: RunSetObject) {
-    Logger.info("tripleDataFill START")
+    Logger.info("tripleDataFill", runset.id, " START")
     // Scatter plot of the number of triples through time
     let triplesSPARQLquery = `SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) {
         GRAPH ?g {
@@ -553,7 +553,7 @@ export function tripleDataFill(runset: RunSetObject) {
             try {
                 let content = JSON.stringify(endpointTriplesData);
                 return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, tripleCountFilename), content).then(() => {
-                    Logger.info("tripleDataFill END");
+                    Logger.info("tripleDataFill", runset.id, " END");
                     return Promise.resolve();
                 })
             } catch (err) {
@@ -568,7 +568,7 @@ export function tripleDataFill(runset: RunSetObject) {
 }
 
 export function classDataFill(runset: RunSetObject) {
-    Logger.info("classDataFill START")
+    Logger.info("classDataFill", runset.id, " START")
     // Scatter plot of the number of classes through time
     let classesSPARQLquery = `SELECT DISTINCT ?g ?endpointUrl ?date (MAX(?rawO) AS ?o) { 
         GRAPH ?g {
@@ -615,7 +615,7 @@ export function classDataFill(runset: RunSetObject) {
             try {
                 let content = JSON.stringify(endpointClassCountData);
                 return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, classCountFilename), content).then(() => {
-                    Logger.info("classDataFill END")
+                    Logger.info("classDataFill", runset.id, " END")
                     return Promise.resolve();
                 })
             } catch (err) {
@@ -630,7 +630,7 @@ export function classDataFill(runset: RunSetObject) {
 }
 
 export function propertyDataFill(runset: RunSetObject) {
-    Logger.info("propertyDataFill START")
+    Logger.info("propertyDataFill", runset.id, " START")
     // scatter plot of the number of properties through time
     let propertiesSPARQLquery = `SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) {
         GRAPH ?g {
@@ -678,7 +678,7 @@ export function propertyDataFill(runset: RunSetObject) {
             try {
                 let content = JSON.stringify(endpointPropertyCountData);
                 return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, propertyCountFilename), content).then(() => {
-                    Logger.info("propertyDataFill END")
+                    Logger.info("propertyDataFill", runset.id, " END")
                     return Promise.resolve();
                 })
             } catch (err) {
@@ -693,7 +693,7 @@ export function propertyDataFill(runset: RunSetObject) {
 }
 
 export function categoryTestCountFill(runset: RunSetObject) {
-    Logger.info("categoryTestCountFill START")
+    Logger.info("categoryTestCountFill", runset.id, " START")
     let testCategoryData = [];
     // Number of tests passed by test categories
     let testCategoryQuery = `SELECT DISTINCT ?g ?date ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { 
@@ -737,7 +737,7 @@ export function categoryTestCountFill(runset: RunSetObject) {
                 try {
                     let content = JSON.stringify(testCategoryData);
                     return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, categoryTestCountFilename), content).then(() => {
-                        Logger.info("categoryTestCountFill END")
+                        Logger.info("categoryTestCountFill", runset.id, " END")
                         return Promise.resolve();
                     });
                 } catch (err) {
@@ -752,7 +752,7 @@ export function categoryTestCountFill(runset: RunSetObject) {
 }
 
 export function totalCategoryTestCountFill(runset: RunSetObject) {
-    Logger.info("totalCategoryTestCountFill START")
+    Logger.info("totalCategoryTestCountFill", runset.id, " START")
     // Number of tests passed by test categories
     let testCategoryQuery = `SELECT DISTINCT ?category ?g ?date (count(DISTINCT ?test) AS ?count) ?endpointUrl { 
         GRAPH ?g { 
@@ -796,7 +796,7 @@ export function totalCategoryTestCountFill(runset: RunSetObject) {
             try {
                 let content = JSON.stringify(totalTestCategoryData);
                 return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, totalCategoryTestCountFilename), content).then(() => {
-                    Logger.info("totalCategoryTestCountFill END")
+                    Logger.info("totalCategoryTestCountFill", runset.id, " END")
                     return Promise.resolve();
                 })
             } catch (err) {
@@ -811,7 +811,7 @@ export function totalCategoryTestCountFill(runset: RunSetObject) {
 }
 
 export function endpointTestsDataFill(runset: RunSetObject) {
-    Logger.info("endpointTestsDataFill START")
+    Logger.info("endpointTestsDataFill", runset.id, " START")
 
     let appliedTestQuery = `SELECT DISTINCT ?endpointUrl ?g ?date ?rule { 
         GRAPH ?g { 
@@ -861,7 +861,7 @@ export function endpointTestsDataFill(runset: RunSetObject) {
             try {
                 let content = JSON.stringify(endpointTestsData);
                 return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, endpointTestsDataFilename), content).then(() => {
-                    Logger.info("endpointTestsDataFill END")
+                    Logger.info("endpointTestsDataFill", runset.id, " END")
                     return Promise.resolve();
                 })
             } catch (err) {
@@ -953,7 +953,7 @@ export function totalRuntimeDataFill(runset: RunSetObject) {
 }
 
 export function averageRuntimeDataFill(runset: RunSetObject) {
-    Logger.info("averageRuntimeDataFill START")
+    Logger.info("averageRuntimeDataFill", runset.id, " START")
     let maxMinTimeQuery = `SELECT DISTINCT ?g ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { 
         GRAPH ?g {
             ?metadata <http://ns.inria.fr/kg/index#curated> ?data , ?endpoint .
@@ -1019,7 +1019,7 @@ export function averageRuntimeDataFill(runset: RunSetObject) {
                     Logger.error(err)
                 }
             }
-            Logger.info("averageRuntimeDataFill END")
+            Logger.info("averageRuntimeDataFill", runset.id, " END")
             return Promise.resolve();
         })
         .catch(error => {
@@ -1406,7 +1406,7 @@ export function datasetDescriptionDataFill(runset: RunSetObject) {
 }
 
 export function shortUrisDataFill(runset: RunSetObject) {
-    Logger.info("shortUrisDataFill START")
+    Logger.info("shortUrisDataFill", runset.id, " START")
     let shortUrisMeasureQuery = `SELECT DISTINCT ?g ?date ?endpointUrl ?measure {
             GRAPH ?g {
                 { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
@@ -1443,7 +1443,7 @@ export function shortUrisDataFill(runset: RunSetObject) {
                     Logger.error(err)
                 }
             }
-            Logger.info("shortUrisDataFill END")
+            Logger.info("shortUrisDataFill", runset.id, " END")
             return Promise.resolve();
         })
         .catch(error => {
@@ -1453,7 +1453,7 @@ export function shortUrisDataFill(runset: RunSetObject) {
 }
 
 export function readableLabelsDataFill(runset: RunSetObject) {
-    Logger.info("readableLabelsDataFill START")
+    Logger.info("readableLabelsDataFill", runset.id, " START")
     let readableLabelsQuery = `SELECT DISTINCT ?g ?date ?endpointUrl ?measure { 
             GRAPH ?g {
                 { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
@@ -1485,7 +1485,7 @@ export function readableLabelsDataFill(runset: RunSetObject) {
                 try {
                     let content = JSON.stringify(readableLabelData);
                     return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, readableLabelDataFilename), content).then(() => {
-                        Logger.info("readableLabelsDataFill END")
+                        Logger.info("readableLabelsDataFill", runset.id, " END")
                         return Promise.resolve();
                     });
                 } catch (err) {
@@ -1501,7 +1501,7 @@ export function readableLabelsDataFill(runset: RunSetObject) {
 }
 
 export function rdfDataStructureDataFill(runset: RunSetObject) {
-    Logger.info("rdfDataStructureDataFill START")
+    Logger.info("rdfDataStructureDataFill", runset.id, " START")
     let rdfDataStructureQuery = `SELECT DISTINCT ?g ?date ?endpointUrl ?measure { 
             GRAPH ?g {
                 { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
@@ -1532,7 +1532,7 @@ export function rdfDataStructureDataFill(runset: RunSetObject) {
             try {
                 let content = JSON.stringify(rdfDataStructureData);
                 return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, rdfDataStructureDataFilename), content).then(() => {
-                    Logger.info("rdfDataStructureDataFill END");
+                    Logger.info("rdfDataStructureDataFill", runset.id, " END");
                     return;
                 })
 
@@ -1547,7 +1547,7 @@ export function rdfDataStructureDataFill(runset: RunSetObject) {
 }
 
 export function blankNodeDataFill(runset: RunSetObject) {
-    Logger.info("blankNodeDataFill START")
+    Logger.info("blankNodeDataFill", runset.id, " START")
     let blankNodeQuery = `SELECT DISTINCT ?g ?date ?endpointUrl ?measure { 
             GRAPH ?g {
                 ?metadata <http://purl.org/dc/terms/modified> ?date . 
@@ -1580,7 +1580,7 @@ export function blankNodeDataFill(runset: RunSetObject) {
             try {
                 let content = JSON.stringify(blankNodeData);
                 return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, blankNodesDataFilename), content).then(() => {
-                    Logger.info("blankNodeDataFill END");
+                    Logger.info("blankNodeDataFill", runset.id, " END");
                     return Promise.resolve();
                 })
             } catch (err) {
