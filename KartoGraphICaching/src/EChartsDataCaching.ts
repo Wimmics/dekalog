@@ -5,6 +5,7 @@ import { AverageRuntimeDataObject, ClassCountDataObject, DatasetDescriptionDataO
 import * as Logger from "./LogUtils";
 import * as ChartsUtils from "./ChartsUtils";
 import * as Global from "./GlobalUtils";
+import dayjs from "dayjs";
 
 const numberOfVocabulariesLimit = 1000;
 
@@ -19,6 +20,8 @@ export const shortUrisEchartOptionFilename = "shortUrisEchartOption";
 export const rdfDataStructuresEchartOptionFilename = "rdfDataStructuresEchartOption";
 export const readableLabelsEchartOptionFilename = "readableLabelsEchartOption";
 export const blankNodesEchartOptionFilename = "blankNodesEchartOption";
+export const datasetDescriptionEchartOptionFilename = "datasetDescriptionEchartOption";
+export const totalRuntimeEchartsOptionFilename = "totalRuntimeEchartsOption";
 
 
 let whiteListData: Map<string, Array<string>>;
@@ -284,97 +287,100 @@ export function sparqlCoverageEchartsOption(runsetId: string): Promise<void> {
 }
 
 export function vocabGraphEchartsOption(runsetId: string): Promise<void> {
-    return readFile(Global.getCachedFilenameForRunset(runsetId, DataCache.vocabEndpointFilename), "utf-8").then(vocabEndpointRawData => {
+    return readFile(Global.getCachedFilenameForRunset(runsetId, DataCache.knownVocabsFilename))
+        .then(knownVocabData => {
+            return readFile(Global.getCachedFilenameForRunset(runsetId, DataCache.vocabEndpointFilename), "utf-8").then(vocabEndpointRawData => {
 
-        vocabEndpointData = JSON.parse(vocabEndpointRawData);
-        // Create an force graph with the graph linked by co-ocurrence of vocabularies
+                vocabEndpointData = JSON.parse(vocabEndpointRawData);
+                // Create an force graph with the graph linked by co-ocurrence of vocabularies
 
-        let endpointSet = new Set();
-        let vocabSet = new Set();
-        let rawVocabSet = new Set<string>();
-        let rawGatherVocab = new Map();
-        vocabEndpointData.forEach((item, i) => {
-            let endpoint = item.endpoint;
-            let vocabularies = item.vocabularies;
-            if (vocabularies.length < numberOfVocabulariesLimit) {
-                endpointSet.add(endpoint);
-                vocabularies.forEach(vocab => {
-                    rawVocabSet.add(vocab);
-                })
-                if (!rawGatherVocab.has(endpoint)) {
-                    rawGatherVocab.set(endpoint, new Set());
-                }
-                rawGatherVocab.set(endpoint, vocabularies);
-            }
-        });
-
-        let jsonRawVocabNodes = new Set();
-        let jsonRawVocabLinks = new Set();
-
-        endpointSet.forEach(item => {
-            jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-        });
-        rawVocabSet.forEach(item => {
-            jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
-        });
-        rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-            endpointVocabs.forEach((vocab, i) => {
-                jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
-            });
-        });
-
-        let gatherVocab = new Map();
-        // Filtering according to ontology repositories
-        rawVocabSet.forEach(vocabulariUri => {
-            if (knownVocabData.includes(vocabulariUri)) {
-                vocabSet.add(vocabulariUri);
-            }
-        });
-        rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
-            vocabulariUriSet.forEach(vocabulariUri => {
-                if (knownVocabData.includes(vocabulariUri)) {
-                    if (!gatherVocab.has(endpointUri)) {
-                        gatherVocab.set(endpointUri, new Set());
+                let endpointSet = new Set();
+                let vocabSet = new Set();
+                let rawVocabSet = new Set<string>();
+                let rawGatherVocab = new Map();
+                vocabEndpointData.forEach((item, i) => {
+                    let endpoint = item.endpoint;
+                    let vocabularies = item.vocabularies;
+                    if (vocabularies.length < numberOfVocabulariesLimit) {
+                        endpointSet.add(endpoint);
+                        vocabularies.forEach(vocab => {
+                            rawVocabSet.add(vocab);
+                        })
+                        if (!rawGatherVocab.has(endpoint)) {
+                            rawGatherVocab.set(endpoint, new Set());
+                        }
+                        rawGatherVocab.set(endpoint, vocabularies);
                     }
-                    gatherVocab.get(endpointUri).add(vocabulariUri);
-                }
-            });
-        });
-
-        // Endpoint and vocabularies graph
-        let jsonVocabLinks = new Set();
-        let jsonVocabNodes = new Set();
-
-        endpointSet.forEach(item => {
-            jsonVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-        });
-        vocabSet.forEach(item => {
-            jsonVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
-        });
-
-        gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-            endpointVocabs.forEach((vocab, i) => {
-                jsonVocabLinks.add({ source: endpointUrl, target: vocab })
-            });
-        });
-        if (jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
-            let knowVocabsData = [];
-            gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                let measure = (endpointVocabs.size / rawGatherVocab.get(endpointUrl).length);
-                knowVocabsData.push({ 'endpoint': endpointUrl, 'measure': measure })
-
-                endpointVocabs.forEach((vocab, i) => {
-                    jsonVocabLinks.add({ source: endpointUrl, target: vocab });
                 });
-            });
 
-            return writeFile(Global.getCachedFilenameForRunset(runsetId, vocabEndpointEchartsOptionFilename), JSON.stringify(ChartsUtils.getForceGraphOption('Endpoints and vocabularies with filtering*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks])));
-        } else {
-            return Promise.reject("No data to generate the vocabulary graph");
-        }
-    }).catch((error) => {
-        Logger.error("Error during vocab graph data reading", error)
-    });
+                let jsonRawVocabNodes = new Set();
+                let jsonRawVocabLinks = new Set();
+
+                endpointSet.forEach(item => {
+                    jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
+                });
+                rawVocabSet.forEach(item => {
+                    jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
+                });
+                rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+                    endpointVocabs.forEach((vocab, i) => {
+                        jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
+                    });
+                });
+
+                let gatherVocab = new Map();
+                // Filtering according to ontology repositories
+                rawVocabSet.forEach(vocabulariUri => {
+                    if (knownVocabData.includes(vocabulariUri)) {
+                        vocabSet.add(vocabulariUri);
+                    }
+                });
+                rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
+                    vocabulariUriSet.forEach(vocabulariUri => {
+                        if (knownVocabData.includes(vocabulariUri)) {
+                            if (!gatherVocab.has(endpointUri)) {
+                                gatherVocab.set(endpointUri, new Set());
+                            }
+                            gatherVocab.get(endpointUri).add(vocabulariUri);
+                        }
+                    });
+                });
+
+                // Endpoint and vocabularies graph
+                let jsonVocabLinks = new Set();
+                let jsonVocabNodes = new Set();
+
+                endpointSet.forEach(item => {
+                    jsonVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
+                });
+                vocabSet.forEach(item => {
+                    jsonVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
+                });
+
+                gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+                    endpointVocabs.forEach((vocab, i) => {
+                        jsonVocabLinks.add({ source: endpointUrl, target: vocab })
+                    });
+                });
+                if (jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
+                    let knowVocabsData = [];
+                    gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+                        let measure = (endpointVocabs.size / rawGatherVocab.get(endpointUrl).length);
+                        knowVocabsData.push({ 'endpoint': endpointUrl, 'measure': measure })
+
+                        endpointVocabs.forEach((vocab, i) => {
+                            jsonVocabLinks.add({ source: endpointUrl, target: vocab });
+                        });
+                    });
+
+                    return writeFile(Global.getCachedFilenameForRunset(runsetId, vocabEndpointEchartsOptionFilename), JSON.stringify(ChartsUtils.getForceGraphOption('Endpoints and vocabularies with filtering*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks])));
+                } else {
+                    return Promise.reject("No data to generate the vocabulary graph");
+                }
+            }).catch((error) => {
+                Logger.error("Error during vocab graph data reading", error)
+            });
+        })
 }
 
 export function triplesEchartsOption(runsetId: string): Promise<void> {
@@ -589,15 +595,201 @@ export function blankNodesEchartsOption(runsetId: string): Promise<void> {
     });
 }
 
+export function datasetDescriptionEchartsOption(runsetId) {
+    Logger.info("Dataset description chart data generation started")
+    return readFile(Global.getCachedFilenameForRunset(runsetId, DataCache.datasetDescriptionDataFilename), "utf-8").then(datasetDescriptionRawData => {
+        datasetDescriptionData = JSON.parse(datasetDescriptionRawData);
+
+        let whoDataScore = 0;
+        let licenseDataScore = 0;
+        let timeDataScore = 0;
+        let sourceDataScore = 0;
+
+        datasetDescriptionData.forEach(dataItem => {
+            let who = dataItem.who;
+            if (who) {
+                whoDataScore++;
+            }
+            let license = dataItem.license;
+            if (license) {
+                licenseDataScore++;
+            }
+            let time = dataItem.time;
+            if (time) {
+                timeDataScore++;
+            }
+            let source = dataItem.source;
+            if (source) {
+                sourceDataScore++;
+            }
+        });
+
+
+        let whoTrueDataSerie: echarts.BarSeriesOption = {
+            name: 'Description of author',
+            type: 'bar',
+            stack: 'who',
+            colorBy: 'data',
+            data: [
+                { value: whoDataScore, name: 'Presence of the description of creator/owner/contributor' },
+            ]
+        };
+        if (whoDataScore > 0) {
+            whoTrueDataSerie.label = {
+                show: true,
+                formatter: '{c} endpoints with author description'
+            }
+        };
+        let whoFalseDataSerie: echarts.BarSeriesOption = {
+            name: 'Description of author',
+            type: 'bar',
+            stack: 'who',
+            colorBy: 'data',
+            data: [
+                { value: (datasetDescriptionData.length - whoDataScore), name: 'Absence of the description of creator/owner/contributor' },
+            ]
+        };
+        if ((datasetDescriptionData.length - whoDataScore) > 0) {
+            whoFalseDataSerie.label = {
+                show: true,
+                formatter: '{c} endpoints without author description'
+            }
+        };
+        let licenseTrueDataSerie: echarts.BarSeriesOption = {
+            name: 'Licensing description',
+            type: 'bar',
+            stack: 'license',
+            colorBy: 'data',
+            data: [
+                { value: licenseDataScore, name: 'Presence of licensing information' },
+            ]
+        };
+        if (licenseDataScore > 0) {
+            licenseTrueDataSerie.label = {
+                show: true,
+                formatter: '{c} endpoints with licensing description'
+            }
+        }
+        let licenseFalseDataSerie: echarts.BarSeriesOption = {
+            name: 'Licensing description',
+            type: 'bar',
+            stack: 'license',
+            colorBy: 'data',
+            data: [
+                { value: (datasetDescriptionData.length - licenseDataScore), name: 'Absence of licensing description' },
+            ]
+        };
+        if ((datasetDescriptionData.length - licenseDataScore) > 0) {
+            licenseFalseDataSerie.label = {
+                show: true,
+                formatter: '{c} endpoints without licensing description'
+            }
+        }
+        let timeTrueDataSerie: echarts.BarSeriesOption = {
+            name: 'Time related description of the creation of the dataset',
+            type: 'bar',
+            stack: 'time',
+            colorBy: 'data',
+            data: [
+                { value: timeDataScore, name: 'Presence of time-related information' },
+            ]
+        };
+        if (timeDataScore > 0) {
+            timeTrueDataSerie.label = {
+                show: true,
+                formatter: '{c} endpoints with time-related description'
+            }
+        }
+        let timeFalseDataSerie: echarts.BarSeriesOption = {
+            name: 'Time related description of creation of the dataset',
+            type: 'bar',
+            stack: 'time',
+            colorBy: 'data',
+            data: [
+                { value: (datasetDescriptionData.length - timeDataScore), name: 'Absence of time-related description' },
+            ]
+        };
+        if ((datasetDescriptionData.length - timeDataScore) > 0) {
+            timeFalseDataSerie.label = {
+                show: true,
+                formatter: '{c} endpoints without time-related description'
+            }
+        }
+        let sourceTrueDataSerie: echarts.BarSeriesOption = {
+            name: 'Description of the source or the process at the origin of the dataset',
+            type: 'bar',
+            stack: 'source',
+            colorBy: 'data',
+            data: [
+                { value: sourceDataScore, name: 'Presence of description of the origin of the dataset' },
+            ]
+        };
+        if (sourceDataScore > 0) {
+            sourceTrueDataSerie.label = {
+                show: true,
+                formatter: '{c} endpoints with source description'
+            }
+        }
+        let sourceFalseDataSerie: echarts.BarSeriesOption = {
+            name: 'Description of the source or the process at the origin of the dataset',
+            type: 'bar',
+            stack: 'source',
+            colorBy: 'data',
+            data: [
+                { value: (datasetDescriptionData.length - sourceDataScore), name: 'Absence of description of the origin of the dataset' },
+            ]
+        };
+        if ((datasetDescriptionData.length - sourceDataScore) > 0) {
+            sourceFalseDataSerie.label = {
+                show: true,
+                formatter: '{c} endpoints without source description'
+            }
+        }
+        let datasetDescriptionEchartOption = {
+            title: {
+                text: 'Dataset description features in all endpoints',
+                left: 'center'
+            },
+            tooltip: {
+                confine: true
+            },
+            xAxis: {
+                type: 'value',
+                max: 'dataMax',
+            },
+            yAxis: {
+                type: 'category',
+                axisLabel: {
+                    formatter: 'Dataset\n description\n elements',
+                    overflow: 'breakAll'
+                }
+            },
+            legend: {
+                left: 'left',
+                show: false
+            },
+            series: [whoTrueDataSerie, whoFalseDataSerie, licenseTrueDataSerie, licenseFalseDataSerie, timeTrueDataSerie, timeFalseDataSerie, sourceTrueDataSerie, sourceFalseDataSerie]
+        };
+        return datasetDescriptionEchartOption;
+    }).then((datasetDescriptionEchartOption) => {
+        let content = JSON.stringify(datasetDescriptionEchartOption);
+        return writeFile(Global.getCachedFilenameForRunset(runsetId, datasetDescriptionEchartOptionFilename), content).then(() => {
+            Logger.info("Dataset description chart option generation ended");
+            return Promise.resolve();
+        });
+    });
+}
+
 export function nonFilteredVocabChartOption(runsetId: string): Promise<void> {
-    this.sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
-    "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
-    "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-    "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
-    "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
-    "} " +
-    " } " +
-    "GROUP BY ?endpointUrl ?vocabulary ";
+    this.sparqlesVocabulariesQuery = `SELECT DISTINCT ?endpointUrl ?vocabulary { 
+            GRAPH ?g {
+                { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+                UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
+                ?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset .
+                ?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary
+            }
+        }
+        GROUP BY ?endpointUrl ?vocabulary`;
 
     let endpointSet = new Set();
     let rawVocabSet = new Set();
@@ -642,4 +834,46 @@ export function nonFilteredVocabChartOption(runsetId: string): Promise<void> {
     } else {
         return Promise.reject("No data to generate the non filtered vocabularies chart");
     }
+}
+
+export function totalRuntimeEchartsOption(runtimeId: string) {
+    Logger.info("Total runtime chart settings generation started");
+    return readFile(Global.getCachedFilenameForRunset(runtimeId, DataCache.totalRuntimeDataFilename), "utf-8").then(totalRuntimeRawData => {
+        let totalRuntimeData = JSON.parse(totalRuntimeRawData);
+        let runtimeDataSerie = [];
+        totalRuntimeData.forEach((itemResult, i) => {
+            let graph = itemResult.graph;
+            let start = Global.parseDate(itemResult.start);
+            let end = Global.parseDate(itemResult.end);
+            let endpoint = itemResult.endpoint;
+            let date = Global.parseDate(itemResult.date);
+            let runtime = dayjs.duration(itemResult.runtime);
+            runtimeDataSerie.push([date, runtime, endpoint])
+        });
+        let runtimeSerie = {
+            name: "Runtime in seconds",
+            label: 'show',
+            symbolSize: 5,
+            data: runtimeDataSerie.map(a => [a[0].toDate(), a[1].asSeconds()]),
+            tooltip: {
+                show: true,
+                formatter: function (value) {
+                    let source = runtimeDataSerie.filter(a => a[0].isSame(dayjs(value.value[0])))[0];
+                    let runtime = source[1];
+                    let endpoint = source[2];
+
+                    let tooltip = endpoint + " <br/>" + runtime.humanize();
+                    return tooltip;
+                }
+            },
+            type: 'scatter'
+        };
+        let totalRuntimeChartOption = ChartsUtils.getTimeScatterOption("Runtime of the framework for each run (in seconds)", [runtimeSerie]);
+        return writeFile(Global.getCachedFilenameForRunset(runtimeId, totalRuntimeEchartsOptionFilename), JSON.stringify(totalRuntimeChartOption)).then(() => {
+            Logger.info("Total runtime chart settings generated");
+        });
+
+    }).catch((error) => {
+        Logger.error("Error during total runtime data reading", error)
+    });
 }

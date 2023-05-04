@@ -342,7 +342,6 @@ export function vocabFill(runset: RunSetObject): Promise<void> {
         ${generateGraphValueFilterClause(runset.graphs)}
     } 
     GROUP BY ?endpointUrl ?vocabulary `;
-    let knownVocabularies = new Set();
     let rawGatherVocab = new Map();
     let gatherVocabData = [];
     let rawVocabSet = new Set();
@@ -375,13 +374,16 @@ export function vocabFill(runset: RunSetObject): Promise<void> {
         })
         .then(() => Global.fetchJSONPromise("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list")
             .then(responseLOV => {
+                let knownVocabularies = new Set();
                 if (responseLOV !== undefined) {
                     (responseLOV as JSONValue[]).forEach((item) => {
                         knownVocabularies.add(item["uri"])
                     });
                     try {
                         let content = JSON.stringify(responseLOV);
-                        return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, LOVFilename), content)
+                        return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, LOVFilename), content).then(() => {
+                            return Promise.resolve(knownVocabularies);
+                        });
                     } catch (err) {
                         Logger.error(err)
                         return Promise.reject(err);
@@ -390,14 +392,14 @@ export function vocabFill(runset: RunSetObject): Promise<void> {
                     return Promise.reject("LOV response is undefined");
                 }
             }))
-        .then(() => Global.fetchJSONPromise("http://prefix.cc/context")
+        .then(knownVocabularies => Global.fetchJSONPromise("http://prefix.cc/context")
             .then(responsePrefixCC => {
                 for (let prefix of Object.keys(responsePrefixCC['@context'])) {
                     knownVocabularies.add(responsePrefixCC['@context'][prefix])
                 };
-                return Promise.resolve();
+                return Promise.resolve(knownVocabularies);
             }))
-        .then(() => Global.fetchJSONPromise("https://www.ebi.ac.uk/ols/api/ontologies?page=0&size=1000")
+        .then(knownVocabularies => Global.fetchJSONPromise("https://www.ebi.ac.uk/ols/api/ontologies?page=0&size=1000")
             .then(responseOLS => {
                 responseOLS["_embedded"].ontologies.forEach(ontologyItem => {
                     if (ontologyItem.config.baseUris.length > 0) {
@@ -405,9 +407,20 @@ export function vocabFill(runset: RunSetObject): Promise<void> {
                         knownVocabularies.add(ontology);
                     }
                 });
-                return Promise.resolve();
+                return Promise.resolve(knownVocabularies);
             }))
-        .then(() => {
+        .then(knownVocabularies => {
+            try {
+                let content = JSON.stringify([...knownVocabularies]);
+                return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, knownVocabsFilename), content).then(() => {
+                    return Promise.resolve(knownVocabularies);
+                });
+            } catch (err) {
+                Logger.error(err)
+                return Promise.reject(err);
+            }
+        })
+        .then(knownVocabularies => {
             // Filtering according to ontology repositories
             rawVocabSet.forEach(vocabulariUri => {
                 if (knownVocabularies.has(vocabulariUri)) {
@@ -467,16 +480,6 @@ export function vocabFill(runset: RunSetObject): Promise<void> {
                 try {
                     let content = JSON.stringify(gatherVocabData);
                     return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, vocabEndpointFilename), content)
-                } catch (err) {
-                    Logger.error(err)
-                }
-            }
-        })
-        .finally(() => {
-            if (knownVocabularies.size > 0) {
-                try {
-                    let content = JSON.stringify([...knownVocabularies]);
-                    return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, knownVocabsFilename), content)
                 } catch (err) {
                     Logger.error(err)
                 }
@@ -873,8 +876,8 @@ export function endpointTestsDataFill(runset: RunSetObject) {
 }
 
 export function totalRuntimeDataFill(runset: RunSetObject) {
-    Logger.info("totalRuntimeDataFill START")
-    let maxMinTimeQuery = `SELECT DISTINCT ?g ?endpointUrl ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { 
+    Logger.info("totalRuntimeDataFill ", runset.id, "START")
+    let maxMinTimeQuery = `SELECT DISTINCT ?g ?endpointUrl ?date ?startTime ?endTime { 
         GRAPH ?g { 
             ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
             ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . 
@@ -889,22 +892,53 @@ export function totalRuntimeDataFill(runset: RunSetObject) {
     } `;
     return Sparql.paginatedSparqlQueryToIndeGxPromise(maxMinTimeQuery).then(jsonResponse => {
         let totalRuntimeData = [];
+        let graphEndpointMinStartDateMap: Map<string, Map<string, Dayjs>> = new Map();
+        let graphEndpointMaxStartDateMap: Map<string, Map<string, Dayjs>> = new Map();
         (jsonResponse as JSONValue[]).forEach((itemResult, i) => {
             let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
             let date = Global.parseDate(itemResult["date"].value);
-            let start = Global.parseDate(itemResult["start"].value);
-            let end = Global.parseDate(itemResult["end"].value);
+            let start = Global.parseDate(itemResult["startTime"].value);
+            let end = Global.parseDate(itemResult["endTime"].value);
             let endpointUrl = itemResult["endpointUrl"].value;
-            let runtimeData = dayjs.duration(end.diff(start));
-            totalRuntimeData.push({ graph: graph, endpoint: endpointUrl, date: date, start: start, end: end, runtime: runtimeData })
+            Logger.log("totalRuntimeDataFill", runset.id, graph, endpointUrl, date.format(), start.format(), end.format())
+            if (!graphEndpointMinStartDateMap.has(graph)) {
+                graphEndpointMinStartDateMap.set(graph, new Map());
+            }
+            if (!graphEndpointMaxStartDateMap.has(graph)) {
+                graphEndpointMaxStartDateMap.set(graph, new Map());
+            }
+            if (!graphEndpointMinStartDateMap.get(graph).has(endpointUrl)) {
+                graphEndpointMinStartDateMap.get(graph).set(endpointUrl, start);
+            } else {
+                let previousStart = graphEndpointMinStartDateMap.get(graph).get(endpointUrl);
+                if (start.isBefore(previousStart)) {
+                    graphEndpointMinStartDateMap.get(graph).set(endpointUrl, start);
+                }
+            }
+            if (!graphEndpointMaxStartDateMap.get(graph).has(endpointUrl)) {
+                graphEndpointMaxStartDateMap.get(graph).set(endpointUrl, end);
+            } else {
+                let previousEnd = graphEndpointMaxStartDateMap.get(graph).get(endpointUrl);
+                if (end.isAfter(previousEnd)) {
+                    graphEndpointMaxStartDateMap.get(graph).set(endpointUrl, end);
+                }
+            }
         });
+
+        graphEndpointMinStartDateMap.forEach((endpointMinStartDateMap, graph) => {
+            endpointMinStartDateMap.forEach((minStartDate, endpointUrl) => {
+                let maxStartDate = graphEndpointMaxStartDateMap.get(graph).get(endpointUrl);
+                let totalRuntime = maxStartDate.diff(minStartDate, 'second');
+                totalRuntimeData.push({ graph: graph, endpoint: endpointUrl, start: minStartDate, end: maxStartDate, runtime: totalRuntime });
+            })
+        })
         return Promise.resolve(totalRuntimeData);
     })
         .then(totalRuntimeData => {
             try {
                 let content = JSON.stringify(totalRuntimeData);
                 return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, totalRuntimeDataFilename), content).then(() => {
-                    Logger.info("totalRuntimeDataFill END")
+                    Logger.info("totalRuntimeDataFill", runset.id, " END")
                     return Promise.resolve();
                 });
             } catch (err) {
@@ -995,7 +1029,7 @@ export function averageRuntimeDataFill(runset: RunSetObject) {
 }
 
 export function classAndPropertiesDataFill(runset: RunSetObject) {
-    Logger.info("classAndPropertiesDataFill START")
+    Logger.info("classAndPropertiesDataFill ", runset.id, "START")
     let classPartitionQuery = `CONSTRUCT { ?classPartition <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl ;
             <http://rdfs.org/ns/void#class> ?c ;
             <http://rdfs.org/ns/void#triples> ?ct ;
@@ -1187,7 +1221,7 @@ export function classAndPropertiesDataFill(runset: RunSetObject) {
             try {
                 let content = JSON.stringify(classContentData);
                 return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, classPropertyDataFilename), content).then(() => {
-                    Logger.info("classAndPropertiesDataFill END")
+                    Logger.info("classAndPropertiesDataFill", runset.id, " END")
                     return Promise.resolve();
                 })
             } catch (err) {
@@ -1202,7 +1236,7 @@ export function classAndPropertiesDataFill(runset: RunSetObject) {
 }
 
 export function datasetDescriptionDataFill(runset: RunSetObject) {
-    Logger.info("datasetDescriptionDataDataFill START")
+    Logger.info("datasetDescriptionDataDataFill", runset.id, " START")
     let provenanceWhoCheckQuery = `SELECT DISTINCT ?endpointUrl ?o { 
         GRAPH ?g { 
             ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . 
@@ -1259,8 +1293,6 @@ export function datasetDescriptionDataFill(runset: RunSetObject) {
         ${generateGraphValueFilterClause(runset.graphs)}
     } `;
     let endpointDescriptionElementMap = new Map();
-
-    let datasetDescriptionData = [];
     return Promise.allSettled([
         Sparql.paginatedSparqlQueryToIndeGxPromise(provenanceWhoCheckQuery)
             .then(json => {
@@ -1342,27 +1374,30 @@ export function datasetDescriptionDataFill(runset: RunSetObject) {
                     }
                     endpointDescriptionElementMap.set(endpointUrl, currentEndpointItem);
                 });
-                endpointDescriptionElementMap.forEach((prov, endpoint, map) => {
-                    datasetDescriptionData.push(prov)
-                });
                 return Promise.resolve();
             })
             .catch(error => {
                 Logger.error(error)
                 return Promise.reject(error);
             })
-    ])
-        .finally(() => {
-            if (datasetDescriptionData.length > 0) {
-                try {
-                    let content = JSON.stringify(datasetDescriptionData);
-                    return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, datasetDescriptionDataFilename), content)
-                } catch (err) {
-                    Logger.error(err)
-                }
+    ]).then(() => {
+
+        let datasetDescriptionData = [];
+        endpointDescriptionElementMap.forEach((prov, endpoint, map) => {
+            datasetDescriptionData.push(prov)
+        });
+        return Promise.resolve(datasetDescriptionData);
+    })
+        .then(datasetDescriptionData => {
+            try {
+                let content = JSON.stringify(datasetDescriptionData);
+                return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, datasetDescriptionDataFilename), content).then(() => {
+                    Logger.info("datasetDescriptionDataDataFill", runset.id, " END")
+                    return Promise.resolve();
+                });
+            } catch (err) {
+                Logger.error(err)
             }
-            Logger.info("datasetDescriptionDataDataFill END")
-            return Promise.resolve();
         })
         .catch(error => {
             Logger.error(error)
