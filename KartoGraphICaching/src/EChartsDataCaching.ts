@@ -523,7 +523,7 @@ export function rdfDataStructuresEchartsOption(runsetId: string): Promise<void> 
 
         if (endpointDataSerieMap.size > 0) {
             let rdfDataStructuresSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
-            return writeFile(Global.getCachedFilenameForRunset(runsetId, shortUrisEchartOptionFilename), JSON.stringify(ChartsUtils.getTimeScatterOption("Proportion of RDF data structures in the datasets", rdfDataStructuresSeries))).then(() => {
+            return writeFile(Global.getCachedFilenameForRunset(runsetId, rdfDataStructuresEchartOptionFilename), JSON.stringify(ChartsUtils.getTimeScatterOption("Proportion of RDF data structures in the datasets", rdfDataStructuresSeries))).then(() => {
                 Logger.info("RDF data structures chart data generated");
             });
 
@@ -553,7 +553,7 @@ export function readableLabelsEchartsOption(runsetId: string): Promise<void> {
 
         if (endpointDataSerieMap.size > 0) {
             let readableLabelsSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
-            return writeFile(Global.getCachedFilenameForRunset(runsetId, shortUrisEchartOptionFilename), JSON.stringify(ChartsUtils.getTimeScatterOption("Proportion of resources with readable labels in the datasets", readableLabelsSeries))).then(() => {
+            return writeFile(Global.getCachedFilenameForRunset(runsetId, readableLabelsEchartOptionFilename), JSON.stringify(ChartsUtils.getTimeScatterOption("Proportion of resources with readable labels in the datasets", readableLabelsSeries))).then(() => {
                 Logger.info("Readable labels chart data for", runsetId, " generated");
             });
 
@@ -583,7 +583,7 @@ export function blankNodesEchartsOption(runsetId: string): Promise<void> {
 
         if (endpointDataSerieMap.size > 0) {
             let blankNodesSeries = ChartsUtils.getScatterDataSeriesFromMap(endpointDataSerieMap);
-            return writeFile(Global.getCachedFilenameForRunset(runsetId, shortUrisEchartOptionFilename), JSON.stringify(ChartsUtils.getTimeScatterOption("Proportion of blank nodes in the datasets", blankNodesSeries))).then(() => {
+            return writeFile(Global.getCachedFilenameForRunset(runsetId, blankNodesEchartOptionFilename), JSON.stringify(ChartsUtils.getTimeScatterOption("Proportion of blank nodes in the datasets", blankNodesSeries))).then(() => {
                 Logger.info("Blank nodes chart data for", runsetId, " generated");
             });
 
