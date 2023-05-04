@@ -13,9 +13,37 @@ interface JSONObject {
 
 interface JSONArray extends Array<JSONValue> { }
 
+export type SPARQLJSONResult = {
+    head: {
+        vars: string[]
+    },
+    results: {
+        bindings: {
+            [x: string]: {
+                type: string,
+                value: string
+            }
+        }[]
+    }
+}
+
 export type RunSetObject = {
+    id: string,
     name: string,
     graphs: string[]
+}
+
+export type EndpointItem = {
+    endpoint: string
+    lat: number
+    lon: number
+    country: string
+    region: string
+    city: string
+    org: string
+    timezone: string
+    sparqlTimezone: string
+    popupHTML: string
 }
 
 export type EndpointIpGeolocObject = {

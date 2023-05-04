@@ -13,39 +13,38 @@ import * as Global from "./GlobalUtils";
 import * as Logger from "./LogUtils";
 import * as Sparql from "./SparqlUtils";
 import * as RDFUtils from "./RDFUtils";
-import { ClassCountDataObject, EndpointIpGeolocObject, EndpointTestObject, JSONValue, RunSetObject, TimezoneMapObject, TripleCountDataObject } from './DataTypes';
+import { ClassCountDataObject, EndpointIpGeolocObject, EndpointItem, EndpointTestObject, JSONValue, RunSetObject, SPARQLJSONResult, TimezoneMapObject, TripleCountDataObject } from './DataTypes';
 
 const dataFilePrefix = "./data/";
 export const dataCachedFilePrefix = "./data/cache/";
-const graphLists = Global.readJSONFile(dataFilePrefix + 'runSets.json');
+export const runsetList = Global.readJSONFile(dataFilePrefix + 'runSets.json') as Promise<RunSetObject[]>;
 const timezoneMap = Global.readJSONFile(dataFilePrefix + 'timezoneMap.json');
 const endpointIpMap = Global.readJSONFile(dataFilePrefix + 'endpointIpGeoloc.json');
 
-export const whiteListFilename = dataCachedFilePrefix + "whiteLists.json";
-export const geolocFilename = dataCachedFilePrefix + "geolocData.json";
-export const sparqlCoverageFilename = dataCachedFilePrefix + "sparqlCoverageData.json";
-export const sparqlFeaturesFilename = dataCachedFilePrefix + "sparqlFeaturesData.json";
-export const vocabEndpointFilename = dataCachedFilePrefix + "vocabEndpointData.json";
-export const knownVocabsFilename = dataCachedFilePrefix + "knownVocabsData.json";
-export const vocabKeywordsFilename = dataCachedFilePrefix + "vocabKeywordsData.json";
-export const tripleCountFilename = dataCachedFilePrefix + "tripleCountData.json";
-export const classCountFilename = dataCachedFilePrefix + "classCountData.json";
-export const propertyCountFilename = dataCachedFilePrefix + "propertyCountData.json";
-export const categoryTestCountFilename = dataCachedFilePrefix + "categoryTestCountData.json";
-export const totalCategoryTestCountFilename = dataCachedFilePrefix + "totalCategoryTestCountData.json";
-export const endpointTestsDataFilename = dataCachedFilePrefix + "endpointTestsData.json";
-export const totalRuntimeDataFilename = dataCachedFilePrefix + "totalRuntimeData.json";
-export const averageRuntimeDataFilename = dataCachedFilePrefix + "averageRuntimeData.json";
-export const classPropertyDataFilename = dataCachedFilePrefix + "classPropertyData.json";
-export const datasetDescriptionDataFilename = dataCachedFilePrefix + "datasetDescriptionData.json";
-export const shortUriDataFilename = dataCachedFilePrefix + "shortUriData.json";
-export const rdfDataStructureDataFilename = dataCachedFilePrefix + "rdfDataStructureData.json";
-export const readableLabelDataFilename = dataCachedFilePrefix + "readableLabelData.json";
-export const blankNodesDataFilename = dataCachedFilePrefix + "blankNodesData.json";
+export const geolocFilename = "geolocData";
+export const sparqlCoverageFilename = "sparqlCoverageData";
+export const sparqlFeaturesFilename = "sparqlFeaturesData";
+export const vocabEndpointFilename = "vocabEndpointData";
+export const knownVocabsFilename = "knownVocabsData";
+export const vocabKeywordsFilename = "vocabKeywordsData";
+export const tripleCountFilename = "tripleCountData";
+export const classCountFilename = "classCountData";
+export const propertyCountFilename = "propertyCountData";
+export const categoryTestCountFilename = "categoryTestCountData";
+export const totalCategoryTestCountFilename = "totalCategoryTestCountData";
+export const endpointTestsDataFilename = "endpointTestsData";
+export const totalRuntimeDataFilename = "totalRuntimeData";
+export const averageRuntimeDataFilename = "averageRuntimeData";
+export const classPropertyDataFilename = "classPropertyData";
+export const datasetDescriptionDataFilename = "datasetDescriptionData";
+export const shortUriDataFilename = "shortUriData";
+export const rdfDataStructureDataFilename = "rdfDataStructureData";
+export const readableLabelDataFilename = "readableLabelData";
+export const blankNodesDataFilename = "blankNodesData";
 
-export const LOVFilename = dataCachedFilePrefix + "knownVocabulariesLOV.json"
+export const LOVFilename = "knownVocabulariesLOV"
 
-function generateGraphValueFilterClause(graphList) {
+function generateGraphValueFilterClause(graphList: string[]) {
     let result = "FILTER( ";
     graphList.forEach((item, i) => {
         if (i > 0) {
@@ -58,97 +57,66 @@ function generateGraphValueFilterClause(graphList) {
     return result;
 }
 
-export function whiteListFill() {
-    Logger.log("whiteListFill START")
-    return graphLists.then(graphListArray => {
-        if (Array.isArray(graphListArray)) {
-            return Promise.allSettled(
-                (graphListArray as RunSetObject[]).map(graphListItem => {
-                    let graphList = graphListItem.graphs
-                    let endpointListQuery = `SELECT DISTINCT ?endpointUrl WHERE {
-                        GRAPH ?g {
-                            { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
-                            UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
-                            UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
-                            ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
-                        } ${generateGraphValueFilterClause(graphList)}
-                    }
-                    GROUP BY ?endpointUrl`;
-                    let graphListKey = md5(''.concat(...graphList));
-                    return Sparql.paginatedSparqlQueryToIndeGxPromise(endpointListQuery)
-                        .then(json => {
-                            let jsonResult = (json as Global.JSONValue[]);
-                            let endpointList = [];
-                            jsonResult.forEach((item) => {
-                                endpointList.push(item["endpointUrl"].value);
-                            });
-                            return { graphKey: graphListKey, endpoints: endpointList };
-                        });
-                })
-            )
-                .then(graphListItemArraySettled => {
-                    let graphListItemArray = Global.extractSettledPromiseValues(graphListItemArraySettled);
-                    let tmpWhiteListMap = { size: 0 };
-                    graphListItemArray.forEach(graphListItem => {
-                        if (graphListItem !== undefined) {
-                            tmpWhiteListMap[graphListItem.graphKey] = graphListItem.endpoints;
-                            tmpWhiteListMap.size++;
-                        }
-                    });
-                    if (tmpWhiteListMap.size > 0) {
-                        try {
-                            let content = JSON.stringify(tmpWhiteListMap);
-                            return Global.writeFile(whiteListFilename, content)
-                        } catch (err) {
-                            Logger.error(err)
-                        }
-                    }
-                    Logger.log("whiteListFill END")
-                }).catch(error => {
-                    Logger.error(error)
-                })
-        }
-    }
-    );
-}
-
-type EndpointItem = {
-    endpoint: string
-    lat: number
-    lon: number
-    country: string
-    region: string
-    city: string
-    org: string
-    timezone: string
-    sparqlTimezone: string
-    popupHTML: string
-}
-
-export function endpointMapfill() {
-    Logger.log("endpointMapfill START")
+export function endpointMapfill(runset: RunSetObject) {
+    Logger.info("endpointMapfill START")
     let endpointGeolocData = [];
+    let endpointTimezoneSPARQL = new Map();
+    let endpointLabelMap = new Map<string, string>();
+    let endpointIpMapArray: EndpointIpGeolocObject[] = [];
 
     // Marked map with the geoloc of each endpoint
-    return endpointIpMap.then(endpointIpMapArray => Promise.allSettled((endpointIpMapArray as EndpointIpGeolocObject[]).map((item) => {
-        if (item !== undefined) {
-            // Add the markers for each endpoints.
-            let endpoint = item.key;
-            let endpointItem: EndpointItem;
-
-            let timezoneSPARQLquery = `SELECT DISTINCT ?timezone { 
-                GRAPH ?g { 
-                    ?base <http://www.w3.org/ns/sparql-service-description#endpoint> <${endpoint}> . 
-                    ?metadata <http://ns.inria.fr/kg/index#curated> ?base . 
-                    ?base <https://schema.org/broadcastTimezone> ?timezone 
-                } 
-            }`;
+    return endpointIpMap.then(endpointIpMap => {
+        endpointIpMapArray = endpointIpMap as EndpointIpGeolocObject[];
+        return Promise.resolve();
+    })
+        .then(() => {
+            let timezoneSPARQLquery = `SELECT DISTINCT ?timezone ?endpoint { 
+            GRAPH ?g { 
+                ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . 
+                ?metadata <http://ns.inria.fr/kg/index#curated> ?base . 
+                ?base <https://schema.org/broadcastTimezone> ?timezone .
+            } 
+            ${generateGraphValueFilterClause(runset.graphs)}
+        }`;
             return Sparql.paginatedSparqlQueryToIndeGxPromise(timezoneSPARQLquery)
                 .then(jsonResponse => {
-                    let endpointTimezoneSPARQL = new Map();
-                    (jsonResponse as Global.JSONValue[]).forEach((itemResponse, i) => {
-                        endpointTimezoneSPARQL.set(endpoint, itemResponse["timezone"].value);
-                    });
+                    if (jsonResponse != undefined) {
+                        (jsonResponse as JSONValue[]).forEach((itemResponse, i) => {
+                            endpointTimezoneSPARQL.set(itemResponse["endpoint"].value, itemResponse["timezone"].value);
+                        });
+                    }
+                    return Promise.resolve();
+                })
+        })
+        .then(() => {
+            let labelQuery = `SELECT DISTINCT ?label ?endpoint { 
+                GRAPH ?g { 
+                    ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . 
+                    { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } 
+                    UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } 
+                    UNION { ?dataset <http://purl.org/dc/terms/title> ?label } 
+                    UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } 
+                    UNION { ?dataset <http://schema.org/name> ?label } . 
+                }  
+                ${generateGraphValueFilterClause(runset.graphs)}
+            }`;
+            return Sparql.sparqlQueryToIndeGxPromise(labelQuery)
+                .then(responseLabels => {
+                    responseLabels = responseLabels as SPARQLJSONResult;
+                    if (responseLabels != undefined) {
+                        responseLabels.results.bindings.forEach((itemResponse, i) => {
+                            endpointLabelMap.set(itemResponse["endpoint"].value, itemResponse["label"].value);
+                        });
+                    }
+                })
+        })
+        .then(() => {
+            let endpointItemMap = new Map<string, any>();
+            return Promise.allSettled((endpointIpMapArray as EndpointIpGeolocObject[]).map((item) => {
+                if (item !== undefined) {
+                    // Add the markers for each endpoints.
+                    let endpoint = item.key;
+                    let endpointItem: EndpointItem;
 
                     return timezoneMap.then(timeZoneMapArray => {
                         let ipTimezoneArrayFiltered = (timeZoneMapArray as TimezoneMapObject[]).filter(itemtza => itemtza.key == item.value.geoloc.timezone);
@@ -174,72 +142,70 @@ export function endpointMapfill() {
                         if (item.value.geoloc.org != undefined) {
                             endpointItem.org = item.value.geoloc.org;
                         }
-                        let labelQuery = "SELECT DISTINCT ?label  { GRAPH ?g { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> <" + endpoint + "> . { ?dataset <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?dataset <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } UNION { ?dataset <http://purl.org/dc/terms/title> ?label } UNION { ?dataset <http://xmlns.com/foaf/0.1/name> ?label } UNION { ?dataset <http://schema.org/name> ?label } . }  }";
-                        return labelQuery
-                    });
-                })
-                .then(labelQuery => Sparql.sparqlQueryToIndeGxPromise(labelQuery)
-                    .then(responseLabels => {
-                        let popupString = `<table> <thead> <tr> <th colspan='2'> <a href='${endpointItem.endpoint}' >${endpointItem.endpoint}</a> </th> </tr> </thead></body>`;
-                        if (endpointItem.country != undefined) {
-                            popupString += `<tr><td>Country: </td><td>${endpointItem.country}</td></tr>`;
-                        }
-                        if (endpointItem.region != undefined) {
-                            popupString += `<tr><td>Region: </td><td>${endpointItem.region}</td></tr>`;
-                        }
-                        if (endpointItem.city != undefined) {
-                            popupString += `<tr><td>City: </td><td>${endpointItem.city}</td></tr>`;
-                        }
-                        if (endpointItem.org != undefined) {
-                            popupString += `<tr><td>Organization: </td><td>${endpointItem.org}</td></tr>`;
-                        }
-                        if (endpointItem.timezone != undefined) {
-                            popupString += `<tr><td>Timezone of endpoint URL: </td><td>${endpointItem.timezone}</td></tr>`;
-                            if (endpointItem.sparqlTimezone != undefined) {
-                                let badTimezone = endpointItem.timezone.localeCompare(endpointItem.sparqlTimezone) != 0;
-                                if (badTimezone) {
-                                    popupString += `<tr><td>Timezone declared by endpoint: </td><td>${endpointItem.sparqlTimezone}</td></tr>`;
-                                }
-                            }
-                        }
-                        if (responseLabels.results.bindings.size > 0) {
-                            popupString += `<tr><td colspan='2'>${responseLabels}</td></tr>`;
-                        }
-                        popupString += "</tbody></table>"
-                        endpointItem.popupHTML = popupString;
+                        endpointItemMap.set(endpoint, endpointItem);
+                        return Promise.resolve()
                     })
-                    .catch(error => {
-                        Logger.error(error)
-                    })
-                ).then(() => {
-                    endpointGeolocData.push(endpointItem);
-                })
-                .catch(error => {
-                    Logger.error(error)
-                })
-        } else {
-            return Promise.reject();
-        }
-    })))
-        .finally(() => {
-            if (endpointGeolocData.length > 0) {
-                try {
-                    let content = JSON.stringify(endpointGeolocData);
-                    return Global.writeFile(geolocFilename, content)
-                } catch (err) {
-                    Logger.error(err)
+                } else {
+                    return Promise.reject();
                 }
+            })
+            ).then(() => {
+                return Promise.resolve(endpointItemMap);
+            });
+        })
+        .then(endpointItemMap => {
+            endpointItemMap.forEach((endpointItem, endpoint) => {
+                let popupString = `<table> <thead> <tr> <th colspan='2'> <a href='${endpointItem.endpoint}' >${endpointItem.endpoint}</a> </th> </tr> </thead></body>`;
+                if (endpointItem.country != undefined) {
+                    popupString += `<tr><td>Country: </td><td>${endpointItem.country}</td></tr>`;
+                }
+                if (endpointItem.region != undefined) {
+                    popupString += `<tr><td>Region: </td><td>${endpointItem.region}</td></tr>`;
+                }
+                if (endpointItem.city != undefined) {
+                    popupString += `<tr><td>City: </td><td>${endpointItem.city}</td></tr>`;
+                }
+                if (endpointItem.org != undefined) {
+                    popupString += `<tr><td>Organization: </td><td>${endpointItem.org}</td></tr>`;
+                }
+                if (endpointItem.timezone != undefined) {
+                    popupString += `<tr><td>Timezone of endpoint URL: </td><td>${endpointItem.timezone}</td></tr>`;
+                    if (endpointItem.sparqlTimezone != undefined) {
+                        let badTimezone = endpointItem.timezone.localeCompare(endpointItem.sparqlTimezone) != 0;
+                        if (badTimezone) {
+                            popupString += `<tr><td>Timezone declared by endpoint: </td><td>${endpointItem.sparqlTimezone}</td></tr>`;
+                        }
+                    }
+                }
+                if (endpointLabelMap.get(endpoint) != undefined) {
+                    let endpointLabel = endpointLabelMap.get(endpoint);
+                    popupString += `<tr><td colspan='2'>${endpointLabel}</td></tr>`;
+                }
+                popupString += "</tbody></table>"
+                endpointItem.popupHTML = popupString;
+            })
+
+            endpointItemMap.forEach((endpointItem, endpoint) => {
+                endpointGeolocData.push(endpointItem);
+            });
+            return Promise.resolve(endpointGeolocData);
+        })
+        .then(endpointGeolocData => {
+            try {
+                let content = JSON.stringify(endpointGeolocData);
+                Logger.info("endpointMapfill for", runset.name, "END")
+                return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, geolocFilename), content)
+            } catch (err) {
+                Logger.error(err)
             }
-            Logger.log("endpointMapfill END")
         })
         .catch(error => {
             Logger.error(error)
         })
-
 }
 
-export function SPARQLCoverageFill() {
-    Logger.log("SPARQLCoverageFill START")
+export function SPARQLCoverageFill(runset: RunSetObject) {
+    Logger.info("SPARQLCoverageFill START")
     // Create an histogram of the SPARQLES rules passed by endpoint.
     let sparqlesFeatureQuery = `SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) { 
             GRAPH ?g { 
@@ -251,6 +217,7 @@ export function SPARQLCoverageFill() {
                     VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } 
                 } 
             } 
+            ${generateGraphValueFilterClause(runset.graphs)}
         } 
         GROUP BY ?endpoint ?sparqlNorm `;
     let jsonBaseFeatureSparqles = [];
@@ -260,7 +227,7 @@ export function SPARQLCoverageFill() {
             let endpointSet = new Set();
             let sparql10Map = new Map();
             let sparql11Map = new Map();
-            (json as Global.JSONValue[]).forEach((bindingItem, i) => {
+            (json as JSONValue[]).forEach((bindingItem, i) => {
                 let endpointUrl = bindingItem["endpoint"].value;
                 endpointSet.add(endpointUrl);
                 let feature = undefined;
@@ -302,6 +269,7 @@ export function SPARQLCoverageFill() {
                         VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } 
                     } 
                 } 
+                ${generateGraphValueFilterClause(runset.graphs)}
             } GROUP BY ?endpoint ?activity `;
             let endpointFeatureMap = new Map();
             let featuresShortName = new Map();
@@ -340,7 +308,7 @@ export function SPARQLCoverageFill() {
             if (jsonBaseFeatureSparqles.length > 0) {
                 try {
                     let content = JSON.stringify(jsonBaseFeatureSparqles);
-                    fs.writeFileSync(sparqlCoverageFilename, content)
+                    fs.writeFileSync(Global.getCachedFilenameForRunset(runset.id, sparqlCoverageFilename), content)
                 } catch (err) {
                     Logger.error(err)
                 }
@@ -348,20 +316,20 @@ export function SPARQLCoverageFill() {
             if (sparqlFeaturesDataArray.length > 0) {
                 try {
                     let content = JSON.stringify(sparqlFeaturesDataArray);
-                    fs.writeFileSync(sparqlFeaturesFilename, content)
+                    fs.writeFileSync(Global.getCachedFilenameForRunset(runset.id, sparqlFeaturesFilename), content)
                 } catch (err) {
                     Logger.error(err)
                 }
             }
-            Logger.log("SPARQLCoverageFill END")
+            Logger.info("SPARQLCoverageFill END")
         })
         .catch(error => {
             Logger.error(error)
         })
 }
 
-export function vocabFill(): Promise<void> {
-    Logger.log("vocabFill START")
+export function vocabFill(runset: RunSetObject): Promise<void> {
+    Logger.info("vocabFill START")
     // Create an force graph with the graph linked by co-ocurrence of vocabularies
     let sparqlesVocabulariesQuery = `SELECT DISTINCT ?endpointUrl ?vocabulary { 
         GRAPH ?g { 
@@ -369,9 +337,11 @@ export function vocabFill(): Promise<void> {
             UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
             UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
             ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . 
-            ?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary } 
+            ?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary 
         } 
-        GROUP BY ?endpointUrl ?vocabulary `;
+        ${generateGraphValueFilterClause(runset.graphs)}
+    } 
+    GROUP BY ?endpointUrl ?vocabulary `;
     let knownVocabularies = new Set();
     let rawGatherVocab = new Map();
     let gatherVocabData = [];
@@ -411,7 +381,7 @@ export function vocabFill(): Promise<void> {
                     });
                     try {
                         let content = JSON.stringify(responseLOV);
-                        return Global.writeFile(LOVFilename, content)
+                        return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, LOVFilename), content)
                     } catch (err) {
                         Logger.error(err)
                         return Promise.reject(err);
@@ -496,7 +466,7 @@ export function vocabFill(): Promise<void> {
             if (gatherVocabData.length > 0) {
                 try {
                     let content = JSON.stringify(gatherVocabData);
-                    return Global.writeFile(vocabEndpointFilename, content)
+                    return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, vocabEndpointFilename), content)
                 } catch (err) {
                     Logger.error(err)
                 }
@@ -506,8 +476,7 @@ export function vocabFill(): Promise<void> {
             if (knownVocabularies.size > 0) {
                 try {
                     let content = JSON.stringify([...knownVocabularies]);
-                    return Global.writeFile(knownVocabsFilename, content)
-                    return Promise.resolve();
+                    return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, knownVocabsFilename), content)
                 } catch (err) {
                     Logger.error(err)
                 }
@@ -517,13 +486,14 @@ export function vocabFill(): Promise<void> {
             if (vocabKeywordData.length > 0) {
                 try {
                     let content = JSON.stringify(vocabKeywordData);
-                    return Global.writeFile(vocabKeywordsFilename, content)
-                    return Promise.resolve();
+                    return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, vocabKeywordsFilename), content).then(() => {
+                        Logger.info("vocabFill END");
+                        return Promise.resolve();
+                    });
                 } catch (err) {
                     Logger.error(err)
                 }
             }
-            Logger.log("vocabFill END")
         })
         .catch(error => {
             Logger.error(error);
@@ -531,8 +501,8 @@ export function vocabFill(): Promise<void> {
         })
 }
 
-export function tripleDataFill() {
-    Logger.log("tripleDataFill START")
+export function tripleDataFill(runset: RunSetObject) {
+    Logger.info("tripleDataFill START")
     // Scatter plot of the number of triples through time
     let triplesSPARQLquery = `SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) {
         GRAPH ?g {
@@ -544,12 +514,13 @@ export function tripleDataFill() {
             UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
             ?curated <http://rdfs.org/ns/void#triples> ?rawO .
         }
+        ${generateGraphValueFilterClause(runset.graphs)}
     } GROUP BY ?g ?date ?endpointUrl`;
     type EndpointTripleIndexItem = { date: Dayjs, triples: number };
-    let endpointTriplesDataIndex: Map<string, Map<string, EndpointTripleIndexItem>> = new Map();
-    let endpointTriplesData: TripleCountDataObject[] = [];
     return Sparql.paginatedSparqlQueryToIndeGxPromise(triplesSPARQLquery)
         .then(json => {
+            let endpointTriplesDataIndex: Map<string, Map<string, EndpointTripleIndexItem>> = new Map();
+            let endpointTriplesData: TripleCountDataObject[] = [];
             (json as JSONValue[]).forEach((itemResult, i) => {
                 let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
                 let date = Global.parseDate(itemResult["date"].value);
@@ -568,32 +539,33 @@ export function tripleDataFill() {
                     }
                 }
             });
-            Logger.log("endpointTripleDataIndex", endpointTriplesDataIndex.size)
             endpointTriplesDataIndex.forEach((graphTripleMap, endpointUrl) => {
                 graphTripleMap.forEach((tripleData, graph) => {
                     endpointTriplesData.push({ endpoint: endpointUrl, graph: graph, date: tripleData.date, triples: tripleData.triples })
                 })
             });
-            return Promise.resolve();
+            return Promise.resolve(endpointTriplesData);
         })
-        .then(() => {
-            if (endpointTriplesData.length > 0) {
-                try {
-                    let content = JSON.stringify(endpointTriplesData);
-                    return Global.writeFile(tripleCountFilename, content)
-                } catch (err) {
-                    Logger.error(err)
-                }
+        .then(endpointTriplesData => {
+            try {
+                let content = JSON.stringify(endpointTriplesData);
+                return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, tripleCountFilename), content).then(() => {
+                    Logger.info("tripleDataFill END");
+                    return Promise.resolve();
+                })
+            } catch (err) {
+                Logger.error(err)
+                return Promise.reject(err);
             }
-            Logger.log("tripleDataFill END")
         })
         .catch(error => {
             Logger.error(error)
+            return Promise.reject(error);
         });
 }
 
-export function classDataFill() {
-    Logger.log("classDataFill START")
+export function classDataFill(runset: RunSetObject) {
+    Logger.info("classDataFill START")
     // Scatter plot of the number of classes through time
     let classesSPARQLquery = `SELECT DISTINCT ?g ?endpointUrl ?date (MAX(?rawO) AS ?o) { 
         GRAPH ?g {
@@ -605,12 +577,13 @@ export function classDataFill() {
             UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
             ?curated <http://rdfs.org/ns/void#classes> ?rawO .
         }
+        ${generateGraphValueFilterClause(runset.graphs)}
     } GROUP BY ?g ?endpointUrl ?date`;
     type EndpointClassesIndexItem = { date: Dayjs, classes: number };
-    let endpointClassCountData: ClassCountDataObject[] = [];
     let endpointClassesDataIndex: Map<string, Map<string, EndpointClassesIndexItem>> = new Map();
     return Sparql.paginatedSparqlQueryToIndeGxPromise(classesSPARQLquery)
         .then(json => {
+            let endpointClassCountData: ClassCountDataObject[] = [];
             (json as JSONValue[]).forEach((itemResult, i) => {
                 let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
                 let date = Global.parseDate(itemResult["date"].value);
@@ -633,19 +606,19 @@ export function classDataFill() {
                     endpointClassCountData.push({ endpoint: endpointUrl, graph: graph, date: classesData.date, classes: classesData.classes })
                 })
             });
-            return Promise.resolve();
+            return Promise.resolve(endpointClassCountData);
         })
-        .then(() => {
-            if (endpointClassCountData.length > 0) {
-                try {
-                    let content = JSON.stringify(endpointClassCountData);
-                    return Global.writeFile(classCountFilename, content)
-                } catch (err) {
-                    Logger.error(err)
-                }
+        .then(endpointClassCountData => {
+            try {
+                let content = JSON.stringify(endpointClassCountData);
+                return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, classCountFilename), content).then(() => {
+                    Logger.info("classDataFill END")
+                    return Promise.resolve();
+                })
+            } catch (err) {
+                Logger.error(err);
+                return Promise.reject(err);
             }
-            Logger.log("classDataFill END")
-            return Promise.resolve();
         })
         .catch(error => {
             Logger.error(error)
@@ -653,8 +626,8 @@ export function classDataFill() {
         });
 }
 
-export function propertyDataFill() {
-    Logger.log("propertyDataFill START")
+export function propertyDataFill(runset: RunSetObject) {
+    Logger.info("propertyDataFill START")
     // scatter plot of the number of properties through time
     let propertiesSPARQLquery = `SELECT DISTINCT ?g ?date ?endpointUrl (MAX(?rawO) AS ?o) {
         GRAPH ?g {
@@ -666,17 +639,18 @@ export function propertyDataFill() {
             UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
             ?curated <http://rdfs.org/ns/void#properties> ?rawO .
         }
+        ${generateGraphValueFilterClause(runset.graphs)}
     } GROUP BY ?endpointUrl ?g ?date`;
     type EndpointPropertiesIndexItem = { date: Dayjs, properties: number };
-    let endpointPropertyCountData = [];
     let endpointPropertiesDataIndex = new Map();
     return Sparql.paginatedSparqlQueryToIndeGxPromise(propertiesSPARQLquery)
         .then(json => {
-            (json as Global.JSONValue[]).forEach((itemResult, i) => {
+            let endpointPropertyCountData = [];
+            (json as JSONValue[]).forEach((itemResult, i) => {
                 let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
                 let endpointUrl = itemResult["endpointUrl"].value;
                 let properties = Number.parseInt(itemResult["o"].value);
-                let date = Global.parseDate(itemResult["date"].value, 'YYYY-MM-DDTHH:mm:ss');
+                let date = Global.parseDate(itemResult["date"].value);
 
                 if (endpointPropertiesDataIndex.get(endpointUrl) == undefined) {
                     endpointPropertiesDataIndex.set(endpointUrl, new Map());
@@ -695,28 +669,28 @@ export function propertyDataFill() {
                     endpointPropertyCountData.push({ endpoint: endpointUrl, graph: graph, date: propertiesData.date, properties: propertiesData.properties })
                 })
             });
-            return Promise.resolve();
+            return Promise.resolve(endpointPropertyCountData);
         })
-        .then(() => {
-            if (endpointPropertyCountData.length > 0) {
-                try {
-                    let content = JSON.stringify(endpointPropertyCountData);
-                    fs.writeFileSync(propertyCountFilename, content)
-                } catch (err) {
-                    Logger.error(err)
-                }
+        .then(endpointPropertyCountData => {
+            try {
+                let content = JSON.stringify(endpointPropertyCountData);
+                return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, propertyCountFilename), content).then(() => {
+                    Logger.info("propertyDataFill END")
+                    return Promise.resolve();
+                })
+            } catch (err) {
+                Logger.error(err)
+                return Promise.reject(err);
             }
-            Logger.log("propertyDataFill END")
-            return Promise.resolve();
         })
         .catch(error => {
             Logger.error(error)
-            return Promise.reject();
+            return Promise.reject(error);
         });
 }
 
-export function categoryTestCountFill() {
-    Logger.log("categoryTestCountFill START")
+export function categoryTestCountFill(runset: RunSetObject) {
+    Logger.info("categoryTestCountFill START")
     let testCategoryData = [];
     // Number of tests passed by test categories
     let testCategoryQuery = `SELECT DISTINCT ?g ?date ?category (count(DISTINCT ?test) AS ?count) ?endpointUrl { 
@@ -741,6 +715,7 @@ export function categoryTestCountFill() {
                 'https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/' 
             }
         }  
+        ${generateGraphValueFilterClause(runset.graphs)}
     } GROUP BY ?g ?date ?category ?endpointUrl`;
     return Sparql.paginatedSparqlQueryToIndeGxPromise(testCategoryQuery)
         .then(json => {
@@ -758,22 +733,23 @@ export function categoryTestCountFill() {
             if (testCategoryData.length > 0) {
                 try {
                     let content = JSON.stringify(testCategoryData);
-                    return Global.writeFile(categoryTestCountFilename, content)
+                    return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, categoryTestCountFilename), content).then(() => {
+                        Logger.info("categoryTestCountFill END")
+                        return Promise.resolve();
+                    });
                 } catch (err) {
                     Logger.error(err)
                 }
             }
-            Logger.log("categoryTestCountFill END")
-            return Promise.resolve();
         })
         .catch(error => {
             Logger.error(error)
-            return Promise.reject();
+            return Promise.reject(error);
         });
 }
 
-export function totalCategoryTestCountFill() {
-    Logger.log("totalCategoryTestCountFill START")
+export function totalCategoryTestCountFill(runset: RunSetObject) {
+    Logger.info("totalCategoryTestCountFill START")
     // Number of tests passed by test categories
     let testCategoryQuery = `SELECT DISTINCT ?category ?g ?date (count(DISTINCT ?test) AS ?count) ?endpointUrl { 
         GRAPH ?g { 
@@ -796,33 +772,34 @@ export function totalCategoryTestCountFill() {
                 <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/sparqles/SPARQL11/> 
             } 
         } 
+        ${generateGraphValueFilterClause(runset.graphs)}
     } 
     GROUP BY ?g ?date ?category ?endpointUrl 
     ORDER BY ?category `;
-    let totalTestCategoryData = [];
     return Sparql.paginatedSparqlQueryToIndeGxPromise(testCategoryQuery).then(json => {
+        let totalTestCategoryData = [];
         (json as JSONValue[]).forEach((itemResult, i) => {
             let category = itemResult["category"].value;
             let count = itemResult["count"].value;
             let endpoint = itemResult["endpointUrl"].value;
             let graph = itemResult["g"].value;
-            let date = Global.parseDate(itemResult["date"].value, 'YYYY-MM-DDTHH:mm:ss');
+            let date = Global.parseDate(itemResult["date"].value);
 
             totalTestCategoryData.push({ category: category, endpoint: endpoint, graph: graph, date: date, count: count })
-            return Promise.resolve();
+            return Promise.resolve(totalTestCategoryData);
         });
     })
-        .then(() => {
-            if (totalTestCategoryData.length > 0) {
-                try {
-                    let content = JSON.stringify(totalTestCategoryData);
-                    fs.writeFileSync(totalCategoryTestCountFilename, content)
-                } catch (err) {
-                    Logger.error(err)
-                }
+        .then(totalTestCategoryData => {
+            try {
+                let content = JSON.stringify(totalTestCategoryData);
+                return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, totalCategoryTestCountFilename), content).then(() => {
+                    Logger.info("totalCategoryTestCountFill END")
+                    return Promise.resolve();
+                })
+            } catch (err) {
+                Logger.error(err)
+                return Promise.reject(err);
             }
-            Logger.log("totalCategoryTestCountFill END")
-            return Promise.resolve();
         })
         .catch(error => {
             Logger.error(error)
@@ -830,8 +807,8 @@ export function totalCategoryTestCountFill() {
         });
 }
 
-export function endpointTestsDataFill() {
-    Logger.log("endpointTestsDataFill START")
+export function endpointTestsDataFill(runset: RunSetObject) {
+    Logger.info("endpointTestsDataFill START")
 
     let appliedTestQuery = `SELECT DISTINCT ?endpointUrl ?g ?date ?rule { 
         GRAPH ?g { 
@@ -843,13 +820,14 @@ export function endpointTestsDataFill() {
             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
             UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
         } 
+        ${generateGraphValueFilterClause(runset.graphs)}
     }`;
     type EndpointTestItem = { activity: string, date: Dayjs };
-    let endpointTestsData: EndpointTestObject[] = [];
     let endpointGraphTestsIndex: Map<string, Map<string, EndpointTestItem>> = new Map();
     return Sparql.paginatedSparqlQueryToIndeGxPromise(appliedTestQuery)
         .then(json => {
-            (json as Global.JSONValue[]).forEach((item, i) => {
+            let endpointTestsData: EndpointTestObject[] = [];
+            (json as JSONValue[]).forEach((item, i) => {
                 let endpointUrl = item["endpointUrl"].value;
                 let rule = item["rule"].value;
                 let graph = item["g"].value;
@@ -873,29 +851,29 @@ export function endpointTestsDataFill() {
                         endpointTestsData.push({ endpoint: endpointUrl, activity: item.activity, graph: graph, date: item.date })
                     })
                 })
-                return Promise.resolve();
             });
+            return Promise.resolve(endpointTestsData);
         })
-        .then(() => {
-            if (endpointTestsData.length > 0) {
-                try {
-                    let content = JSON.stringify(endpointTestsData);
-                    return Global.writeFile(endpointTestsDataFilename, content)
-                } catch (err) {
-                    Logger.error(err)
-                }
+        .then(endpointTestsData => {
+            try {
+                let content = JSON.stringify(endpointTestsData);
+                return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, endpointTestsDataFilename), content).then(() => {
+                    Logger.info("endpointTestsDataFill END")
+                    return Promise.resolve();
+                })
+            } catch (err) {
+                Logger.error(err)
+                return Promise.reject(err);
             }
-            Logger.log("endpointTestsDataFill END")
-            return Promise.resolve();
         })
         .catch(error => {
             Logger.error(error)
-            return Promise.reject();
+            return Promise.reject(error);
         });
 }
 
-export function totalRuntimeDataFill() {
-    Logger.log("totalRuntimeDataFill START")
+export function totalRuntimeDataFill(runset: RunSetObject) {
+    Logger.info("totalRuntimeDataFill START")
     let maxMinTimeQuery = `SELECT DISTINCT ?g ?endpointUrl ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { 
         GRAPH ?g { 
             ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
@@ -907,10 +885,11 @@ export function totalRuntimeDataFill() {
             UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
         }
+        ${generateGraphValueFilterClause(runset.graphs)}
     } `;
-    let totalRuntimeData = []
     return Sparql.paginatedSparqlQueryToIndeGxPromise(maxMinTimeQuery).then(jsonResponse => {
-        (jsonResponse as Global.JSONValue[]).forEach((itemResult, i) => {
+        let totalRuntimeData = [];
+        (jsonResponse as JSONValue[]).forEach((itemResult, i) => {
             let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
             let date = Global.parseDate(itemResult["date"].value);
             let start = Global.parseDate(itemResult["start"].value);
@@ -919,28 +898,28 @@ export function totalRuntimeDataFill() {
             let runtimeData = dayjs.duration(end.diff(start));
             totalRuntimeData.push({ graph: graph, endpoint: endpointUrl, date: date, start: start, end: end, runtime: runtimeData })
         });
-        return Promise.resolve();
+        return Promise.resolve(totalRuntimeData);
     })
-        .then(() => {
-            if (totalRuntimeData.length > 0) {
-                try {
-                    let content = JSON.stringify(totalRuntimeData);
-                    fs.writeFileSync(totalRuntimeDataFilename, content)
-                } catch (err) {
-                    Logger.error(err)
-                }
+        .then(totalRuntimeData => {
+            try {
+                let content = JSON.stringify(totalRuntimeData);
+                return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, totalRuntimeDataFilename), content).then(() => {
+                    Logger.info("totalRuntimeDataFill END")
+                    return Promise.resolve();
+                });
+            } catch (err) {
+                Logger.error(err)
+                return Promise.reject(err);
             }
-            Logger.log("totalRuntimeDataFill END")
-            return Promise.resolve();
         })
         .catch(error => {
             Logger.error(error)
-            return Promise.reject();
+            return Promise.reject(error);
         });
 }
 
-export function averageRuntimeDataFill() {
-    Logger.log("averageRuntimeDataFill START")
+export function averageRuntimeDataFill(runset: RunSetObject) {
+    Logger.info("averageRuntimeDataFill START")
     let maxMinTimeQuery = `SELECT DISTINCT ?g ?date (MIN(?startTime) AS ?start) (MAX(?endTime) AS ?end) { 
         GRAPH ?g {
             ?metadata <http://ns.inria.fr/kg/index#curated> ?data , ?endpoint .
@@ -949,6 +928,7 @@ export function averageRuntimeDataFill() {
             ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime .
             ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime .
         }
+        ${generateGraphValueFilterClause(runset.graphs)}
     }`;
     let numberOfEndpointQuery = `SELECT DISTINCT ?g (COUNT(?endpointUrl) AS ?count) { 
         GRAPH ?g { 
@@ -956,17 +936,18 @@ export function averageRuntimeDataFill() {
             { ?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
             UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
         } 
+        ${generateGraphValueFilterClause(runset.graphs)}
     } GROUP BY ?g`;
     let averageRuntimeData = [];
     let graphStartEndMap = new Map();
     return Promise.allSettled([
         Sparql.paginatedSparqlQueryToIndeGxPromise(maxMinTimeQuery)
             .then(jsonResponse => {
-                (jsonResponse as Global.JSONValue[]).forEach((itemResult, i) => {
+                (jsonResponse as JSONValue[]).forEach((itemResult, i) => {
                     let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
-                    let date = Global.parseDate(itemResult["date"].value, 'YYYY-MM-DDTHH:mm:ss');
-                    let start = Global.parseDate(itemResult["start"].value, 'YYYY-MM-DDTHH:mm:ss');
-                    let end = Global.parseDate(itemResult["end"].value, 'YYYY-MM-DDTHH:mm:ss');
+                    let date = Global.parseDate(itemResult["date"].value);
+                    let start = Global.parseDate(itemResult["start"].value);
+                    let end = Global.parseDate(itemResult["end"].value);
                     let runtime = dayjs.duration(end.diff(start));
 
                     if (graphStartEndMap.get(graph) == undefined) {
@@ -982,7 +963,7 @@ export function averageRuntimeDataFill() {
             }),
         Sparql.paginatedSparqlQueryToIndeGxPromise(numberOfEndpointQuery)
             .then(numberOfEndpointJson => {
-                (numberOfEndpointJson as Global.JSONValue[]).forEach((numberEndpointItem, i) => {
+                (numberOfEndpointJson as JSONValue[]).forEach((numberEndpointItem, i) => {
                     let graph = numberEndpointItem["g"].value;
                     graph = graph.replace('http://ns.inria.fr/indegx#', '');
                     let count = numberEndpointItem["count"].value;
@@ -999,12 +980,12 @@ export function averageRuntimeDataFill() {
             if (averageRuntimeData.length > 0) {
                 try {
                     let content = JSON.stringify(averageRuntimeData);
-                    return Global.writeFile(averageRuntimeDataFilename, content)
+                    return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, averageRuntimeDataFilename), content)
                 } catch (err) {
                     Logger.error(err)
                 }
             }
-            Logger.log("averageRuntimeDataFill END")
+            Logger.info("averageRuntimeDataFill END")
             return Promise.resolve();
         })
         .catch(error => {
@@ -1013,8 +994,8 @@ export function averageRuntimeDataFill() {
         });
 }
 
-export function classAndPropertiesDataFill() {
-    Logger.log("classAndPropertiesDataFill START")
+export function classAndPropertiesDataFill(runset: RunSetObject) {
+    Logger.info("classAndPropertiesDataFill START")
     let classPartitionQuery = `CONSTRUCT { ?classPartition <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl ;
             <http://rdfs.org/ns/void#class> ?c ;
             <http://rdfs.org/ns/void#triples> ?ct ;
@@ -1035,6 +1016,7 @@ export function classAndPropertiesDataFill() {
             OPTIONAL { ?classPartition <http://rdfs.org/ns/void#distinctObjects> ?co . } 
             FILTER(! isBlank(?c)) 
         } 
+        ${generateGraphValueFilterClause(runset.graphs)}
     }`
     let classSet = new Set();
     let classCountsEndpointsMap = new Map();
@@ -1133,6 +1115,7 @@ export function classAndPropertiesDataFill() {
                     OPTIONAL { ?classPropertyPartition <http://rdfs.org/ns/void#distinctObjects> ?po . } 
                     FILTER(! isBlank(?c)) 
                 }
+                ${generateGraphValueFilterClause(runset.graphs)}
             }`;
             return Sparql.paginatedSparqlQueryToIndeGxPromise(classPropertyPartitionQuery).then(classPropertyStore => {
                 classPropertyStore = classPropertyStore as $rdf.Store;
@@ -1201,16 +1184,16 @@ export function classAndPropertiesDataFill() {
                 }
                 classContentData.push(classItem)
             })
-            if (classContentData.length > 0) {
-                try {
-                    let content = JSON.stringify(classContentData);
-                    fs.writeFileSync(classPropertyDataFilename, content)
-                } catch (err) {
-                    Logger.error(err)
-                }
+            try {
+                let content = JSON.stringify(classContentData);
+                return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, classPropertyDataFilename), content).then(() => {
+                    Logger.info("classAndPropertiesDataFill END")
+                    return Promise.resolve();
+                })
+            } catch (err) {
+                Logger.error(err)
+                return Promise.reject(err);
             }
-            Logger.log("classAndPropertiesDataFill END")
-            return Promise.resolve();
         })
         .catch(error => {
             Logger.error(error)
@@ -1218,8 +1201,8 @@ export function classAndPropertiesDataFill() {
         })
 }
 
-export function datasetDescriptionDataFill() {
-    Logger.log("datasetDescriptionDataDataFill START")
+export function datasetDescriptionDataFill(runset: RunSetObject) {
+    Logger.info("datasetDescriptionDataDataFill START")
     let provenanceWhoCheckQuery = `SELECT DISTINCT ?endpointUrl ?o { 
         GRAPH ?g { 
             ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . 
@@ -1232,6 +1215,7 @@ export function datasetDescriptionDataFill() {
                 UNION { ?dataset <http://purl.org/dc/terms/publisher> ?o }
             }
         }
+        ${generateGraphValueFilterClause(runset.graphs)}
     }`;
     let provenanceLicenseCheckQuery = `SELECT DISTINCT ?endpointUrl ?o { 
         GRAPH ?g {
@@ -1244,6 +1228,7 @@ export function datasetDescriptionDataFill() {
                 UNION {?dataset <http://purl.org/dc/terms/conformsTo> ?o }
             } 
         }
+        ${generateGraphValueFilterClause(runset.graphs)}
     } `;
     let provenanceDateCheckQuery = `SELECT DISTINCT ?endpointUrl ?o { 
         GRAPH ?g { 
@@ -1257,6 +1242,7 @@ export function datasetDescriptionDataFill() {
                 UNION { ?dataset <http://purl.org/dc/terms/issued> ?o }
             }
         }
+        ${generateGraphValueFilterClause(runset.graphs)}
     } `;
     let provenanceSourceCheckQuery = `SELECT DISTINCT ?endpointUrl ?o {
         GRAPH ?g {
@@ -1270,6 +1256,7 @@ export function datasetDescriptionDataFill() {
                 UNION { ?dataset <http://purl.org/dc/terms/format> ?o }
             }
         }
+        ${generateGraphValueFilterClause(runset.graphs)}
     } `;
     let endpointDescriptionElementMap = new Map();
 
@@ -1277,7 +1264,7 @@ export function datasetDescriptionDataFill() {
     return Promise.allSettled([
         Sparql.paginatedSparqlQueryToIndeGxPromise(provenanceWhoCheckQuery)
             .then(json => {
-                (json as Global.JSONValue[]).forEach((item, i) => {
+                (json as JSONValue[]).forEach((item, i) => {
                     let endpointUrl = item["endpointUrl"].value;
                     let who = (item["o"] != undefined);
                     let currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
@@ -1295,7 +1282,7 @@ export function datasetDescriptionDataFill() {
             }),
         Sparql.paginatedSparqlQueryToIndeGxPromise(provenanceLicenseCheckQuery)
             .then(json => {
-                (json as Global.JSONValue[]).forEach((item, i) => {
+                (json as JSONValue[]).forEach((item, i) => {
                     let endpointUrl = item["endpointUrl"].value;
                     let license = (item["o"] != undefined);
                     let currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
@@ -1318,7 +1305,7 @@ export function datasetDescriptionDataFill() {
         ,
         Sparql.paginatedSparqlQueryToIndeGxPromise(provenanceDateCheckQuery)
             .then(json => {
-                (json as Global.JSONValue[]).forEach((item, i) => {
+                (json as JSONValue[]).forEach((item, i) => {
                     let endpointUrl = item["endpointUrl"].value;
                     let time = (item["o"] != undefined);
                     let currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
@@ -1341,7 +1328,7 @@ export function datasetDescriptionDataFill() {
         ,
         Sparql.paginatedSparqlQueryToIndeGxPromise(provenanceSourceCheckQuery)
             .then(json => {
-                (json as Global.JSONValue[]).forEach((item, i) => {
+                (json as JSONValue[]).forEach((item, i) => {
                     let endpointUrl = item["endpointUrl"].value;
                     let source = (item["o"] != undefined);
                     let currentEndpointItem = endpointDescriptionElementMap.get(endpointUrl)
@@ -1369,12 +1356,12 @@ export function datasetDescriptionDataFill() {
             if (datasetDescriptionData.length > 0) {
                 try {
                     let content = JSON.stringify(datasetDescriptionData);
-                    return Global.writeFile(datasetDescriptionDataFilename, content)
+                    return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, datasetDescriptionDataFilename), content)
                 } catch (err) {
                     Logger.error(err)
                 }
             }
-            Logger.log("datasetDescriptionDataDataFill END")
+            Logger.info("datasetDescriptionDataDataFill END")
             return Promise.resolve();
         })
         .catch(error => {
@@ -1383,44 +1370,45 @@ export function datasetDescriptionDataFill() {
         });
 }
 
-export function shortUrisDataFill() {
-    Logger.log("shortUrisDataFill START")
-    let shortUrisMeasureQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
-        "GRAPH ?g {" +
-        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-        "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
-        "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> . " +
-        "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-        "}" +
-        " } GROUP BY ?g ?date ?endpointUrl ?measure ";
-    let shortUriData = []
+export function shortUrisDataFill(runset: RunSetObject) {
+    Logger.info("shortUrisDataFill START")
+    let shortUrisMeasureQuery = `SELECT DISTINCT ?g ?date ?endpointUrl ?measure {
+            GRAPH ?g {
+                { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
+                UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
+                ?metadata <http://purl.org/dc/terms/modified> ?date . 
+                ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
+                ?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode .
+                ?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> .
+                ?measureNode <http://www.w3.org/ns/dqv#value> ?measure .
+            }
+            ${generateGraphValueFilterClause(runset.graphs)}
+        } GROUP BY ?g ?date ?endpointUrl ?measure`;
     return Sparql.paginatedSparqlQueryToIndeGxPromise(shortUrisMeasureQuery)
         .then(json => {
+            let shortUriData = []
             let graphSet = new Set();
-            (json as Global.JSONValue[]).forEach((jsonItem, i) => {
+            (json as JSONValue[]).forEach((jsonItem, i) => {
                 let endpoint = jsonItem["endpointUrl"].value;
                 let shortUriMeasure = Number.parseFloat(jsonItem["measure"].value) * 100;
                 let graph = jsonItem["g"].value.replace("http://ns.inria.fr/indegx#", "");
-                let date = Global.parseDate(jsonItem["date"].value, 'YYYY-MM-DDTHH:mm:ss');
+                let date = Global.parseDate(jsonItem["date"].value);
 
                 graphSet.add(graph);
                 shortUriData.push({ graph: graph, date: date, endpoint: endpoint, measure: shortUriMeasure })
             });
-            return Promise.resolve();
+            return Promise.resolve(shortUriData);
         })
-        .then(() => {
+        .then(shortUriData => {
             if (shortUriData.length > 0) {
                 try {
                     let content = JSON.stringify(shortUriData);
-                    fs.writeFileSync(shortUriDataFilename, content)
+                    fs.writeFileSync(Global.getCachedFilenameForRunset(runset.id, shortUriDataFilename), content)
                 } catch (err) {
                     Logger.error(err)
                 }
             }
-            Logger.log("shortUrisDataFill END")
+            Logger.info("shortUrisDataFill END")
             return Promise.resolve();
         })
         .catch(error => {
@@ -1429,43 +1417,46 @@ export function shortUrisDataFill() {
         });
 }
 
-export function readableLabelsDataFill() {
-    Logger.log("readableLabelsDataFill START")
-    let readableLabelsQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
-        "GRAPH ?g {" +
-        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-        "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
-        "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . " +
-        "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-        "} " +
-        " } GROUP BY ?g ?date ?endpointUrl ?measure ";
+export function readableLabelsDataFill(runset: RunSetObject) {
+    Logger.info("readableLabelsDataFill START")
+    let readableLabelsQuery = `SELECT DISTINCT ?g ?date ?endpointUrl ?measure { 
+            GRAPH ?g {
+                { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+                UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
+                ?metadata <http://purl.org/dc/terms/modified> ?date . 
+                ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . 
+                ?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . 
+                ?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . 
+                ?measureNode <http://www.w3.org/ns/dqv#value> ?measure . 
+            } 
+            ${generateGraphValueFilterClause(runset.graphs)}
+        } GROUP BY ?g ?date ?endpointUrl ?measure`;
 
-    let readableLabelData = [];
     return Sparql.paginatedSparqlQueryToIndeGxPromise(readableLabelsQuery)
         .then(json => {
-            (json as Global.JSONValue[]).forEach((jsonItem, i) => {
+            let readableLabelData = [];
+            (json as JSONValue[]).forEach((jsonItem, i) => {
                 let endpoint = jsonItem["endpointUrl"].value;
                 let readableLabelMeasure = Number.parseFloat(jsonItem["measure"].value) * 100;
                 let graph = jsonItem["g"].value.replace("http://ns.inria.fr/indegx#", "");
-                let date = Global.parseDate(jsonItem["date"].value, 'YYYY-MM-DDTHH:mm:ss');
+                let date = Global.parseDate(jsonItem["date"].value);
 
                 readableLabelData.push({ graph: graph, date: date, endpoint: endpoint, measure: readableLabelMeasure })
             });
-            return Promise.resolve();
+            return Promise.resolve(readableLabelData);
         })
-        .then(() => {
+        .then(readableLabelData => {
             if (readableLabelData.length > 0) {
                 try {
                     let content = JSON.stringify(readableLabelData);
-                    return Global.writeFile(readableLabelDataFilename, content)
+                    return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, readableLabelDataFilename), content).then(() => {
+                        Logger.info("readableLabelsDataFill END")
+                        return Promise.resolve();
+                    });
                 } catch (err) {
                     Logger.error(err)
                 }
             }
-            Logger.log("readableLabelsDataFill END")
             return Promise.resolve();
         })
         .catch(error => {
@@ -1474,86 +1465,93 @@ export function readableLabelsDataFill() {
         });
 }
 
-export function rdfDataStructureDataFill() {
+export function rdfDataStructureDataFill(runset: RunSetObject) {
     Logger.info("rdfDataStructureDataFill START")
-    let rdfDataStructureQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
-        "GRAPH ?g {" +
-        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-        "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
-        "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . " +
-        "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-        "}" +
-        " } GROUP BY ?g ?date ?endpointUrl ?measure ";
+    let rdfDataStructureQuery = `SELECT DISTINCT ?g ?date ?endpointUrl ?measure { 
+            GRAPH ?g {
+                { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
+                UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
+                ?metadata <http://purl.org/dc/terms/modified> ?date . 
+                ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . 
+                ?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . 
+                ?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . 
+                ?measureNode <http://www.w3.org/ns/dqv#value> ?measure . 
+            }
+            ${generateGraphValueFilterClause(runset.graphs)}
+        } 
+        GROUP BY ?g ?date ?endpointUrl ?measure` ;
 
-    let rdfDataStructureData = []
     return Sparql.paginatedSparqlQueryToIndeGxPromise(rdfDataStructureQuery).then(json => {
-        (json as Global.JSONValue[]).forEach((jsonItem, i) => {
+        let rdfDataStructureData = [];
+        (json as JSONValue[]).forEach((jsonItem, i) => {
             let endpoint = jsonItem["endpointUrl"].value;
             let rdfDataStructureMeasure = Number.parseFloat(jsonItem["measure"].value) * 100;
             let graph = jsonItem["g"].value.replace("http://ns.inria.fr/indegx#", "");
-            let date = Global.parseDate(jsonItem["date"].value, 'YYYY-MM-DDTHH:mm:ss');
+            let date = Global.parseDate(jsonItem["date"].value);
 
             rdfDataStructureData.push({ graph: graph, date: date, endpoint: endpoint, measure: rdfDataStructureMeasure })
         });
+        return Promise.resolve(rdfDataStructureData);
     })
-        .then(() => {
-            if (rdfDataStructureData.length > 0) {
-                try {
-                    let content = JSON.stringify(rdfDataStructureData);
-                    return Global.writeFile(rdfDataStructureDataFilename, content)
-                } catch (err) {
-                    Logger.error(err)
-                }
+        .then(rdfDataStructureData => {
+            try {
+                let content = JSON.stringify(rdfDataStructureData);
+                return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, rdfDataStructureDataFilename), content).then(() => {
+                    Logger.info("rdfDataStructureDataFill END");
+                    return;
+                })
+
+            } catch (err) {
+                Logger.error(err)
             }
             return Promise.resolve();
-            Logger.info("rdfDataStructureDataFill END")
         })
         .catch(error => {
             Logger.error(error);
         });
 }
 
-export function blankNodeDataFill() {
-    Logger.log("blankNodeDataFill START")
-    let blankNodeQuery = "SELECT DISTINCT ?g ?date ?endpointUrl ?measure { " +
-        "GRAPH ?g {" +
-        "?metadata <http://purl.org/dc/terms/modified> ?date . " +
-        "{ ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } " +
-        "UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-        "?metadata <http://ns.inria.fr/kg/index#curated> ?curated . " +
-        "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
-        "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . " +
-        "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-        "}" +
-        " } " +
-        "GROUP BY ?g ?date ?endpointUrl ?measure ";
-
-    let blankNodeData = []
+export function blankNodeDataFill(runset: RunSetObject) {
+    Logger.info("blankNodeDataFill START")
+    let blankNodeQuery = `SELECT DISTINCT ?g ?date ?endpointUrl ?measure { 
+            GRAPH ?g {
+                ?metadata <http://purl.org/dc/terms/modified> ?date . 
+                { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
+                UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
+                ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . 
+                ?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . 
+                ?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . 
+                ?measureNode <http://www.w3.org/ns/dqv#value> ?measure . 
+            }
+            ${generateGraphValueFilterClause(runset.graphs)}
+        } 
+        GROUP BY ?g ?date ?endpointUrl ?measure` ;
     return Sparql.sparqlQueryToIndeGxPromise(blankNodeQuery).then(json => {
+
+        let blankNodeData = []
         let graphSet = new Set();
-        json.results.bindings.forEach((jsonItem, i) => {
+        (json as SPARQLJSONResult).results.bindings.forEach((jsonItem, i) => {
             let endpoint = jsonItem.endpointUrl.value;
             let blankNodeMeasure = Number.parseFloat(jsonItem.measure.value) * 100;
             let graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-            let date = Global.parseDate(jsonItem.date.value, 'YYYY-MM-DDTHH:mm:ss');
+            let date = Global.parseDate(jsonItem.date.value);
 
             graphSet.add(graph);
             blankNodeData.push({ graph: graph, date: date, endpoint: endpoint, measure: blankNodeMeasure })
         });
+        return Promise.resolve(blankNodeData);
     })
-        .then(() => {
-            if (blankNodeData.length > 0) {
-                try {
-                    let content = JSON.stringify(blankNodeData);
-                    fs.writeFileSync(blankNodesDataFilename, content)
-                } catch (err) {
-                    Logger.error(err)
-                }
+        .then(blankNodeData => {
+            try {
+                let content = JSON.stringify(blankNodeData);
+                return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, blankNodesDataFilename), content).then(() => {
+                    Logger.info("blankNodeDataFill END");
+                    return Promise.resolve();
+                })
+            } catch (err) {
+                Logger.error(err)
             }
-            Logger.log("blankNodeDataFill END")
+            return Promise.reject();
         })
         .catch(error => {
             Logger.error(error)

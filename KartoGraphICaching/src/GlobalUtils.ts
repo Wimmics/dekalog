@@ -4,12 +4,17 @@ import { setTimeout } from 'node:timers/promises';
 import dayjs from "dayjs";
 import * as Logger from "./LogUtils"
 import { JSONValue } from './DataTypes';
+import * as DataCache from "./DataCaching";
 
 export let nbFetchRetries = 10;
 export let millisecondsBetweenRetries = 5000;
 let countConcurrentQueries = 0;
 export let maxConccurentQueries = 300;
 export let delayMillisecondsTimeForConccurentQuery = 1000
+
+export function getCachedFilenameForRunset(runsetId: string, filename: string) {
+    return DataCache.dataCachedFilePrefix + filename + "." + runsetId + ".json";
+}
 
 
 // Parse the date in any format

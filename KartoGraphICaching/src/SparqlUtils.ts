@@ -3,7 +3,7 @@ import * as RDFUtils from "./RDFUtils";
 import sparqljs from "sparqljs";
 import * as $rdf from "rdflib";
 import * as Logger from "./LogUtils"
-import { JSONValue } from "./DataTypes";
+import { JSONValue, SPARQLJSONResult } from "./DataTypes";
 
 export let defaultQueryTimeout = 60000;
 
@@ -17,13 +17,13 @@ export function setDefaultQueryTimeout(timeout: number) {
     }
 }
 
-export function sparqlQueryPromise(endpoint, query, timeout: number = defaultQueryTimeout): Promise<$rdf.Formula | JSONValue> {
+export function sparqlQueryPromise(endpoint, query, timeout: number = defaultQueryTimeout): Promise<$rdf.Formula | SPARQLJSONResult> {
     let jsonHeaders = new Map();
     jsonHeaders.set("Accept", "application/sparql-results+json")
     if (isSparqlSelect(query)) {
-        return fetchJSONPromise(endpoint + '?query=' + encodeURIComponent(query) + '&format=json&timeout=' + timeout, jsonHeaders).catch(error => { Logger.error(endpoint, query, error); throw error })
+        return fetchJSONPromise(endpoint + '?query=' + encodeURIComponent(query) + '&format=json&timeout=' + timeout, jsonHeaders).catch(error => { Logger.error(endpoint, query, error); throw error }) as Promise<SPARQLJSONResult>
     } else if (isSparqlAsk(query)) {
-        return fetchJSONPromise(endpoint + '?query=' + encodeURIComponent(query) + '&format=json&timeout=' + timeout, jsonHeaders).catch(() => { return { boolean: false } })
+        return fetchJSONPromise(endpoint + '?query=' + encodeURIComponent(query) + '&format=json&timeout=' + timeout, jsonHeaders).catch(() => { return { boolean: false } }) as Promise<SPARQLJSONResult>
     } else if (isSparqlConstruct(query)) {
         return fetchGETPromise(endpoint + '?query=' + encodeURIComponent(query) + '&format=turtle&timeout=' + timeout)
             .then(result => {
@@ -85,7 +85,7 @@ export function isSparqlUpdate(queryString: string): boolean {
     return checkSparqlType(queryString, "update");
 }
 
-export function sparqlQueryToIndeGxPromise(query: string, timeout: number = defaultQueryTimeout): Promise<any> {
+export function sparqlQueryToIndeGxPromise(query: string, timeout: number = defaultQueryTimeout): Promise<$rdf.Formula | SPARQLJSONResult> {
     return sparqlQueryPromise("http://prod-dekalog.inria.fr/sparql", query, timeout);
 }
 
@@ -155,6 +155,6 @@ function paginatedSparqlQueryPromise(endpointUrl: string, query: string, pageSiz
         });
 }
 
-export function paginatedSparqlQueryToIndeGxPromise(query, pageSize = 100) {
+export function paginatedSparqlQueryToIndeGxPromise(query, pageSize = 100): Promise<$rdf.Formula | Array<JSONValue>> {
     return paginatedSparqlQueryPromise("http://prod-dekalog.inria.fr/sparql", query, pageSize);
 }
