@@ -1,8 +1,10 @@
+import { JSONValue, SPARQLJSONResult } from "./Datatypes";
 
+export const queryPaginationSize = 10000;
 
-export function xhrGetPromise(url) {
+export function xhrGetPromise(url): Promise<string> {
     return new Promise(function (resolve, reject) {
-        var xhr = new XMLHttpRequest();
+        let xhr = new XMLHttpRequest();
         xhr.open('GET', url);
         xhr.onload = function () {
             if (xhr.status >= 200 && xhr.status < 300) {
@@ -30,9 +32,12 @@ export function xhrGetPromise(url) {
     });
 }
 
-export function xhrJSONPromise(url) {
+export function xhrJSONPromise(url): Promise<JSONValue> {
     return xhrGetPromise(url).then(response => {
         return JSON.parse(response);
+    }).catch(error => {
+        console.error(url, error);
+        throw error;
     });
 }
 
@@ -45,18 +50,18 @@ export function sparqlQueryPromise(query) {
     }
 }
 
-export function paginatedSparqlQueryPromise(query, limit = queryPaginationSize, offset = 0, finalResult = []) {
-    var paginatedQuery = query + " LIMIT " + limit + " OFFSET " + offset;
+export function paginatedSparqlQueryPromise(query, limit = queryPaginationSize, offset = 0, finalResult: Array<any> = []): Promise<Array<any>> {
+    let paginatedQuery = query + " LIMIT " + limit + " OFFSET " + offset;
     return sparqlQueryPromise(paginatedQuery)
         .then(queryResult => {
-            queryResult.results.bindings.forEach(resultItem => {
-                var finaResultItem = {};
-                queryResult.head.vars.forEach(variable => {
+            (queryResult as  SPARQLJSONResult).results.bindings.forEach(resultItem => {
+                let finaResultItem: any = {};
+                (queryResult as  SPARQLJSONResult).head.vars.forEach(variable => {
                     finaResultItem[variable] = resultItem[variable];
                 })
                 finalResult.push(finaResultItem);
             })
-            if (queryResult.results.bindings.length > 0) {
+            if ((queryResult as  SPARQLJSONResult).results.bindings.length > 0) {
                 return paginatedSparqlQueryPromise(query, limit + queryPaginationSize, offset + queryPaginationSize, finalResult)
             }
         })
@@ -70,5 +75,7 @@ export function paginatedSparqlQueryPromise(query, limit = queryPaginationSize, 
 }
 
 export function cachePromise(cacheFile) {
-    return xhrJSONPromise("https://prod-dekalog.inria.fr/cache/" + cacheFile);
+    // return xhrJSONPromise("https://prod-dekalog.inria.fr/cache/" + cacheFile);
+    return xhrJSONPromise("data/" + cacheFile);
 }
+

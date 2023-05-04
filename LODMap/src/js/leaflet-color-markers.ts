@@ -1,6 +1,6 @@
-import "leaflet";
+import L from "leaflet";
 
-export var blueIcon = new L.Icon({
+export const blueIcon = new L.Icon({
 	iconUrl: require('../img/marker-icon-2x-blue.png'),
 	shadowUrl: require('../img/marker-shadow.png'),
 	iconSize: [25, 41],
@@ -9,7 +9,7 @@ export var blueIcon = new L.Icon({
 	shadowSize: [41, 41]
 });
 
-var goldIcon = new L.Icon({
+export const goldIcon = new L.Icon({
 	iconUrl: require('../img/marker-icon-2x-gold.png'),
 	shadowUrl: require('../img/marker-shadow.png'),
 	iconSize: [25, 41],
@@ -18,7 +18,7 @@ var goldIcon = new L.Icon({
 	shadowSize: [41, 41]
 });
 
-var redIcon = new L.Icon({
+export const redIcon = new L.Icon({
 	iconUrl: require('../img/marker-icon-2x-red.png'),
 	shadowUrl: require('../img/marker-shadow.png'),
 	iconSize: [25, 41],
@@ -27,7 +27,7 @@ var redIcon = new L.Icon({
 	shadowSize: [41, 41]
 });
 
-export var greenIcon = new L.Icon({
+export const greenIcon = new L.Icon({
 	iconUrl: require('../img/marker-icon-2x-green.png'),
 	shadowUrl: require('../img/marker-shadow.png'),
 	iconSize: [25, 41],
@@ -36,7 +36,7 @@ export var greenIcon = new L.Icon({
 	shadowSize: [41, 41]
 });
 
-export var orangeIcon = new L.Icon({
+export const orangeIcon = new L.Icon({
 	iconUrl: require('../img/marker-icon-2x-orange.png'),
 	shadowUrl: require('../img/marker-shadow.png'),
 	iconSize: [25, 41],
@@ -45,7 +45,7 @@ export var orangeIcon = new L.Icon({
 	shadowSize: [41, 41]
 });
 
-var yellowIcon = new L.Icon({
+export const yellowIcon = new L.Icon({
 	iconUrl: require('../img/marker-icon-2x-yellow.png'),
 	shadowUrl: require('../img/marker-shadow.png'),
 	iconSize: [25, 41],
@@ -54,7 +54,7 @@ var yellowIcon = new L.Icon({
 	shadowSize: [41, 41]
 });
 
-var violetIcon = new L.Icon({
+export const violetIcon = new L.Icon({
 	iconUrl: require('../img/marker-icon-2x-violet.png'),
 	shadowUrl: require('../img/marker-shadow.png'),
 	iconSize: [25, 41],
@@ -63,7 +63,7 @@ var violetIcon = new L.Icon({
 	shadowSize: [41, 41]
 });
 
-var greyIcon = new L.Icon({
+export const greyIcon = new L.Icon({
 	iconUrl: require('../img/marker-icon-2x-grey.png'),
 	shadowUrl: require('../img/marker-shadow.png'),
 	iconSize: [25, 41],
@@ -72,7 +72,7 @@ var greyIcon = new L.Icon({
 	shadowSize: [41, 41]
 });
 
-var blackIcon = new L.Icon({
+export const blackIcon = new L.Icon({
 	iconUrl: require('../img/marker-icon-2x-black.png'),
 	shadowUrl: require('../img/marker-shadow.png'),
 	iconSize: [25, 41],
@@ -80,5 +80,3 @@ var blackIcon = new L.Icon({
 	popupAnchor: [1, -34],
 	shadowSize: [41, 41]
 });
-
-module.exports = {blueIcon, goldIcon, redIcon, greenIcon, orangeIcon, yellowIcon, violetIcon, greyIcon, blackIcon};
