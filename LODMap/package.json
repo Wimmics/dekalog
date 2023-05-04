@@ -1,23 +1,26 @@
 {
-   "name": "KartoGraphI",
+   "name": "kartographi",
    "source": "src/index.html",
    "scripts": {
       "build": "npx tsc",
       "predeploy": "rm dist/* ./*.js ./*.js.map ./*.css.map ./*.css || true",
       "deploy": "npx parcel build",
       "postdeploy": "sed 's/\\/index\\./\\.\\/index\\./g' dist/index.html > index.html && rm dist/index.html || true && mv dist/* .",
-      "dev": "npx parcel serve --https",
-      "predev": "rm dist/* || true"
+      "predev": "rm dist/* || true && rm dist/data/* || true && cp ../KartoGraphICaching/data/runSets.json ../KartoGraphICaching/data/timezoneMap.json ../KartoGraphICaching/data/SPARQLFeatureDescriptions.json dist/data && cp ../KartoGraphICaching/data/cache/* dist/data  || true",
+      "dev": "npx parcel serve --https"
    },
    "devDependencies": {
       "@types/node-fetch": "^2.6.2",
       "crypto-browserify": "^3.12.0",
       "dayjs": "latest",
       "echarts": "^5.4.2",
-      "jquery": "latest",
+      "jquery": "^3.6.4",
       "leaflet": "latest",
       "parcel": "^2.3.1",
-      "stream-browserify": "^3.0.0"
+      "punycode": "^1.4.1",
+      "querystring-es3": "^0.2.1",
+      "stream-browserify": "^3.0.0",
+      "url": "^0.11.0"
    },
    "dependencies": {
       "@types/bootstrap": "^5.2.6",
@@ -31,6 +34,7 @@
       "datatables.net": "^1.11.5",
       "datatables.net-bs5": "^1.11.5",
       "datatables.net-dt": "^1.11.5",
+      "echart": "^0.1.3",
       "events": "^3.3.0",
       "fetch": "^1.1.0",
       "graphy": "^4.3.4",
