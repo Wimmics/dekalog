@@ -3,7 +3,7 @@ import * as echarts from "echarts";
 export type KartoChartConfig = {
     chartObject?: echarts.ChartView | L.Map,
     option?: any,
-    fillFunction: () => void,
+    fillFunction: () => Promise<void>,
     redrawFunction?: () => void ,
     clearFunction?: () => void ,
     hideFunction?: () => void ,
@@ -21,7 +21,7 @@ export class KartoChart {
     constructor(config: KartoChartConfig) {
         this.chartObject = config.chartObject;
         this.option = config.option;
-        this.fill = () => {}
+        this.fill = () => {return Promise.resolve();}
         if(config.fillFunction !== undefined) {
             this.fill = config.fillFunction;
         }
@@ -41,20 +41,18 @@ export class KartoChart {
         if(config.showFunction !== undefined) {
             this.show = config.showFunction;
         }
+        if(config.filled !== undefined) {
+            this.filled = config.filled;
+        }
     }
 
-    fill() {
-    }
+    fill: () => Promise<void>;
 
-    redraw() {
-    }
+    redraw: () => void;
 
-    clear() {
-    }
+    clear: () => void;
 
-    hide() {
-    }
+    hide: () => void;
 
-    show() {
-    }
+    show: () => void;
 };

@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css'
 import url from 'url';
 import { blankNodesChart, blankNodesEchartsOptionFilename, classAndPropertiesContent, classNumberChart, classesEchartsOptionFilename, datasetDescriptionEchartsOptionFilename, descriptionElementChart, filteredVocabChart, geolocChart, propertiesEchartsOptionFilename, propertyNumberChart, rawVocabChart, rdfDataStructureChart, rdfDataStructuresEchartsOptionFilename, readableLabelsChart, readableLabelsEchartsOptionFilename, shortUriChart, shortUrisEchartsOptionFilename, sparql10Chart, sparql10CoverageEchartsOptionFilename, sparql11Chart, sparql11CoverageEchartsOptionFilename, sparqlCoverCharts, sparqlCoverageEchartsOptionFilename, sparqlFeaturesContent, standardVocabCharts, totalRuntimeEchartsOptionFilename, tripleChart, triplesEchartsOptionFilename, vocabEndpointEchartsOptionFilename, vocabKeywordChart } from "./Charts";
 import { ClassCountDataObject, DatasetDescriptionDataObject, GeolocDataObject, PropertyCountDataObject, QualityMeasureDataObject, ShortUriDataObject, SPARQLCoverageDataObject, SPARQLFeatureDataObject, SPARQLFeatureDescriptionDataObject, TextElement, TripleCountDataObject, VocabEndpointDataObject, VocabKeywordsDataObject, JSONValue, RunsetObject } from "./Datatypes";
-import { descriptionTabButton, hideLoadingSpinner, populationTabButton, qualityTabButton, setButtonAsToggleCollapse, showLoadingSpinner, sparqlTabButton, vocabRelatedContentTabButton } from "./ViewUtils";
+import { setButtonAsToggleCollapse } from "./ViewUtils";
 import { cachePromise, xhrJSONPromise } from "./DataConnexion";
 
 // Cached files
@@ -29,10 +29,10 @@ const shortUriDataFilename = "shortUriData";
 const rdfDataStructureDataFilename = "rdfDataStructureData";
 const readableLabelDataFilename = "readableLabelData";
 const blankNodesDataFilename = "blankNodesData";
-const sparqlFeatureDescFilename = 'SPARQLFeatureDescription';
 
 const runsetsFile = cachePromise('runSets.json') as Promise<Array<RunsetObject>>;
 const textElementsFile = xhrJSONPromise("https://raw.githubusercontent.com/Wimmics/dekalog/master/LODMap/src/data/cache/textElements.json");
+const sparqlFeatureDescFile = cachePromise("SPARQLFeatureDescriptions.json");
 
 export class Control {
 
@@ -65,12 +65,6 @@ export class Control {
     tripleCountData(): Array<TripleCountDataObject> {
         return this.retrieveFileFromVault(tripleCountDataFilename, this.currentRunset) as Array<TripleCountDataObject>;
     };
-    categoryTestCountData(): any {
-        return this.retrieveFileFromVault(categoryTestCountDataFilename, this.currentRunset);
-    };
-    totalCategoryTestCountData(): any {
-        return this.retrieveFileFromVault(totalCategoryTestCountFilename, this.currentRunset);
-    };
     classPropertyData(): any {
         return this.retrieveFileFromVault(classPropertyDataFilename, this.currentRunset);
     };
@@ -89,11 +83,9 @@ export class Control {
     blankNodesData(): Array<QualityMeasureDataObject> {
         return this.retrieveFileFromVault(blankNodesDataFilename, this.currentRunset) as Array<QualityMeasureDataObject>;
     };
-    sparqlFeatureDesc(): Array<SPARQLFeatureDescriptionDataObject> {
-        return this.retrieveFileFromVault(sparqlFeatureDescFilename, this.currentRunset) as Array<SPARQLFeatureDescriptionDataObject>;
-    };
     textElements: Array<TextElement>;
     runsets: Array<RunsetObject>;
+    sparqlFeatureDesc: Array<SPARQLFeatureDescriptionDataObject>;
 
     graphList: string[] = [];
     currentRunsetId = "all";
@@ -111,24 +103,41 @@ export class Control {
     datasetDescriptionContent = [descriptionElementChart];
     dataQualityContent = [blankNodesChart, readableLabelsChart, rdfDataStructureChart, shortUriChart];
     datasetPopulationsContent = [tripleChart, classNumberChart, propertyNumberChart, classAndPropertiesContent];
-    // frameworkInformationContent = [categoryTestNumberChart, totalRuntimeChart, averageRuntimeChart, totalCategoryTestNumberChart];
     allContent = this.geolocContent.concat(this.sparqlCoverContent)
-    // .concat(this.vocabRelatedContent)
-    .concat(this.datasetDescriptionContent)
-    .concat(this.dataQualityContent)
-    .concat(this.datasetPopulationsContent);
-    // .concat(this.frameworkInformationContent);
+        .concat(this.datasetDescriptionContent)
+        .concat(this.dataQualityContent)
+        .concat(this.datasetPopulationsContent);
 
     // Contains the files for each runset (key: runset id, value: Map<filename, fileContent>)
     fileBank: Map<string, Map<string, JSONValue>> = new Map();
 
     currentRunset: RunsetObject;
 
+
+
+    // Setup tab menu
+    vocabRelatedContentTabButton: JQuery<HTMLElement>;
+    sparqlTabButton: JQuery<HTMLElement>;
+    populationTabButton: JQuery<HTMLElement>;
+    descriptionTabButton: JQuery<HTMLElement>;
+    runtimeTabButton: JQuery<HTMLElement>;
+    qualityTabButton: JQuery<HTMLElement>;
+    tabButtonArray: JQuery<HTMLElement>[];
+
     constructor() {
         if (Control.ControlInstance !== undefined) {
             throw new Error("Control already instantiated");
         }
         console.log("Control constructor");
+
+        // Setup tab menu
+        this.vocabRelatedContentTabButton = $('#vocabRelatedContent-tab')
+        this.sparqlTabButton = $('#sparql-tab')
+        this.populationTabButton = $('#population-tab')
+        this.descriptionTabButton = $('#description-tab')
+        this.runtimeTabButton = $('#runtime-tab')
+        this.qualityTabButton = $('#quality-tab')
+        this.tabButtonArray = [this.vocabRelatedContentTabButton, this.sparqlTabButton, this.populationTabButton, this.descriptionTabButton, this.runtimeTabButton, this.qualityTabButton];
 
         setButtonAsToggleCollapse('endpointGeolocDetails', 'endpointGeolocDatatable');
         setButtonAsToggleCollapse('tableSPARQLFeaturesDetails', 'SPARQLFeaturesDatatable');
@@ -148,23 +157,22 @@ export class Control {
         this.tabContentMap.set('sparql', this.sparqlCoverContent);
         this.tabContentMap.set('population', this.datasetPopulationsContent);
         this.tabContentMap.set('description', this.datasetDescriptionContent);
-        // this.tabContentMap.set('runtime', this.frameworkInformationContent);
         this.tabContentMap.set('quality', this.dataQualityContent);
 
-
-        vocabRelatedContentTabButton.on('click', function (event) {
+        this.vocabRelatedContentTabButton.on('click', function (event) {
             (new Control()).changeActiveTab("vocabRelatedContent");
         })
-        sparqlTabButton.on('click', function (event) {
+        this.sparqlTabButton.on('click', function (event) {
+            console.log("sparqlTabButton click")
             Control.getInstance().changeActiveTab("sparql");
         })
-        populationTabButton.on('click', function (event) {
+        this.populationTabButton.on('click', function (event) {
             Control.getInstance().changeActiveTab("population");
         })
-        descriptionTabButton.on('click', function (event) {
+        this.descriptionTabButton.on('click', function (event) {
             Control.getInstance().changeActiveTab("description");
         })
-        qualityTabButton.on('click', function (event) {
+        this.qualityTabButton.on('click', function (event) {
             Control.getInstance().changeActiveTab("quality");
         })
 
@@ -176,6 +184,7 @@ export class Control {
     }
 
     init() {
+        console.log("Initialization START");
         console.log("File loading started");
         return this.loadDataFiles().then(() => {
             console.log("File loading finished");
@@ -221,12 +230,14 @@ export class Control {
             });
             select.on('change', function () {
                 $("#endpoint-list-select > option:selected").each(function () {
+                    console.log("runset selection changed for " + $(this).val())
                     let selectionIndex = $(this).val();
                     Control.getInstance().changeGraphSetIndex(selectionIndex);
                 })
             });
 
-            return;
+            console.log("Initialization END");
+            return Promise.resolve();
 
         })
     }
@@ -244,7 +255,6 @@ export class Control {
 
     retrieveFileFromVault(filename: string, runset: RunsetObject = this.currentRunset) {
         console.log("Retrieving file " + filename + " from the vault for runset " + runset.id + "")
-        console.log(this.fileBank)
         const runsetBank = this.fileBank.get(runset.id);
         if (runsetBank !== undefined) {
             const fileFromVault = runsetBank.get(filename);
@@ -266,7 +276,7 @@ export class Control {
     }
 
     loadDataFiles() {
-        showLoadingSpinner()
+        this.showLoadingSpinner()
 
         let filenameList = [
             geolocDataFilename,
@@ -278,18 +288,17 @@ export class Control {
             classCountDataFilename,
             propertyCountDataFilename,
             tripleCountDataFilename,
-            categoryTestCountDataFilename,
-            totalCategoryTestCountFilename,
-            endpointTestsDataFilename,
-            totalRuntimeDataFilename,
-            averageRuntimeDataFilename,
+            // categoryTestCountDataFilename,
+            // totalCategoryTestCountFilename,
+            // endpointTestsDataFilename,
+            // totalRuntimeDataFilename,
+            // averageRuntimeDataFilename,
             classPropertyDataFilename,
             datasetDescriptionDataFilename,
             shortUriDataFilename,
             rdfDataStructureDataFilename,
             readableLabelDataFilename,
             blankNodesDataFilename,
-            sparqlFeatureDescFilename,
 
             // Echarts options
             sparqlCoverageEchartsOptionFilename,
@@ -311,8 +320,14 @@ export class Control {
         return textElementsFile.then((data) => {
             this.textElements = (data as Array<TextElement>);
             this.insertTextElements();
-            return;
+            return Promise.resolve();
         }).then(() => {
+            return sparqlFeatureDescFile.then((data) => {
+                this.sparqlFeatureDesc = (data as Array<SPARQLFeatureDescriptionDataObject>);
+                return Promise.resolve();
+            })
+        })
+        .then(() => {
             return runsetsFile.then((data) => {
                 this.runsets = data;
 
@@ -337,7 +352,7 @@ export class Control {
                     )
                 }))
             }).then(() => {
-                hideLoadingSpinner();
+                this.hideLoadingSpinner();
                 return;
             })
         })
@@ -352,7 +367,7 @@ export class Control {
         $('.nav-link').each((i, element) => {
             $(element).removeClass('active')
         });
-        showLoadingSpinner();
+        this.showLoadingSpinner();
         let content = this.tabContentMap.get(tabName);
         return Promise.all(content.map(item => item.fill()))
             .then(() => {
@@ -360,7 +375,7 @@ export class Control {
                 content.forEach(contentChart => contentChart.show());
             })
             .then(() => {
-                hideLoadingSpinner()
+                this.hideLoadingSpinner()
             }).then(() => {
                 $('#' + tabName).addClass("active");
                 $('#' + tabName).addClass("show");
@@ -370,10 +385,10 @@ export class Control {
     }
 
     refresh() {
-        showLoadingSpinner();
+        this.showLoadingSpinner();
         this.clear();
         this.allContent.forEach(contentChart => { contentChart.filled = false; })
-        return Promise.allSettled(this.allContent.map(content => content.fill())).then(() => { hideLoadingSpinner() });
+        return Promise.allSettled(this.allContent.map(content => content.fill())).then(() => { this.hideLoadingSpinner() });
     }
 
     clear() {
@@ -426,9 +441,8 @@ export class Control {
     }
 
     changeGraphSetIndex(index) {
-        console.log("Changing graph set index to " + index)
-        console.log(this.runsets)
-        showLoadingSpinner();
+        console.log("changeGraphSetIndex", index)
+        this.showLoadingSpinner();
         this.allContent.forEach(contentChart => {
             if (contentChart != undefined && contentChart.clear !== undefined) {
                 contentChart.clear()
@@ -440,15 +454,41 @@ export class Control {
         urlParams.delete(this.runsetIndexParameter);
         urlParams.append(this.runsetIndexParameter, index);
         history.pushState(null, "", '?' + urlParams.toString());
-        let historyGraphList = this.runsets.find(runsetObject => runsetObject.id === index)?.graphs;
-        if (historyGraphList !== undefined) {
+        let indexRunset = this.runsets.find(runsetObject => runsetObject.id === index);
+        if (indexRunset !== undefined) {
+            let historyGraphList = indexRunset?.graphs;
             this.graphList = historyGraphList;
+            this.currentRunsetId = index;
+            this.currentRunset = indexRunset;
         } else {
             throw new Error("Graph set with id '" + index + "' not found");
         }
         return this.refresh()
             .then(() => {
-                hideLoadingSpinner();
+                this.hideLoadingSpinner();
             });
+    }
+
+
+
+    hideLoadingSpinner() {
+        this.tabButtonArray.forEach(item => {
+            item.prop('disabled', false);
+        })
+
+        $('#loadingSpinner').addClass('collapse');
+        $('#loadingSpinner').removeClass('show');
+        $('#tabContent').addClass('visible');
+        $('#tabContent').removeClass('invisible');
+    }
+
+    showLoadingSpinner() {
+        this.tabButtonArray.forEach(item => {
+            item.prop('disabled', true);
+        })
+        $('#loadingSpinner').addClass('show');
+        $('#loadingSpinner').removeClass('collapse');
+        $('#tabContent').addClass('invisible');
+        $('#tabContent').removeClass('visible');
     }
 }
