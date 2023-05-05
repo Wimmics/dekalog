@@ -279,6 +279,7 @@ export function sparqlCoverageEchartsOption(runsetId: string): Promise<void> {
             writeFile(Global.getCachedFilenameForRunset(runsetId, sparql11CoverageEchartsOptionFilename), JSON.stringify(sparql11ChartOption)).then(() => { Logger.info("SPARQL 1.1 chart data for", runsetId, " generated"); }),
             writeFile(Global.getCachedFilenameForRunset(runsetId, sparqlCoverageEchartsOptionFilename), JSON.stringify(sparqlChartOption)).then(() => { Logger.info("SPARQL chart data for", runsetId, " generated"); })
         ]).then(() => {
+            return Promise.resolve();
         });
     }).catch((error) => {
         Logger.error("Error during sparql cached data reading", error)
@@ -375,7 +376,7 @@ export function vocabGraphEchartsOption(runsetId: string): Promise<void> {
                     let content =JSON.stringify(ChartsUtils.getForceGraphOption('Endpoints and vocabularies with filtering*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]));
                     return writeFile(Global.getCachedFilenameForRunset(runsetId, vocabEndpointEchartsOptionFilename), content);
                 } else {
-                    return Promise.reject("No data to generate the vocabulary graph");
+                    return Promise.reject("No data to generate the vocabulary graph for " + runsetId);
                 }
             }).catch((error) => {
                 Logger.error("Error during vocab graph data reading", error)
@@ -406,7 +407,7 @@ export function triplesEchartsOption(runsetId: string): Promise<void> {
             });
 
         } else {
-            return Promise.reject("No data to generate the triple graph");
+            return Promise.reject("No data to generate the triple graph for " + runsetId);
         }
     }).catch((error) => {
         Logger.error("Error during triple data reading", error)
@@ -437,7 +438,7 @@ export function classesEchartsOption(runsetId: string): Promise<void> {
             });
 
         } else {
-            return Promise.reject("No data to generate the classes graph");
+            return Promise.reject("No data to generate the classes graph for " + runsetId);
         }
     }).catch((error) => {
         Logger.error("Error during classes data reading", error)
@@ -468,7 +469,7 @@ export function propertiesEchartsOption(runsetId: string): Promise<void> {
             });
 
         } else {
-            return Promise.reject("No data to generate the properties graph");
+            return Promise.reject("No data to generate the properties graph for " + runsetId);
         }
     }).catch((error) => {
         Logger.error("Error during properties data reading", error)
@@ -498,7 +499,7 @@ export function shortUrisEchartsOption(runsetId: string): Promise<void> {
             });
 
         } else {
-            return Promise.reject("No data to generate the Short URIs graph");
+            return Promise.reject("No data to generate the Short URIs graph for " + runsetId);
         }
     }).catch((error) => {
         Logger.error("Error during Short URIs data reading", error)
@@ -528,7 +529,7 @@ export function rdfDataStructuresEchartsOption(runsetId: string): Promise<void> 
             });
 
         } else {
-            return Promise.reject("No data to generate the RDF data structures chart");
+            return Promise.reject("No data to generate the RDF data structures chart for " + runsetId);
         }
     }).catch((error) => {
         Logger.error("Error during RDF data structures data reading", error)
@@ -536,7 +537,7 @@ export function rdfDataStructuresEchartsOption(runsetId: string): Promise<void> 
 }
 
 export function readableLabelsEchartsOption(runsetId: string): Promise<void> {
-    return readFile(Global.getCachedFilenameForRunset(runsetId, DataCache.rdfDataStructureDataFilename), "utf-8").then(readableLabelsCountRawData => {
+    return readFile(Global.getCachedFilenameForRunset(runsetId, DataCache.readableLabelDataFilename), "utf-8").then(readableLabelsCountRawData => {
         readableLabelData = JSON.parse(readableLabelsCountRawData);
         // Scatter plot of the number of classes through time
         let endpointDataSerieMap = new Map();
@@ -558,10 +559,10 @@ export function readableLabelsEchartsOption(runsetId: string): Promise<void> {
             });
 
         } else {
-            return Promise.reject("No data to generate the readable labels chart");
+            return Promise.reject("No data to generate the readable labels chart for " + runsetId);
         }
     }).catch((error) => {
-        Logger.error("Error during RDF data structures data reading", error)
+        Logger.error("Error during RDF data structures data reading for", runsetId, "", error)
     });
 }
 
@@ -588,7 +589,7 @@ export function blankNodesEchartsOption(runsetId: string): Promise<void> {
             });
 
         } else {
-            return Promise.reject("No data to generate the blank nodes chart");
+            return Promise.reject("No data to generate the blank nodes chart for " + runsetId);
         }
     }).catch((error) => {
         Logger.error("Error during blank nodes data reading", error)

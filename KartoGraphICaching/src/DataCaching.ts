@@ -1548,15 +1548,24 @@ export function rdfDataStructureDataFill(runset: RunSetObject) {
 
 export function blankNodeDataFill(runset: RunSetObject) {
     Logger.info("blankNodeDataFill", runset.id, " START")
-    let blankNodeQuery = `SELECT DISTINCT ?g ?date ?endpointUrl ?measure { 
+    let blankNodeQuery = `PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX dct: <http://purl.org/dc/terms/>
+        PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+        PREFIX void: <http://rdfs.org/ns/void#>
+        PREFIX kgi: <http://ns.inria.fr/kg/index#>
+        PREFIX dqv: <http://www.w3.org/ns/dqv#>
+        SELECT DISTINCT ?g ?date ?endpointUrl ?measure { 
             GRAPH ?g {
-                ?metadata <http://purl.org/dc/terms/modified> ?date . 
-                { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
-                UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
-                ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . 
-                ?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . 
-                ?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . 
-                ?measureNode <http://www.w3.org/ns/dqv#value> ?measure . 
+                { ?metadata dct:modified ?date . }
+                UNION { ?curated dct:modified ?date }
+                ?metadata kgi:curated ?curated . 
+                { ?curated sd:endpoint ?endpointUrl . } 
+                UNION { ?curated void:sparqlEndpoint ?endpointUrl . } 
+                UNION { ?curated dcat:endpointURL ?endpointUrl . } 
+    			{ ?metadata dqv:hasQualityMeasurement ?measureNode . }
+    			UNION { ?curated dqv:hasQualityMeasurement ?measureNode . }
+                ?measureNode dqv:isMeasurementOf <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . 
+                ?measureNode dqv:value ?measure . 
             }
             ${generateGraphValueFilterClause(runset.graphs)}
         } 
@@ -1565,15 +1574,37 @@ export function blankNodeDataFill(runset: RunSetObject) {
 
         let blankNodeData = []
         let graphSet = new Set();
+        let graphEndpointDateMeasureMap: Map<string, Map<string, Map<string, number>>> = new Map();
         (json as SPARQLJSONResult).results.bindings.forEach((jsonItem, i) => {
             let endpoint = jsonItem.endpointUrl.value;
             let blankNodeMeasure = Number.parseFloat(jsonItem.measure.value) * 100;
             let graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-            let date = Global.parseDate(jsonItem.date.value);
+            let rawDate = Global.parseDate(jsonItem.date.value);
+            let date = rawDate.format("YYYY-MM-DD");
 
+            if (!graphEndpointDateMeasureMap.has(graph)) {
+                graphEndpointDateMeasureMap.set(graph, new Map());
+            }
+            if (!graphEndpointDateMeasureMap.get(graph).has(endpoint)) {
+                graphEndpointDateMeasureMap.get(graph).set(endpoint, new Map());
+            }
+            if (!graphEndpointDateMeasureMap.get(graph).get(endpoint).has(date)) {
+                graphEndpointDateMeasureMap.get(graph).get(endpoint).set(date, blankNodeMeasure);
+            }
+            if(graphEndpointDateMeasureMap.get(graph).get(endpoint).has(date) && graphEndpointDateMeasureMap.get(graph).get(endpoint).get(date) < blankNodeMeasure){
+                graphEndpointDateMeasureMap.get(graph).get(endpoint).set(date, blankNodeMeasure);
+            }
             graphSet.add(graph);
-            blankNodeData.push({ graph: graph, date: date, endpoint: endpoint, measure: blankNodeMeasure })
         });
+
+        graphEndpointDateMeasureMap.forEach((endpointDateMeasureMap, graph) => {
+            endpointDateMeasureMap.forEach((dateMeasureMap, endpoint) => {
+                dateMeasureMap.forEach((measure, date) => {
+                    blankNodeData.push({ graph: graph, date: date, endpoint: endpoint, measure: measure })
+                })
+            })
+        })
+        
         return Promise.resolve(blankNodeData);
     })
         .then(blankNodeData => {
