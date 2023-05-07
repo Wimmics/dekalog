@@ -513,20 +513,26 @@ export function tripleDataFill(runset: RunSetObject) {
             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
             UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
             ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
-    		{?metadata <http://purl.org/dc/terms/modified> ?date .}
-            UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
             ?curated <http://rdfs.org/ns/void#triples> ?rawO .
         }
         ${generateGraphValueFilterClause(runset.graphs)}
     } GROUP BY ?g ?date ?endpointUrl`;
+
+    // {?metadata <http://purl.org/dc/terms/modified> ?date .}
+    // UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
     type EndpointTripleIndexItem = { date: Dayjs, triples: number };
     return Sparql.paginatedSparqlQueryToIndeGxPromise(triplesSPARQLquery)
         .then(json => {
             let endpointTriplesDataIndex: Map<string, Map<string, EndpointTripleIndexItem>> = new Map();
             let endpointTriplesData: TripleCountDataObject[] = [];
             (json as JSONValue[]).forEach((itemResult, i) => {
-                let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
-                let date = Global.parseDate(itemResult["date"].value);
+                let graph:string = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
+                let date: Dayjs; //= Global.parseDate(itemResult["date"].value);
+                let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
+                if (rawDateUnderscoreIndex != -1) {
+                    let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
+                    date = Global.parseDate(rawDate, "YYYYMMDD");
+                }
                 let endpointUrl = itemResult["endpointUrl"].value;
                 let triples = Number.parseInt(itemResult["o"].value);
 
@@ -576,12 +582,12 @@ export function classDataFill(runset: RunSetObject) {
             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
             UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
             ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
-    		{?metadata <http://purl.org/dc/terms/modified> ?date .}
-            UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
             ?curated <http://rdfs.org/ns/void#classes> ?rawO .
         }
         ${generateGraphValueFilterClause(runset.graphs)}
     } GROUP BY ?g ?endpointUrl ?date`;
+    // {?metadata <http://purl.org/dc/terms/modified> ?date .}
+    // UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
     type EndpointClassesIndexItem = { date: Dayjs, classes: number };
     let endpointClassesDataIndex: Map<string, Map<string, EndpointClassesIndexItem>> = new Map();
     return Sparql.paginatedSparqlQueryToIndeGxPromise(classesSPARQLquery)
@@ -589,7 +595,12 @@ export function classDataFill(runset: RunSetObject) {
             let endpointClassCountData: ClassCountDataObject[] = [];
             (json as JSONValue[]).forEach((itemResult, i) => {
                 let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
-                let date = Global.parseDate(itemResult["date"].value);
+                let date: Dayjs ;//= Global.parseDate(itemResult["date"].value);
+                let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
+                if (rawDateUnderscoreIndex != -1) {
+                    let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
+                    date = Global.parseDate(rawDate, "YYYYMMDD");
+                }
                 let endpointUrl = itemResult["endpointUrl"].value;
                 let classes = Number.parseInt(itemResult["o"].value);
                 if (endpointClassesDataIndex.get(endpointUrl) == undefined) {
@@ -638,12 +649,12 @@ export function propertyDataFill(runset: RunSetObject) {
             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
             UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
             ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
-    		{?metadata <http://purl.org/dc/terms/modified> ?date .}
-            UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
             ?curated <http://rdfs.org/ns/void#properties> ?rawO .
         }
         ${generateGraphValueFilterClause(runset.graphs)}
     } GROUP BY ?endpointUrl ?g ?date`;
+    // {?metadata <http://purl.org/dc/terms/modified> ?date .}
+    // UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
     type EndpointPropertiesIndexItem = { date: Dayjs, properties: number };
     let endpointPropertiesDataIndex = new Map();
     return Sparql.paginatedSparqlQueryToIndeGxPromise(propertiesSPARQLquery)
@@ -653,7 +664,12 @@ export function propertyDataFill(runset: RunSetObject) {
                 let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
                 let endpointUrl = itemResult["endpointUrl"].value;
                 let properties = Number.parseInt(itemResult["o"].value);
-                let date = Global.parseDate(itemResult["date"].value);
+                let date: Dayjs; // = Global.parseDate(itemResult["date"].value);
+                let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
+                if (rawDateUnderscoreIndex != -1) {
+                    let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
+                    date = Global.parseDate(rawDate, "YYYYMMDD");
+                }
 
                 if (endpointPropertiesDataIndex.get(endpointUrl) == undefined) {
                     endpointPropertiesDataIndex.set(endpointUrl, new Map());
@@ -703,8 +719,6 @@ export function categoryTestCountFill(runset: RunSetObject) {
             { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
             UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
-    		{?metadata <http://purl.org/dc/terms/modified> ?date .}
-            UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
             ?trace <http://www.w3.org/ns/earl#test> ?test . 
             ?trace <http://www.w3.org/ns/earl#result> ?result .
             ?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> .
@@ -720,6 +734,8 @@ export function categoryTestCountFill(runset: RunSetObject) {
         }  
         ${generateGraphValueFilterClause(runset.graphs)}
     } GROUP BY ?g ?date ?category ?endpointUrl`;
+    // {?metadata <http://purl.org/dc/terms/modified> ?date .}
+    // UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
     return Sparql.paginatedSparqlQueryToIndeGxPromise(testCategoryQuery)
         .then(json => {
             (json as JSONValue[]).forEach((itemResult, i) => {
@@ -727,7 +743,12 @@ export function categoryTestCountFill(runset: RunSetObject) {
                 let count = itemResult["count"].value;
                 let endpoint = itemResult["endpointUrl"].value;
                 let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
-                let date = Global.parseDate(itemResult["date"].value);
+                let date: Dayjs; // = Global.parseDate(itemResult["date"].value);
+                let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
+                if (rawDateUnderscoreIndex != -1) {
+                    let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
+                    date = Global.parseDate(rawDate, "YYYYMMDD");
+                }
                 testCategoryData.push({ category: category, graph: graph, date: date, endpoint: endpoint, count: count });
             });
             return Promise.resolve();
@@ -761,7 +782,6 @@ export function totalCategoryTestCountFill(runset: RunSetObject) {
             { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
             UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
-            ?metadata <http://purl.org/dc/terms/modified> ?date .
             ?trace <http://www.w3.org/ns/earl#test> ?test .
             ?trace <http://www.w3.org/ns/earl#result> ?result .
             ?result <http://www.w3.org/ns/earl#outcome> <http://www.w3.org/ns/earl#passed> .
@@ -779,6 +799,7 @@ export function totalCategoryTestCountFill(runset: RunSetObject) {
     } 
     GROUP BY ?g ?date ?category ?endpointUrl 
     ORDER BY ?category `;
+    // ?metadata <http://purl.org/dc/terms/modified> ?date .
     return Sparql.paginatedSparqlQueryToIndeGxPromise(testCategoryQuery).then(json => {
         let totalTestCategoryData = [];
         (json as JSONValue[]).forEach((itemResult, i) => {
@@ -786,7 +807,12 @@ export function totalCategoryTestCountFill(runset: RunSetObject) {
             let count = itemResult["count"].value;
             let endpoint = itemResult["endpointUrl"].value;
             let graph = itemResult["g"].value;
-            let date = Global.parseDate(itemResult["date"].value);
+            let date: Dayjs; // = Global.parseDate(itemResult["date"].value);
+            let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
+            if (rawDateUnderscoreIndex != -1) {
+                let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
+                date = Global.parseDate(rawDate, "YYYYMMDD");
+            }
 
             totalTestCategoryData.push({ category: category, endpoint: endpoint, graph: graph, date: date, count: count })
             return Promise.resolve(totalTestCategoryData);
@@ -816,8 +842,6 @@ export function endpointTestsDataFill(runset: RunSetObject) {
     let appliedTestQuery = `SELECT DISTINCT ?endpointUrl ?g ?date ?rule { 
         GRAPH ?g { 
             ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . 
-    		{?metadata <http://purl.org/dc/terms/modified> ?date .}
-            UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
             ?curated <http://www.w3.org/ns/prov#wasGeneratedBy> ?rule . 
             { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
@@ -825,6 +849,8 @@ export function endpointTestsDataFill(runset: RunSetObject) {
         } 
         ${generateGraphValueFilterClause(runset.graphs)}
     }`;
+    // {?metadata <http://purl.org/dc/terms/modified> ?date .}
+    // UNION { ?curated <http://purl.org/dc/terms/modified> ?date . }
     type EndpointTestItem = { activity: string, date: Dayjs };
     let endpointGraphTestsIndex: Map<string, Map<string, EndpointTestItem>> = new Map();
     return Sparql.paginatedSparqlQueryToIndeGxPromise(appliedTestQuery)
@@ -834,7 +860,12 @@ export function endpointTestsDataFill(runset: RunSetObject) {
                 let endpointUrl = item["endpointUrl"].value;
                 let rule = item["rule"].value;
                 let graph = item["g"].value;
-                let date = Global.parseDate(item["date"].value);
+                let date: Dayjs; // = Global.parseDate(item["date"].value);
+                let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
+                if (rawDateUnderscoreIndex != -1) {
+                    let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
+                    date = Global.parseDate(rawDate, "YYYYMMDD");
+                }
 
                 if (!endpointGraphTestsIndex.has(endpointUrl)) {
                     endpointGraphTestsIndex.set(endpointUrl, new Map());
@@ -881,7 +912,6 @@ export function totalRuntimeDataFill(runset: RunSetObject) {
         GRAPH ?g { 
             ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
             ?metadata <http://ns.inria.fr/kg/index#trace> ?trace . 
-            ?metadata <http://purl.org/dc/terms/modified> ?date .
             ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime .
             ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime .
             { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
@@ -890,13 +920,19 @@ export function totalRuntimeDataFill(runset: RunSetObject) {
         }
         ${generateGraphValueFilterClause(runset.graphs)}
     } `;
+    // ?metadata <http://purl.org/dc/terms/modified> ?date .
     return Sparql.paginatedSparqlQueryToIndeGxPromise(maxMinTimeQuery).then(jsonResponse => {
         let totalRuntimeData = [];
         let graphEndpointMinStartDateMap: Map<string, Map<string, Dayjs>> = new Map();
         let graphEndpointMaxStartDateMap: Map<string, Map<string, Dayjs>> = new Map();
         (jsonResponse as JSONValue[]).forEach((itemResult, i) => {
             let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
-            let date = Global.parseDate(itemResult["date"].value);
+            let date: Dayjs// = Global.parseDate(itemResult["date"].value);
+            let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
+            if (rawDateUnderscoreIndex != -1) {
+                let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
+                date = Global.parseDate(rawDate, "YYYYMMDD");
+            }
             let start = Global.parseDate(itemResult["startTime"].value);
             let end = Global.parseDate(itemResult["endTime"].value);
             let endpointUrl = itemResult["endpointUrl"].value;
@@ -958,12 +994,12 @@ export function averageRuntimeDataFill(runset: RunSetObject) {
         GRAPH ?g {
             ?metadata <http://ns.inria.fr/kg/index#curated> ?data , ?endpoint .
             ?metadata <http://ns.inria.fr/kg/index#trace> ?trace .
-            ?metadata <http://purl.org/dc/terms/modified> ?date .
             ?trace <http://www.w3.org/ns/prov#startedAtTime> ?startTime .
             ?trace <http://www.w3.org/ns/prov#endedAtTime> ?endTime .
         }
         ${generateGraphValueFilterClause(runset.graphs)}
     }`;
+    // ?metadata <http://purl.org/dc/terms/modified> ?date .
     let numberOfEndpointQuery = `SELECT DISTINCT ?g (COUNT(?endpointUrl) AS ?count) { 
         GRAPH ?g { 
             ?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint , ?dataset . 
@@ -979,7 +1015,12 @@ export function averageRuntimeDataFill(runset: RunSetObject) {
             .then(jsonResponse => {
                 (jsonResponse as JSONValue[]).forEach((itemResult, i) => {
                     let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
-                    let date = Global.parseDate(itemResult["date"].value);
+                    let date: Dayjs; // = Global.parseDate(itemResult["date"].value);
+                    let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
+                    if (rawDateUnderscoreIndex != -1) {
+                        let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
+                        date = Global.parseDate(rawDate, "YYYYMMDD");
+                    }
                     let start = Global.parseDate(itemResult["start"].value);
                     let end = Global.parseDate(itemResult["end"].value);
                     let runtime = dayjs.duration(end.diff(start));
@@ -1411,7 +1452,6 @@ export function shortUrisDataFill(runset: RunSetObject) {
             GRAPH ?g {
                 { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
                 UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
-                ?metadata <http://purl.org/dc/terms/modified> ?date . 
                 ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
                 ?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode .
                 ?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> .
@@ -1419,6 +1459,7 @@ export function shortUrisDataFill(runset: RunSetObject) {
             }
             ${generateGraphValueFilterClause(runset.graphs)}
         } GROUP BY ?g ?date ?endpointUrl ?measure`;
+        // ?metadata <http://purl.org/dc/terms/modified> ?date . 
     return Sparql.paginatedSparqlQueryToIndeGxPromise(shortUrisMeasureQuery)
         .then(json => {
             let shortUriData = []
@@ -1427,7 +1468,12 @@ export function shortUrisDataFill(runset: RunSetObject) {
                 let endpoint = jsonItem["endpointUrl"].value;
                 let shortUriMeasure = Number.parseFloat(jsonItem["measure"].value) * 100;
                 let graph = jsonItem["g"].value.replace("http://ns.inria.fr/indegx#", "");
-                let date = Global.parseDate(jsonItem["date"].value);
+                let date: Dayjs // = Global.parseDate(jsonItem["date"].value);
+                let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
+                if (rawDateUnderscoreIndex != -1) {
+                    let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
+                    date = Global.parseDate(rawDate, "YYYYMMDD");
+                }
 
                 graphSet.add(graph);
                 shortUriData.push({ graph: graph, date: date, endpoint: endpoint, measure: shortUriMeasure })
@@ -1458,7 +1504,6 @@ export function readableLabelsDataFill(runset: RunSetObject) {
             GRAPH ?g {
                 { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
                 UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
-                ?metadata <http://purl.org/dc/terms/modified> ?date . 
                 ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . 
                 ?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . 
                 ?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . 
@@ -1466,6 +1511,7 @@ export function readableLabelsDataFill(runset: RunSetObject) {
             } 
             ${generateGraphValueFilterClause(runset.graphs)}
         } GROUP BY ?g ?date ?endpointUrl ?measure`;
+        // ?metadata <http://purl.org/dc/terms/modified> ?date . 
 
     return Sparql.paginatedSparqlQueryToIndeGxPromise(readableLabelsQuery)
         .then(json => {
@@ -1474,7 +1520,12 @@ export function readableLabelsDataFill(runset: RunSetObject) {
                 let endpoint = jsonItem["endpointUrl"].value;
                 let readableLabelMeasure = Number.parseFloat(jsonItem["measure"].value) * 100;
                 let graph = jsonItem["g"].value.replace("http://ns.inria.fr/indegx#", "");
-                let date = Global.parseDate(jsonItem["date"].value);
+                let date: Dayjs ; // = Global.parseDate(jsonItem["date"].value);
+                let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
+                if (rawDateUnderscoreIndex != -1) {
+                    let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
+                    date = Global.parseDate(rawDate, "YYYYMMDD");
+                }
 
                 readableLabelData.push({ graph: graph, date: date, endpoint: endpoint, measure: readableLabelMeasure })
             });
@@ -1506,7 +1557,6 @@ export function rdfDataStructureDataFill(runset: RunSetObject) {
             GRAPH ?g {
                 { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . } 
                 UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
-                ?metadata <http://purl.org/dc/terms/modified> ?date . 
                 ?metadata <http://ns.inria.fr/kg/index#curated> ?curated . 
                 ?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . 
                 ?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . 
@@ -1515,6 +1565,7 @@ export function rdfDataStructureDataFill(runset: RunSetObject) {
             ${generateGraphValueFilterClause(runset.graphs)}
         } 
         GROUP BY ?g ?date ?endpointUrl ?measure` ;
+        // ?metadata <http://purl.org/dc/terms/modified> ?date . 
 
     return Sparql.paginatedSparqlQueryToIndeGxPromise(rdfDataStructureQuery).then(json => {
         let rdfDataStructureData = [];
@@ -1522,7 +1573,12 @@ export function rdfDataStructureDataFill(runset: RunSetObject) {
             let endpoint = jsonItem["endpointUrl"].value;
             let rdfDataStructureMeasure = Number.parseFloat(jsonItem["measure"].value) * 100;
             let graph = jsonItem["g"].value.replace("http://ns.inria.fr/indegx#", "");
-            let date = Global.parseDate(jsonItem["date"].value);
+            let date: Dayjs ;// = Global.parseDate(jsonItem["date"].value);
+            let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
+            if (rawDateUnderscoreIndex != -1) {
+                let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
+                date = Global.parseDate(rawDate, "YYYYMMDD");
+            }
 
             rdfDataStructureData.push({ graph: graph, date: date, endpoint: endpoint, measure: rdfDataStructureMeasure })
         });
@@ -1556,8 +1612,6 @@ export function blankNodeDataFill(runset: RunSetObject) {
         PREFIX dqv: <http://www.w3.org/ns/dqv#>
         SELECT DISTINCT ?g ?date ?endpointUrl ?measure { 
             GRAPH ?g {
-                { ?metadata dct:modified ?date . }
-                UNION { ?curated dct:modified ?date }
                 ?metadata kgi:curated ?curated . 
                 { ?curated sd:endpoint ?endpointUrl . } 
                 UNION { ?curated void:sparqlEndpoint ?endpointUrl . } 
@@ -1570,6 +1624,8 @@ export function blankNodeDataFill(runset: RunSetObject) {
             ${generateGraphValueFilterClause(runset.graphs)}
         } 
         GROUP BY ?g ?date ?endpointUrl ?measure` ;
+        // { ?metadata dct:modified ?date . }
+        // UNION { ?curated dct:modified ?date }
     return Sparql.sparqlQueryToIndeGxPromise(blankNodeQuery).then(json => {
 
         let blankNodeData = []
@@ -1579,7 +1635,12 @@ export function blankNodeDataFill(runset: RunSetObject) {
             let endpoint = jsonItem.endpointUrl.value;
             let blankNodeMeasure = Number.parseFloat(jsonItem.measure.value) * 100;
             let graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-            let rawDate = Global.parseDate(jsonItem.date.value);
+            let rawDate : Dayjs ; //= Global.parseDate(jsonItem.date.value);
+            let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
+            if (rawDateUnderscoreIndex != -1) {
+                let rawRawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
+                rawDate = Global.parseDate(rawRawDate, "YYYYMMDD");
+            }
             let date = rawDate.format("YYYY-MM-DD");
 
             if (!graphEndpointDateMeasureMap.has(graph)) {

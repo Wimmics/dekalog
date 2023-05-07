@@ -402,7 +402,7 @@ export let filteredVocabChart = new KartoChart({
                                 { title: "Endpoint", type: "text" },
                                 { title: "Measure", type: "number" }
                             ];
-                            let gridJSTable = new GridJS.Table({
+                            let gridJSTable = new gridjs.Table({
                                 columns: gridJSColumns,
                                 data: gridJSData,
                                 sortable: true,
