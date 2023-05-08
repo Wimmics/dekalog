@@ -1,6 +1,4 @@
 import $ from 'jquery';
-import dt from 'datatables.net-bs5';
-import ttl_read from '@graphy/content.ttl.read';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import customParseFormat from 'dayjs/plugin/customParseFormat';

@@ -2,7 +2,7 @@ import L from 'leaflet';
 import $ from 'jquery';
 import 'leaflet/dist/leaflet.css'
 import url from 'url';
-import { blankNodesChart, blankNodesEchartsOptionFilename, classAndPropertiesContent, classNumberChart, classesEchartsOptionFilename, datasetDescriptionEchartsOptionFilename, descriptionElementChart, filteredVocabChart, geolocChart, propertiesEchartsOptionFilename, propertyNumberChart, rawVocabChart, rdfDataStructureChart, rdfDataStructuresEchartsOptionFilename, readableLabelsChart, readableLabelsEchartsOptionFilename, shortUriChart, shortUrisEchartsOptionFilename, sparql10Chart, sparql10CoverageEchartsOptionFilename, sparql11Chart, sparql11CoverageEchartsOptionFilename, sparqlCoverCharts, sparqlCoverageEchartsOptionFilename, sparqlFeaturesContent, standardVocabCharts, totalRuntimeEchartsOptionFilename, tripleChart, triplesEchartsOptionFilename, vocabEndpointEchartsOptionFilename, vocabKeywordChart } from "./Charts";
+import { blankNodesChart, blankNodesEchartsOptionFilename, classAndPropertiesContent, classNumberChart, classesEchartsOptionFilename, datasetDescriptionEchartsOptionFilename, descriptionElementChart, filteredVocabChart, geolocChart, propertiesEchartsOptionFilename, propertyNumberChart, rawVocabChart, rdfDataStructureChart, rdfDataStructuresEchartsOptionFilename, readableLabelsChart, readableLabelsEchartsOptionFilename, shortUriChart, shortUrisEchartsOptionFilename, sparql10Chart, sparql10CoverageEchartsOptionFilename, sparql11Chart, sparql11CoverageEchartsOptionFilename, sparqlCoverCharts, sparqlCoverageEchartsOptionFilename, sparqlFeaturesContent, standardVocabCharts, tripleChart, triplesEchartsOptionFilename, vocabEndpointEchartsOptionFilename, vocabKeywordChart } from "./Charts";
 import { ClassCountDataObject, DatasetDescriptionDataObject, GeolocDataObject, PropertyCountDataObject, QualityMeasureDataObject, ShortUriDataObject, SPARQLCoverageDataObject, SPARQLFeatureDataObject, SPARQLFeatureDescriptionDataObject, TextElement, TripleCountDataObject, VocabEndpointDataObject, VocabKeywordsDataObject, JSONValue, RunsetObject } from "./Datatypes";
 import { setButtonAsToggleCollapse } from "./ViewUtils";
 import { cachePromise, xhrJSONPromise } from "./DataConnexion";
@@ -18,11 +18,6 @@ const vocabKeywordDataFilename = 'vocabKeywordsData'
 const classCountDataFilename = 'classCountData'
 const propertyCountDataFilename = 'propertyCountData'
 const tripleCountDataFilename = 'tripleCountData'
-const categoryTestCountDataFilename = "categoryTestCountData";
-const totalCategoryTestCountFilename = "totalCategoryTestCountData";
-const endpointTestsDataFilename = "endpointTestsData";
-const totalRuntimeDataFilename = "totalRuntimeData";
-const averageRuntimeDataFilename = "averageRuntimeData";
 const classPropertyDataFilename = "classPropertyData";
 const datasetDescriptionDataFilename = "datasetDescriptionData";
 const shortUriDataFilename = "shortUriData";
@@ -160,10 +155,9 @@ export class Control {
         this.tabContentMap.set('quality', this.dataQualityContent);
 
         this.vocabRelatedContentTabButton.on('click', function (event) {
-            (new Control()).changeActiveTab("vocabRelatedContent");
+            Control.getInstance().changeActiveTab("vocabRelatedContent");
         })
         this.sparqlTabButton.on('click', function (event) {
-            console.log("sparqlTabButton click")
             Control.getInstance().changeActiveTab("sparql");
         })
         this.populationTabButton.on('click', function (event) {
@@ -312,8 +306,7 @@ export class Control {
             rdfDataStructuresEchartsOptionFilename,
             readableLabelsEchartsOptionFilename,
             blankNodesEchartsOptionFilename,
-            datasetDescriptionEchartsOptionFilename,
-            totalRuntimeEchartsOptionFilename
+            datasetDescriptionEchartsOptionFilename
         ];
 
         // Loading all the data files into the bank

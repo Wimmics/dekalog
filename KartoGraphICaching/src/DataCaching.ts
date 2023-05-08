@@ -526,7 +526,7 @@ export function tripleDataFill(runset: RunSetObject) {
             let endpointTriplesDataIndex: Map<string, Map<string, EndpointTripleIndexItem>> = new Map();
             let endpointTriplesData: TripleCountDataObject[] = [];
             (json as JSONValue[]).forEach((itemResult, i) => {
-                let graph:string = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
+                let graph: string = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
                 let date: Dayjs; //= Global.parseDate(itemResult["date"].value);
                 let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
                 if (rawDateUnderscoreIndex != -1) {
@@ -595,7 +595,7 @@ export function classDataFill(runset: RunSetObject) {
             let endpointClassCountData: ClassCountDataObject[] = [];
             (json as JSONValue[]).forEach((itemResult, i) => {
                 let graph = itemResult["g"].value.replace('http://ns.inria.fr/indegx#', '');
-                let date: Dayjs ;//= Global.parseDate(itemResult["date"].value);
+                let date: Dayjs;//= Global.parseDate(itemResult["date"].value);
                 let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
                 if (rawDateUnderscoreIndex != -1) {
                     let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
@@ -1459,14 +1459,14 @@ export function shortUrisDataFill(runset: RunSetObject) {
             }
             ${generateGraphValueFilterClause(runset.graphs)}
         } GROUP BY ?g ?date ?endpointUrl ?measure`;
-        // ?metadata <http://purl.org/dc/terms/modified> ?date . 
+    // ?metadata <http://purl.org/dc/terms/modified> ?date . 
     return Sparql.paginatedSparqlQueryToIndeGxPromise(shortUrisMeasureQuery)
         .then(json => {
             let shortUriData = []
             let graphSet = new Set();
             (json as JSONValue[]).forEach((jsonItem, i) => {
                 let endpoint = jsonItem["endpointUrl"].value;
-                let shortUriMeasure = Number.parseFloat(jsonItem["measure"].value) * 100;
+                let shortUriMeasure = Number.parseFloat(Global.precise(Number.parseFloat(jsonItem["measure"].value) * 100));
                 let graph = jsonItem["g"].value.replace("http://ns.inria.fr/indegx#", "");
                 let date: Dayjs // = Global.parseDate(jsonItem["date"].value);
                 let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
@@ -1511,16 +1511,16 @@ export function readableLabelsDataFill(runset: RunSetObject) {
             } 
             ${generateGraphValueFilterClause(runset.graphs)}
         } GROUP BY ?g ?date ?endpointUrl ?measure`;
-        // ?metadata <http://purl.org/dc/terms/modified> ?date . 
+    // ?metadata <http://purl.org/dc/terms/modified> ?date . 
 
     return Sparql.paginatedSparqlQueryToIndeGxPromise(readableLabelsQuery)
         .then(json => {
             let readableLabelData = [];
             (json as JSONValue[]).forEach((jsonItem, i) => {
                 let endpoint = jsonItem["endpointUrl"].value;
-                let readableLabelMeasure = Number.parseFloat(jsonItem["measure"].value) * 100;
+                let readableLabelMeasure = Number.parseFloat(Global.precise(Number.parseFloat(jsonItem["measure"].value) * 100));
                 let graph = jsonItem["g"].value.replace("http://ns.inria.fr/indegx#", "");
-                let date: Dayjs ; // = Global.parseDate(jsonItem["date"].value);
+                let date: Dayjs; // = Global.parseDate(jsonItem["date"].value);
                 let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
                 if (rawDateUnderscoreIndex != -1) {
                     let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
@@ -1565,15 +1565,15 @@ export function rdfDataStructureDataFill(runset: RunSetObject) {
             ${generateGraphValueFilterClause(runset.graphs)}
         } 
         GROUP BY ?g ?date ?endpointUrl ?measure` ;
-        // ?metadata <http://purl.org/dc/terms/modified> ?date . 
+    // ?metadata <http://purl.org/dc/terms/modified> ?date . 
 
     return Sparql.paginatedSparqlQueryToIndeGxPromise(rdfDataStructureQuery).then(json => {
         let rdfDataStructureData = [];
         (json as JSONValue[]).forEach((jsonItem, i) => {
             let endpoint = jsonItem["endpointUrl"].value;
-            let rdfDataStructureMeasure = Number.parseFloat(jsonItem["measure"].value) * 100;
+            let rdfDataStructureMeasure = Number.parseFloat(Global.precise(Number.parseFloat(jsonItem["measure"].value) * 100));
             let graph = jsonItem["g"].value.replace("http://ns.inria.fr/indegx#", "");
-            let date: Dayjs ;// = Global.parseDate(jsonItem["date"].value);
+            let date: Dayjs;// = Global.parseDate(jsonItem["date"].value);
             let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
             if (rawDateUnderscoreIndex != -1) {
                 let rawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
@@ -1624,8 +1624,8 @@ export function blankNodeDataFill(runset: RunSetObject) {
             ${generateGraphValueFilterClause(runset.graphs)}
         } 
         GROUP BY ?g ?date ?endpointUrl ?measure` ;
-        // { ?metadata dct:modified ?date . }
-        // UNION { ?curated dct:modified ?date }
+    // { ?metadata dct:modified ?date . }
+    // UNION { ?curated dct:modified ?date }
     return Sparql.sparqlQueryToIndeGxPromise(blankNodeQuery).then(json => {
 
         let blankNodeData = []
@@ -1633,9 +1633,9 @@ export function blankNodeDataFill(runset: RunSetObject) {
         let graphEndpointDateMeasureMap: Map<string, Map<string, Map<string, number>>> = new Map();
         (json as SPARQLJSONResult).results.bindings.forEach((jsonItem, i) => {
             let endpoint = jsonItem.endpointUrl.value;
-            let blankNodeMeasure = Number.parseFloat(jsonItem.measure.value) * 100;
+            let blankNodeMeasure = Number.parseFloat(Global.precise(Number.parseFloat(jsonItem.measure.value) * 100));
             let graph = jsonItem.g.value.replace("http://ns.inria.fr/indegx#", "");
-            let rawDate : Dayjs ; //= Global.parseDate(jsonItem.date.value);
+            let rawDate: Dayjs; //= Global.parseDate(jsonItem.date.value);
             let rawDateUnderscoreIndex = graph.lastIndexOf("_"); // Cheating on the date of the indexation
             if (rawDateUnderscoreIndex != -1) {
                 let rawRawDate = graph.substring(rawDateUnderscoreIndex, graph.length);
@@ -1652,7 +1652,7 @@ export function blankNodeDataFill(runset: RunSetObject) {
             if (!graphEndpointDateMeasureMap.get(graph).get(endpoint).has(date)) {
                 graphEndpointDateMeasureMap.get(graph).get(endpoint).set(date, blankNodeMeasure);
             }
-            if(graphEndpointDateMeasureMap.get(graph).get(endpoint).has(date) && graphEndpointDateMeasureMap.get(graph).get(endpoint).get(date) < blankNodeMeasure){
+            if (graphEndpointDateMeasureMap.get(graph).get(endpoint).has(date) && graphEndpointDateMeasureMap.get(graph).get(endpoint).get(date) < blankNodeMeasure) {
                 graphEndpointDateMeasureMap.get(graph).get(endpoint).set(date, blankNodeMeasure);
             }
             graphSet.add(graph);
@@ -1665,7 +1665,7 @@ export function blankNodeDataFill(runset: RunSetObject) {
                 })
             })
         })
-        
+
         return Promise.resolve(blankNodeData);
     })
         .then(blankNodeData => {

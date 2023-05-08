@@ -216,3 +216,8 @@ export function unicodeToUrlendcode(text: string): string {
             return urlEncodedMatch;
         });
 }
+
+// Set the precision of a float
+export function precise(x: number, n = 2): string {
+    return x.toPrecision(n);
+}

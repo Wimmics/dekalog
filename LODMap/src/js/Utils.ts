@@ -16,7 +16,7 @@ export function haveIntersection(setA, setB) {
 }
 
 // Set the precision of a float
-export function precise(x: number, n = 2) {
+export function precise(x: number, n = 3) {
     return x.toPrecision(n);
 }
 

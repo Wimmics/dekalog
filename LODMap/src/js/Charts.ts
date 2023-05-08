@@ -6,8 +6,8 @@ import { greenIcon, orangeIcon } from "./leaflet-color-markers";
 import { KartoChart } from "./ViewClasses";
 import { collapseHtml, unCollapseHtml, getMainContentColWidth } from "./ViewUtils";
 import { Control } from "./Control";
-import { parseDate, precise } from "./Utils";
-import { getCircularGraphOption, getForceGraphOption, getScatterDataSeriesFromMap, getTimeScatterOption } from "./ChartsUtils";
+import { precise } from "./Utils";
+import { getCircularGraphOption, getForceGraphOption, } from "./ChartsUtils";
 import * as gridjs from "gridjs";
 import "gridjs/dist/theme/mermaid.css";
 
@@ -15,6 +15,7 @@ export const sparqlCoverageEchartsOptionFilename = "sparqlCoverageEchartsOption"
 export const sparql10CoverageEchartsOptionFilename = "sparql10CoverageEchartsOption";
 export const sparql11CoverageEchartsOptionFilename = "sparql11CoverageEchartsOption";
 export const vocabEndpointEchartsOptionFilename = "vocabEndpointEchartsOption";
+export const rawVocabEndpointEchartsOptionFilename = "rawVocabEndpointEchartsOption";
 export const triplesEchartsOptionFilename = "triplesEchartOption";
 export const classesEchartsOptionFilename = "classesEchartOption";
 export const propertiesEchartsOptionFilename = "propertiesEchartOption";
@@ -58,6 +59,7 @@ export let geolocChart = new KartoChart({
                     columns: gridJSColumns,
                     data: gridJSData,
                     sort: true,
+                    search: true,
                     pagination: {
                         limit: 10,
                         summary: false
@@ -133,6 +135,7 @@ export let sparqlFeaturesContent = new KartoChart({
                     columns: gridJSColumns,
                     data: grisJSData,
                     sort: true,
+                    search: true,
                     pagination: {
                         limit: 10,
                         summary: false
@@ -251,6 +254,7 @@ export let sparqlCoverCharts = new KartoChart({
                     columns: gridJSColumns,
                     data: gridJSData,
                     sort: true,
+                    search: true,
                     pagination: {
                         limit: 10,
                         summary: false
@@ -402,12 +406,12 @@ export let filteredVocabChart = new KartoChart({
                                 { title: "Endpoint", type: "text" },
                                 { title: "Measure", type: "number" }
                             ];
-                            let gridJSTable = new gridjs.Table({
+                            let gridJSTable = new gridjs.Grid({
                                 columns: gridJSColumns,
                                 data: gridJSData,
-                                sortable: true,
+                                sort: true,
+                                search: true,
                                 pagination: {
-                                    enabled: true,
                                     limit: 10,
                                     summary: true
                                 },
@@ -472,14 +476,10 @@ export let rawVocabChart = new KartoChart({
         try {
             return new Promise<void>((resolve, reject) => {
                 if (!this.filled) {
-                    if (jsonRawVocabNodes.size > 0 && jsonRawVocabLinks.size > 0) {
                         this.show();
 
-                        this.option = getForceGraphOption('Endpoints and vocabularies without filtering', ["Vocabulary", "Endpoint"], [...jsonRawVocabNodes], [...jsonRawVocabLinks]);
+                        this.option = Control.getInstance().retrieveFileFromVault(vocabEndpointEchartsOptionFilename);
                         this.chartObject.setOption(this.option, true);
-                    } else {
-                        this.hide();
-                    }
                     this.chartObject.on('click', 'series', event => {
                         if (event.dataType.localeCompare("node") == 0) {
                             let uriLink = event.data.name;
@@ -569,13 +569,13 @@ export let vocabKeywordChart = new KartoChart({
                     let gatherVocab = new Map();
                     // Filtering according to ontology repositories
                     rawVocabSet.forEach(vocabulariUri => {
-                        if (Control.getInstance().knownVocabData.includes(vocabulariUri)) {
+                        if (Control.getInstance().knownVocabData().includes(vocabulariUri)) {
                             vocabSet.add(vocabulariUri);
                         }
                     });
                     rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
                         vocabulariUriSet.forEach(vocabulariUri => {
-                            if (Control.getInstance().knownVocabData.includes(vocabulariUri)) {
+                            if (Control.getInstance().knownVocabData().includes(vocabulariUri)) {
                                 if (!gatherVocab.has(endpointUri)) {
                                     gatherVocab.set(endpointUri, new Set());
                                 }
@@ -845,6 +845,7 @@ export let classAndPropertiesContent = new KartoChart({
                             columns: gridJSColumns,
                             data: gridJSData,
                             sort: true,
+                            search: true,
                             pagination: {
                                 limit: 10,
                                 summary: false
@@ -900,6 +901,7 @@ export let descriptionElementChart = new KartoChart({
                         columns: gridJSColumns,
                         data: gridJSData,
                         sort: true,
+                        search: true,
                         pagination: {
                             limit: 10,
                             summary: false
@@ -961,6 +963,7 @@ export let shortUriChart = new KartoChart({
                 // Average measure
                 let shortUriMeasureSum = Control.getInstance().shortUriData().map(a => a.measure).reduce((previous, current) => current + previous);
                 let shortUrisAverageMeasure = shortUriMeasureSum / Control.getInstance().shortUriData().length;
+                console.log("shortUrisAverageMeasure", shortUrisAverageMeasure)
                 $('#shortUrisMeasure').text(precise(shortUrisAverageMeasure) + "%");
 
                 // Measure Details
@@ -976,20 +979,25 @@ export let shortUriChart = new KartoChart({
                         endpointDataSerieMap.get(shortUriItem.endpoint).push([shortUriItem.date, precise(shortUriItem.measure)]);
                     });
 
-                    let gridJSData: { endpoint: string, measure: string }[] = [];
+                    let gridJSData: { endpoint: string, measure: number }[] = [];
                     endpointDataSerieMap.forEach((serieData, endpoint, map) => {
                         let endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
                         let measureAverage = endpointMeasureSum / serieData.length;
-                        gridJSData.push({ endpoint: endpoint, measure: precise(measureAverage, 3) + "%" });
+                        let measureAverageRounded = Number.parseFloat(precise(measureAverage, 3));
+                        gridJSData.push({ endpoint: endpoint, measure: measureAverageRounded });
                     });
                     let gridJSColumns = [
                         { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
-                        { id: "measure", name: "Measure", field: "measure", sortable: true }
+                        { id: "measure", name: "Measure", field: "measure", sortable: true, formatter: (cell, row) => {
+                                return cell + "%";
+                            }
+                         }
                     ];
                     let gridJSTable = new gridjs.Grid({
                         columns: gridJSColumns,
                         data: gridJSData,
                         sort: true,
+                        search: true,
                         pagination: {
                             limit: 10,
                             summary: false
@@ -1076,20 +1084,25 @@ export let rdfDataStructureChart = new KartoChart({
                         let tableHTML = $('#rdfDataStructuresTable');
                         tableHTML.empty();
 
-                        let gridJSData: { endpoint: string, measure: string }[] = [];
+                        let gridJSData: { endpoint: string, measure: number }[] = [];
                         endpointDataSerieMap.forEach((serieData, endpoint, map) => {
                             let endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
                             let measureAverage = endpointMeasureSum / serieData.length;
-                            gridJSData.push({ endpoint: endpoint, measure: precise(measureAverage, 3) + "%" });
+                            let measureAverageRounded = Number.parseFloat(precise(measureAverage, 3));
+                            gridJSData.push({ endpoint: endpoint, measure: measureAverageRounded });
                         });
                         let gridJSColumns = [
                             { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
-                            { id: "measure", name: "Measure", field: "measure", sortable: true }
+                            { id: "measure", name: "Measure", field: "measure", sortable: true, formatter: (cell, row) => {
+                                    return cell + "%";
+                                }
+                             }
                         ];
                         let gridJSTable = new gridjs.Grid({
                             columns: gridJSColumns,
                             data: gridJSData,
                             sort: true,
+                            search: true,
                             pagination: {
                                 limit: 10,
                                 summary: false
@@ -1172,20 +1185,25 @@ export let readableLabelsChart = new KartoChart({
                         let tableHTML = $('#readableLabelsTable');
                         tableHTML.empty();
 
-                        let gridJSData: { endpoint: string, measure: string }[] = [];
+                        let gridJSData: { endpoint: string, measure: number }[] = [];
                         endpointDataSerieMap.forEach((serieData, endpoint, map) => {
                             let endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
                             let measureAverage = endpointMeasureSum / serieData.length;
-                            gridJSData.push({ endpoint: endpoint, measure: precise(measureAverage, 3) + "%" });
+                            let measureAverageRounded = Number.parseFloat(precise(measureAverage, 3));
+                            gridJSData.push({ endpoint: endpoint, measure: measureAverageRounded });
                         });
                         let gridJSColumns = [
                             { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
-                            { id: "measure", name: "Measure", field: "measure", sortable: true }
+                            { id: "measure", name: "Measure", field: "measure", sortable: true, formatter: (cell, row) => {
+                                    return cell + "%";
+                                }
+                             }
                         ];
                         let gridJSTable = new gridjs.Grid({
                             columns: gridJSColumns,
                             data: gridJSData,
                             sort: true,
+                            search: true,
                             pagination: {
                                 limit: 10,
                                 summary: false
@@ -1267,20 +1285,25 @@ export let blankNodesChart = new KartoChart({
                         let tableHTMl = $('#blankNodesTable');
                         tableHTMl.empty();
 
-                        let gridJSData: { endpoint: string, measure: string }[] = [];
+                        let gridJSData: { endpoint: string, measure: number }[] = [];
                         endpointDataSerieMap.forEach((serieData, endpoint, map) => {
                             let endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
                             let measureAverage = endpointMeasureSum / serieData.length;
-                            gridJSData.push({ endpoint: endpoint, measure: precise(measureAverage, 3) + "%" });
+                            let measureAverageRounded = Number.parseFloat(precise(measureAverage, 3));
+                            gridJSData.push({ endpoint: endpoint, measure: measureAverageRounded });
                         });
                         let gridJSColumns = [
                             { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
-                            { id: "measure", name: "Measure", field: "measure", sortable: true }
+                            { id: "measure", name: "Measure", field: "measure", sortable: true, formatter: (cell, row) => {
+                                    return cell + "%";
+                                }
+                             }
                         ];
                         let gridJSTable = new gridjs.Grid({
                             columns: gridJSColumns,
                             data: gridJSData,
                             sort: true,
+                            search: true,
                             pagination: {
                                 limit: 10,
                                 summary: false
