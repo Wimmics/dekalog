@@ -1,7 +1,7 @@
 import * as echarts from "echarts";
 import * as DataCache from "./DataCaching";
 import { readFile, writeFile } from "fs/promises";
-import { AverageRuntimeDataObject, ClassCountDataObject, DatasetDescriptionDataObject, EndpointTestDataObject, GeolocDataObject, GraphListDataObject, PropertyCountDataObject, QualityMeasureDataObject, ShortUriDataObject, SPARQLCoverageDataObject, SPARQLFeatureDataObject, SPARQLFeatureDescriptionDataObject, TotalRuntimeDataObject, TripleCountDataObject, VocabEndpointDataObject, VocabKeywordsDataObject } from "./DataTypes";
+import { AverageRuntimeDataObject, ClassCountDataObject, DatasetDescriptionDataObject, EndpointTestDataObject, GeolocDataObject, GraphListDataObject, KeywordsEndpointDataObject, PropertyCountDataObject, QualityMeasureDataObject, ShortUriDataObject, SPARQLCoverageDataObject, SPARQLFeatureDataObject, SPARQLFeatureDescriptionDataObject, TotalRuntimeDataObject, TripleCountDataObject, VocabEndpointDataObject, VocabKeywordsDataObject } from "./DataTypes";
 import * as Logger from "./LogUtils";
 import * as ChartsUtils from "./ChartsUtils";
 import * as Global from "./GlobalUtils";
@@ -22,13 +22,14 @@ export const readableLabelsEchartOptionFilename = "readableLabelsEchartOption";
 export const blankNodesEchartOptionFilename = "blankNodesEchartOption";
 export const datasetDescriptionEchartOptionFilename = "datasetDescriptionEchartOption";
 export const totalRuntimeEchartsOptionFilename = "totalRuntimeEchartsOption";
+export const keywordEndpointEchartsOptionFilename = "keywordEndpointEchartsOption";
+export const standardVocabulariesEndpointGraphEchartsOptionFilename = "standardVocabulariesEndpointGraphEchartsOption";
 
 
 let whiteListData: Map<string, Array<string>>;
 let geolocData: Array<GeolocDataObject>;
 let sparqlFeaturesData: Array<SPARQLFeatureDataObject>;
 let knownVocabData: Array<string>;
-let vocabEndpointData: Array<VocabEndpointDataObject>;
 let vocabKeywordData: Array<VocabKeywordsDataObject>;
 let classCountData: Array<ClassCountDataObject>;
 let propertyCountData: Array<PropertyCountDataObject>;
@@ -286,102 +287,135 @@ export function sparqlCoverageEchartsOption(runsetId: string): Promise<void> {
     });
 }
 
-export function vocabGraphEchartsOption(runsetId: string): Promise<void> {
-    return readFile(Global.getCachedFilenameForRunset(runsetId, DataCache.knownVocabsFilename))
-        .then(knownVocabData => {
-            return readFile(Global.getCachedFilenameForRunset(runsetId, DataCache.vocabEndpointFilename), "utf-8").then(vocabEndpointRawData => {
+export function endpointVocabsGraphEchartsOption(runsetId: string): Promise<void> {
+    return readFile(Global.getCachedFilenameForRunset(runsetId, DataCache.vocabEndpointFilename), "utf-8").then(vocabEndpointRawData => {
 
-                vocabEndpointData = JSON.parse(vocabEndpointRawData);
-                // Create an force graph with the graph linked by co-ocurrence of vocabularies
+        let vocabEndpointData: Array<VocabEndpointDataObject> = JSON.parse(vocabEndpointRawData);
+        // Create an force graph with the graph linked by co-ocurrence of vocabularies
 
-                let endpointSet = new Set();
-                let vocabSet = new Set();
-                let rawVocabSet = new Set<string>();
-                let rawGatherVocab = new Map();
-                vocabEndpointData.forEach((item, i) => {
-                    let endpoint = item.endpoint;
-                    let vocabularies = item.vocabularies;
-                    if (vocabularies.length < numberOfVocabulariesLimit) {
-                        endpointSet.add(endpoint);
-                        vocabularies.forEach(vocab => {
-                            rawVocabSet.add(vocab);
-                        })
-                        if (!rawGatherVocab.has(endpoint)) {
-                            rawGatherVocab.set(endpoint, new Set());
-                        }
-                        rawGatherVocab.set(endpoint, vocabularies);
-                    }
-                });
+        // Endpoint and vocabularies graph
+        let linkArray = [];
+        let nodeArray = [];
+        let vocabularySet: Set<string> = new Set();
+        let endpointSet: Set<string> = new Set();
+        vocabEndpointData.forEach((item, i) => {
+            let endpoint = item.endpoint;
+            let vocabularies = item.vocabularies;
+            if (vocabularies !== undefined) {
+                endpointSet.add(endpoint);
+                vocabularies.forEach(vocab => {
+                    vocabularySet.add(vocab)
 
-                let jsonRawVocabNodes = new Set();
-                let jsonRawVocabLinks = new Set();
+                    linkArray.push({ source: endpoint, target: vocab })
+                })
+            }
+        });
 
-                endpointSet.forEach(item => {
-                    jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-                });
-                rawVocabSet.forEach(item => {
-                    jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
-                });
-                rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                    endpointVocabs.forEach((vocab, i) => {
-                        jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
-                    });
-                });
-
-                let gatherVocab = new Map();
-                // Filtering according to ontology repositories
-                rawVocabSet.forEach(vocabulariUri => {
-                    if (knownVocabData.includes(vocabulariUri)) {
-                        vocabSet.add(vocabulariUri);
-                    }
-                });
-                rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
-                    vocabulariUriSet.forEach(vocabulariUri => {
-                        if (knownVocabData.includes(vocabulariUri)) {
-                            if (!gatherVocab.has(endpointUri)) {
-                                gatherVocab.set(endpointUri, new Set());
-                            }
-                            gatherVocab.get(endpointUri).add(vocabulariUri);
-                        }
-                    });
-                });
-
-                // Endpoint and vocabularies graph
-                let jsonVocabLinks = new Set();
-                let jsonVocabNodes = new Set();
-
-                endpointSet.forEach(item => {
-                    jsonVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-                });
-                vocabSet.forEach(item => {
-                    jsonVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
-                });
-
-                gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                    endpointVocabs.forEach((vocab, i) => {
-                        jsonVocabLinks.add({ source: endpointUrl, target: vocab })
-                    });
-                });
-                if (jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
-                    let knowVocabsData = [];
-                    gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                        let measure = (endpointVocabs.size / rawGatherVocab.get(endpointUrl).length);
-                        knowVocabsData.push({ 'endpoint': endpointUrl, 'measure': measure })
-
-                        endpointVocabs.forEach((vocab, i) => {
-                            jsonVocabLinks.add({ source: endpointUrl, target: vocab });
-                        });
-                    });
-
-                    let content =JSON.stringify(ChartsUtils.getForceGraphOption('Endpoints and vocabularies with filtering*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]));
-                    return writeFile(Global.getCachedFilenameForRunset(runsetId, vocabEndpointEchartsOptionFilename), content);
-                } else {
-                    return Promise.reject("No data to generate the vocabulary graph for " + runsetId);
-                }
-            }).catch((error) => {
-                Logger.error("Error during vocab graph data reading", error)
-            });
+        endpointSet.forEach(endpoint => {
+            nodeArray.push({ name: endpoint, category: 'Endpoint', symbolSize: 5 })
         })
+        vocabularySet.forEach(vocab => {
+            nodeArray.push({ name: vocab, category: 'Vocabulary', symbolSize: 5 })
+        })
+
+        if (nodeArray.length > 0 && linkArray.length > 0) {
+            let content = JSON.stringify(ChartsUtils.getForceGraphOption('Endpoints and vocabularies*', ["Vocabulary", "Endpoint"], nodeArray, linkArray));
+            return writeFile(Global.getCachedFilenameForRunset(runsetId, vocabEndpointEchartsOptionFilename), content);
+        } else {
+            return Promise.reject("No data to generate the vocabulary graph for " + runsetId);
+        }
+    }).catch((error) => {
+        Logger.error("Error during vocab graph data reading", error)
+    });
+}
+
+export function endpointKeywordsGraphEchartsOption(runsetId: string): Promise<void> {
+    return readFile(Global.getCachedFilenameForRunset(runsetId, DataCache.endpointKeywordsFilename), "utf-8").then(endpointKeywordsRawData => {
+
+        
+        let endpointKeywordData: Array<KeywordsEndpointDataObject> = JSON.parse(endpointKeywordsRawData);
+        // Endpoint and keywords graph
+        let linkArray = [];
+        let nodeArray = [];
+        let keywordSet: Set<string> = new Set();
+        let endpointSet: Set<string> = new Set();
+        endpointKeywordData.forEach((item, i) => {
+            let endpoint = item.endpoint;
+            let keywords = item.keywords;
+            if (keywords !== undefined) {
+                endpointSet.add(endpoint);
+                keywords.forEach(vocab => {
+                    keywordSet.add(vocab)
+
+                    linkArray.push({ source: endpoint, target: vocab })
+                })
+            }
+        });
+
+        endpointSet.forEach(endpoint => {
+            nodeArray.push({ name: endpoint, category: 'Endpoint', symbolSize: 5 })
+        })
+        keywordSet.forEach(vocab => {
+            nodeArray.push({ name: vocab, category: 'Keyword', symbolSize: 5 })
+        })
+        if (nodeArray.length > 0 && linkArray.length > 0) {
+            let content = JSON.stringify(ChartsUtils.getForceGraphOption('Endpoints and keywords of their vocabularies', ["Keyword", "Endpoint"], nodeArray, linkArray));
+            return writeFile(Global.getCachedFilenameForRunset(runsetId, keywordEndpointEchartsOptionFilename), content);
+        } else {
+            return Promise.reject("No data to generate the keyword graph for " + runsetId);
+        }
+    }).catch((error) => {
+        Logger.error("Error during keyword graph data reading", error)
+    });
+}
+
+export function endpointStandardVocabulariesGraphEchartsOption(runsetId: string): Promise<void> {
+    return readFile(Global.getCachedFilenameForRunset(runsetId, DataCache.vocabEndpointFilename), "utf-8").then(vocabEndpointRawData => {
+        let vocabEndpointData: Array<VocabEndpointDataObject> = JSON.parse(vocabEndpointRawData);
+
+        let vocabStandardSet: Set<string> = new Set();
+        let vocabStandardNameMap: Map<string, string> = new Map([["http://www.w3.org/1999/02/22-rdf-syntax-ns#", "RDF"], ["http://www.w3.org/2000/01/rdf-schema#", "RDFS"], ["http://www.w3.org/ns/shacl#", "SHACL"], ["http://www.w3.org/2002/07/owl#", "OWL"], ["http://www.w3.org/2004/02/skos/core#", "SKOS"], ["http://spinrdf.org/spin#", "SPIN"], ["http://www.w3.org/2003/11/swrl#", "SWRL"]]);
+        vocabStandardNameMap.forEach((value, key, map) => {
+            vocabStandardSet.add(key);
+        });
+        // Endpoint and vocabularies graph
+        let linkArray = [];
+        let nodeArray = [];
+        let vocabSet: Set<string> = new Set();
+        let endpointSet: Set<string> = new Set();
+        vocabEndpointData.forEach((item, i) => {
+            let endpoint = item.endpoint;
+            let vocabularies = item.vocabularies;
+            if (vocabularies !== undefined) {
+                endpointSet.add(endpoint);
+                vocabularies.forEach(vocab => {
+                    if (vocabStandardSet.has(vocab)) {
+                        vocabSet.add(vocab)
+
+                        linkArray.push({ source: endpoint, target: vocab })
+                    }
+                })
+            }
+        });
+
+        endpointSet.forEach(endpoint => {
+            nodeArray.push({ name: endpoint, category: 'Endpoint', symbolSize: 5 })
+        })
+        vocabSet.forEach(vocab => {
+            nodeArray.push({ name: vocab, category: vocabStandardNameMap.get(vocab), symbolSize: 5 })
+        })
+
+        if (nodeArray.length > 0 && linkArray.length > 0) {
+            let categoryArray = [...vocabStandardSet].map(vocab => vocabStandardNameMap.get(vocab));
+            categoryArray.push("Endpoint")
+            let content = JSON.stringify(ChartsUtils.getCircularGraphOption('Endpoints and meta-vocabularies', categoryArray, nodeArray, linkArray));
+            return writeFile(Global.getCachedFilenameForRunset(runsetId, standardVocabulariesEndpointGraphEchartsOptionFilename), content);
+        } else {
+            return Promise.reject("No data to generate the vocabulary graph for " + runsetId);
+        }
+    }).catch((error) => {
+        Logger.error("Error during vocab graph data reading", error)
+    });
 }
 
 export function triplesEchartsOption(runsetId: string): Promise<void> {
@@ -781,61 +815,61 @@ export function datasetDescriptionEchartsOption(runsetId) {
     });
 }
 
-export function nonFilteredVocabChartOption(runsetId: string): Promise<void> {
-    this.sparqlesVocabulariesQuery = `SELECT DISTINCT ?endpointUrl ?vocabulary { 
-            GRAPH ?g {
-                { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
-                UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
-                ?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset .
-                ?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary
-            }
-        }
-        GROUP BY ?endpointUrl ?vocabulary`;
+// export function nonFilteredVocabChartOption(runsetId: string): Promise<void> {
+//     this.sparqlesVocabulariesQuery = `SELECT DISTINCT ?endpointUrl ?vocabulary { 
+//             GRAPH ?g {
+//                 { ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+//                 UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
+//                 ?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset .
+//                 ?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary
+//             }
+//         }
+//         GROUP BY ?endpointUrl ?vocabulary`;
 
-    let endpointSet = new Set();
-    let rawVocabSet = new Set();
-    let rawGatherVocab = new Map();
-    vocabEndpointData.forEach((item, i) => {
-        let endpoint = item.endpoint;
-        let vocabularies = item.vocabularies;
-        if (vocabularies.length < numberOfVocabulariesLimit) {
-            endpointSet.add(endpoint);
-            vocabularies.forEach(vocab => {
-                rawVocabSet.add(vocab);
-            })
-            if (!rawGatherVocab.has(endpoint)) {
-                rawGatherVocab.set(endpoint, new Set());
-            }
-            rawGatherVocab.set(endpoint, vocabularies);
-        }
-    });
+//     let endpointSet = new Set();
+//     let rawVocabSet = new Set();
+//     let rawGatherVocab = new Map();
+//     vocabEndpointData.forEach((item, i) => {
+//         let endpoint = item.endpoint;
+//         let vocabularies = item.vocabularies;
+//         if (vocabularies.length < numberOfVocabulariesLimit) {
+//             endpointSet.add(endpoint);
+//             vocabularies.forEach(vocab => {
+//                 rawVocabSet.add(vocab);
+//             })
+//             if (!rawGatherVocab.has(endpoint)) {
+//                 rawGatherVocab.set(endpoint, new Set());
+//             }
+//             rawGatherVocab.set(endpoint, vocabularies);
+//         }
+//     });
 
-    let jsonRawVocabNodes = new Set();
-    let jsonRawVocabLinks = new Set();
+//     let jsonRawVocabNodes = new Set();
+//     let jsonRawVocabLinks = new Set();
 
-    endpointSet.forEach(item => {
-        jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-    });
-    rawVocabSet.forEach(item => {
-        jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
-    });
-    rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-        endpointVocabs.forEach((vocab, i) => {
-            jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
-        });
-    });
+//     endpointSet.forEach(item => {
+//         jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
+//     });
+//     rawVocabSet.forEach(item => {
+//         jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
+//     });
+//     rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+//         endpointVocabs.forEach((vocab, i) => {
+//             jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
+//         });
+//     });
 
 
-    if (jsonRawVocabNodes.size > 0 && jsonRawVocabLinks.size > 0) {
-        let resultOption = ChartsUtils.getForceGraphOption('Endpoints and vocabularies without filtering', ["Vocabulary", "Endpoint"], [...jsonRawVocabNodes], [...jsonRawVocabLinks]);
-        return writeFile(Global.getCachedFilenameForRunset(runsetId, vocabEndpointEchartsOptionFilename), JSON.stringify(resultOption)).then(() => {
-            Logger.info("Endpoints and vocabularies without filtering chart data generated");
-            return;
-        });
-    } else {
-        return Promise.reject("No data to generate the non filtered vocabularies chart");
-    }
-}
+//     if (jsonRawVocabNodes.size > 0 && jsonRawVocabLinks.size > 0) {
+//         let resultOption = ChartsUtils.getForceGraphOption('Endpoints and vocabularies without filtering', ["Vocabulary", "Endpoint"], [...jsonRawVocabNodes], [...jsonRawVocabLinks]);
+//         return writeFile(Global.getCachedFilenameForRunset(runsetId, vocabEndpointEchartsOptionFilename), JSON.stringify(resultOption)).then(() => {
+//             Logger.info("Endpoints and vocabularies without filtering chart data generated");
+//             return;
+//         });
+//     } else {
+//         return Promise.reject("No data to generate the non filtered vocabularies chart");
+//     }
+// }
 
 export function totalRuntimeEchartsOption(runtimeId: string) {
     Logger.info("Total runtime chart settings generation started");

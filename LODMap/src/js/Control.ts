@@ -1,20 +1,19 @@
-import L from 'leaflet';
 import $ from 'jquery';
-import 'leaflet/dist/leaflet.css'
 import url from 'url';
-import { blankNodesChart, blankNodesEchartsOptionFilename, classAndPropertiesContent, classNumberChart, classesEchartsOptionFilename, datasetDescriptionEchartsOptionFilename, descriptionElementChart, filteredVocabChart, geolocChart, propertiesEchartsOptionFilename, propertyNumberChart, rawVocabChart, rdfDataStructureChart, rdfDataStructuresEchartsOptionFilename, readableLabelsChart, readableLabelsEchartsOptionFilename, shortUriChart, shortUrisEchartsOptionFilename, sparql10Chart, sparql10CoverageEchartsOptionFilename, sparql11Chart, sparql11CoverageEchartsOptionFilename, sparqlCoverCharts, sparqlCoverageEchartsOptionFilename, sparqlFeaturesContent, standardVocabCharts, tripleChart, triplesEchartsOptionFilename, vocabEndpointEchartsOptionFilename, vocabKeywordChart } from "./Charts";
-import { ClassCountDataObject, DatasetDescriptionDataObject, GeolocDataObject, PropertyCountDataObject, QualityMeasureDataObject, ShortUriDataObject, SPARQLCoverageDataObject, SPARQLFeatureDataObject, SPARQLFeatureDescriptionDataObject, TextElement, TripleCountDataObject, VocabEndpointDataObject, VocabKeywordsDataObject, JSONValue, RunsetObject } from "./Datatypes";
+import { blankNodesChart, blankNodesEchartsOptionFilename, classAndPropertiesContent, classNumberChart, classesEchartsOptionFilename, datasetDescriptionEchartsOptionFilename, descriptionElementChart, geolocChart, propertiesEchartsOptionFilename, propertyNumberChart, endpointVocabsChart, rdfDataStructureChart, rdfDataStructuresEchartsOptionFilename, readableLabelsChart, readableLabelsEchartsOptionFilename, shortUriChart, shortUrisEchartsOptionFilename, sparql10Chart, sparql10CoverageEchartsOptionFilename, sparql11Chart, sparql11CoverageEchartsOptionFilename, sparqlCoverCharts, sparqlCoverageEchartsOptionFilename, sparqlFeaturesContent, standardVocabCharts, tripleChart, triplesEchartsOptionFilename, vocabEndpointEchartsOptionFilename, vocabKeywordChart, keywordEndpointEchartsOptionFilename, standardVocabulariesEndpointGraphEchartsOptionFilename } from "./Charts";
+import { ClassCountDataObject, DatasetDescriptionDataObject, GeolocDataObject, PropertyCountDataObject, QualityMeasureDataObject, ShortUriDataObject, SPARQLCoverageDataObject, SPARQLFeatureDataObject, SPARQLFeatureDescriptionDataObject, TextElement, TripleCountDataObject, VocabEndpointDataObject, JSONValue, RunsetObject } from "./Datatypes";
 import { setButtonAsToggleCollapse } from "./ViewUtils";
 import { cachePromise, xhrJSONPromise } from "./DataConnexion";
+import { KartoChart } from './ViewClasses';
 
 // Cached files
 // const whiteListFilename = 'whiteLists';
 const geolocDataFilename = 'geolocData';
 const sparqlCoverCountFilename = 'sparqlCoverageData'
 const sparqlFeaturesDataFilename = 'sparqlFeaturesData'
-const knownVocabDataFilename = 'knownVocabsData'
+// const knownVocabDataFilename = 'knownVocabsData'
 const vocabEndpointDataFilename = 'vocabEndpointData'
-const vocabKeywordDataFilename = 'vocabKeywordsData'
+const endpointKeywordDataFilename = 'endpointKeywordsData'
 const classCountDataFilename = 'classCountData'
 const propertyCountDataFilename = 'propertyCountData'
 const tripleCountDataFilename = 'tripleCountData'
@@ -42,14 +41,14 @@ export class Control {
     sparqlFeaturesData(): Array<SPARQLFeatureDataObject> {
         return this.retrieveFileFromVault(sparqlFeaturesDataFilename, this.currentRunset) as Array<SPARQLFeatureDataObject>;
     };
-    knownVocabData(): Array<string> {
-        return this.retrieveFileFromVault(knownVocabDataFilename, this.currentRunset) as Array<string>;
-    };
+    // knownVocabData(): Array<string> {
+    //     return this.retrieveFileFromVault(knownVocabDataFilename, this.currentRunset) as Array<string>;
+    // };
     vocabEndpointData(): Array<VocabEndpointDataObject> {
         return this.retrieveFileFromVault(vocabEndpointDataFilename, this.currentRunset) as Array<VocabEndpointDataObject>;
     };
-    vocabKeywordData(): Array<VocabKeywordsDataObject> {
-        return this.retrieveFileFromVault(vocabKeywordDataFilename, this.currentRunset) as Array<VocabKeywordsDataObject>;
+    endpointKeywordData(): Array<VocabKeywordsDataObject> {
+        return this.retrieveFileFromVault(endpointKeywordDataFilename, this.currentRunset) as Array<VocabKeywordsDataObject>;
     };
     classCountData(): Array<ClassCountDataObject> {
         return this.retrieveFileFromVault(classCountDataFilename, this.currentRunset) as Array<ClassCountDataObject>;
@@ -93,12 +92,12 @@ export class Control {
     geolocContent = [
         geolocChart
     ];
-    sparqlCoverContent = [sparqlCoverCharts, sparql10Chart, sparql11Chart, sparqlFeaturesContent]
-    vocabRelatedContent = [vocabKeywordChart, filteredVocabChart, rawVocabChart, standardVocabCharts];
-    datasetDescriptionContent = [descriptionElementChart];
-    dataQualityContent = [blankNodesChart, readableLabelsChart, rdfDataStructureChart, shortUriChart];
-    datasetPopulationsContent = [tripleChart, classNumberChart, propertyNumberChart, classAndPropertiesContent];
-    allContent = this.geolocContent.concat(this.sparqlCoverContent)
+    sparqlCoverContent: KartoChart[] = [sparqlCoverCharts, sparql10Chart, sparql11Chart, sparqlFeaturesContent]
+    vocabRelatedContent: KartoChart[] = [vocabKeywordChart, /*filteredVocabChart,*/ endpointVocabsChart, standardVocabCharts];
+    datasetDescriptionContent: KartoChart[] = [descriptionElementChart];
+    dataQualityContent: KartoChart[] = [blankNodesChart, readableLabelsChart, rdfDataStructureChart, shortUriChart];
+    datasetPopulationsContent: KartoChart[] = [tripleChart, classNumberChart, propertyNumberChart, classAndPropertiesContent];
+    allContent: KartoChart[] = this.geolocContent.concat(this.sparqlCoverContent)
         .concat(this.datasetDescriptionContent)
         .concat(this.dataQualityContent)
         .concat(this.datasetPopulationsContent);
@@ -183,17 +182,6 @@ export class Control {
         return this.loadDataFiles().then(() => {
             console.log("File loading finished");
 
-            // Initialization of the map
-            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q', {
-                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                maxZoom: 18,
-                id: 'mapbox/streets-v11',
-                tileSize: 512,
-                zoomOffset: -1,
-                accessToken: 'pk.eyJ1IjoibWFpbGxwaWVycmUiLCJhIjoiY2t5OXlxeXhkMDBlZDJwcWxpZTF4ZGkxZiJ9.dCeJEhUs7EF2HI50vdv-7Q'
-            }).addTo(geolocChart.chartObject as L.Map);
-            L.layerGroup().addTo(geolocChart.chartObject as L.Map);
-
             console.log("setting up the runset ID in the URL")
             let urlParams = new URLSearchParams(url.search);
             // Set up graphs sets
@@ -276,9 +264,9 @@ export class Control {
             geolocDataFilename,
             sparqlCoverCountFilename,
             sparqlFeaturesDataFilename,
-            knownVocabDataFilename,
+            // knownVocabDataFilename,
             vocabEndpointDataFilename,
-            vocabKeywordDataFilename,
+            endpointKeywordDataFilename,
             classCountDataFilename,
             propertyCountDataFilename,
             tripleCountDataFilename,
@@ -306,7 +294,9 @@ export class Control {
             rdfDataStructuresEchartsOptionFilename,
             readableLabelsEchartsOptionFilename,
             blankNodesEchartsOptionFilename,
-            datasetDescriptionEchartsOptionFilename
+            datasetDescriptionEchartsOptionFilename,
+            keywordEndpointEchartsOptionFilename,
+            standardVocabulariesEndpointGraphEchartsOptionFilename
         ];
 
         // Loading all the data files into the bank

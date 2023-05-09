@@ -131,6 +131,11 @@ export type VocabKeywordsDataObject = {
     keywords: Array<string>
 }
 
+export type KeywordsEndpointDataObject = {
+    endpoint: string,
+    keywords: Array<string>
+}
+
 export type ClassCountDataObject = {
     endpoint: string,
     graph: string,

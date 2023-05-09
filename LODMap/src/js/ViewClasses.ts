@@ -1,4 +1,5 @@
 import * as echarts from "echarts";
+import L from "leaflet";
 
 export type KartoChartConfig = {
     chartObject?: echarts.ChartView | L.Map,
@@ -56,3 +57,12 @@ export class KartoChart {
 
     show: () => void;
 };
+
+export class KartoMapChart extends KartoChart {
+    chartObject: L.Map;
+    markerArray: L.Marker[] = [];
+
+    constructor(config: KartoChartConfig) {
+        super(config);
+    }
+}

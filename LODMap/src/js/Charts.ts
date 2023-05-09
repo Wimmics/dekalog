@@ -1,9 +1,11 @@
 import dayjs from "dayjs";
 import L from "leaflet";
+import 'leaflet/dist/leaflet.css'
+import 'leaflet-providers';
 import $ from 'jquery';
 import * as echarts from "echarts";
 import { greenIcon, orangeIcon } from "./leaflet-color-markers";
-import { KartoChart } from "./ViewClasses";
+import { KartoChart, KartoMapChart } from "./ViewClasses";
 import { collapseHtml, unCollapseHtml, getMainContentColWidth } from "./ViewUtils";
 import { Control } from "./Control";
 import { precise } from "./Utils";
@@ -15,7 +17,6 @@ export const sparqlCoverageEchartsOptionFilename = "sparqlCoverageEchartsOption"
 export const sparql10CoverageEchartsOptionFilename = "sparql10CoverageEchartsOption";
 export const sparql11CoverageEchartsOptionFilename = "sparql11CoverageEchartsOption";
 export const vocabEndpointEchartsOptionFilename = "vocabEndpointEchartsOption";
-export const rawVocabEndpointEchartsOptionFilename = "rawVocabEndpointEchartsOption";
 export const triplesEchartsOptionFilename = "triplesEchartOption";
 export const classesEchartsOptionFilename = "classesEchartOption";
 export const propertiesEchartsOptionFilename = "propertiesEchartOption";
@@ -25,14 +26,23 @@ export const readableLabelsEchartsOptionFilename = "readableLabelsEchartOption";
 export const blankNodesEchartsOptionFilename = "blankNodesEchartOption";
 export const datasetDescriptionEchartsOptionFilename = "datasetDescriptionEchartOption";
 export const totalRuntimeEchartsOptionFilename = "totalRuntimeEchartsOption";
+export const keywordEndpointEchartsOptionFilename = "keywordEndpointEchartsOption";
+export const standardVocabulariesEndpointGraphEchartsOptionFilename = "standardVocabulariesEndpointGraphEchartsOption";
 
 const numberOfVocabulariesLimit = 100;
 
-export let geolocChart = new KartoChart({
-    chartObject: L.map('map').setView([39.36827914916014, 12.117919921875002], 2),
+export let geolocChart = new KartoMapChart({
+    chartObject: L.map('map').setView([39.36827914916014, 12.117919921875002], 2).addLayer(L.tileLayer('https://maptiles.p.rapidapi.com/en/map/v1/{z}/{x}/{y}.png?rapidapi-key=915b5d333bmshb215b63b0519269p1a2e4ejsn5cfd1822e416', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1
+    })),
     fillFunction: function () {
         if (!this.filled) {
-            console.log("Filling geoloc chart...")
+
+            console.info("Filling geoloc chart...")
 
             this.chartObject.invalidateSize();
             $('#map').width(getMainContentColWidth());
@@ -81,6 +91,7 @@ export let geolocChart = new KartoChart({
                     endpointMarker.bindPopup(endpointGeoloc.popupHTML).openPopup();
                 });
                 endpointMarker.addTo(this.chartObject);
+                this.markerArray.push(endpointMarker);
             });
             endpointGeolocTableFill();
             this.redraw();
@@ -94,9 +105,11 @@ export let geolocChart = new KartoChart({
         this.chartObject.setView([39.36827914916014, 12.117919921875002], 2);
     },
     clearFunction: function () {
-        (geolocChart.chartObject as L.Map).eachLayer(layer => {
-            (geolocChart.chartObject as L.Map).removeLayer(layer);
+        this.markerArray.forEach(marker => {
+            marker.remove();
+            this.chartObject.removeLayer(marker);
         });
+        this.markerArray = [];
     },
     hideFunction: function () {
     },
@@ -285,201 +298,201 @@ export let sparqlCoverCharts = new KartoChart({
     }
 });
 
-export let filteredVocabChart = new KartoChart({
+// export let filteredVocabChart = new KartoChart({
+//     chartObject: echarts.init(document.getElementById('vocabs')),
+//     option: {},
+//     sparqlesVocabulariesQuery: '',
+//     fillFunction: function () {
+//         try {
+//             return new Promise<void>((resolve, reject) => {
+//                 if (!this.filled) {
+//                     this.sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
+//                         "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
+//                         "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
+//                         "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
+//                         "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
+//                         "} " +
+//                         " } " +
+//                         "GROUP BY ?endpointUrl ?vocabulary ";
+
+//                     // Create an force graph with the graph linked by co-ocurrence of vocabularies
+
+//                     let endpointSet = new Set();
+//                     let vocabSet = new Set();
+//                     let rawVocabSet = new Set<string>();
+//                     let rawGatherVocab = new Map();
+//                     Control.getInstance().vocabEndpointData().forEach((item, i) => {
+//                         let endpoint = item.endpoint;
+//                         let vocabularies = item.vocabularies;
+//                         if ( vocabularies != undefined && vocabularies.length < numberOfVocabulariesLimit) {
+//                             endpointSet.add(endpoint);
+//                             vocabularies.forEach(vocab => {
+//                                 rawVocabSet.add(vocab);
+//                             })
+//                             if (!rawGatherVocab.has(endpoint)) {
+//                                 rawGatherVocab.set(endpoint, new Set());
+//                             }
+//                             rawGatherVocab.set(endpoint, vocabularies);
+//                         }
+//                     });
+
+//                     let jsonRawVocabNodes = new Set();
+//                     let jsonRawVocabLinks = new Set();
+
+//                     endpointSet.forEach(item => {
+//                         jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
+//                     });
+//                     rawVocabSet.forEach(item => {
+//                         jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
+//                     });
+//                     rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+//                         endpointVocabs.forEach((vocab, i) => {
+//                             jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
+//                         });
+//                     });
+
+//                     let gatherVocab = new Map();
+//                     // Filtering according to ontology repositories
+//                     rawVocabSet.forEach(vocabulariUri => {
+//                         if (Control.getInstance().knownVocabData().includes(vocabulariUri)) {
+//                             vocabSet.add(vocabulariUri);
+//                         }
+//                     });
+//                     rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
+//                         vocabulariUriSet.forEach(vocabulariUri => {
+//                             if (Control.getInstance().knownVocabData().includes(vocabulariUri)) {
+//                                 if (!gatherVocab.has(endpointUri)) {
+//                                     gatherVocab.set(endpointUri, new Set());
+//                                 }
+//                                 gatherVocab.get(endpointUri).add(vocabulariUri);
+//                             }
+//                         });
+//                     });
+
+//                     // Endpoint and vocabularies graph
+//                     let jsonVocabLinks = new Set();
+//                     let jsonVocabNodes = new Set();
+
+//                     endpointSet.forEach(item => {
+//                         jsonVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
+//                     });
+//                     vocabSet.forEach(item => {
+//                         jsonVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
+//                     });
+
+//                     gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+//                         endpointVocabs.forEach((vocab, i) => {
+//                             jsonVocabLinks.add({ source: endpointUrl, target: vocab })
+//                         });
+//                     });
+//                     if (jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
+//                         this.show();
+
+//                         let sumknowVocabMeasure = 0;
+//                         let knowVocabsData: { endpoint: string, measure: number }[] = [];
+//                         gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
+//                             let measure = (endpointVocabs.size / rawGatherVocab.get(endpointUrl).length);
+//                             knowVocabsData.push({ endpoint: endpointUrl, measure: measure })
+
+//                             endpointVocabs.forEach((vocab, i) => {
+//                                 jsonVocabLinks.add({ source: endpointUrl, target: vocab });
+//                             });
+//                         });
+
+
+//                         this.option = getForceGraphOption('Endpoints and vocabularies with filtering*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
+//                         this.chartObject.setOption(this.option, true);
+
+//                         // Measure Table
+//                         function endpointKnowVocabsMeasureFill() {
+//                             let endpointKnownVocabulariestable = $('#endpointKnownVocabsTable');
+//                             endpointKnownVocabulariestable.empty();
+//                             sumknowVocabMeasure = 0;
+
+//                             let gridJSData = knowVocabsData.map((item, i) => {
+//                                 let endpointUrl = item.endpoint;
+//                                 let measure = item.measure;
+//                                 sumknowVocabMeasure += measure;
+//                                 return [endpointUrl, precise(measure * 100, 3) + "%"];
+//                             });
+//                             let gridJSColumns = [
+//                                 { title: "Endpoint", type: "text" },
+//                                 { title: "Measure", type: "number" }
+//                             ];
+//                             let gridJSTable = new gridjs.Grid({
+//                                 columns: gridJSColumns,
+//                                 data: gridJSData,
+//                                 sort: true,
+//                                 search: true,
+//                                 pagination: {
+//                                     limit: 10,
+//                                     summary: true
+//                                 },
+//                             })
+//                             gridJSTable.render(document.getElementById("knowVocabEndpointTable"));
+//                         };
+//                         endpointKnowVocabsMeasureFill();
+
+//                         // computation of the know vocabularies measure
+//                         let knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
+//                         knownVocabulariesMeasureHtml.text(precise((sumknowVocabMeasure / endpointSet.size) * 100, 3) + "%");
+//                     } else {
+//                         this.hide();
+//                     }
+//                     this.chartObject.on('click', 'series', event => {
+//                         if (event.dataType.localeCompare("node") == 0) {
+//                             let uriLink = event.data.name;
+//                             window.open(uriLink, '_blank');
+//                         }
+//                     })
+//                 }
+//                 resolve();
+
+//             }).then(() => { this.filled = true; });
+//         } catch (e) {
+//             console.error(e);
+//             return Promise.reject(e);
+//         }
+//     },
+//     hideFunction: function () {
+//         this.chartObject.setOption({ series: [] }, true);
+//         collapseHtml('vocabs');
+//         collapseHtml('knowVocabEndpointMeasureRow');
+//         collapseHtml('knowVocabEndpointTable');
+//     },
+//     showFunction: function () {
+//         unCollapseHtml('knowVocabEndpointMeasureRow');
+//         unCollapseHtml('knowVocabEndpointTable');
+//         unCollapseHtml('vocabs');
+
+//         this.redraw()
+//     },
+//     redrawFunction: function () {
+//         $('#vocabs').width(getMainContentColWidth());
+//         this.chartObject.setOption(this.option, true);
+//         this.chartObject.resize();
+
+//         let codeQuery1Div = $(document.createElement('code')).text(this.sparqlesVocabulariesQuery);
+//         $('#endpointVocabularyQueryCell').empty()
+//         $('#endpointVocabularyQueryCell').append(codeQuery1Div)
+//     },
+//     clearFunction: function () {
+//         this.chartObject.setOption({ series: [] }, true);
+//         $('#endpointVocabularyQueryCell').empty()
+//     }
+// })
+
+export let endpointVocabsChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('vocabs')),
     option: {},
-    sparqlesVocabulariesQuery: '',
     fillFunction: function () {
         try {
             return new Promise<void>((resolve, reject) => {
                 if (!this.filled) {
-                    this.sparqlesVocabulariesQuery = "SELECT DISTINCT ?endpointUrl ?vocabulary { GRAPH ?g { " +
-                        "{ ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }" +
-                        "UNION { ?base <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } " +
-                        "?metadata <http://ns.inria.fr/kg/index#curated> ?base , ?dataset . " +
-                        "?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary " +
-                        "} " +
-                        " } " +
-                        "GROUP BY ?endpointUrl ?vocabulary ";
+                    this.show();
 
-                    // Create an force graph with the graph linked by co-ocurrence of vocabularies
-
-                    let endpointSet = new Set();
-                    let vocabSet = new Set();
-                    let rawVocabSet = new Set<string>();
-                    let rawGatherVocab = new Map();
-                    Control.getInstance().vocabEndpointData().forEach((item, i) => {
-                        let endpoint = item.endpoint;
-                        let vocabularies = item.vocabularies;
-                        if (vocabularies.length < numberOfVocabulariesLimit) {
-                            endpointSet.add(endpoint);
-                            vocabularies.forEach(vocab => {
-                                rawVocabSet.add(vocab);
-                            })
-                            if (!rawGatherVocab.has(endpoint)) {
-                                rawGatherVocab.set(endpoint, new Set());
-                            }
-                            rawGatherVocab.set(endpoint, vocabularies);
-                        }
-                    });
-
-                    let jsonRawVocabNodes = new Set();
-                    let jsonRawVocabLinks = new Set();
-
-                    endpointSet.forEach(item => {
-                        jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-                    });
-                    rawVocabSet.forEach(item => {
-                        jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
-                    });
-                    rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                        endpointVocabs.forEach((vocab, i) => {
-                            jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
-                        });
-                    });
-
-                    let gatherVocab = new Map();
-                    // Filtering according to ontology repositories
-                    rawVocabSet.forEach(vocabulariUri => {
-                        if (Control.getInstance().knownVocabData().includes(vocabulariUri)) {
-                            vocabSet.add(vocabulariUri);
-                        }
-                    });
-                    rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
-                        vocabulariUriSet.forEach(vocabulariUri => {
-                            if (Control.getInstance().knownVocabData().includes(vocabulariUri)) {
-                                if (!gatherVocab.has(endpointUri)) {
-                                    gatherVocab.set(endpointUri, new Set());
-                                }
-                                gatherVocab.get(endpointUri).add(vocabulariUri);
-                            }
-                        });
-                    });
-
-                    // Endpoint and vocabularies graph
-                    let jsonVocabLinks = new Set();
-                    let jsonVocabNodes = new Set();
-
-                    endpointSet.forEach(item => {
-                        jsonVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-                    });
-                    vocabSet.forEach(item => {
-                        jsonVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
-                    });
-
-                    gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                        endpointVocabs.forEach((vocab, i) => {
-                            jsonVocabLinks.add({ source: endpointUrl, target: vocab })
-                        });
-                    });
-                    if (jsonVocabNodes.size > 0 && jsonVocabLinks.size > 0) {
-                        this.show();
-
-                        let sumknowVocabMeasure = 0;
-                        let knowVocabsData: { endpoint: string, measure: number }[] = [];
-                        gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                            let measure = (endpointVocabs.size / rawGatherVocab.get(endpointUrl).length);
-                            knowVocabsData.push({ endpoint: endpointUrl, measure: measure })
-
-                            endpointVocabs.forEach((vocab, i) => {
-                                jsonVocabLinks.add({ source: endpointUrl, target: vocab });
-                            });
-                        });
-
-
-                        this.option = getForceGraphOption('Endpoints and vocabularies with filtering*', ["Vocabulary", "Endpoint"], [...jsonVocabNodes], [...jsonVocabLinks]);
-                        this.chartObject.setOption(this.option, true);
-
-                        // Measure Table
-                        function endpointKnowVocabsMeasureFill() {
-                            let endpointKnownVocabulariestable = $('#endpointKnownVocabsTable');
-                            endpointKnownVocabulariestable.empty();
-                            sumknowVocabMeasure = 0;
-
-                            let gridJSData = knowVocabsData.map((item, i) => {
-                                let endpointUrl = item.endpoint;
-                                let measure = item.measure;
-                                sumknowVocabMeasure += measure;
-                                return [endpointUrl, precise(measure * 100, 3) + "%"];
-                            });
-                            let gridJSColumns = [
-                                { title: "Endpoint", type: "text" },
-                                { title: "Measure", type: "number" }
-                            ];
-                            let gridJSTable = new gridjs.Grid({
-                                columns: gridJSColumns,
-                                data: gridJSData,
-                                sort: true,
-                                search: true,
-                                pagination: {
-                                    limit: 10,
-                                    summary: true
-                                },
-                            })
-                            gridJSTable.render(document.getElementById("knowVocabEndpointTable"));
-                        };
-                        endpointKnowVocabsMeasureFill();
-
-                        // computation of the know vocabularies measure
-                        let knownVocabulariesMeasureHtml = $('#KnownVocabulariesMeasure');
-                        knownVocabulariesMeasureHtml.text(precise((sumknowVocabMeasure / endpointSet.size) * 100, 3) + "%");
-                    } else {
-                        this.hide();
-                    }
-                    this.chartObject.on('click', 'series', event => {
-                        if (event.dataType.localeCompare("node") == 0) {
-                            let uriLink = event.data.name;
-                            window.open(uriLink, '_blank');
-                        }
-                    })
-                }
-                resolve();
-
-            }).then(() => { this.filled = true; });
-        } catch (e) {
-            console.error(e);
-            return Promise.reject(e);
-        }
-    },
-    hideFunction: function () {
-        this.chartObject.setOption({ series: [] }, true);
-        collapseHtml('vocabs');
-        collapseHtml('knowVocabEndpointMeasureRow');
-        collapseHtml('knowVocabEndpointTable');
-    },
-    showFunction: function () {
-        unCollapseHtml('knowVocabEndpointMeasureRow');
-        unCollapseHtml('knowVocabEndpointTable');
-        unCollapseHtml('vocabs');
-
-        this.redraw()
-    },
-    redrawFunction: function () {
-        $('#vocabs').width(getMainContentColWidth());
-        this.chartObject.setOption(this.option, true);
-        this.chartObject.resize();
-
-        let codeQuery1Div = $(document.createElement('code')).text(this.sparqlesVocabulariesQuery);
-        $('#endpointVocabularyQueryCell').empty()
-        $('#endpointVocabularyQueryCell').append(codeQuery1Div)
-    },
-    clearFunction: function () {
-        this.chartObject.setOption({ series: [] }, true);
-        $('#endpointVocabularyQueryCell').empty()
-    }
-})
-
-export let rawVocabChart = new KartoChart({
-    chartObject: echarts.init(document.getElementById('rawVocabs')),
-    option: {},
-    fillFunction: function () {
-        try {
-            return new Promise<void>((resolve, reject) => {
-                if (!this.filled) {
-                        this.show();
-
-                        this.option = Control.getInstance().retrieveFileFromVault(vocabEndpointEchartsOptionFilename);
-                        this.chartObject.setOption(this.option, true);
+                    this.option = Control.getInstance().retrieveFileFromVault(vocabEndpointEchartsOptionFilename);
+                    this.chartObject.setOption(this.option, true);
                     this.chartObject.on('click', 'series', event => {
                         if (event.dataType.localeCompare("node") == 0) {
                             let uriLink = event.data.name;
@@ -496,14 +509,14 @@ export let rawVocabChart = new KartoChart({
     },
     hideFunction: function () {
         this.chartObject.setOption({ series: [] }, true);
-        collapseHtml('rawVocabs');
+        collapseHtml('vocabs');
     },
     showFunction: function () {
         this.redraw();
-        unCollapseHtml('rawVocabs');
+        unCollapseHtml('vocabs');
     },
     redrawFunction: function () {
-        $('#rawVocabs').width(getMainContentColWidth());
+        $('#vocabs').width(getMainContentColWidth());
         this.chartObject.setOption(this.option, true);
         this.chartObject.resize();
     },
@@ -539,7 +552,7 @@ export let vocabKeywordChart = new KartoChart({
                     Control.getInstance().vocabEndpointData().forEach((item, i) => {
                         let endpoint = item.endpoint;
                         let vocabularies = item.vocabularies;
-                        if (vocabularies.length < numberOfVocabulariesLimit) {
+                        if ( vocabularies != undefined && vocabularies.length < numberOfVocabulariesLimit) {
                             endpointSet.add(endpoint);
                             vocabularies.forEach(vocab => {
                                 rawVocabSet.add(vocab);
@@ -566,53 +579,17 @@ export let vocabKeywordChart = new KartoChart({
                         });
                     });
 
-                    let gatherVocab = new Map();
-                    // Filtering according to ontology repositories
-                    rawVocabSet.forEach(vocabulariUri => {
-                        if (Control.getInstance().knownVocabData().includes(vocabulariUri)) {
-                            vocabSet.add(vocabulariUri);
-                        }
-                    });
-                    rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
-                        vocabulariUriSet.forEach(vocabulariUri => {
-                            if (Control.getInstance().knownVocabData().includes(vocabulariUri)) {
-                                if (!gatherVocab.has(endpointUri)) {
-                                    gatherVocab.set(endpointUri, new Set());
-                                }
-                                gatherVocab.get(endpointUri).add(vocabulariUri);
-                            }
-                        });
-                    });
-
                     let jsonKeywordLinks = new Set();
                     let jsonKeywordNodes = new Set();
 
                     let keywordSet = new Set();
-                    let vocabKeywordMap = new Map();
-                    let endpointKeywordsMap = new Map<string, Set<string>>();
 
-                    Control.getInstance().vocabKeywordData().forEach(item => {
-                        vocabKeywordMap.set(item.vocabulary, item.keywords);
-
-                        item.keywords.forEach(keyword => {
-                            keywordSet.add(keyword);
-                        })
-                    });
-
-                    gatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                        endpointVocabs.forEach((endpointVocab, i) => {
-                            let vocabKeywords = vocabKeywordMap.get(endpointVocab);
-                            if (vocabKeywords != undefined) {
-                                vocabKeywords.forEach((endpointKeyword, i) => {
-                                    jsonKeywordLinks.add({ source: endpointUrl, target: endpointKeyword })
-
-                                    if (endpointKeywordsMap.get(endpointUrl) == undefined) {
-                                        endpointKeywordsMap.set(endpointUrl, new Set());
-                                    }
-                                    endpointKeywordsMap.get(endpointUrl).add(endpointKeyword);
-                                });
-                            }
-                        });
+                    Control.getInstance().endpointKeywordData().forEach(item => {
+                        if(item.keywords !== undefined) {
+                            item.keywords.forEach(keyword => {
+                                keywordSet.add(keyword);
+                            })
+                        }
                     });
 
                     keywordSet.forEach(item => {
@@ -628,17 +605,14 @@ export let vocabKeywordChart = new KartoChart({
                         this.option = getForceGraphOption('Endpoints and keywords', ["Keyword", "Endpoint"], [...jsonKeywordNodes], [...jsonKeywordLinks]);
                         this.chartObject.setOption(this.option, true);
 
-                        let endpointKeywordsData: { endpoint: string, keywords: Set<string> }[] = [];
-                        endpointKeywordsMap.forEach((keywords, endpoint, map) => {
-                            endpointKeywordsData.push({ endpoint: endpoint, keywords: keywords })
-                        });
+                        
 
                         // Endpoint and vocabulary keywords table
                         function endpointKeywordsTableFill() {
                             let endpointKeywordsTable = $('#endpointKeywordsTable');
                             endpointKeywordsTable.empty();
 
-                            let gridJSData: { endpoint: string, keywords: string }[] = endpointKeywordsData.map((item, i) => {
+                            let gridJSData: { endpoint: string, keywords: string }[] = Control.getInstance().endpointKeywordData().map((item, i) => {
                                 return { endpoint: item.endpoint, keywords: [...item.keywords].sort((a, b) => a.localeCompare(b)).join(", ") }
                             });
                             let gridJSColumns = [
@@ -878,40 +852,35 @@ export let descriptionElementChart = new KartoChart({
                 });
 
                 // Table
-                function fillTestTable() {
-                    let tableHTML = $('#datasetDescriptionTable');
-                    tableHTML.empty();
-                    let gridJSData = datasetDescriptionDataTmp.map(item => {
-                        return {
-                            endpoint: item.endpoint,
-                            who: item.who,
-                            license: item.license,
-                            time: item.time,
-                            source: item.source
-                        }
-                    });
-                    let gridJSColumns = [
-                        { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
-                        { id: "who", name: "Who", field: "who", sortable: true },
-                        { id: "license", name: "License", field: "license", sortable: true },
-                        { id: "time", name: "Time", field: "time", sortable: true },
-                        { id: "source", name: "Source", field: "source", sortable: true }
-                    ];
-                    let gridJSTable = new gridjs.Grid({
-                        columns: gridJSColumns,
-                        data: gridJSData,
-                        sort: true,
-                        search: true,
-                        pagination: {
-                            limit: 10,
-                            summary: false
-                        }
-                    });
-                    gridJSTable.render(document.getElementById("datasetDescriptionTable"));
-                }
-
-
-                fillTestTable();
+                let tableHTML = $('#datasetDescriptionTable');
+                tableHTML.empty();
+                let gridJSData = datasetDescriptionDataTmp.map(item => {
+                    return {
+                        endpoint: item.endpoint,
+                        who: item.who,
+                        license: item.license,
+                        time: item.time,
+                        source: item.source
+                    }
+                });
+                let gridJSColumns = [
+                    { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
+                    { id: "who", name: "Who", field: "who", sortable: true },
+                    { id: "license", name: "License", field: "license", sortable: true },
+                    { id: "time", name: "Time", field: "time", sortable: true },
+                    { id: "source", name: "Source", field: "source", sortable: true }
+                ];
+                let gridJSTable = new gridjs.Grid({
+                    columns: gridJSColumns,
+                    data: gridJSData,
+                    sort: true,
+                    search: true,
+                    pagination: {
+                        limit: 10,
+                        summary: false
+                    }
+                });
+                gridJSTable.render(document.getElementById("datasetDescriptionTable"));
 
                 // chart
                 let option = Control.getInstance().retrieveFileFromVault(datasetDescriptionEchartsOptionFilename);
@@ -941,75 +910,26 @@ export let shortUriChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('shortUrisScatter')),
     option: {},
     fillFunction: function () {
+        let shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+            "GRAPH ?g {" +
+            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+            "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+            "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> . " +
+            "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+            "}" +
+            " } GROUP BY ?g ?endpointUrl ?measure ";
+        this.shortUrisMeasureQuery = shortUrisMeasureQuery;
+        $('#shortUrisQueryCell').empty();
+        $('#shortUrisQueryCell').append($(document.createElement('code')).text(shortUrisMeasureQuery))
         try {
-            if (!this.filled) {
-                let shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
-                    "GRAPH ?g {" +
-                    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-                    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
-                    "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
-                    "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> . " +
-                    "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-                    "}" +
-                    " } GROUP BY ?g ?endpointUrl ?measure ";
-                this.shortUrisMeasureQuery = shortUrisMeasureQuery;
-                $('#shortUrisQueryCell').empty();
-                $('#shortUrisQueryCell').append($(document.createElement('code')).text(shortUrisMeasureQuery))
+            let option = Control.getInstance().retrieveFileFromVault(shortUrisEchartsOptionFilename);
+            this.option = option;
 
-
-                this.option = Control.getInstance().retrieveFileFromVault(shortUrisEchartsOptionFilename);
-                this.redraw();
-
-                // Average measure
-                let shortUriMeasureSum = Control.getInstance().shortUriData().map(a => a.measure).reduce((previous, current) => current + previous);
-                let shortUrisAverageMeasure = shortUriMeasureSum / Control.getInstance().shortUriData().length;
-                console.log("shortUrisAverageMeasure", shortUrisAverageMeasure)
-                $('#shortUrisMeasure').text(precise(shortUrisAverageMeasure) + "%");
-
-                // Measure Details
-                function fillShortUriTable() {
-                    let tableHTML = $('#shortUrisTable');
-                    tableHTML.empty();
-
-                    let endpointDataSerieMap = new Map();
-                    Control.getInstance().shortUriData().forEach((shortUriItem, i) => {
-                        if (endpointDataSerieMap.get(shortUriItem.endpoint) == undefined) {
-                            endpointDataSerieMap.set(shortUriItem.endpoint, []);
-                        }
-                        endpointDataSerieMap.get(shortUriItem.endpoint).push([shortUriItem.date, precise(shortUriItem.measure)]);
-                    });
-
-                    let gridJSData: { endpoint: string, measure: number }[] = [];
-                    endpointDataSerieMap.forEach((serieData, endpoint, map) => {
-                        let endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
-                        let measureAverage = endpointMeasureSum / serieData.length;
-                        let measureAverageRounded = Number.parseFloat(precise(measureAverage, 3));
-                        gridJSData.push({ endpoint: endpoint, measure: measureAverageRounded });
-                    });
-                    let gridJSColumns = [
-                        { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
-                        { id: "measure", name: "Measure", field: "measure", sortable: true, formatter: (cell, row) => {
-                                return cell + "%";
-                            }
-                         }
-                    ];
-                    let gridJSTable = new gridjs.Grid({
-                        columns: gridJSColumns,
-                        data: gridJSData,
-                        sort: true,
-                        search: true,
-                        pagination: {
-                            limit: 10,
-                            summary: false
-                        }
-                    });
-                    gridJSTable.render(document.getElementById("shortUrisTable"));
-                }
-                fillShortUriTable();
-            } else {
-                this.hide();
-            }
             this.filled = true;
+
+            this.redraw();
+            return Promise.resolve();
         } catch (e) {
             console.error(e);
             return Promise.reject(e);
@@ -1045,79 +965,18 @@ export let rdfDataStructureChart = new KartoChart({
     option: {},
     fillFunction: function () {
         try {
-            return new Promise<void>((resolve, reject) => {
-                if (!this.filled) {
-                    this.query = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
-                        "GRAPH ?g {" +
-                        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-                        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
-                        "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
-                        "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . " +
-                        "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-                        "}" +
-                        " } GROUP BY ?g ?endpointUrl ?measure ";
-                    $('#rdfDataStructuresQueryCell').empty();
-                    $('#rdfDataStructuresQueryCell').append($(document.createElement('code')).text(this.query));
+            let option = Control.getInstance().retrieveFileFromVault(rdfDataStructuresEchartsOptionFilename);
+            this.option = option;
 
-                    let rdfDataStructureDataTmp = Control.getInstance().rdfDataStructureData();
-                    let endpointDataSerieMap = new Map();
-                    rdfDataStructureDataTmp.forEach((rdfDataStructureItem, i) => {
-                        if (endpointDataSerieMap.get(rdfDataStructureItem.endpoint) == undefined) {
-                            endpointDataSerieMap.set(rdfDataStructureItem.endpoint, []);
-                        }
-                        endpointDataSerieMap.get(rdfDataStructureItem.endpoint).push([rdfDataStructureItem.date, precise(rdfDataStructureItem.measure)]);
-                    });
+            this.filled = true;
 
-                    if (endpointDataSerieMap.size > 0) {
-                        this.show()
-
-                        // Chart
-                        this.option = Control.getInstance().retrieveFileFromVault(rdfDataStructuresEchartsOptionFilename);
-                        this.redraw();
-
-                        // Average measure
-                        let rdfDataStructureMeasureSum = rdfDataStructureDataTmp.map(a => a.measure).reduce((previous, current) => current + previous);
-                        let rdfDataStructuresAverageMeasure = rdfDataStructureMeasureSum / rdfDataStructureDataTmp.length;
-                        $('#rdfDataStructuresMeasure').text(precise(rdfDataStructuresAverageMeasure, 3) + "%");
-
-                        // Measire Details
-                        let tableHTML = $('#rdfDataStructuresTable');
-                        tableHTML.empty();
-
-                        let gridJSData: { endpoint: string, measure: number }[] = [];
-                        endpointDataSerieMap.forEach((serieData, endpoint, map) => {
-                            let endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
-                            let measureAverage = endpointMeasureSum / serieData.length;
-                            let measureAverageRounded = Number.parseFloat(precise(measureAverage, 3));
-                            gridJSData.push({ endpoint: endpoint, measure: measureAverageRounded });
-                        });
-                        let gridJSColumns = [
-                            { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
-                            { id: "measure", name: "Measure", field: "measure", sortable: true, formatter: (cell, row) => {
-                                    return cell + "%";
-                                }
-                             }
-                        ];
-                        let gridJSTable = new gridjs.Grid({
-                            columns: gridJSColumns,
-                            data: gridJSData,
-                            sort: true,
-                            search: true,
-                            pagination: {
-                                limit: 10,
-                                summary: false
-                            }
-                        });
-                        gridJSTable.render(document.getElementById("rdfDataStructuresTable"));
-                    } else {
-                        this.hide();
-                    }
-                }
-                resolve();
-            }).then(() => { this.filled = true; });
+            this.redraw();
+            return Promise.resolve();
         } catch (e) {
             console.error(e);
             return Promise.reject(e);
+        } finally {
+            return Promise.resolve();
         }
     },
     hideFunction: function () {
@@ -1143,82 +1002,18 @@ export let readableLabelsChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('readableLabelsScatter')), option: {},
     fillFunction: function () {
         try {
-            return new Promise<void>((resolve, reject) => {
-                if (!this.filled) {
-                    this.query = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
-                        "GRAPH ?g {" +
-                        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-                        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
-                        "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
-                        "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . " +
-                        "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-                        "} " +
-                        "} GROUP BY ?g ?endpointUrl ?measure ";
-                    $('#readableLabelsQueryCell').empty();
-                    $('#readableLabelsQueryCell').append($(document.createElement('code')).text(this.query))
+            let option = Control.getInstance().retrieveFileFromVault(readableLabelsEchartsOptionFilename);
+            this.option = option;
 
-                    let readableLabelDataTmp = Control.getInstance().readableLabelData()
+            this.filled = true;
 
-                    let graphSet = new Set(readableLabelDataTmp.map(a => a.graph))
-
-                    let endpointDataSerieMap = new Map();
-                    readableLabelDataTmp.forEach((readableLabelItem, i) => {
-                        if (endpointDataSerieMap.get(readableLabelItem.endpoint) == undefined) {
-                            endpointDataSerieMap.set(readableLabelItem.endpoint, []);
-                        }
-                        endpointDataSerieMap.get(readableLabelItem.endpoint).push([readableLabelItem.date, precise(readableLabelItem.measure)]);
-                    });
-
-                    if (endpointDataSerieMap.size > 0) {
-                        this.show();
-
-                        // Chart
-                        this.option = Control.getInstance().retrieveFileFromVault(readableLabelsEchartsOptionFilename);
-                        this.redraw();
-
-                        // Average measure
-                        let readableLabelMeasureSum = readableLabelDataTmp.map(a => a.measure).reduce((previous, current) => current + previous);
-                        let readableLabelsAverageMeasure = readableLabelMeasureSum / readableLabelDataTmp.length;
-                        $('#readableLabelsMeasure').text(precise(readableLabelsAverageMeasure, 3) + "%");
-
-                        // Measire Details
-                        let tableHTML = $('#readableLabelsTable');
-                        tableHTML.empty();
-
-                        let gridJSData: { endpoint: string, measure: number }[] = [];
-                        endpointDataSerieMap.forEach((serieData, endpoint, map) => {
-                            let endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
-                            let measureAverage = endpointMeasureSum / serieData.length;
-                            let measureAverageRounded = Number.parseFloat(precise(measureAverage, 3));
-                            gridJSData.push({ endpoint: endpoint, measure: measureAverageRounded });
-                        });
-                        let gridJSColumns = [
-                            { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
-                            { id: "measure", name: "Measure", field: "measure", sortable: true, formatter: (cell, row) => {
-                                    return cell + "%";
-                                }
-                             }
-                        ];
-                        let gridJSTable = new gridjs.Grid({
-                            columns: gridJSColumns,
-                            data: gridJSData,
-                            sort: true,
-                            search: true,
-                            pagination: {
-                                limit: 10,
-                                summary: false
-                            }
-                        });
-                        gridJSTable.render(document.getElementById('readableLabelsTable'));
-                    } else {
-                        this.hide();
-                    }
-                }
-                resolve();
-            }).then(() => { this.filled = true; });
+            this.redraw();
+            return Promise.resolve();
         } catch (e) {
             console.error(e);
             return Promise.reject(e);
+        } finally {
+            return Promise.resolve();
         }
     }, hideFunction: function () {
         this.chartObject.setOption({ series: [] }, true);
@@ -1244,82 +1039,18 @@ export let blankNodesChart = new KartoChart({
     option: {},
     fillFunction: function () {
         try {
-            return new Promise<void>((resolve, reject) => {
-                if (!this.filled) {
-                    this.query = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
-                        "GRAPH ?g {" +
-                        "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-                        "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
-                        "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
-                        "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . " +
-                        "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-                        "}" +
-                        " } " +
-                        "GROUP BY ?g ?endpointUrl ?measure ";
-                    $('#blankNodesQueryCell').empty();
-                    $('#blankNodesQueryCell').append($(document.createElement('code')).text(this.query))
+            let option = Control.getInstance().retrieveFileFromVault(blankNodesEchartsOptionFilename);
+            this.option = option;
 
-                    let blankNodeDataTmp = Control.getInstance().blankNodesData()
+            this.filled = true;
 
-                    let endpointDataSerieMap = new Map();
-                    blankNodeDataTmp.forEach((blankNodeItem, i) => {
-                        if (endpointDataSerieMap.get(blankNodeItem.endpoint) == undefined) {
-                            endpointDataSerieMap.set(blankNodeItem.endpoint, []);
-                        }
-                        endpointDataSerieMap.get(blankNodeItem.endpoint).push([blankNodeItem.date, precise(blankNodeItem.measure, 3)]);
-                    });
-
-                    if (endpointDataSerieMap.size > 0) {
-                        this.show();
-
-                        // Chart
-                        this.option = Control.getInstance().retrieveFileFromVault(blankNodesEchartsOptionFilename);
-                        this.redraw();
-
-                        // Average measure
-                        let blankNodeMeasureSum = blankNodeDataTmp.map(a => a.measure).reduce((previous, current) => current + previous);
-                        let blankNodesAverageMeasure = blankNodeMeasureSum / blankNodeDataTmp.length;
-                        $('#blankNodesMeasure').text(precise(blankNodesAverageMeasure, 3) + "%");
-
-                        // Measire Details
-                        let tableHTMl = $('#blankNodesTable');
-                        tableHTMl.empty();
-
-                        let gridJSData: { endpoint: string, measure: number }[] = [];
-                        endpointDataSerieMap.forEach((serieData, endpoint, map) => {
-                            let endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
-                            let measureAverage = endpointMeasureSum / serieData.length;
-                            let measureAverageRounded = Number.parseFloat(precise(measureAverage, 3));
-                            gridJSData.push({ endpoint: endpoint, measure: measureAverageRounded });
-                        });
-                        let gridJSColumns = [
-                            { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
-                            { id: "measure", name: "Measure", field: "measure", sortable: true, formatter: (cell, row) => {
-                                    return cell + "%";
-                                }
-                             }
-                        ];
-                        let gridJSTable = new gridjs.Grid({
-                            columns: gridJSColumns,
-                            data: gridJSData,
-                            sort: true,
-                            search: true,
-                            pagination: {
-                                limit: 10,
-                                summary: false
-                            }
-                        });
-                        gridJSTable.render(document.getElementById('blankNodesTable'));
-                    } else {
-                        this.hide();
-                    }
-                }
-                resolve();
-            }).then(() => { this.filled = true; });
-
+            this.redraw();
+            return Promise.resolve();
         } catch (e) {
             console.error(e);
             return Promise.reject(e);
+        } finally {
+            return Promise.resolve();
         }
     },
     hideFunction: function () {
@@ -1346,69 +1077,18 @@ export let standardVocabCharts = new KartoChart({
     option: {},
     fillFunction: function () {
         try {
-            return new Promise<void>((resolve, reject) => {
-                if (!this.filled) {
-                    let endpointSet = new Set();
-                    let vocabStandardSet = new Set();
-                    let vocabStandardNameMap = new Map([["http://www.w3.org/1999/02/22-rdf-syntax-ns#", "RDF"], ["http://www.w3.org/2000/01/rdf-schema#", "RDFS"], ["http://www.w3.org/ns/shacl#", "SHACL"], ["http://www.w3.org/2002/07/owl#", "OWL"], ["http://www.w3.org/2004/02/skos/core#", "SKOS"], ["http://spinrdf.org/spin#", "SPIN"], ["http://www.w3.org/2003/11/swrl#", "SWRL"]]);
-                    vocabStandardNameMap.forEach((value, key, map) => {
-                        vocabStandardSet.add(key);
-                    });
+            let option = Control.getInstance().retrieveFileFromVault(standardVocabulariesEndpointGraphEchartsOptionFilename);
+            this.option = option;
 
-                    let gatherStandardVocab = new Map();
-                    let standardVocabSet = new Set();
+            this.filled = true;
 
-                    Control.getInstance().vocabEndpointData().forEach((item, i) => {
-                        let endpoint = item.endpoint;
-                        let vocabularies = item.vocabularies;
-                        endpointSet.add(endpoint);
-                        let filteredVocabularies = new Set(vocabularies.filter(vocab => vocabStandardSet.has(vocab)));
-                        if (filteredVocabularies.size > 0) {
-                            filteredVocabularies.forEach(item => { standardVocabSet.add(item) })
-                            if (!gatherStandardVocab.has(endpoint)) {
-                                gatherStandardVocab.set(endpoint, new Set());
-                            }
-                            gatherStandardVocab.set(endpoint, filteredVocabularies);
-                        }
-                    });
-
-                    let jsonStandardVocabNodes = new Set();
-                    let jsonStandardVocabLinks = new Set();
-
-                    endpointSet.forEach(item => {
-                        jsonStandardVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-                    });
-                    standardVocabSet.forEach(item => {
-                        jsonStandardVocabNodes.add({ name: item, category: vocabStandardNameMap.get(item), symbolSize: 5 })
-                    });
-                    gatherStandardVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                        endpointVocabs.forEach((vocab, i) => {
-                            jsonStandardVocabLinks.add({ target: endpointUrl, source: vocab })
-                        });
-                    });
-
-                    if (jsonStandardVocabNodes.size > 0 && jsonStandardVocabLinks.size > 0) {
-                        this.show();
-
-                        let categoryArray = [...standardVocabSet].map(vocab => vocabStandardNameMap.get(vocab));
-                        categoryArray.push("Endpoint")
-                        this.option = getCircularGraphOption('Endpoints and meta-vocabularies', categoryArray, [...jsonStandardVocabNodes], [...jsonStandardVocabLinks]);
-                    } else {
-                        this.hide();
-                    }
-                    this.chartObject.on('click', 'series', event => {
-                        if (event.dataType.localeCompare("node") == 0) {
-                            let uriLink = event.data.name;
-                            window.open(uriLink, '_blank').focus();
-                        }
-                    })
-                }
-                resolve();
-            }).then(() => { this.filled = true; });
-
+            this.redraw();
+            return Promise.resolve();
         } catch (e) {
             console.error(e);
             return Promise.reject(e);
+        } finally {
+            return Promise.resolve();
         }
     },
     hideFunction: function () {

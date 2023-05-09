@@ -13,7 +13,7 @@ import * as Global from "./GlobalUtils";
 import * as Logger from "./LogUtils";
 import * as Sparql from "./SparqlUtils";
 import * as RDFUtils from "./RDFUtils";
-import { ClassCountDataObject, EndpointIpGeolocObject, EndpointItem, EndpointTestObject, JSONValue, RunSetObject, SPARQLJSONResult, TimezoneMapObject, TripleCountDataObject } from './DataTypes';
+import { ClassCountDataObject, EndpointIpGeolocObject, EndpointItem, EndpointTestObject, JSONValue, KeywordsEndpointDataObject, RunSetObject, SPARQLJSONResult, TimezoneMapObject, TripleCountDataObject, VocabEndpointDataObject } from './DataTypes';
 
 const dataFilePrefix = "./data/";
 export const dataCachedFilePrefix = "./data/cache/";
@@ -25,8 +25,8 @@ export const geolocFilename = "geolocData";
 export const sparqlCoverageFilename = "sparqlCoverageData";
 export const sparqlFeaturesFilename = "sparqlFeaturesData";
 export const vocabEndpointFilename = "vocabEndpointData";
-export const knownVocabsFilename = "knownVocabsData";
-export const vocabKeywordsFilename = "vocabKeywordsData";
+// export const knownVocabsFilename = "knownVocabsData";
+export const endpointKeywordsFilename = "endpointKeywordsData";
 export const tripleCountFilename = "tripleCountData";
 export const classCountFilename = "classCountData";
 export const propertyCountFilename = "propertyCountData";
@@ -42,7 +42,54 @@ export const rdfDataStructureDataFilename = "rdfDataStructureData";
 export const readableLabelDataFilename = "readableLabelData";
 export const blankNodesDataFilename = "blankNodesData";
 
-export const LOVFilename = "knownVocabulariesLOV"
+export const LOVFilename = dataFilePrefix + "knownVocabulariesLOV.json"
+let knownVocabularies = new Set();
+
+
+// https://obofoundry.org/ // No ontology URL available in ontology description
+// http://prefix.cc/context // done
+// http://data.bioontology.org/resource_index/resources?apikey=b86b12d8-dc46-4528-82e3-13fbdabf5191 // No ontology URL available in ontology description
+// https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list // done
+
+// Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
+export function retrieveKnownVocabularies() {
+    return Global.fetchJSONPromise("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list")
+        .then(responseLOV => {
+            if (responseLOV !== undefined) {
+                (responseLOV as JSONValue[]).forEach((item) => {
+                    knownVocabularies.add(item["uri"])
+                });
+                try {
+                    let content = JSON.stringify(responseLOV);
+                    return Global.writeFile(LOVFilename, content).then(() => {
+                        return Promise.resolve(knownVocabularies);
+                    });
+                } catch (err) {
+                    Logger.error(err)
+                    return Promise.reject(err);
+                }
+            } else {
+                return Promise.reject("LOV response is undefined");
+            }
+        })
+        .then(knownVocabularies => Global.fetchJSONPromise("http://prefix.cc/context")
+            .then(responsePrefixCC => {
+                for (let prefix of Object.keys(responsePrefixCC['@context'])) {
+                    knownVocabularies.add(responsePrefixCC['@context'][prefix])
+                };
+                return Promise.resolve(knownVocabularies);
+            }))
+        .then(knownVocabularies => Global.fetchJSONPromise("https://www.ebi.ac.uk/ols/api/ontologies?page=0&size=1000")
+            .then(responseOLS => {
+                responseOLS["_embedded"].ontologies.forEach(ontologyItem => {
+                    if (ontologyItem.config.baseUris.length > 0) {
+                        let ontology = ontologyItem.config.baseUris[0]
+                        knownVocabularies.add(ontology);
+                    }
+                });
+                return Promise.resolve(knownVocabularies);
+            }))
+}
 
 function generateGraphValueFilterClause(graphList: string[]) {
     let result = "FILTER( ";
@@ -328,181 +375,261 @@ export function SPARQLCoverageFill(runset: RunSetObject) {
         })
 }
 
+let endpointVocabMap: Map<string, string[]> = new Map();
+let vocabKeywords: Map<string, string[]> = new Map();
+let endpointKeywords: Map<string, string[]> = new Map();
+export function allVocabFill(): Promise<void> {
+    Logger.info("allVocabFill START")
+
+    let sparqlQuery = `SELECT DISTINCT ?endpointUrl ?vocabulary {
+        GRAPH ?g {
+            { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+            UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . }
+            UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?curated, ?dataset .
+            ?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary .
+        }
+    }`;
+
+    return Sparql.paginatedSparqlQueryToIndeGxPromise(sparqlQuery).then(json => {
+        let vocabSet = new Set();
+        (json as JSONValue[]).forEach(bindingItem => {
+            const endpointUrl = bindingItem["endpointUrl"].value;
+            const vocabulary = bindingItem["vocabulary"].value;
+            if (!endpointVocabMap.has(endpointUrl)) {
+                endpointVocabMap.set(endpointUrl, []);
+            }
+            if(knownVocabularies.has(vocabulary)){
+                endpointVocabMap.get(endpointUrl).push(vocabulary);
+            }
+        });
+        return vocabSet;
+    }).then(vocabSet => {
+
+        let vocabArray = [...vocabSet];
+        let queryArray = vocabArray.map((item, i) => {
+            return Global.fetchJSONPromise(`https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/info?vocab=${item}`);
+        })
+
+        return Promise.allSettled(queryArray)
+            .then(jsonKeywordsArraySettled => {
+                let jsonKeywordsArray = Global.extractSettledPromiseValues(jsonKeywordsArraySettled);
+                jsonKeywordsArray.forEach(jsonKeywords => {
+                    if (jsonKeywords !== undefined) {
+                        let vocab = jsonKeywords.uri;
+                        let keywordList = jsonKeywords.tags;
+
+                        if (keywordList !== undefined) {
+                            keywordList.forEach(keyword => {
+                                if (!vocabKeywords.has(vocab)) {
+                                    vocabKeywords.set(vocab, []);
+                                }
+                                vocabKeywords.get(vocab).push(keyword);
+                            })
+                        }
+                    }
+                })
+                return Promise.resolve();
+            }).then(() => {
+                endpointVocabMap.forEach((vocabArray, endpointUrl, map) => {
+                    let keywordSet: Set<string> = new Set();
+                    vocabArray.forEach(vocab => {
+                        if (vocabKeywords.has(vocab)) {
+                            vocabKeywords.get(vocab).forEach(keyword => {
+                                keywordSet.add(keyword);
+                            })
+                        }
+                    })
+                    endpointKeywords.set(endpointUrl, [...keywordSet]);
+                })
+                return Promise.resolve();
+            })
+    }).catch(error => {
+        Logger.error(error)
+    })
+}
+
 export function vocabFill(runset: RunSetObject): Promise<void> {
     Logger.info("vocabFill", runset.id, " START")
-    // Create an force graph with the graph linked by co-ocurrence of vocabularies
-    let sparqlesVocabulariesQuery = `SELECT DISTINCT ?endpointUrl ?vocabulary { 
+    let runsetsEndpointQuery = `SELECT DISTINCT ?endpointUrl { 
         GRAPH ?g { 
-            { ?dataset <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
-            UNION { ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
-            UNION { ?dataset <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
-            ?metadata <http://ns.inria.fr/kg/index#curated> ?dataset . 
-            ?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary 
+            { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+            UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
+            UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
+            ?metadata <http://ns.inria.fr/kg/index#curated> ?curated .
         } 
         ${generateGraphValueFilterClause(runset.graphs)}
     } 
     GROUP BY ?endpointUrl ?vocabulary `;
-    let rawGatherVocab = new Map();
-    let gatherVocabData = [];
-    let rawVocabSet = new Set();
-    let vocabSet = new Set();
-    let keywordSet = new Set();
-    let vocabKeywordData = [];
 
-    return Sparql.paginatedSparqlQueryToIndeGxPromise(sparqlesVocabulariesQuery)
-        .then(json => {
-
-            let endpointSet = new Set();
-            (json as JSONValue[]).forEach((bindingItem, i) => {
-                let vocabulariUri = bindingItem["vocabulary"].value;
-                let endpointUri = bindingItem["endpointUrl"].value;
-                endpointSet.add(endpointUri);
-                rawVocabSet.add(vocabulariUri);
-                if (!rawGatherVocab.has(endpointUri)) {
-                    rawGatherVocab.set(endpointUri, new Set());
-                }
-                rawGatherVocab.get(endpointUri).add(vocabulariUri);
+    return Sparql.paginatedSparqlQueryToIndeGxPromise(runsetsEndpointQuery).then(json => {
+        if(json !== undefined) {
+            let endpointSet: Set<string> = new Set();
+            (json as JSONValue[]).forEach(bindingItem => {
+                const endpointUrl = bindingItem["endpointUrl"].value;
+                endpointSet.add(endpointUrl);
             });
-            return Promise.resolve();
-
-            // https://obofoundry.org/ // No ontology URL available in ontology description
-            // http://prefix.cc/context // done
-            // http://data.bioontology.org/resource_index/resources?apikey=b86b12d8-dc46-4528-82e3-13fbdabf5191 // No ontology URL available in ontology description
-            // https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list // done
-
-            // Retrieval of the list of LOV vocabularies to filter the ones retrieved in the index
+            return endpointSet;
+        } else {
+            return Promise.resolve(new Set<string>());
+        }
+    }).then(endpointSet => {
+        let runsetEndpointVocabulary: Map<string, string[]> = new Map();
+        endpointSet.forEach(endpointUrl => {
+            runsetEndpointVocabulary.set(endpointUrl, endpointVocabMap.get(endpointUrl));
         })
-        .then(() => Global.fetchJSONPromise("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list")
-            .then(responseLOV => {
-                let knownVocabularies = new Set();
-                if (responseLOV !== undefined) {
-                    (responseLOV as JSONValue[]).forEach((item) => {
-                        knownVocabularies.add(item["uri"])
-                    });
-                    try {
-                        let content = JSON.stringify(responseLOV);
-                        return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, LOVFilename), content).then(() => {
-                            return Promise.resolve(knownVocabularies);
-                        });
-                    } catch (err) {
-                        Logger.error(err)
-                        return Promise.reject(err);
-                    }
-                } else {
-                    return Promise.reject("LOV response is undefined");
-                }
-            }))
-        .then(knownVocabularies => Global.fetchJSONPromise("http://prefix.cc/context")
-            .then(responsePrefixCC => {
-                for (let prefix of Object.keys(responsePrefixCC['@context'])) {
-                    knownVocabularies.add(responsePrefixCC['@context'][prefix])
-                };
-                return Promise.resolve(knownVocabularies);
-            }))
-        .then(knownVocabularies => Global.fetchJSONPromise("https://www.ebi.ac.uk/ols/api/ontologies?page=0&size=1000")
-            .then(responseOLS => {
-                responseOLS["_embedded"].ontologies.forEach(ontologyItem => {
-                    if (ontologyItem.config.baseUris.length > 0) {
-                        let ontology = ontologyItem.config.baseUris[0]
-                        knownVocabularies.add(ontology);
-                    }
-                });
-                return Promise.resolve(knownVocabularies);
-            }))
-        .then(knownVocabularies => {
-            try {
-                let content = JSON.stringify([...knownVocabularies]);
-                return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, knownVocabsFilename), content).then(() => {
-                    return Promise.resolve(knownVocabularies);
-                });
-            } catch (err) {
-                Logger.error(err)
-                return Promise.reject(err);
-            }
-        })
-        .then(knownVocabularies => {
-            // Filtering according to ontology repositories
-            rawVocabSet.forEach(vocabulariUri => {
-                if (knownVocabularies.has(vocabulariUri)) {
-                    vocabSet.add(vocabulariUri);
-                }
-            });
-            rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
-                gatherVocabData.push({ endpoint: endpointUri, vocabularies: [...vocabulariUriSet] })
-            });
 
-            let queryArray = [];
-            let vocabArray = [...vocabSet];
-            for (let i = 20; i < vocabArray.length + 20; i += 20) {
-                let vocabSetSlice = vocabArray.slice(i - 20, i); // Slice the array into arrays of 20 elements
-                // Endpoint and vocabulary keywords graph
-                let vocabularyQueryValues = "";
-                vocabSetSlice.forEach((item, i) => {
-                    vocabularyQueryValues += `<${item}> `;
-                });
+        let runsetEndpointKeywords: Map<string, string[]> = new Map();
+        endpointSet.forEach(endpointUrl => {
+            runsetEndpointKeywords.set(endpointUrl, endpointKeywords.get(endpointUrl));
+        });
 
-                let keywordLOVQuery = `SELECT DISTINCT ?vocabulary ?keyword { 
-                    GRAPH <https://lov.linkeddata.es/dataset/lov> { 
-                        ?vocabulary a <http://purl.org/vocommons/voaf#Vocabulary> .
-                        ?vocabulary <http://www.w3.org/ns/dcat#keyword> ?keyword .
-                    }
-                    VALUES ?vocabulary { ${vocabularyQueryValues} } 
-                }`
-                queryArray.push(Global.fetchJSONPromise("https://lov.linkeddata.es/dataset/lov/sparql?query=" + encodeURIComponent(keywordLOVQuery) + "&format=json"));
-            }
-
-            return Promise.allSettled(queryArray)
-                .then(jsonKeywordsArraySettled => {
-                    let jsonKeywordsArray = Global.extractSettledPromiseValues(jsonKeywordsArraySettled);
-                    let vocabKeywordMap = new Map();
-                    jsonKeywordsArray.forEach(jsonKeywords => {
-                        if (jsonKeywords !== undefined) {
-                            jsonKeywords.results.bindings.forEach((keywordItem, i) => {
-                                let keyword = keywordItem.keyword.value;
-                                let vocab = keywordItem.vocabulary.value;
-                                if (vocabKeywordMap.get(vocab) == undefined) {
-                                    vocabKeywordMap.set(vocab, []);
-                                }
-                                vocabKeywordMap.get(vocab).push(keyword);
-
-                                keywordSet.add(keyword);
-                            });
-                        }
-                    })
-                    vocabKeywordMap.forEach((keywordList, vocab) => {
-                        vocabKeywordData.push({ vocabulary: vocab, keywords: keywordList })
-                    })
-                    return Promise.resolve();
-                })
-        })
-        .finally(() => {
-            if (gatherVocabData.length > 0) {
                 try {
-                    let content = JSON.stringify(gatherVocabData);
+                    let endpointVocabData: VocabEndpointDataObject[] = [];
+                    runsetEndpointVocabulary.forEach((vocabArray, endpointUrl, map) => {
+                        endpointVocabData.push({ endpoint: endpointUrl, vocabularies: vocabArray });
+                    })
+                    let content = JSON.stringify(endpointVocabData);
                     return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, vocabEndpointFilename), content)
+                        .then(() => {
+                            let endpointKeywordsData: KeywordsEndpointDataObject[] = [];
+                            runsetEndpointKeywords.forEach((keywordArray, endpointUrl, map) => {
+                                endpointKeywordsData.push({ endpoint: endpointUrl, keywords: keywordArray });
+                            })
+                            let content = JSON.stringify(endpointKeywordsData);
+                            return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, endpointKeywordsFilename), content)
+                        })
+                        .then(() => {
+                            Logger.info("vocabFill", runset.id, " END")
+                            return Promise.resolve();
+                        })
                 } catch (err) {
                     Logger.error(err)
                 }
-            }
-        })
-        .finally(() => {
-            if (vocabKeywordData.length > 0) {
-                try {
-                    let content = JSON.stringify(vocabKeywordData);
-                    return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, vocabKeywordsFilename), content).then(() => {
-                        Logger.info("vocabFill", runset.id, " END");
-                        return Promise.resolve();
-                    });
-                } catch (err) {
-                    Logger.error(err)
-                }
-            }
-        })
-        .catch(error => {
-            Logger.error(error);
-            return Promise.reject(error);
-        })
+
+    })
+
 }
+
+// export function vocabFillOld(runset: RunSetObject): Promise<void> {
+//     Logger.info("vocabFill", runset.id, " START")
+//     // Create an force graph with the graph linked by co-ocurrence of vocabularies
+//     let sparqlesVocabulariesQuery = `SELECT DISTINCT ?endpointUrl ?vocabulary { 
+//         GRAPH ?g { 
+//             { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . }
+//             UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpointUrl . } 
+//             UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpointUrl . }
+//             ?metadata <http://ns.inria.fr/kg/index#curated> ?curated, dataset . 
+//             ?dataset <http://rdfs.org/ns/void#vocabulary> ?vocabulary 
+//         } 
+//         ${generateGraphValueFilterClause(runset.graphs)}
+//     } 
+//     GROUP BY ?endpointUrl ?vocabulary `;
+//     let rawGatherVocab = new Map();
+//     let gatherVocabData = [];
+//     let rawVocabSet = new Set();
+//     let vocabSet = new Set();
+//     let keywordSet = new Set();
+//     let vocabKeywordData = [];
+
+//     return Sparql.paginatedSparqlQueryToIndeGxPromise(sparqlesVocabulariesQuery)
+//         .then(json => {
+
+//             let endpointSet = new Set();
+//             (json as JSONValue[]).forEach((bindingItem, i) => {
+//                 let vocabulariUri = bindingItem["vocabulary"].value;
+//                 let endpointUri = bindingItem["endpointUrl"].value;
+//                 endpointSet.add(endpointUri);
+//                 rawVocabSet.add(vocabulariUri);
+//                 if (!rawGatherVocab.has(endpointUri)) {
+//                     rawGatherVocab.set(endpointUri, new Set());
+//                 }
+//                 rawGatherVocab.get(endpointUri).add(vocabulariUri);
+//             });
+//             return Promise.resolve();
+//         })
+//         .then(() => {
+//             try {
+//                 let content = JSON.stringify([...knownVocabularies]);
+//                 return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, knownVocabsFilename), content).then(() => {
+//                     return Promise.resolve(knownVocabularies);
+//                 });
+//             } catch (err) {
+//                 Logger.error(err)
+//                 return Promise.reject(err);
+//             }
+//         })
+//         .then(() => {
+//             // Filtering according to ontology repositories
+//             rawVocabSet.forEach(vocabulariUri => {
+//                 if (knownVocabularies.has(vocabulariUri)) {
+//                     vocabSet.add(vocabulariUri);
+//                 }
+//             });
+//             rawGatherVocab.forEach((vocabulariUriSet, endpointUri, map) => {
+//                 gatherVocabData.push({ endpoint: endpointUri, vocabularies: [...vocabulariUriSet] })
+//             });
+
+//             let vocabArray = [...vocabSet];
+//             let queryArray = vocabArray.map((item, i) => {
+//                 return Global.fetchJSONPromise(`https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/info?vocab=${item}`);
+//             })
+
+//             return Promise.allSettled(queryArray)
+//                 .then(jsonKeywordsArraySettled => {
+//                     let jsonKeywordsArray = Global.extractSettledPromiseValues(jsonKeywordsArraySettled);
+//                     let vocabKeywordMap = new Map();
+//                     jsonKeywordsArray.forEach(jsonKeywords => {
+//                         if (jsonKeywords !== undefined) {
+//                             let vocab = jsonKeywords.uri;
+//                             let keywordList = jsonKeywords.tags;
+
+//                             if(keywordList !== undefined) {
+//                                 if (vocabKeywordMap.get(vocab) == undefined) {
+//                                     vocabKeywordMap.set(vocab, []);
+//                                 }
+//                                 vocabKeywordMap.get(vocab).push(...keywordList);
+//                                 keywordList.forEach(keyword => {
+//                                     keywordSet.add(keyword);
+//                                 })
+
+//                             }
+//                         }
+//                     })
+//                     vocabKeywordMap.forEach((keywordList, vocab) => {
+//                         vocabKeywordData.push({ vocabulary: vocab, keywords: keywordList })
+//                     })
+//                     return Promise.resolve();
+//                 })
+//         })
+//         .finally(() => {
+//             if (gatherVocabData.length > 0) {
+//                 try {
+//                     let content = JSON.stringify(gatherVocabData);
+//                     return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, vocabEndpointFilename), content)
+//                 } catch (err) {
+//                     Logger.error(err)
+//                 }
+//             }
+//         })
+//         .finally(() => {
+//             if (vocabKeywordData.length > 0) {
+//                 try {
+//                     let content = JSON.stringify(vocabKeywordData);
+//                     return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, vocabKeywordsFilename), content).then(() => {
+//                         Logger.info("vocabFill", runset.id, " END");
+//                         return Promise.resolve();
+//                     });
+//                 } catch (err) {
+//                     Logger.error(err)
+//                 }
+//             }
+//         })
+//         .catch(error => {
+//             Logger.error(error);
+//             return Promise.reject(error);
+//         })
+// }
 
 export function tripleDataFill(runset: RunSetObject) {
     Logger.info("tripleDataFill", runset.id, " START")

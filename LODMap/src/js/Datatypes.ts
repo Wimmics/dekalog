@@ -119,8 +119,8 @@ export type VocabEndpointDataObject = {
     vocabularies: Array<string>
 }
 
-export type VocabKeywordsDataObject = {
-    vocabulary: string,
+export type EndpointKeywordsDataObject = {
+    endpoint: string,
     keywords: Array<string>
 }
 

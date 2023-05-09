@@ -136,7 +136,7 @@ export function getScatterDataSeriesFromMap(dataMap: Map<string, string[]>): any
     dataMap.forEach((value, key, map) => {
         let chartSerie: any = {
             name: key,
-            label: { show: true },
+            label: { show: false },
             symbolSize: 5,
             data: [...new Set(value)].filter(a => a[0] !== null && a[0] !== undefined).sort((a, b) => a[0].localeCompare(b[0])),
             type: 'line'
