@@ -821,26 +821,75 @@ export let shortUriChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('shortUrisScatter')),
     option: {},
     fillFunction: function () {
-        let shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
-            "GRAPH ?g {" +
-            "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
-            "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
-            "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
-            "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> . " +
-            "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
-            "}" +
-            " } GROUP BY ?g ?endpointUrl ?measure ";
-        this.shortUrisMeasureQuery = shortUrisMeasureQuery;
-        $('#shortUrisQueryCell').empty();
-        $('#shortUrisQueryCell').append($(document.createElement('code')).text(shortUrisMeasureQuery))
         try {
-            let option = Control.getInstance().retrieveFileFromVault(shortUrisEchartsOptionFilename);
-            this.option = option;
+            if (!this.filled) {
+                let shortUrisMeasureQuery = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+                    "GRAPH ?g {" +
+                    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+                    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+                    "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+                    "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/shortUris.ttl> . " +
+                    "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+                    "}" +
+                    " } GROUP BY ?g ?endpointUrl ?measure ";
+                this.shortUrisMeasureQuery = shortUrisMeasureQuery;
+                $('#shortUrisQueryCell').empty();
+                $('#shortUrisQueryCell').append($(document.createElement('code')).text(shortUrisMeasureQuery))
 
+
+                this.option = Control.getInstance().retrieveFileFromVault(shortUrisEchartsOptionFilename);
+                this.redraw();
+
+                // Average measure
+                let shortUriMeasureSum = Control.getInstance().shortUriData().map(a => a.measure).reduce((previous, current) => current + previous);
+                let shortUrisAverageMeasure = shortUriMeasureSum / Control.getInstance().shortUriData().length;
+                console.log("shortUrisAverageMeasure", shortUrisAverageMeasure)
+                $('#shortUrisMeasure').text(precise(shortUrisAverageMeasure) + "%");
+
+                // Measure Details
+                function fillShortUriTable() {
+                    let tableHTML = $('#shortUrisTable');
+                    tableHTML.empty();
+
+                    let endpointDataSerieMap = new Map();
+                    Control.getInstance().shortUriData().forEach((shortUriItem, i) => {
+                        if (endpointDataSerieMap.get(shortUriItem.endpoint) == undefined) {
+                            endpointDataSerieMap.set(shortUriItem.endpoint, []);
+                        }
+                        endpointDataSerieMap.get(shortUriItem.endpoint).push([shortUriItem.date, precise(shortUriItem.measure)]);
+                    });
+
+                    let gridJSData: { endpoint: string, measure: number }[] = [];
+                    endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                        let endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+                        let measureAverage = endpointMeasureSum / serieData.length;
+                        let measureAverageRounded = Number.parseFloat(precise(measureAverage, 3));
+                        gridJSData.push({ endpoint: endpoint, measure: measureAverageRounded });
+                    });
+                    let gridJSColumns = [
+                        { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
+                        { id: "measure", name: "Measure", field: "measure", sortable: true, formatter: (cell, row) => {
+                                return cell + "%";
+                            }
+                         }
+                    ];
+                    let gridJSTable = new gridjs.Grid({
+                        columns: gridJSColumns,
+                        data: gridJSData,
+                        sort: true,
+                        search: true,
+                        pagination: {
+                            limit: 10,
+                            summary: false
+                        }
+                    });
+                    gridJSTable.render(document.getElementById("shortUrisTable"));
+                }
+                fillShortUriTable();
+            } else {
+                this.hide();
+            }
             this.filled = true;
-
-            this.redraw();
-            return Promise.resolve();
         } catch (e) {
             console.error(e);
             return Promise.reject(e);
@@ -875,20 +924,74 @@ export let rdfDataStructureChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('rdfDataStructuresScatter')),
     option: {},
     fillFunction: function () {
-        try {
-            let option = Control.getInstance().retrieveFileFromVault(rdfDataStructuresEchartsOptionFilename);
-            this.option = option;
+            if (!this.filled) {
+                this.query = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+                    "GRAPH ?g {" +
+                    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+                    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+                    "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+                    "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/RDFDataStructures.ttl> . " +
+                    "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+                    "}" +
+                    " } GROUP BY ?g ?endpointUrl ?measure ";
+                $('#rdfDataStructuresQueryCell').empty();
+                $('#rdfDataStructuresQueryCell').append($(document.createElement('code')).text(this.query));
 
-            this.filled = true;
+                let rdfDataStructureDataTmp = Control.getInstance().rdfDataStructureData();
+                let endpointDataSerieMap = new Map();
+                rdfDataStructureDataTmp.forEach((rdfDataStructureItem, i) => {
+                    if (endpointDataSerieMap.get(rdfDataStructureItem.endpoint) == undefined) {
+                        endpointDataSerieMap.set(rdfDataStructureItem.endpoint, []);
+                    }
+                    endpointDataSerieMap.get(rdfDataStructureItem.endpoint).push([rdfDataStructureItem.date, precise(rdfDataStructureItem.measure)]);
+                });
 
-            this.redraw();
-            return Promise.resolve();
-        } catch (e) {
-            console.error(e);
-            return Promise.reject(e);
-        } finally {
-            return Promise.resolve();
-        }
+                if (endpointDataSerieMap.size > 0) {
+                    this.show()
+
+                    // Chart
+                    this.option = Control.getInstance().retrieveFileFromVault(rdfDataStructuresEchartsOptionFilename);
+                    this.redraw();
+
+                    // Average measure
+                    let rdfDataStructureMeasureSum = rdfDataStructureDataTmp.map(a => a.measure).reduce((previous, current) => current + previous);
+                    let rdfDataStructuresAverageMeasure = rdfDataStructureMeasureSum / rdfDataStructureDataTmp.length;
+                    $('#rdfDataStructuresMeasure').text(precise(rdfDataStructuresAverageMeasure, 3) + "%");
+
+                    // Measire Details
+                    let tableHTML = $('#rdfDataStructuresTable');
+                    tableHTML.empty();
+
+                    let gridJSData: { endpoint: string, measure: number }[] = [];
+                    endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                        let endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+                        let measureAverage = endpointMeasureSum / serieData.length;
+                        let measureAverageRounded = Number.parseFloat(precise(measureAverage, 3));
+                        gridJSData.push({ endpoint: endpoint, measure: measureAverageRounded });
+                    });
+                    let gridJSColumns = [
+                        { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
+                        { id: "measure", name: "Measure", field: "measure", sortable: true, formatter: (cell, row) => {
+                                return cell + "%";
+                            }
+                         }
+                    ];
+                    let gridJSTable = new gridjs.Grid({
+                        columns: gridJSColumns,
+                        data: gridJSData,
+                        sort: true,
+                        search: true,
+                        pagination: {
+                            limit: 10,
+                            summary: false
+                        }
+                    });
+                    gridJSTable.render(document.getElementById("rdfDataStructuresTable"));
+                } else {
+                    this.hide();
+                }
+            }
+            return Promise.resolve().then(() => { this.filled = true; });
     },
     hideFunction: function () {
         this.chartObject.setOption({ series: [] }, true);
@@ -910,22 +1013,80 @@ export let rdfDataStructureChart = new KartoChart({
 });
 
 export let readableLabelsChart = new KartoChart({
-    chartObject: echarts.init(document.getElementById('readableLabelsScatter')), option: {},
+    chartObject: echarts.init(document.getElementById('readableLabelsScatter')), 
+    option: {},
     fillFunction: function () {
-        try {
-            let option = Control.getInstance().retrieveFileFromVault(readableLabelsEchartsOptionFilename);
-            this.option = option;
+            if (!this.filled) {
+                this.query = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+                    "GRAPH ?g {" +
+                    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+                    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+                    "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+                    "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/readableLabels.ttl> . " +
+                    "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+                    "} " +
+                    "} GROUP BY ?g ?endpointUrl ?measure ";
+                $('#readableLabelsQueryCell').empty();
+                $('#readableLabelsQueryCell').append($(document.createElement('code')).text(this.query))
 
-            this.filled = true;
+                let readableLabelDataTmp = Control.getInstance().readableLabelData()
 
-            this.redraw();
-            return Promise.resolve();
-        } catch (e) {
-            console.error(e);
-            return Promise.reject(e);
-        } finally {
-            return Promise.resolve();
-        }
+                let graphSet = new Set(readableLabelDataTmp.map(a => a.graph))
+
+                let endpointDataSerieMap = new Map();
+                readableLabelDataTmp.forEach((readableLabelItem, i) => {
+                    if (endpointDataSerieMap.get(readableLabelItem.endpoint) == undefined) {
+                        endpointDataSerieMap.set(readableLabelItem.endpoint, []);
+                    }
+                    endpointDataSerieMap.get(readableLabelItem.endpoint).push([readableLabelItem.date, precise(readableLabelItem.measure)]);
+                });
+
+                if (endpointDataSerieMap.size > 0) {
+                    this.show();
+
+                    // Chart
+                    this.option = Control.getInstance().retrieveFileFromVault(readableLabelsEchartsOptionFilename);
+                    this.redraw();
+
+                    // Average measure
+                    let readableLabelMeasureSum = readableLabelDataTmp.map(a => a.measure).reduce((previous, current) => current + previous);
+                    let readableLabelsAverageMeasure = readableLabelMeasureSum / readableLabelDataTmp.length;
+                    $('#readableLabelsMeasure').text(precise(readableLabelsAverageMeasure, 3) + "%");
+
+                    // Measire Details
+                    let tableHTML = $('#readableLabelsTable');
+                    tableHTML.empty();
+
+                    let gridJSData: { endpoint: string, measure: number }[] = [];
+                    endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                        let endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+                        let measureAverage = endpointMeasureSum / serieData.length;
+                        let measureAverageRounded = Number.parseFloat(precise(measureAverage, 3));
+                        gridJSData.push({ endpoint: endpoint, measure: measureAverageRounded });
+                    });
+                    let gridJSColumns = [
+                        { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
+                        { id: "measure", name: "Measure", field: "measure", sortable: true, formatter: (cell, row) => {
+                                return cell + "%";
+                            }
+                         }
+                    ];
+                    let gridJSTable = new gridjs.Grid({
+                        columns: gridJSColumns,
+                        data: gridJSData,
+                        sort: true,
+                        search: true,
+                        pagination: {
+                            limit: 10,
+                            summary: false
+                        }
+                    });
+                    gridJSTable.render(document.getElementById('readableLabelsTable'));
+                } else {
+                    this.hide();
+                }
+            }
+            return Promise.resolve().then(() => { this.filled = true; });
     }, hideFunction: function () {
         this.chartObject.setOption({ series: [] }, true);
         $('#readableLabelMeasure').empty();
@@ -949,20 +1110,76 @@ export let blankNodesChart = new KartoChart({
     chartObject: echarts.init(document.getElementById('blankNodesScatter')),
     option: {},
     fillFunction: function () {
-        try {
-            let option = Control.getInstance().retrieveFileFromVault(blankNodesEchartsOptionFilename);
-            this.option = option;
+            if (!this.filled) {
+                this.query = "SELECT DISTINCT ?g ?endpointUrl ?measure { " +
+                    "GRAPH ?g {" +
+                    "?endpoint <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpointUrl . " +
+                    "?metadata <http://ns.inria.fr/kg/index#curated> ?endpoint . " +
+                    "?metadata <http://www.w3.org/ns/dqv#hasQualityMeasurement> ?measureNode . " +
+                    "?measureNode <http://www.w3.org/ns/dqv#isMeasurementOf> <https://raw.githubusercontent.com/Wimmics/dekalog/master/rules/check/blankNodeUsage.ttl> . " +
+                    "?measureNode <http://www.w3.org/ns/dqv#value> ?measure . " +
+                    "}" +
+                    " } " +
+                    "GROUP BY ?g ?endpointUrl ?measure ";
+                $('#blankNodesQueryCell').empty();
+                $('#blankNodesQueryCell').append($(document.createElement('code')).text(this.query))
 
-            this.filled = true;
+                let blankNodeDataTmp = Control.getInstance().blankNodesData()
 
-            this.redraw();
-            return Promise.resolve();
-        } catch (e) {
-            console.error(e);
-            return Promise.reject(e);
-        } finally {
-            return Promise.resolve();
-        }
+                let endpointDataSerieMap = new Map();
+                blankNodeDataTmp.forEach((blankNodeItem, i) => {
+                    if (endpointDataSerieMap.get(blankNodeItem.endpoint) == undefined) {
+                        endpointDataSerieMap.set(blankNodeItem.endpoint, []);
+                    }
+                    endpointDataSerieMap.get(blankNodeItem.endpoint).push([blankNodeItem.date, precise(blankNodeItem.measure, 3)]);
+                });
+
+                if (endpointDataSerieMap.size > 0) {
+                    this.show();
+
+                    // Chart
+                    this.option = Control.getInstance().retrieveFileFromVault(blankNodesEchartsOptionFilename);
+                    this.redraw();
+
+                    // Average measure
+                    let blankNodeMeasureSum = blankNodeDataTmp.map(a => a.measure).reduce((previous, current) => current + previous);
+                    let blankNodesAverageMeasure = blankNodeMeasureSum / blankNodeDataTmp.length;
+                    $('#blankNodesMeasure').text(precise(blankNodesAverageMeasure, 3) + "%");
+
+                    // Measire Details
+                    let tableHTMl = $('#blankNodesTable');
+                    tableHTMl.empty();
+
+                    let gridJSData: { endpoint: string, measure: number }[] = [];
+                    endpointDataSerieMap.forEach((serieData, endpoint, map) => {
+                        let endpointMeasureSum = serieData.map(a => Number.parseFloat(a[1])).reduce((previous, current) => current + previous);
+                        let measureAverage = endpointMeasureSum / serieData.length;
+                        let measureAverageRounded = Number.parseFloat(precise(measureAverage, 3));
+                        gridJSData.push({ endpoint: endpoint, measure: measureAverageRounded });
+                    });
+                    let gridJSColumns = [
+                        { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
+                        { id: "measure", name: "Measure", field: "measure", sortable: true, formatter: (cell, row) => {
+                                return cell + "%";
+                            }
+                         }
+                    ];
+                    let gridJSTable = new gridjs.Grid({
+                        columns: gridJSColumns,
+                        data: gridJSData,
+                        sort: true,
+                        search: true,
+                        pagination: {
+                            limit: 10,
+                            summary: false
+                        }
+                    });
+                    gridJSTable.render(document.getElementById('blankNodesTable'));
+                } else {
+                    this.hide();
+                }
+            }
+            return Promise.resolve().then(() => { this.filled = true; });
     },
     hideFunction: function () {
         this.chartObject.setOption({ series: [] }, true);
