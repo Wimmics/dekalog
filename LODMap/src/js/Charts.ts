@@ -137,12 +137,15 @@ export let sparqlFeaturesContent = new KartoChart({
                 tableHTML.empty();
                 let grisJSData = sparqlFeaturesDataArray.map((item, i) => {
                     return [item.endpoint, item.features.map(feature => {
-                        return feature + " (" + featuresDescriptionMap.get(feature) + ")";
+                        return `<span title="${featuresDescriptionMap.get(feature)}">${feature}</span>` ;
                     }).join(", ")];
                 });
                 let gridJSColumns = [
                     { name: 'Endpoint', sort: 'asc' },
-                    'Features'
+                    { 
+                        name: 'Features',
+                        formatter: (cell) => gridjs.html(`${cell}`)
+                    }
                 ];
                 let gridJS = new gridjs.Grid({
                     columns: gridJSColumns,
