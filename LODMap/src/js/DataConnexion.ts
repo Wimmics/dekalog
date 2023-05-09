@@ -75,7 +75,7 @@ export function paginatedSparqlQueryPromise(query, limit = queryPaginationSize, 
 }
 
 export function cachePromise(cacheFile) {
-    // return xhrJSONPromise("https://prod-dekalog.inria.fr/cache/" + cacheFile);
-    return xhrJSONPromise("data/" + cacheFile);
+    return xhrJSONPromise("https://prod-dekalog.inria.fr/cache/" + cacheFile);
+    // return xhrJSONPromise("data/" + cacheFile);
 }
 

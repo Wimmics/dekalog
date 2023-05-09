@@ -2,7 +2,9 @@
    "name": "kartographi",
    "source": "src/index.html",
    "scripts": {
-      "build": "npx tsc",
+      "prebuild": "rm dist/* ./*.js ./*.js.map ./*.css.map ./*.css || true",
+      "build": "npx parcel build",
+      "postbuild": "sed 's/\\/index\\./\\.\\/index\\./g' dist/index.html > dist/index.tmp.html && rm dist/index.html || true && mv dist/index.tmp.html dist/index.html",
       "predeploy": "rm dist/* ./*.js ./*.js.map ./*.css.map ./*.css || true",
       "deploy": "npx parcel build",
       "postdeploy": "sed 's/\\/index\\./\\.\\/index\\./g' dist/index.html > index.html && rm dist/index.html || true && mv dist/* .",
