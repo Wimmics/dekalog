@@ -38,22 +38,16 @@ let shortUrisData: Array<ShortUriDataObject>;
 let rdfDataStructureData: Array<QualityMeasureDataObject>;
 let readableLabelData: Array<QualityMeasureDataObject>;
 let blankNodesData: Array<QualityMeasureDataObject>;
-// let categoryTestCountData: any;
-// let totalCategoryTestCountData: any;
-// let endpointTestsData: Array<EndpointTestDataObject>;
-// let totalRuntimeData: Array<TotalRuntimeDataObject>;
-// let averageRuntimeData: Array<AverageRuntimeDataObject>;
 let classPropertyData: any;
 let datasetDescriptionData: Array<DatasetDescriptionDataObject>;
 let sparqlFeatureDesc: Array<SPARQLFeatureDescriptionDataObject>;
-// let textElements: Array<TextElement>;
 
 export function sparqlCoverageEchartsOption(runsetId: string): Promise<void> {
     return readFile(Global.getCachedFilenameForRunset(runsetId, DataCache.sparqlCoverageFilename), "utf8").then(sparqlCoverageCountRawData => {
 
         const sparqlCoverageCountData: Array<SPARQLCoverageDataObject> = JSON.parse(sparqlCoverageCountRawData);
 
-        let maxSparql10 = 24;
+        let maxSparql10 = 25;
         let maxSparql11 = 19;
         let maxSparqlTotal = maxSparql10 + maxSparql11;
 
@@ -88,7 +82,7 @@ export function sparqlCoverageEchartsOption(runsetId: string): Promise<void> {
             chart11ValueMap.set(itemBinSparql11, chart11ValueMap.get(itemBinSparql11) + 1);
             let itemBinSparqlTotal = -1;
             if (item.sparql11 > 0 || item.sparql10 > 0) {
-                let itemBinSparqlTotal = Math.floor(item.sparqlTotal / sparqlTotalStep);
+                itemBinSparqlTotal = Math.floor(item.sparqlTotal / sparqlTotalStep);
                 if (itemBinSparqlTotal == 10) {
                     itemBinSparqlTotal = 9;
                 }

@@ -107,8 +107,9 @@ function generateGraphValueFilterClause(graphList: string[]) {
 export function endpointMapfill(runset: RunSetObject) {
     Logger.info("endpointMapfill", runset.id, " START")
     let endpointGeolocData = [];
-    let endpointTimezoneSPARQL = new Map();
-    let endpointLabelMap = new Map<string, string>();
+    let endpointSet: Set<string> = new Set();
+    let endpointTimezoneSPARQL: Map<string, string> = new Map();
+    let endpointLabelMap: Map<string, string> = new Map();
     let endpointIpMapArray: EndpointIpGeolocObject[] = [];
 
     // Marked map with the geoloc of each endpoint
@@ -116,6 +117,21 @@ export function endpointMapfill(runset: RunSetObject) {
         endpointIpMapArray = endpointIpMap as EndpointIpGeolocObject[];
         return Promise.resolve();
     })
+        .then(() => {
+            let endpointListForRunsetQuery = `SELECT DISTINCT ?endpoint {
+            GRAPH ?g {
+                ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint .
+                ?metadata <http://ns.inria.fr/kg/index#curated> ?base .
+            }
+            ${generateGraphValueFilterClause(runset.graphs)}
+        }`;
+            return Sparql.paginatedSparqlQueryToIndeGxPromise(endpointListForRunsetQuery).then(jsonResponse => {
+                (jsonResponse as JSONValue[]).forEach((itemResponse, i) => {
+                    endpointSet.add(itemResponse["endpoint"].value);
+                });
+                return Promise.resolve();
+            })
+        })
         .then(() => {
             let timezoneSPARQLquery = `SELECT DISTINCT ?timezone ?endpoint { 
             GRAPH ?g { 
@@ -165,33 +181,37 @@ export function endpointMapfill(runset: RunSetObject) {
                     let endpoint = item.key;
                     let endpointItem: EndpointItem;
 
-                    return timezoneMap.then(timeZoneMapArray => {
-                        let ipTimezoneArrayFiltered = (timeZoneMapArray as TimezoneMapObject[]).filter(itemtza => itemtza.key == item.value.geoloc.timezone);
-                        let ipTimezone;
-                        if (ipTimezoneArrayFiltered.length > 0) {
-                            ipTimezone = ipTimezoneArrayFiltered[0].value.utc_offset.padStart(6, '-').padStart(6, '+');
-                        }
-                        let sparqlTimezone;
-                        if (endpointTimezoneSPARQL.get(endpoint) != undefined) {
-                            sparqlTimezone = endpointTimezoneSPARQL.get(endpoint).padStart(6, '-').padStart(6, '+');
-                        }
+                    if (endpointSet.has(endpoint)) {
+                        return timezoneMap.then(timeZoneMapArray => {
+                            let ipTimezoneArrayFiltered = (timeZoneMapArray as TimezoneMapObject[]).filter(itemtza => itemtza.key == item.value.geoloc.timezone);
+                            let ipTimezone;
+                            if (ipTimezoneArrayFiltered.length > 0) {
+                                ipTimezone = ipTimezoneArrayFiltered[0].value.utc_offset.padStart(6, '-').padStart(6, '+');
+                            }
+                            let sparqlTimezone;
+                            if (endpointTimezoneSPARQL.get(endpoint) != undefined) {
+                                sparqlTimezone = endpointTimezoneSPARQL.get(endpoint).padStart(6, '-').padStart(6, '+');
+                            }
 
-                        endpointItem = { endpoint: endpoint, lat: item.value.geoloc.lat, lon: item.value.geoloc.lon, country: "", region: "", city: "", org: "", timezone: ipTimezone, sparqlTimezone: sparqlTimezone, popupHTML: "" };
-                        if (item.value.geoloc.country != undefined) {
-                            endpointItem.country = item.value.geoloc.country;
-                        }
-                        if (item.value.geoloc.regionName != undefined) {
-                            endpointItem.region = item.value.geoloc.regionName;
-                        }
-                        if (item.value.geoloc.city != undefined) {
-                            endpointItem.city = item.value.geoloc.city;
-                        }
-                        if (item.value.geoloc.org != undefined) {
-                            endpointItem.org = item.value.geoloc.org;
-                        }
-                        endpointItemMap.set(endpoint, endpointItem);
-                        return Promise.resolve()
-                    })
+                            endpointItem = { endpoint: endpoint, lat: item.value.geoloc.lat, lon: item.value.geoloc.lon, country: "", region: "", city: "", org: "", timezone: ipTimezone, sparqlTimezone: sparqlTimezone, popupHTML: "" };
+                            if (item.value.geoloc.country != undefined) {
+                                endpointItem.country = item.value.geoloc.country;
+                            }
+                            if (item.value.geoloc.regionName != undefined) {
+                                endpointItem.region = item.value.geoloc.regionName;
+                            }
+                            if (item.value.geoloc.city != undefined) {
+                                endpointItem.city = item.value.geoloc.city;
+                            }
+                            if (item.value.geoloc.org != undefined) {
+                                endpointItem.org = item.value.geoloc.org;
+                            }
+                            endpointItemMap.set(endpoint, endpointItem);
+                            return Promise.resolve()
+                        })
+                    } else {
+                        return Promise.reject();
+                    }
                 } else {
                     return Promise.reject();
                 }
@@ -256,13 +276,16 @@ export function SPARQLCoverageFill(runset: RunSetObject) {
     // Create an histogram of the SPARQLES rules passed by endpoint.
     let sparqlesFeatureQuery = `SELECT DISTINCT ?endpoint ?sparqlNorm (COUNT(DISTINCT ?activity) AS ?count) { 
             GRAPH ?g { 
-                ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . 
-                ?metadata <http://ns.inria.fr/kg/index#curated> ?base . 
-                OPTIONAL {
-                    ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . 
+                { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . }
+                UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . }
+                UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpoint . }
+                ?metadata <http://ns.inria.fr/kg/index#curated> ?curated, ?dataset .
+                #OPTIONAL { 
+                    { ?dataset <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . }
+                    UNION { ?metadata <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity .}
                     FILTER(CONTAINS(str(?activity), ?sparqlNorm)) 
                     VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } 
-                } 
+                #} 
             } 
             ${generateGraphValueFilterClause(runset.graphs)}
         } 
@@ -308,13 +331,16 @@ export function SPARQLCoverageFill(runset: RunSetObject) {
         .then(() => {
             const sparqlFeatureQuery = `SELECT DISTINCT ?endpoint ?activity { 
                 GRAPH ?g { 
-                    ?base <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . 
-                    ?metadata <http://ns.inria.fr/kg/index#curated> ?base . 
-                    OPTIONAL { 
-                        ?base <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . 
+                    { ?curated <http://www.w3.org/ns/sparql-service-description#endpoint> ?endpoint . }
+                    UNION { ?curated <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . }
+                    UNION { ?curated <http://www.w3.org/ns/dcat#endpointURL> ?endpoint . }
+                    ?metadata <http://ns.inria.fr/kg/index#curated> ?curated, ?dataset .
+                    #OPTIONAL { 
+                        { ?dataset <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity . }
+                        UNION { ?metadata <http://www.w3.org/ns/prov#wasGeneratedBy> ?activity .}
                         FILTER(CONTAINS(str(?activity), ?sparqlNorm)) 
                         VALUES ?sparqlNorm { "SPARQL10" "SPARQL11" } 
-                    } 
+                    #} 
                 } 
                 ${generateGraphValueFilterClause(runset.graphs)}
             } GROUP BY ?endpoint ?activity `;
@@ -399,7 +425,7 @@ export function allVocabFill(): Promise<void> {
             if (!endpointVocabMap.has(endpointUrl)) {
                 endpointVocabMap.set(endpointUrl, []);
             }
-            if(knownVocabularies.has(vocabulary)){
+            if (knownVocabularies.has(vocabulary)) {
                 endpointVocabMap.get(endpointUrl).push(vocabulary);
                 vocabSet.add(vocabulary);
             }
@@ -465,7 +491,7 @@ export function vocabFill(runset: RunSetObject): Promise<void> {
     GROUP BY ?endpointUrl ?vocabulary `;
 
     return Sparql.paginatedSparqlQueryToIndeGxPromise(runsetsEndpointQuery).then(json => {
-        if(json !== undefined) {
+        if (json !== undefined) {
             let endpointSet: Set<string> = new Set();
             (json as JSONValue[]).forEach(bindingItem => {
                 const endpointUrl = bindingItem["endpointUrl"].value;
@@ -486,28 +512,28 @@ export function vocabFill(runset: RunSetObject): Promise<void> {
             runsetEndpointKeywords.set(endpointUrl, endpointKeywords.get(endpointUrl));
         });
 
-                try {
-                    let endpointVocabData: VocabEndpointDataObject[] = [];
-                    runsetEndpointVocabulary.forEach((vocabArray, endpointUrl, map) => {
-                        endpointVocabData.push({ endpoint: endpointUrl, vocabularies: vocabArray });
+        try {
+            let endpointVocabData: VocabEndpointDataObject[] = [];
+            runsetEndpointVocabulary.forEach((vocabArray, endpointUrl, map) => {
+                endpointVocabData.push({ endpoint: endpointUrl, vocabularies: vocabArray });
+            })
+            let content = JSON.stringify(endpointVocabData);
+            return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, vocabEndpointFilename), content)
+                .then(() => {
+                    let endpointKeywordsData: KeywordsEndpointDataObject[] = [];
+                    runsetEndpointKeywords.forEach((keywordArray, endpointUrl, map) => {
+                        endpointKeywordsData.push({ endpoint: endpointUrl, keywords: keywordArray });
                     })
-                    let content = JSON.stringify(endpointVocabData);
-                    return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, vocabEndpointFilename), content)
-                        .then(() => {
-                            let endpointKeywordsData: KeywordsEndpointDataObject[] = [];
-                            runsetEndpointKeywords.forEach((keywordArray, endpointUrl, map) => {
-                                endpointKeywordsData.push({ endpoint: endpointUrl, keywords: keywordArray });
-                            })
-                            let content = JSON.stringify(endpointKeywordsData);
-                            return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, endpointKeywordsFilename), content)
-                        })
-                        .then(() => {
-                            Logger.info("vocabFill", runset.id, " END")
-                            return Promise.resolve();
-                        })
-                } catch (err) {
-                    Logger.error(err)
-                }
+                    let content = JSON.stringify(endpointKeywordsData);
+                    return Global.writeFile(Global.getCachedFilenameForRunset(runset.id, endpointKeywordsFilename), content)
+                })
+                .then(() => {
+                    Logger.info("vocabFill", runset.id, " END")
+                    return Promise.resolve();
+                })
+        } catch (err) {
+            Logger.error(err)
+        }
 
     })
 

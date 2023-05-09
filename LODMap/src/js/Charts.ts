@@ -106,10 +106,10 @@ export let geolocChart = new KartoMapChart({
     },
     clearFunction: function () {
         this.markerArray.forEach(marker => {
-            marker.remove();
-            this.chartObject.removeLayer(marker);
+            marker.removeFrom(this.chartObject);
         });
         this.markerArray = [];
+        this.filled = false;
     },
     hideFunction: function () {
     },
