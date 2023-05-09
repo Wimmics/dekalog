@@ -401,6 +401,7 @@ export function allVocabFill(): Promise<void> {
             }
             if(knownVocabularies.has(vocabulary)){
                 endpointVocabMap.get(endpointUrl).push(vocabulary);
+                vocabSet.add(vocabulary);
             }
         });
         return vocabSet;
@@ -415,6 +416,7 @@ export function allVocabFill(): Promise<void> {
             .then(jsonKeywordsArraySettled => {
                 let jsonKeywordsArray = Global.extractSettledPromiseValues(jsonKeywordsArraySettled);
                 jsonKeywordsArray.forEach(jsonKeywords => {
+                    Logger.log(jsonKeywords)
                     if (jsonKeywords !== undefined) {
                         let vocab = jsonKeywords.uri;
                         let keywordList = jsonKeywords.tags;

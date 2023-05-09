@@ -543,99 +543,12 @@ export let vocabKeywordChart = new KartoChart({
         try {
             return new Promise<void>((resolve, reject) => {
                 if (!this.filled) {
-                    // Create an force graph with the graph linked by co-ocurrence of vocabularies
+                    this.show();
 
-                    let endpointSet = new Set();
-                    let vocabSet = new Set();
-                    let rawVocabSet = new Set();
-                    let rawGatherVocab = new Map();
-                    Control.getInstance().vocabEndpointData().forEach((item, i) => {
-                        let endpoint = item.endpoint;
-                        let vocabularies = item.vocabularies;
-                        if ( vocabularies != undefined && vocabularies.length < numberOfVocabulariesLimit) {
-                            endpointSet.add(endpoint);
-                            vocabularies.forEach(vocab => {
-                                rawVocabSet.add(vocab);
-                            })
-                            if (!rawGatherVocab.has(endpoint)) {
-                                rawGatherVocab.set(endpoint, new Set());
-                            }
-                            rawGatherVocab.set(endpoint, vocabularies);
-                        }
-                    });
-
-                    let jsonRawVocabNodes = new Set();
-                    let jsonRawVocabLinks = new Set();
-
-                    endpointSet.forEach(item => {
-                        jsonRawVocabNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 });
-                    });
-                    rawVocabSet.forEach(item => {
-                        jsonRawVocabNodes.add({ name: item, category: 'Vocabulary', symbolSize: 5 })
-                    });
-                    rawGatherVocab.forEach((endpointVocabs, endpointUrl, map1) => {
-                        endpointVocabs.forEach((vocab, i) => {
-                            jsonRawVocabLinks.add({ source: endpointUrl, target: vocab })
-                        });
-                    });
-
-                    let jsonKeywordLinks = new Set();
-                    let jsonKeywordNodes = new Set();
-
-                    let keywordSet = new Set();
-
-                    Control.getInstance().endpointKeywordData().forEach(item => {
-                        if(item.keywords !== undefined) {
-                            item.keywords.forEach(keyword => {
-                                keywordSet.add(keyword);
-                            })
-                        }
-                    });
-
-                    keywordSet.forEach(item => {
-                        jsonKeywordNodes.add({ name: item, category: 'Keyword', symbolSize: 5 })
-                    });
-                    endpointSet.forEach(item => {
-                        jsonKeywordNodes.add({ name: item, category: 'Endpoint', symbolSize: 5 })
-                    });
-
-                    if (jsonKeywordNodes.size > 0 && jsonKeywordLinks.size > 0) {
-                        this.show();
-
-                        this.option = getForceGraphOption('Endpoints and keywords', ["Keyword", "Endpoint"], [...jsonKeywordNodes], [...jsonKeywordLinks]);
-                        this.chartObject.setOption(this.option, true);
-
-                        
-
-                        // Endpoint and vocabulary keywords table
-                        function endpointKeywordsTableFill() {
-                            let endpointKeywordsTable = $('#endpointKeywordsTable');
-                            endpointKeywordsTable.empty();
-
-                            let gridJSData: { endpoint: string, keywords: string }[] = Control.getInstance().endpointKeywordData().map((item, i) => {
-                                return { endpoint: item.endpoint, keywords: [...item.keywords].sort((a, b) => a.localeCompare(b)).join(", ") }
-                            });
-                            let gridJSColumns = [
-                                { id: "endpoint", name: "Endpoint", field: "endpoint", sortable: true },
-                                { id: "keywords", name: "Keywords", field: "keywords", sortable: true }
-                            ];
-                            let gridJSTable = new gridjs.Grid({
-                                columns: gridJSColumns,
-                                data: gridJSData,
-                                sort: true,
-                                search: true,
-                                pagination: {
-                                    limit: 10,
-                                    summary: true
-                                }
-                            });
-                            gridJSTable.render(document.getElementById("endpointKeywordsTable"));
-                        }
-                        endpointKeywordsTableFill()
-                    } else {
-                        this.hide();
-                    } this.chartObject.on('click', 'series', event => {
-                        if ((event.dataType.localeCompare("node") == 0) && (event.data.category.localeCompare("Endpoint") == 0)) {
+                    this.option = Control.getInstance().retrieveFileFromVault(keywordEndpointEchartsOptionFilename);
+                    this.chartObject.setOption(this.option, true);
+                    this.chartObject.on('click', 'series', event => {
+                        if (event.dataType.localeCompare("node") == 0) {
                             let uriLink = event.data.name;
                             window.open(uriLink, '_blank').focus();
                         }
@@ -646,8 +559,6 @@ export let vocabKeywordChart = new KartoChart({
         } catch (e) {
             console.error(e);
             return Promise.reject(e);
-        } finally {
-            return Promise.resolve();
         }
     },
     redrawFunction: function () {

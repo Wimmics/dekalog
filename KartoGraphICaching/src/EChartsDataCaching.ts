@@ -392,7 +392,7 @@ export function endpointStandardVocabulariesGraphEchartsOption(runsetId: string)
                     if (vocabStandardSet.has(vocab)) {
                         vocabSet.add(vocab)
 
-                        linkArray.push({ source: endpoint, target: vocab })
+                        linkArray.push({ source: vocab, target: endpoint })
                     }
                 })
             }
