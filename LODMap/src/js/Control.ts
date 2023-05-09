@@ -100,7 +100,8 @@ export class Control {
     allContent: KartoChart[] = this.geolocContent.concat(this.sparqlCoverContent)
         .concat(this.datasetDescriptionContent)
         .concat(this.dataQualityContent)
-        .concat(this.datasetPopulationsContent);
+        .concat(this.datasetPopulationsContent)
+        .concat(this.vocabRelatedContent);
 
     // Contains the files for each runset (key: runset id, value: Map<filename, fileContent>)
     fileBank: Map<string, Map<string, JSONValue>> = new Map();
@@ -346,7 +347,7 @@ export class Control {
         });
         this.showLoadingSpinner();
         let content = this.tabContentMap.get(tabName);
-        return Promise.all(content.map(item => item.fill()))
+        return Promise.allSettled(content.map(item => item.fill()))
             .then(() => {
                 content.forEach(contentChart => contentChart.redraw());
                 content.forEach(contentChart => contentChart.show());
@@ -369,36 +370,8 @@ export class Control {
     }
 
     clear() {
-        this.allContent.forEach((content, i) => { if (content.clear !== undefined) { content.clear() } });
+        this.allContent.forEach(content => { content.clear() });
     }
-
-    redrawGeolocContent() {
-        this.geolocContent.forEach(content => content.redraw());
-    }
-
-    redrawSparqlCoverContent() {
-        this.sparqlCoverContent.forEach(content => content.redraw());
-    }
-
-    redrawVocabRelatedContent() {
-        this.vocabRelatedContent.forEach(content => content.redraw());
-    }
-
-    redrawDatasetDescriptionContent() {
-        this.datasetDescriptionContent.forEach(content => content.redraw());
-    }
-
-    redrawDataQualityContent() {
-        this.dataQualityContent.forEach(content => content.redraw());
-    }
-
-    redrawDatasetPopulationsContent() {
-        this.datasetPopulationsContent.forEach(content => content.redraw());
-    }
-
-    // redrawFrameworkInformationContent() {
-    //     this.frameworkInformationContent.forEach(content => content.redraw());
-    // }
 
     redrawCharts() {
         return Promise.all(this.allContent.map(content => { content.redraw() }));
@@ -418,14 +391,7 @@ export class Control {
     }
 
     changeGraphSetIndex(index) {
-        console.log("changeGraphSetIndex", index)
-        this.showLoadingSpinner();
-        this.allContent.forEach(contentChart => {
-            if (contentChart != undefined && contentChart.clear !== undefined) {
-                contentChart.clear()
-                contentChart.filled = false;
-            }
-        });
+        console.log("changeGraphSetIndex", index);
 
         let urlParams = new URLSearchParams(window.location.search);
         urlParams.delete(this.runsetIndexParameter);
@@ -440,10 +406,7 @@ export class Control {
         } else {
             throw new Error("Graph set with id '" + index + "' not found");
         }
-        return this.refresh()
-            .then(() => {
-                this.hideLoadingSpinner();
-            });
+        return this.refresh();
     }
 
 
